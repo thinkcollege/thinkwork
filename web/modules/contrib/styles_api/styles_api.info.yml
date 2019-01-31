@@ -1,0 +1,11 @@
+name: Styles API
+description: Allow other modules or themes to register template styles.
+type: module
+package: Styles
+# core: 8.x
+
+# Information added by Drupal.org packaging script on 2015-12-08
+version: '8.x-1.0'
+core: '8.x'
+project: 'styles_api'
+datestamp: 1449549244

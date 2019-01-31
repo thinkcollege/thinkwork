@@ -1,0 +1,8 @@
+services:
+  mailgun.mail_handler:
+    class: Drupal\mailgun\MailgunHandler
+    arguments: ['@config.factory', '@logger.channel.mailgun']
+  logger.channel.mailgun:
+    class: Drupal\Core\Logger\LoggerChannel
+    factory: logger.factory:get
+    arguments: ['mailgun']

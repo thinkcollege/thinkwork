@@ -1,0 +1,4 @@
+services:
+  plugin.manager.styles_api:
+    class: Drupal\styles_api\Plugin\Style\StylePluginManager
+    arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@theme_handler']

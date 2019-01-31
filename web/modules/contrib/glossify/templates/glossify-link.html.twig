@@ -1,0 +1,15 @@
+{#
+/**
+ * @file
+ * Markup for inline tooltips.
+ *
+ * Available variables:
+ * - word: the text where the tooltips applies to.
+ * - tip: the tooltip text.
+ * - tipurl: the tooltip link.
+ *
+ *
+ * @ingroup themeable
+ */
+#}
+<a href="{{ tipurl }}" {% if tip %}title="{{ tip }}"{% endif %} class="taxonomy-tooltip-link">{{ word }}</a>

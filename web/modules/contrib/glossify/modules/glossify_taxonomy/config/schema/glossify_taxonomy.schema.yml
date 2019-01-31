@@ -1,0 +1,20 @@
+# Schema for the configuration files of the Taxonomy tooltip module.
+glossify_taxonomy.filters:
+  type: filter
+  label: 'Taxonomy tooltip filter'
+  mapping:
+    glossify_taxonomy_case_sensitivity:
+      type: boolean
+      label: 'Case sensitive'
+    glossify_taxonomy_first_only:
+      type: boolean
+      label: 'First match only'
+    glossify_taxonomy_type:
+      type: string
+      label: 'Type'
+    glossify_taxonomy_vocabs:
+      type: string
+      label: 'Taxonomy vocabularies'
+    glossify_taxonomy_urlpattern:
+      type: string
+      label: 'URL pattern'

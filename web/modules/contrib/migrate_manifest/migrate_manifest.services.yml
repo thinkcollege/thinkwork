@@ -1,0 +1,4 @@
+services:
+  migrate_manifest.template_storage:
+    class: Drupal\migrate_manifest\MigrateTemplateStorage
+    arguments: ['@module_handler']

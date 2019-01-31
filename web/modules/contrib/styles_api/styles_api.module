@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * Declares styles.
+ */
+
+use \Drupal\styles_api\Style;
+
+/**
+ * Implements hook_theme().
+ */
+function styles_api_theme() {
+  return Style::stylePluginManager()->getThemeImplementations();
+}

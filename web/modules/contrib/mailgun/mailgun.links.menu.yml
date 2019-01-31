@@ -1,0 +1,11 @@
+mailgun.admin_settings_form:
+  title: 'Mailgun Settings'
+  route_name: mailgun.admin_settings_form
+  description: 'Mailgun Admin Settings'
+  parent: system.admin_config_services
+
+mailgun.test_email_form:
+  title: 'Send test email'
+  route_name: mailgun.test_email_form
+  description: 'Send test email to make sure that it works.'
+  parent: mailgun.admin_settings_form

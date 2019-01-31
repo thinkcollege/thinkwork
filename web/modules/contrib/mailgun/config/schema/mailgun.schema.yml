@@ -1,0 +1,26 @@
+mailgun.settings:
+  type: config_object
+  label: 'Mailgun settings'
+  mapping:
+    api_key:
+      type: string
+    working_domain:
+      type: string
+    debug_mode:
+      type: boolean
+    test_mode:
+      type: boolean
+    tracking_opens:
+      type: string
+    tracking_clicks:
+      type: string
+    tracking_exception:
+      type: string
+    format_filter:
+      type: string
+    use_queue:
+      type: boolean
+    use_theme:
+      type: boolean
+    tagging_mailkey:
+      type: boolean

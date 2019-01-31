@@ -1,0 +1,9 @@
+mailgun.settings:
+  route_name: mailgun.admin_settings_form
+  title: 'Settings'
+  base_route: mailgun.admin_settings_form
+
+mailgun.test_email_form:
+  route_name: mailgun.test_email_form
+  title: 'Send test email'
+  base_route: mailgun.admin_settings_form

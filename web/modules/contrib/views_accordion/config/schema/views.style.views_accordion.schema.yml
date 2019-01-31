@@ -1,0 +1,36 @@
+views.style.views_accordion:
+  type: views_style
+  label: 'Views Accordion'
+  mapping:
+    disableifone:
+      type: integer
+      label: 'Disable if only one result'
+    row-start-open:
+      type: string
+      label: 'Row to display opened on start'
+    collapsible:
+      type: integer
+      label: 'Collapsible'
+    animated:
+      type: string
+      label: 'Animation effect'
+    animation_time:
+      type: string
+      label: 'Animation time'
+    heightStyle:
+      type: string
+      label: 'heightStyle'
+    event:
+      type: string
+      label: 'Event'
+    use_header_icons:
+      type: integer
+      label: 'Use header icons'
+    icon_header:
+      type: 'string'
+      label: 'Closed row header icon'
+    icon_active_header:
+      type: 'string'
+      label: 'Opened row header icon'
+
+

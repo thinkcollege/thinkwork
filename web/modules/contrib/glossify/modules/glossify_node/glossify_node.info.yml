@@ -1,0 +1,14 @@
+name: Glossify node tooltips
+description: Filter to create tooltips based on node data.
+type: module
+package: "Input filters"
+configure: 'admin/config/content/formats'
+# core: 8.x
+dependencies:
+  - glossify:glossify
+
+# Information added by Drupal.org packaging script on 2018-10-16
+version: '8.x-1.0-beta1'
+core: '8.x'
+project: 'glossify'
+datestamp: 1539681491

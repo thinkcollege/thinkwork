@@ -1,0 +1,14 @@
+name: Mailgun
+type: module
+description: Allows site to send emails using Mailgun email service.
+# core: 8.x
+package: Mail
+configure: mailgun.admin_settings_form
+dependencies:
+  - mailsystem
+
+# Information added by Drupal.org packaging script on 2017-12-07
+version: '8.x-1.0-beta1'
+core: '8.x'
+project: 'mailgun'
+datestamp: 1512638288

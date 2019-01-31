@@ -1,0 +1,15 @@
+name: 'Views Accordion Test'
+type: module
+description: 'Provides test config for views_accordion module tests.'
+# core: 8.x
+dependencies:
+  - drupal:node
+  - drupal:views
+  - drupal:text
+  - drupal:views_accordion
+
+# Information added by Drupal.org packaging script on 2018-12-08
+version: '8.x-1.2'
+core: '8.x'
+project: 'views_accordion'
+datestamp: 1544298183

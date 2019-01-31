@@ -1,0 +1,5 @@
+services:
+  migrate_manifest.commands:
+    class: \Drupal\migrate_manifest\Commands\MigrateManifestCommands
+    tags:
+      - { name: drush.command }

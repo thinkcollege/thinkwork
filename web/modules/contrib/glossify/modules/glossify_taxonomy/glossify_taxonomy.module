@@ -1,0 +1,65 @@
+<?php
+
+/**
+ * @file
+ * Taxonomy tooltip module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Render;
+
+
+/**
+ * Implements hook_help().
+ */
+function glossify_taxonomies_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.glossify_taxonomies':
+
+      $output = '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The Taxonomy tooltip module provides filters that scan and parse content and replace terms in the text with links to their pages. It consists of 2 filters:') . '</p>';
+
+      $list_settings = [
+        '#theme' => 'item_list',
+        '#list_type' => 'ul',
+      ];
+
+      // Tooltips with taxonomy section.
+      $items = [];
+      $items[] = [
+        '#title' => t('Taxonomy tooltips'),
+        '#items' => [
+          t('links taxonomy terms appearing in content to their taxonomy term page.'),
+          t('select which taxonomy vocabularies to use as the source for the terms.'),
+          t('indicate whether or not the match is case sensitive.'),
+          t('indicate whether or not every match should be linked or just the first occurrence.'),
+          t('display the term definition as a tooltip while hovering the glossified link.'),
+        ],
+      ];
+
+      foreach ($items as $item) {
+        $list = array_merge($list_settings, $item);
+        $output .= render($list);
+      }
+
+      // Configuration/Usage section.
+      $items = [
+        '#title' => t('Configuration/Usage'),
+        '#items' => [
+          t('Navigate to the <a href="!url">Text formats</a> configuration page. Click "configure" next to the text format you upon which you want to enable the Taxonomy tooltip filter.', ['!url' => '/admin/config/content/formats']),
+          t('Check the box for "Tooltips with taxonomy" under the list of filters in the "Enabled filters" section.'),
+          t('Check the boxes for the desired taxonomy vocabularies and/or content types you wish to use the source of terms to link.'),
+          t('Set any other options as desired.'),
+        ],
+      ];
+
+      $list_settings['#list_type'] = 'ol';
+      $list = array_merge($list_settings, $items);
+      $output .= render($list);
+
+      $output .= '<h3>' . t('Theming') . '</h3>';
+      $output .= '<p>' . t('The module provides a theme function (theme_taxonomy_tooltip_links) to format the links. Override and customize as desired. See <a href="!url">Beginners guide to overriding themable output</a> for more detailed instructions.', ['!url' => 'https://drupal.org/node/457740']) . '</p>';
+
+      return $output;
+  }
+}

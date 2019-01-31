@@ -1,0 +1,10 @@
+{
+  "name": "drupal/mailgun",
+  "type": "drupal-module",
+  "require": {
+    "mailgun/mailgun-php": ">=2.3",
+    "php-http/curl-client": "^1.0",
+    "guzzlehttp/psr7": "^1.0",
+    "html2text/html2text": "~4.0.1"
+  }
+}

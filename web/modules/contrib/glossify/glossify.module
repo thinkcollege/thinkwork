@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ * Glossify module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function glossify_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.glossify':
+      return 'todo';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function glossify_theme() {
+  return [
+    'glossify_tooltip' => [
+      'variables' => ['word' => NULL, 'tip' => NULL],
+    ],
+    'glossify_link' => [
+      'variables' => ['word' => NULL, 'tip' => NULL, 'tipurl' => NULL],
+    ],
+  ];
+}
