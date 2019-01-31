@@ -6,7 +6,7 @@
 #/web/themes/contrib/
 #/web/profiles/contrib/
 #/web/libraries/
-
+.htaccess
 # Ignore sensitive information
 /web/sites/*/settings.php
 /web/sites/*/settings.local.php
