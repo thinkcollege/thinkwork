@@ -59,6 +59,7 @@ return array(
     'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
     'Michelf\\' => array($vendorDir . '/michelf/php-markdown/Michelf'),
     'Masterminds\\' => array($vendorDir . '/masterminds/html5/src'),
+    'League\\Csv\\' => array($vendorDir . '/league/csv/src'),
     'League\\Container\\' => array($vendorDir . '/league/container/src'),
     'League\\CommonMark\\' => array($vendorDir . '/league/commonmark/src'),
     'JakubOnderka\\PhpConsoleHighlighter\\' => array($vendorDir . '/jakub-onderka/php-console-highlighter/src'),
