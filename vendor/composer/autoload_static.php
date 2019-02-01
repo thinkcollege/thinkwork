@@ -126,6 +126,7 @@ class ComposerStaticInit9aca33254fed3dea2fdc6fe6056f5471
         ),
         'L' => 
         array (
+            'League\\Csv\\' => 11,
             'League\\Container\\' => 17,
             'League\\CommonMark\\' => 18,
         ),
@@ -414,6 +415,10 @@ class ComposerStaticInit9aca33254fed3dea2fdc6fe6056f5471
         'Masterminds\\' => 
         array (
             0 => __DIR__ . '/..' . '/masterminds/html5/src',
+        ),
+        'League\\Csv\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/csv/src',
         ),
         'League\\Container\\' => 
         array (

@@ -68,6 +68,7 @@
         "drupal/viewfield": "^3.0@alpha",
         "drupal/views_accordion": "^1.2",
         "drupal/views_bulk_operations": "^2.4",
+        "drupal/views_data_export": "^1.0@beta",
         "drupal/viewsreference": "^1.4",
         "drupal/webform": "^5.1",
         "drush/drush": "^9.0.0",
