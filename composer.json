@@ -30,6 +30,7 @@
         "drupal/console": "^1.0.2",
         "drupal/content_access": "^1.0@alpha",
         "drupal/core": "^8.6.0",
+        "drupal/csv_serialization": "^1.4",
         "drupal/ctools": "~3.0",
         "drupal/devel": "2.0",
         "drupal/easy_breadcrumb": "^1.8",

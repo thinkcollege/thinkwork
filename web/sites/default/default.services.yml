@@ -34,7 +34,7 @@ parameters:
     # the cookie domain should start with a dot.
     #
     # @default none
-    cookie_domain: '.www.thinkwork.org'
+    # cookie_domain: '.example.com'
     #
   twig.config:
     # Twig debugging:
