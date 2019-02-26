@@ -460,6 +460,19 @@
         ]
     },
     {
+        "name": "components/highlightjs",
+        "version": "9.7.0",
+        "version_normalized": "9.7.0.0",
+        "dist": {
+            "type": "zip",
+            "url": "https://github.com/components/highlightjs/archive/9.7.0.zip",
+            "reference": null,
+            "shasum": null
+        },
+        "type": "drupal-library",
+        "installation-source": "dist"
+    },
+    {
         "name": "composer/installers",
         "version": "v1.6.0",
         "version_normalized": "1.6.0.0",
@@ -1247,6 +1260,19 @@
             }
         ],
         "description": "Provides a way to patch Composer packages."
+    },
+    {
+        "name": "d3/d3",
+        "version": "v3.5.17",
+        "version_normalized": "3.5.17.0",
+        "dist": {
+            "type": "zip",
+            "url": "https://github.com/d3/d3/archive/v3.5.17.zip",
+            "reference": null,
+            "shasum": null
+        },
+        "type": "drupal-library",
+        "installation-source": "dist"
     },
     {
         "name": "dflydev/dot-access-configuration",
