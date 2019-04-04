@@ -118,7 +118,6 @@ elements: |
     '#options':
       1: Administrator
       0: Anonymous
-  
 css: ''
 javascript: ''
 settings:

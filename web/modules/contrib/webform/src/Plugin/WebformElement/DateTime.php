@@ -45,7 +45,7 @@ class DateTime extends DateBase {
       'date_max' => '',
       // Date settings.
       'date_date_format' => $date_format,
-      'date_date_datepicker_button' => TRUE,
+      'date_date_datepicker_button' => FALSE,
       'date_date_element' => 'date',
       'date_year_range' => '1900:2050',
       // Time settings.
@@ -68,6 +68,9 @@ class DateTime extends DateBase {
       $element['#default_value'] = NULL;
     }
 
+    // Remove 'for' from the element's label.
+    $element['#label_attributes']['webform-remove-for-attribute'] = TRUE;
+
     /* Date */
 
     $date_element = (isset($element['#date_date_element'])) ? $element['#date_date_element'] : 'date';
@@ -81,9 +84,9 @@ class DateTime extends DateBase {
     // Set date year range.
     $element += ['#date_year_range' => ''];
     if (empty($element['#date_year_range'])) {
-      $date_min = $this->getElementProperty($element,'date_date_min') ?: $this->getElementProperty($element,'date_min');
+      $date_min = $this->getElementProperty($element, 'date_date_min') ?: $this->getElementProperty($element, 'date_min');
       $min_year = ($date_min) ? static::formatDate('Y', strtotime($date_min)) : '1900';
-      $date_max = $this->getElementProperty($element,'date_date_max') ?: $this->getElementProperty($element,'date_max');
+      $date_max = $this->getElementProperty($element, 'date_date_max') ?: $this->getElementProperty($element, 'date_max');
       $max_year = ($date_max) ? static::formatDate('Y', strtotime($date_max)) : '2050';
       $element['#date_year_range'] = "$min_year:$max_year";
     }
@@ -306,8 +309,8 @@ class DateTime extends DateBase {
       '#title' => $this->t('Time step'),
       '#description' => $this->t('Specifies the minute intervals.'),
       '#options' => [
-        '' => $this->t('1 minute'),
-        30 => $this->t('5 minutes'),
+        60 => $this->t('1 minute'),
+        300 => $this->t('5 minutes'),
         600 => $this->t('10 minutes'),
         900 => $this->t('15 minutes'),
         1200 => $this->t('20 minutes'),

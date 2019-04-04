@@ -230,9 +230,10 @@ class Runner
 
 
     /**
-     * Exits if the minimum requirements of PHP_CodSniffer are not met.
+     * Exits if the minimum requirements of PHP_CodeSniffer are not met.
      *
      * @return array
+     * @throws \PHP_CodeSniffer\Exceptions\DeepExitException
      */
     public function checkRequirements()
     {
@@ -242,8 +243,34 @@ class Runner
             throw new DeepExitException($error, 3);
         }
 
-        if (extension_loaded('tokenizer') === false) {
-            $error = 'ERROR: PHP_CodeSniffer requires the tokenizer extension to be enabled.'.PHP_EOL;
+        $requiredExtensions = [
+            'tokenizer',
+            'xmlwriter',
+            'SimpleXML',
+        ];
+        $missingExtensions  = [];
+
+        foreach ($requiredExtensions as $extension) {
+            if (extension_loaded($extension) === false) {
+                $missingExtensions[] = $extension;
+            }
+        }
+
+        if (empty($missingExtensions) === false) {
+            $last      = array_pop($requiredExtensions);
+            $required  = implode(', ', $requiredExtensions);
+            $required .= ' and '.$last;
+
+            if (count($missingExtensions) === 1) {
+                $missing = $missingExtensions[0];
+            } else {
+                $last     = array_pop($missingExtensions);
+                $missing  = implode(', ', $missingExtensions);
+                $missing .= ' and '.$last;
+            }
+
+            $error = 'ERROR: PHP_CodeSniffer requires the %s extensions to be enabled. Please enable %s.'.PHP_EOL;
+            $error = sprintf($error, $required, $missing);
             throw new DeepExitException($error, 3);
         }
 
@@ -254,6 +281,7 @@ class Runner
      * Init the rulesets and other high-level settings.
      *
      * @return void
+     * @throws \PHP_CodeSniffer\Exceptions\DeepExitException
      */
     public function init()
     {
@@ -280,7 +308,7 @@ class Runner
         }
 
         // Saves passing the Config object into other objects that only need
-        // the verbostity flag for deubg output.
+        // the verbosity flag for debug output.
         if (defined('PHP_CODESNIFFER_VERBOSITY') === false) {
             define('PHP_CODESNIFFER_VERBOSITY', $this->config->verbosity);
         }
@@ -312,6 +340,8 @@ class Runner
      * Performs the run.
      *
      * @return int The number of errors and warnings found.
+     * @throws \PHP_CodeSniffer\Exceptions\DeepExitException
+     * @throws \PHP_CodeSniffer\Exceptions\RuntimeException
      */
     private function run()
     {
@@ -558,6 +588,7 @@ class Runner
      * @param int    $line    The line number the error was raised at.
      *
      * @return void
+     * @throws \PHP_CodeSniffer\Exceptions\RuntimeException
      */
     public function handleErrors($code, $message, $file, $line)
     {
@@ -577,6 +608,7 @@ class Runner
      * @param \PHP_CodeSniffer\Files\File $file The file to be processed.
      *
      * @return void
+     * @throws \PHP_CodeSniffer\Exceptions\DeepExitException
      */
     public function processFile($file)
     {
@@ -726,14 +758,14 @@ class Runner
     /**
      * Print progress information for a single processed file.
      *
-     * @param File $file         The file that was processed.
-     * @param int  $numFiles     The total number of files to process.
-     * @param int  $numProcessed The number of files that have been processed,
-     *                           including this one.
+     * @param \PHP_CodeSniffer\Files\File $file         The file that was processed.
+     * @param int                         $numFiles     The total number of files to process.
+     * @param int                         $numProcessed The number of files that have been processed,
+     *                                                  including this one.
      *
      * @return void
      */
-    public function printProgress($file, $numFiles, $numProcessed)
+    public function printProgress(File $file, $numFiles, $numProcessed)
     {
         if (PHP_CODESNIFFER_VERBOSITY > 0
             || $this->config->showProgress === false

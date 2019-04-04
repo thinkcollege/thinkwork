@@ -23,7 +23,6 @@ elements: |
     '#type': webform_test_element
     '#title': 'This is a test element'
     '#default_value': '{default_value}'
-  
 css: ''
 javascript: ''
 settings:

@@ -145,14 +145,11 @@ elements: |
     '#type': details
     '#title': 'Widget elements'
     '#open': true
-    webform_autocomplete:
-      '#type': webform_autocomplete
-      '#title': Autocomplete
-      '#autocomplete_items': country_names
     tel_international:
       '#type': tel
       '#title': 'Telephone (International)'
       '#international': true
+      '#telephone_validation_format': '0'
     webform_rating:
       '#type': webform_rating
       '#title': Rating
@@ -212,7 +209,6 @@ elements: |
         last_name:
           '#type': textfield
           '#title': 'Last name'
-  
 css: ''
 javascript: ''
 settings:

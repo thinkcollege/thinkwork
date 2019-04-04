@@ -273,6 +273,8 @@ class WebformCodeMirror extends Textarea {
         /** @var \Drupal\webform\WebformSubmissionGenerateInterface $webform_submission_generate */
         $webform_submission_generate = \Drupal::service('webform_submission.generate');
         $values = [
+          // Set sid to 0 to prevent validation errors.
+          'sid' => 0,
           'webform_id' => $webform->id(),
           'data' => $webform_submission_generate->getData($webform),
         ];

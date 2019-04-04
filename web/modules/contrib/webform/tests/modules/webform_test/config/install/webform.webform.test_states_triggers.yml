@@ -130,7 +130,6 @@ elements: |
         visible:
           'details[data-webform-key="collapsed_trigger"]':
             collapsed: true
-  
 css: ''
 javascript: ''
 settings:

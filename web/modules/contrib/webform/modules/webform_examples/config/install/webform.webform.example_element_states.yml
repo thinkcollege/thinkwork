@@ -191,7 +191,6 @@ elements: |
         readonly:
           ':input[name="readonly_checkbox"]':
             checked: true
-  
 css: ''
 javascript: ''
 settings:

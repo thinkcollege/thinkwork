@@ -34,8 +34,14 @@ trait WebformEntityTrait {
    *
    * @see \Drupal\system\Controller\EntityAutocompleteController
    */
-  public static function setOptions(array &$element, $settings = []) {
+  public static function setOptions(array &$element, array $settings = []) {
     if (!empty($element['#options'])) {
+      return;
+    }
+
+    // Make sure #target_type is not empty.
+    if (empty($element['#target_type'])) {
+      $element['#options'] = [];
       return;
     }
 

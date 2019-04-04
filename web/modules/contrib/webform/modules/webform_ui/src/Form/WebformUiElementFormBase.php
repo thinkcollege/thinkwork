@@ -612,9 +612,7 @@ abstract class WebformUiElementFormBase extends FormBase implements WebformUiEle
         '#type' => 'submit',
         '#value' => $this->t('Set default value'),
         '#submit' => ['::setDefaultValue'],
-        // Disable client-site validation to allow tokens to be posted back to
-        // server.
-        '#attributes' => ['class' => ['js-webform-novalidate']],
+        '#attributes' => ['formnovalidate' => 'formnovalidate'],
         '#_validate_form' => TRUE,
       ];
 

@@ -57,6 +57,7 @@ class WebformSubmissionStorageTest extends KernelTestBase {
    * @dataProvider providerPurge
    */
   public function testPurge($webform_purging, $webform_submissions_definition, $purged) {
+    $request_time = \Drupal::time()->getRequestTime();
     $days_to_seconds = 60 * 60 * 24;
     $purge_days = 10;
     $purge_amount = 2;
@@ -80,7 +81,7 @@ class WebformSubmissionStorageTest extends KernelTestBase {
           'webform_id' => $v->id(),
         ]);
         $webform_submission->in_draft = $definition[0];
-        $webform_submission->setCreatedTime($definition[1] ? (REQUEST_TIME - ($purge_days + 1) * $days_to_seconds) : REQUEST_TIME);
+        $webform_submission->setCreatedTime($definition[1] ? ($request_time - ($purge_days + 1) * $days_to_seconds) : $request_time);
         $webform_submission->save();
       }
     }

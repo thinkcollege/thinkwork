@@ -2,15 +2,17 @@
 
 namespace Drupal\mailgun\Form;
 
-use Drupal\Core\File\FileSystem;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
-use Drupal\Core\Mail\MailManager;
+use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\Url;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\mailgun\MailgunHandler;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\mailgun\MailgunHandlerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 
 /**
  * Class MailgunTestEmailForm.
@@ -20,9 +22,9 @@ use Drupal\mailgun\MailgunHandler;
 class MailgunTestEmailForm extends FormBase {
 
   /**
-   * Drupal\mailgun\MailgunHandler definition.
+   * Drupal\mailgun\MailgunHandlerInterface definition.
    *
-   * @var \Drupal\mailgun\MailgunHandler
+   * @var \Drupal\mailgun\MailgunHandlerInterface
    */
   protected $mailgunHandler;
 
@@ -36,25 +38,33 @@ class MailgunTestEmailForm extends FormBase {
   /**
    * Mail Manager.
    *
-   * @var \Drupal\Core\Mail\MailManager
+   * @var \Drupal\Core\Mail\MailManagerInterface
    */
   protected $mailManager;
 
   /**
    * File system.
    *
-   * @var \Drupal\Core\File\FileSystem
+   * @var \Drupal\Core\File\FileSystemInterface
    */
   protected $fileSystem;
 
   /**
+   * The module handler service.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * MailgunTestEmailForm constructor.
    */
-  public function __construct(MailgunHandler $mailgunHandler, AccountProxyInterface $user, MailManager $mailManager, FileSystem $fileSystem) {
+  public function __construct(MailgunHandlerInterface $mailgunHandler, AccountProxyInterface $user, MailManagerInterface $mailManager, FileSystemInterface $fileSystem, ModuleHandlerInterface $moduleHandler) {
     $this->mailgunHandler = $mailgunHandler;
     $this->user = $user;
     $this->mailManager = $mailManager;
     $this->fileSystem = $fileSystem;
+    $this->moduleHandler = $moduleHandler;
   }
 
   /**
@@ -65,7 +75,8 @@ class MailgunTestEmailForm extends FormBase {
       $container->get('mailgun.mail_handler'),
       $container->get('current_user'),
       $container->get('plugin.manager.mail'),
-      $container->get('file_system')
+      $container->get('file_system'),
+      $container->get('module_handler')
     );
   }
 
@@ -82,8 +93,15 @@ class MailgunTestEmailForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     MailgunHandler::status(TRUE);
 
-    // TODO: Show current mail system to make sure that Mailgun is enabled.
-    // But we can test all mail systems with this form.
+    // Display a warning if Mailgun is not a default mailer.
+    $sender = \Drupal::config('mailsystem.settings')->get('defaults.sender');
+    if ($sender != 'mailgun_mail') {
+      $this->messenger()->addMessage(t('Mailgun is not a default Mailsystem plugin. You may update settings at @link.', [
+        '@link' => Link::createFromRoute($this->t('here'), 'mailsystem.settings')->toString()
+      ]), 'warning');
+    }
+
+    // We can test all mail systems with this form.
     $form['to'] = [
       '#type' => 'textfield',
       '#title' => $this->t('To'),
@@ -146,13 +164,6 @@ If this e-mail is displayed correctly and delivered sound and safe, congrats! Yo
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    parent::validateForm($form, $form_state);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $to = $form_state->getValue('to');
 
@@ -162,26 +173,32 @@ If this e-mail is displayed correctly and delivered sound and safe, congrats! Yo
     ];
 
     if (!empty($form_state->getValue('include_attachment'))) {
-      $params['params']['attachments'][] = $this->fileSystem->realpath('core/misc/druplicon.png');
+      $params['attachments'][] = $this->fileSystem->realpath('core/misc/druplicon.png');
     }
 
     // Add CC / BCC values if they are set.
     if (!empty($cc = $form_state->getValue('cc'))) {
-      $params['params']['cc'] = $cc;
+      $params['cc'] = $cc;
     }
     if (!empty($bcc = $form_state->getValue('bcc'))) {
-      $params['params']['bcc'] = $bcc;
+      $params['bcc'] = $bcc;
     }
 
     $result = $this->mailManager->mail('mailgun', 'test_form_email', $to, $this->user->getPreferredLangcode(), $params, $form_state->getValue('reply_to'), TRUE);
 
     if ($result['result'] === TRUE) {
-      drupal_set_message(t('Successfully sent message to %to.', ['%to' => $to]));
+      $this->messenger()->addMessage($this->t('Successfully sent message to %to.', ['%to' => $to]));
     }
     else {
-      drupal_set_message(t('Something went wrong. Please check @logs for details.', [
-        '@logs' => Link::createFromRoute($this->t('logs'), 'dblog.overview')->toString(),
-      ]));
+      if ($this->moduleHandler->moduleExists('dblog')) {
+        $this->messenger()->addMessage($this->t('Something went wrong. Please check @logs for details.', [
+          '@logs' => Link::createFromRoute($this->t('logs'), 'dblog.overview')
+            ->toString(),
+        ]), 'warning');
+      }
+      else {
+        $this->messenger()->addMessage($this->t('Something went wrong. Please check logs for details.'), 'warning');
+      }
     }
   }
 

@@ -71,7 +71,6 @@ elements: |
       '#access_update_roles': {  }
       '#access_view_roles':
         - authenticated
-  
 css: ''
 javascript: ''
 settings:

@@ -22,7 +22,6 @@ elements: |
     '#type': webform_example_element
     '#title': 'Webform Example Element Multiple'
     '#multiple': true
-  
 css: ''
 javascript: ''
 settings:

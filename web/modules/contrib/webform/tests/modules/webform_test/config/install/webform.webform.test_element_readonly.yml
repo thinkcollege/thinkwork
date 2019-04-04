@@ -23,7 +23,6 @@ elements: |
     '#type': textarea
     '#title': textarea
     '#readonly': true
-  
 css: ''
 javascript: ''
 settings:

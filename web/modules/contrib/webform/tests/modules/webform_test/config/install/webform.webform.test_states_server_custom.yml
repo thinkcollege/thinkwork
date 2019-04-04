@@ -89,7 +89,6 @@ elements: |
       visible-slide:
         ':input[name="trigger_visible_slide"]':
           checked: true
-  
 css: ''
 javascript: ''
 settings:

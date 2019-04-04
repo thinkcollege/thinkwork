@@ -18,7 +18,6 @@ elements: |
   test:
     '#type': textfield
     '#title': 'Text field'
-  
 css: |
   .webform-submission-form {
     background-color: #cccccc;

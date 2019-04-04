@@ -64,7 +64,6 @@ elements: |
         kitten_4:
           text: 'Cute Kitten 4'
           src: 'http://placekitten.com/270/200'
-  
 css: ''
 javascript: ''
 settings:

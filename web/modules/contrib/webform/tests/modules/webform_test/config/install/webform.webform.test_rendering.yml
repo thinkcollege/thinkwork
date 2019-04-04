@@ -49,7 +49,6 @@ elements: |
     '#default_value':
       value: '<p><em>{default_value}</em></p>'
       format: basic_html
-  
 css: ''
 javascript: ''
 settings:

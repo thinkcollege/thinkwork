@@ -2,15 +2,12 @@
 
 namespace Drush\Drupal\Commands\core;
 
-use Consolidation\AnnotatedCommand\CommandData;
-use Drupal\Component\Gettext\PoStreamWriter;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
-use Drupal\locale\PoDatabaseReader;
 use Drush\Commands\DrushCommands;
 
 class LocaleCommands extends DrushCommands
@@ -177,7 +174,7 @@ class LocaleCommands extends DrushCommands
      *   Import the Dutch drupal core translation.
      * @usage drush locale-import nl custom-translations.po --type=custom --override=all
      *   Import customized Dutch translations and override any existing translation.
-     * @aliases locale-export
+     * @aliases locale-import
      * @throws \Exception
      */
     public function import($langcode, $file, $options = ['type' => self::OPT, 'override' => self::OPT])

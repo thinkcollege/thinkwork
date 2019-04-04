@@ -318,7 +318,7 @@
       var $block = this.$('[data-block-id="' + block_uuid + '"]');
       $block.addClass('ipe-highlight');
 
-      if (scroll) {
+      if (scroll && $block.length > 0) {
         $('body').animate({scrollTop: $block.offset().top}, 600);
       }
     },

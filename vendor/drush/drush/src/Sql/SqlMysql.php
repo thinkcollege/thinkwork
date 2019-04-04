@@ -2,8 +2,6 @@
 
 namespace Drush\Sql;
 
-use Drush\Drush;
-use Drush\Preflight\PreflightArgs;
 use PDO;
 
 class SqlMysql extends SqlBase
@@ -115,13 +113,17 @@ EOT;
     public function dbExists()
     {
         // Suppress output. We only care about return value.
-        return $this->alwaysQuery("SELECT 1;", null, drush_bit_bucket());
+        return $this->alwaysQuery("SELECT 1;");
     }
 
     public function listTables()
     {
+        $tables = [];
         $this->alwaysQuery('SHOW TABLES;');
-        return drush_shell_exec_output();
+        if ($out = trim($this->getProcess()->getOutput())) {
+            $tables = explode(PHP_EOL, $out);
+        }
+        return $tables;
     }
 
     public function dumpCmd($table_selection)

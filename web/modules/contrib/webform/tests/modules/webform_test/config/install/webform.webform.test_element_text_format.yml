@@ -21,7 +21,6 @@ elements: |
     '#format': plain_text
     '#default_value': 'The quick brown fox jumped over the lazy dog.'
     '#hide_help': true
-  
 css: ''
 javascript: ''
 settings:

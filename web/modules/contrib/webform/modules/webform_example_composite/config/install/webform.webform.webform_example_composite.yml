@@ -23,7 +23,6 @@ elements: |
     '#title': 'Webform Example Composite Multiple'
     '#multiple': true
     '#multiple__header': true
-  
 css: ''
 javascript: ''
 settings:

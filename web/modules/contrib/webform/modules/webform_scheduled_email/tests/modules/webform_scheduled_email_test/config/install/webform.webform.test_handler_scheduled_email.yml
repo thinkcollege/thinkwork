@@ -39,7 +39,6 @@ elements: |
       visible:
         ':input[name="send"]':
           value: other
-  
 css: ''
 javascript: ''
 settings:

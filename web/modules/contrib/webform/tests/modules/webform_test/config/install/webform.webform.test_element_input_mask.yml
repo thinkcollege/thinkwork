@@ -75,7 +75,6 @@ elements: |
     '#type': textfield
     '#title': custom
     '#input_mask': '''alias'': ''numeric'', ''groupSeparator'': '','', ''autoGroup'': true, ''digits'': 2, ''digitsOptional'': false, ''prefix'': ''$ '', ''placeholder'': ''0'''
-  
 css: ''
 javascript: ''
 settings:

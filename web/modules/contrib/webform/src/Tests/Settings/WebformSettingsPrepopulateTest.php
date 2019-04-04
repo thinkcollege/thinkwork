@@ -32,13 +32,13 @@ class WebformSettingsPrepopulateTest extends WebformTestBase {
     $webform_prepopulate = Webform::load('test_form_prepopulate');
 
     // Check prepopulation of an element.
-    $this->drupalGet('webform/test_form_prepopulate', ['query' => ['name' => 'John', 'colors' => ['red', 'white']]]);
+    $this->drupalGet('/webform/test_form_prepopulate', ['query' => ['name' => 'John', 'colors' => ['red', 'white']]]);
     $this->assertFieldByName('name', 'John');
     $this->assertFieldChecked('edit-colors-red');
     $this->assertFieldChecked('edit-colors-white');
     $this->assertNoFieldChecked('edit-colors-blue');
 
-    $this->drupalGet('webform/test_form_prepopulate', ['query' => ['name' => 'John', 'colors' => 'red']]);
+    $this->drupalGet('/webform/test_form_prepopulate', ['query' => ['name' => 'John', 'colors' => 'red']]);
     $this->assertFieldByName('name', 'John');
     $this->assertFieldChecked('edit-colors-red');
     $this->assertNoFieldChecked('edit-colors-white');
@@ -47,7 +47,7 @@ class WebformSettingsPrepopulateTest extends WebformTestBase {
     // Check disabling prepopulation of an element.
     $webform_prepopulate->setSetting('form_prepopulate', FALSE);
     $webform_prepopulate->save();
-    $this->drupalGet('webform/test_form_prepopulate', ['query' => ['name' => 'John']]);
+    $this->drupalGet('/webform/test_form_prepopulate', ['query' => ['name' => 'John']]);
     $this->assertFieldByName('name', '');
 
     /**************************************************************************/
@@ -79,17 +79,17 @@ class WebformSettingsPrepopulateTest extends WebformTestBase {
 
     // Check required prepopulated source entity displays error when no source
     // entity is defined.
-    $this->drupalGet('webform/test_form_prepopulate');
+    $this->drupalGet('/webform/test_form_prepopulate');
     $this->assertRaw('This webform is not available. Please contact the site administrator.');
 
     // Check required prepopulated source entity displays error when invalid
     // source entity is defined.
-    $this->drupalGet('webform/test_form_prepopulate', ['query' => ['source_entity_type' => 'webform', 'source_entity_id' => 'DOES_NOT_EXIST']]);
+    $this->drupalGet('/webform/test_form_prepopulate', ['query' => ['source_entity_type' => 'webform', 'source_entity_id' => 'DOES_NOT_EXIST']]);
     $this->assertRaw('This webform is not available. Please contact the site administrator.');
 
     // Check required prepopulated source entity loads when source entity is
     // valid.
-    $this->drupalGet('webform/test_form_prepopulate', ['query' => ['source_entity_type' => 'webform', 'source_entity_id' => 'contact']]);
+    $this->drupalGet('/webform/test_form_prepopulate', ['query' => ['source_entity_type' => 'webform', 'source_entity_id' => 'contact']]);
     $this->assertNoRaw('This webform is not available. Please contact the site administrator.');
 
     // Check that required prepopulated source entity can be updated (edit).
@@ -104,7 +104,7 @@ class WebformSettingsPrepopulateTest extends WebformTestBase {
     $webform_prepopulate->save();
 
     // Check invalid source entity type displays error.
-    $this->drupalGet('webform/test_form_prepopulate', ['query' => ['source_entity_type' => 'webform', 'source_entity_id' => 'contact']]);
+    $this->drupalGet('/webform/test_form_prepopulate', ['query' => ['source_entity_type' => 'webform', 'source_entity_id' => 'contact']]);
     $this->assertRaw('This webform is not available. Please contact the site administrator.');
 
     // Set prepopulated source entity type to webform.
@@ -112,7 +112,7 @@ class WebformSettingsPrepopulateTest extends WebformTestBase {
     $webform_prepopulate->save();
 
     // Check invalid source entity type displays error.
-    $this->drupalGet('webform/test_form_prepopulate', ['query' => ['source_entity_type' => 'webform', 'source_entity_id' => 'contact']]);
+    $this->drupalGet('/webform/test_form_prepopulate', ['query' => ['source_entity_type' => 'webform', 'source_entity_id' => 'contact']]);
     $this->assertNoRaw('This webform is not available. Please contact the site administrator.');
   }
 

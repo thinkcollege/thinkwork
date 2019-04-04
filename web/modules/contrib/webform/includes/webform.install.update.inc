@@ -5,7 +5,8 @@
  * Archived Webform update hooks.
  */
 
-use Drupal\Component\Uuid\Php as Uuud;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\Component\Uuid\Php as Uuid;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Database\Database;
@@ -2596,7 +2597,7 @@ function webform_update_8141() {
   $message = NULL;
   if (\Drupal::moduleHandler()->moduleExists('views') && !View::load('webform_submissions')) {
     $config_path = drupal_get_path('module', 'webform') . '/config/optional/views.view.webform_submissions.yml';
-    $data = ['uuid' => (new Uuud())->generate()] + Yaml::decode(file_get_contents($config_path));
+    $data = ['uuid' => (new Uuid())->generate()] + Yaml::decode(file_get_contents($config_path));
     \Drupal::configFactory()->getEditable('views.view.webform_submissions')->setData($data)->save(TRUE);
     $message = 'The new webform submissions view has been created.';
   }
@@ -2847,7 +2848,7 @@ function webform_update_8154() {
 }
 
 /******************************************************************************/
-// Webform-8.x-5.0-rc28 - TBD.
+// Webform-8.x-5.0-rc28 - December 7, 2018
 /******************************************************************************/
 
 /**
@@ -2896,6 +2897,14 @@ function webform_update_8155() {
   }
 }
 
+/******************************************************************************/
+// Webform-8.x-5.0-rc29 - December 7, 2018. (No update required).
+/******************************************************************************/
+
+/******************************************************************************/
+// Webform-8.x-5.0-rc30 - December 16, 2018.
+/******************************************************************************/
+
 /**
  * Issue #3015180: Add 'webform_submission_log' submodule.
  */
@@ -2939,9 +2948,133 @@ function webform_update_8156() {
   }
 }
 
+/******************************************************************************/
+// Webform-8.x-5.0-rc31 - December 31, 2018. (No update required).
+/******************************************************************************/
+
+/******************************************************************************/
+// Webform-8.x-5.0 - December 24, 2018. (No update required).
+/******************************************************************************/
+
+/******************************************************************************/
+// Webform-8.x-5.1 - January 2, 2019.
+/******************************************************************************/
+
 /**
  * Issue #3022398: Possible modification to update hook and/or documentation.
  */
 function webform_update_8157() {
   _webform_update_webform_submission_storage_schema();
+}
+
+/******************************************************************************/
+// Webform-8.x-5.2 - TDB.
+/******************************************************************************/
+
+/**
+ * Issue #3023863: Typo in State/Province codes options.
+ */
+function webform_update_8158() {
+  /** \Drupal\webform\WebformOptionsInterface */
+  $webform_options = WebformOptions::load('state_province_codes');
+  if (!$webform_options) {
+    return;
+  }
+  $options = $webform_options->getOptions();
+  if (isset($options['AE']) && $options['AE'] === 'Armed Forces (Canada, Europe, Africa, or Middle East') {
+    $options['AE'] = 'Armed Forces (Canada, Europe, Africa, or Middle East)';
+    $webform_options->setOptions($options)->save();
+  }
+}
+
+/**
+ * Issue #3023223: Remove unused fields settings.
+ */
+function webform_update_8159() {
+  /** @var \Drupal\field\FieldStorageConfigInterface[] $field_storage_configs */
+  $field_storage_configs = FieldStorageConfig::loadMultiple();
+  foreach ($field_storage_configs as $field_storage_config) {
+    if ($field_storage_config->getType() !== 'webform') {
+      continue;
+    }
+
+    list($entity_type, $field_name) = explode('.', $field_storage_config->getConfigTarget());
+    $bundles = $field_storage_config->getBundles();
+    foreach ($bundles as $bundle) {
+      $config = \Drupal::configFactory()
+        ->getEditable("field.field.$entity_type.$bundle.$field_name");
+      $data = $config->getRawData();
+      if (isset($data['settings']['default_data'])) {
+        unset(
+          $data['settings']['default_data'],
+          $data['settings']['status'],
+          $data['settings']['open'],
+          $data['settings']['close']
+        );
+        $config->setData($data)->save();
+      }
+    }
+  }
+}
+
+/**
+ * Issue #3019987: Fatal error: Allowed memory size after updating to rc29.
+ */
+function webform_update_8160() {
+  $config = \Drupal::configFactory()
+    ->getEditable('webform.webform.example_computed_elements');
+  if (!$config) {
+    return;
+  }
+
+  // Remove nested calculation elements.
+  $elements = WebformYaml::decode($config->get('elements'));
+  if (isset($elements['calculation']) && isset($elements['calculation']['calculation'])) {
+    $path = drupal_get_path('module', 'webform') . '/modules/webform_examples/config/install/webform.webform.example_computed_elements.yml';
+    $data = Yaml::decode(file_get_contents($path));
+    $config->set('elements', $data['elements'])->save();
+  }
+}
+
+/**
+ * Issue #3026068: Ensure the webform submission has the langcode entity key set.
+ */
+function webform_update_8161() {
+  // Installations that were updated from 8.x-5.0-beta10 or older might have a
+  // unclean langcode definition, update it. First make sure that the langcode
+  // entity key is set, if not, set it and update the field definition.
+  $entity_definition_update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = $entity_definition_update_manager->getEntityType('webform_submission');
+  if (!$entity_type->getKey('langcode')) {
+    $keys = $entity_type->getKeys();
+    $keys['langcode'] = 'langcode';
+    $entity_type->set('entity_keys', $keys);
+    $entity_definition_update_manager->updateEntityType($entity_type);
+
+    $langcode_field = BaseFieldDefinition::create('language')
+      ->setName('langcode')
+      ->setTargetEntityTypeId('webform_submission')
+      ->setLabel(t('Language'))
+      ->setDescription(t('The submission language code.'));
+    \Drupal::entityDefinitionUpdateManager()->updateFieldStorageDefinition($langcode_field);
+  }
+}
+
+/**
+ * Issue #3035054: Captcha challenge still visible after 'close time'.
+ */
+function webform_update_8162() {
+  \Drupal::configFactory()
+    ->getEditable('webform.settings')
+    ->set('third_party_settings.captcha', [
+      'replace_administration_mode' => TRUE,
+    ])
+    ->save();
+}
+
+/**
+ * Issue #2902977: Provide tool for importing submissions from a CSV document.
+ */
+function webform_update_8163() {
+  _webform_update_admin_settings();
 }

@@ -97,7 +97,6 @@ elements: |
         enabled:
           ':input[name="checkboxes_trigger"]':
             filled: true
-  
 css: ''
 javascript: ''
 settings:

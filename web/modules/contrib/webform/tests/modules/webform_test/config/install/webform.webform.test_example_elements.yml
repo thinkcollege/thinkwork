@@ -518,7 +518,6 @@ elements: |
     table:
       '#type': table
       '#title': Table
-  
 css: ''
 javascript: ''
 settings:

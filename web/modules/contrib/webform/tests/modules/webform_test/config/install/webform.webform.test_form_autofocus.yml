@@ -18,7 +18,6 @@ elements: |
   test:
     '#type': textfield
     '#title': 'First input'
-  
 css: ''
 javascript: ''
 settings:

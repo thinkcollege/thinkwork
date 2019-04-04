@@ -34,7 +34,7 @@ abstract class TextBase extends WebformElementBase {
    * {@inheritdoc}
    */
   public function getTranslatableProperties() {
-    return array_merge(parent::getTranslatableProperties(), ['counter_message', 'pattern_error']);
+    return array_merge(parent::getTranslatableProperties(), ['counter_minimum_message', 'counter_maximum_message', 'pattern_error']);
   }
 
   /**
@@ -115,11 +115,11 @@ abstract class TextBase extends WebformElementBase {
       $element['#attributes']['pattern'] = $element['#pattern'];
       $element['#element_validate'][] = [get_called_class(), 'validatePattern'];
 
-      // Set required error message using #pattern_error.
+      // Set pattern error message using #pattern_error.
       // @see Drupal.behaviors.webformRequiredError
       // @see webform.form.js
-      if (!empty($element['#pattern_error']) && empty($element['#required_error'])) {
-        $element['#attributes']['data-webform-required-error'] = $element['#pattern_error'];
+      if (!empty($element['#pattern_error'])) {
+        $element['#attributes']['data-webform-pattern-error'] = $element['#pattern_error'];
       }
     }
   }
@@ -190,8 +190,7 @@ abstract class TextBase extends WebformElementBase {
    * Form API callback. Validate (word/character) counter.
    */
   public static function validateCounter(array &$element, FormStateInterface $form_state) {
-    $name = $element['#name'];
-    $value = $form_state->getValue($name);
+    $value = $element['#value'];
     if ($value === '') {
       return;
     }
@@ -300,7 +299,7 @@ abstract class TextBase extends WebformElementBase {
       "'alias': 'currency'" => [
         'title' => $this->t('Currency'),
         'example' => '$ 9.99',
-        'pattern' => '^\$ \d+.\d\d$',
+        'pattern' => '^\$ [0-9]{1,3}(,[0-9]{3})*.\d\d$',
       ],
       "'alias': 'datetime'" => [
         'title' => $this->t('Date'),

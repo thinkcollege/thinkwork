@@ -90,6 +90,9 @@ class WebformMultiple extends FormElement {
     // Set tree.
     $element['#tree'] = TRUE;
 
+    // Remove 'for' from the element's label.
+    $element['#label_attributes']['webform-remove-for-attribute'] = TRUE;
+
     // Set min items based on when the element is required.
     if (!isset($element['#min_items']) || $element['#min_items'] === '') {
       $element['#min_items'] = (empty($element['#required'])) ? 0 : 1;
@@ -568,11 +571,14 @@ class WebformMultiple extends FormElement {
           if (!isset($element['#access']) || $element['#access'] !== FALSE) {
             $hidden_elements[$child_key]['#type'] = 'hidden';
             // Unset #access, #element_validate, and #pre_render.
-            // @see \Drupal\webform\Plugin\WebformElementBase::prepare().
+            // @see \Drupal\webform\Plugin\WebformElementBase::prepare()
+            // Unset #options to prevent An illegal choice has been detected.
+            // @see \Drupal\Core\Form\FormValidator::performRequiredValidation
             unset(
               $hidden_elements[$child_key]['#access'],
               $hidden_elements[$child_key]['#element_validate'],
-              $hidden_elements[$child_key]['#pre_render']
+              $hidden_elements[$child_key]['#pre_render'],
+              $hidden_elements[$child_key]['#options']
             );
           }
           static::setElementRowParentsRecursive($hidden_elements[$child_key], $child_key, $hidden_parents);
@@ -1018,7 +1024,8 @@ class WebformMultiple extends FormElement {
       }
 
       if (isset($unique_keys[$key_value])) {
-        $key_title = isset($element['#element'][$key_name]['#title']) ? $element['#element'][$key_name]['#title'] : $key_name;
+        $elements = WebformElementHelper::getFlattened($element['#element']);
+        $key_title = isset($elements[$key_name]['#title']) ? $elements[$key_name]['#title'] : $key_name;
         $t_args = ['@key' => $key_value, '%title' => $key_title];
         return t("The %title '@key' is already in use. It must be unique.", $t_args);
       }

@@ -25,15 +25,35 @@ class WebformElementDateListTest extends WebformElementTestBase {
   public function testDateListElement() {
     $webform = Webform::load('test_element_datelist');
 
+    // Check posted submission values.
+    $this->postSubmission($webform);
+    $this->assertRaw("datelist_default: '2009-08-18T16:00:00+1000'
+datelist_no_abbreviate: '2009-08-18T16:00:00+1000'
+datelist_text_parts: '2009-08-18T16:00:00+1000'
+datelist_datetime: '2009-08-18T16:00:00+1000'
+datelist_date: '2009-08-18T00:00:00+1000'
+datelist_min_max: '2009-08-18T00:00:00+1000'
+datelist_min_max_time: '2009-01-01T09:00:00+1100'
+datelist_date_year_range_reverse: ''
+datelist_required_error: '2009-08-18T16:00:00+1000'
+datelist_multiple:
+  - '2009-08-18T16:00:00+1000'
+datelist_custom_composite:
+  - datelist: '2009-08-18T16:00:00+1000'");
+
+    $this->drupalGet('/webform/test_element_datelist');
+
+    // Check datelist label has not for attributes.
+    $this->assertRaw('<label>datelist_default</label>');
+
     // Check '#format' values.
-    $this->drupalGet('webform/test_element_datelist');
     $this->assertFieldByName('datelist_default[month]', '8');
 
     // Check '#date_abbreviate': false.
     $this->assertRaw('<select data-drupal-selector="edit-datelist-no-abbreviate-month" title="Month" id="edit-datelist-no-abbreviate-month" name="datelist_no_abbreviate[month]" class="form-select"><option value="">Month</option><option value="1">January</option>');
 
     // Check date year range reverse.
-    $this->drupalGet('webform/test_element_datelist');
+    $this->drupalGet('/webform/test_element_datelist');
     $this->assertRaw('<select data-drupal-selector="edit-datelist-date-year-range-reverse-year" title="Year" id="edit-datelist-date-year-range-reverse-year" name="datelist_date_year_range_reverse[year]" class="form-select"><option value="" selected="selected">Year</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option></select>');
 
     // Check 'datelist' and 'datetime' #default_value.

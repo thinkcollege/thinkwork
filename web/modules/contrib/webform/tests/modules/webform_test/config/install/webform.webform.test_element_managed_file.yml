@@ -59,7 +59,6 @@ elements: |
     '#file_extensions': txt
     '#file_placeholder': 'This is the multiple file upload placeholder'
     '#multiple': true
-
 css: ''
 javascript: ''
 settings:

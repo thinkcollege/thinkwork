@@ -439,7 +439,6 @@ elements: |
           q2: 1
           q3: 1
         '#format': table
-  
 css: ''
 javascript: ''
 settings:

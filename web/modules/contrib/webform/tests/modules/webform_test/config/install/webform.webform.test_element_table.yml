@@ -183,7 +183,6 @@ elements: |
       '#default_value':
         five: five
         three: three
-  
 css: ''
 javascript: ''
 settings:

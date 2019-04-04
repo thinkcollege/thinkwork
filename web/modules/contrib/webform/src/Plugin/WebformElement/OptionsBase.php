@@ -236,6 +236,16 @@ abstract class OptionsBase extends WebformElementBase {
   /**
    * {@inheritdoc}
    */
+  protected function prepareElementValidateCallbacks(array &$element, WebformSubmissionInterface $webform_submission = NULL) {
+    if ($this->hasMultipleValues($element)) {
+      $element['#element_validate'][] = [get_class($this), 'validateMultipleOptions'];
+    }
+    parent::prepareElementValidateCallbacks($element, $webform_submission);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function hasMultipleWrapper() {
     return FALSE;
   }
@@ -498,14 +508,13 @@ abstract class OptionsBase extends WebformElementBase {
    * Form API callback. Remove unchecked options from value array.
    */
   public static function validateMultipleOptions(array &$element, FormStateInterface $form_state, array &$completed_form) {
-    $name = $element['#name'];
-    $values = $form_state->getValue($name) ?: [];
+    $values = $element['#value'] ?: [];
     // Filter unchecked/unselected options whose value is 0.
     $values = array_filter($values, function ($value) {
       return $value !== 0;
     });
     $values = array_values($values);
-    $form_state->setValue($name, $values);
+    $form_state->setValueForElement($element, $values);
   }
 
   /**
@@ -566,7 +575,7 @@ abstract class OptionsBase extends WebformElementBase {
     $plugin_id = $this->getPluginId();
     $name = $element['#webform_key'];
     $options = OptGroup::flattenOptions($element['#options']);
-    if ($inputs = $this->getElementSelectorInputsOptions($element)) {
+    if ($this->getElementSelectorInputsOptions($element)) {
       $other_type = $this->getOptionsOtherType();
       $multiple = ($this->hasMultipleValues($element) && $other_type === 'select') ? '[]' : '';
       return [":input[name=\"{$name}[$other_type]$multiple\"]" => $options];

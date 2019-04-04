@@ -45,7 +45,6 @@ elements: |
             checked: true
           ':input[name="trigger_2"]':
             checked: true
-  
 css: ''
 javascript: ''
 settings:

@@ -3,7 +3,7 @@
 namespace Drupal\panels\Plugin\PanelsPattern;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
-use Drupal\user\SharedTempStoreFactory;
+use Drupal\Core\TempStore\SharedTempStoreFactory;
 
 /**
  * Provides an interface for defining PanelsPatterns.
@@ -22,7 +22,7 @@ interface PanelsPatternInterface extends PluginInspectionInterface {
   /**
    * Gets the array of default contexts for this panels pattern.
    *
-   * @param \Drupal\user\SharedTempStoreFactory $tempstore
+   * @param \Drupal\Core\TempStore\SharedTempStoreFactory $tempstore
    *   The tempstore factory object.
    * @param string $tempstore_id
    *   The tempstore identifier.

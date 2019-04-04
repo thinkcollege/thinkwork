@@ -5,7 +5,7 @@ namespace Drupal\panels\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Layout\LayoutPluginManagerInterface;
-use Drupal\user\SharedTempStoreFactory;
+use Drupal\Core\TempStore\SharedTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -23,7 +23,7 @@ class LayoutPluginSelector extends FormBase {
   /**
    * The tempstore factory.
    *
-   * @var \Drupal\user\SharedTempStoreFactory
+   * @var \Drupal\Core\TempStore\SharedTempStoreFactory
    */
   protected $tempstore;
 
@@ -33,7 +33,7 @@ class LayoutPluginSelector extends FormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('plugin.manager.core.layout'),
-      $container->get('user.shared_tempstore')
+      $container->get('tempstore.shared')
     );
   }
 
@@ -42,7 +42,7 @@ class LayoutPluginSelector extends FormBase {
    *
    * @param \Drupal\Core\Layout\LayoutPluginManagerInterface $manager
    *   The layout plugin manager.
-   * @param \Drupal\user\SharedTempStoreFactory $tempstore
+   * @param \Drupal\Core\TempStore\SharedTempStoreFactory $tempstore
    *   The tempstore factory.
    */
   public function __construct(LayoutPluginManagerInterface $manager, SharedTempStoreFactory $tempstore) {

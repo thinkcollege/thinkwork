@@ -80,7 +80,6 @@ class WebformSubmissionLogController extends ControllerBase {
    *   The webform request handler.
    * @param \Drupal\webform_submission_log\WebformSubmissionLogManagerInterface $log_manager
    *   The webform submission log manager.
-   *
    */
   public function __construct(Connection $database, DateFormatterInterface $date_formatter, WebformRequestInterface $request_handler, WebformSubmissionLogManagerInterface $log_manager) {
     $this->database = $database;

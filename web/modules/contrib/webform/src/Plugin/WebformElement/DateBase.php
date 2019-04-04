@@ -8,6 +8,7 @@ use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Datetime\Entity\DateFormat;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
 use Drupal\webform\Element\WebformMessage as WebformMessageElement;
 use Drupal\webform\Plugin\WebformElementBase;
 use Drupal\webform\Utility\WebformDateHelper;
@@ -60,20 +61,17 @@ abstract class DateBase extends WebformElementBase {
     // This overrides extra attributes set via Datetime::processDatetime.
     // @see \Drupal\Core\Datetime\Element\Datetime::processDatetime
     if (isset($element['#date_date_format'])) {
-      $date_min = $this->getElementProperty($element, 'date_date_min') ?: $this->getElementProperty($element,'date_min');
+      $date_min = $this->getElementProperty($element, 'date_date_min') ?: $this->getElementProperty($element, 'date_min');
       if ($date_min) {
         $element['#attributes']['min'] = static::formatDate($element['#date_date_format'], strtotime($date_min));
         $element['#attributes']['data-min-year'] = static::formatDate('Y', strtotime($date_min));
       }
-      $date_max = $this->getElementProperty($element, 'date_date_max') ?: $this->getElementProperty($element,'date_max');
+      $date_max = $this->getElementProperty($element, 'date_date_max') ?: $this->getElementProperty($element, 'date_max');
       if (!empty($date_max)) {
         $element['#attributes']['max'] = static::formatDate($element['#date_date_format'], strtotime($date_max));
         $element['#attributes']['data-max-year'] = static::formatDate('Y', strtotime($date_max));
       }
     }
-
-    $element['#element_validate'] = array_merge([[get_class($this), 'preValidateDate']], $element['#element_validate']);
-    $element['#element_validate'][] = [get_class($this), 'validateDate'];
 
     // Display datepicker button.
     if (!empty($element['#datepicker_button']) || !empty($element['#date_date_datepicker_button'])) {
@@ -88,6 +86,17 @@ abstract class DateBase extends WebformElementBase {
     $cacheability->applyTo($element);
 
     $element['#attached']['library'][] = 'webform/webform.element.date';
+
+    $element['#after_build'][] = [get_class($this), 'afterBuild'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function prepareElementValidateCallbacks(array &$element, WebformSubmissionInterface $webform_submission = NULL) {
+    $element['#element_validate'] = array_merge([[get_class($this), 'preValidateDate']], $element['#element_validate']);
+    $element['#element_validate'][] = [get_class($this), 'validateDate'];
+    parent::prepareElementValidateCallbacks($element, $webform_submission);
   }
 
   /**
@@ -105,6 +114,31 @@ abstract class DateBase extends WebformElementBase {
         $element['#default_value'] = ($element['#default_value']) ? DrupalDateTime::createFromTimestamp(strtotime($element['#default_value'])) : NULL;
       }
     }
+  }
+
+  /**
+   * After build handler for date elements.
+   */
+  public static function afterBuild(array $element, FormStateInterface $form_state) {
+    // Add parent title to sub-elements to child elements which applies to
+    // datetime and datelist elements.
+    $child_keys = Element::children($element);
+    foreach ($child_keys as $child_key) {
+      if (isset($element[$child_key]['#title'])) {
+        $t_args = [
+          '@parent' => $element['#title'],
+          '@child' => $element[$child_key]['#title'],
+        ];
+        $element[$child_key]['#title'] = t('@parent: @child', $t_args);
+      }
+    }
+
+    // Remove orphaned form label.
+    if ($child_keys) {
+      $element['#label_attributes']['webform-remove-for-attribute'] = TRUE;
+    }
+
+    return $element;
   }
 
   /****************************************************************************/
@@ -153,7 +187,7 @@ abstract class DateBase extends WebformElementBase {
     // If a default format is defined update the fallback date formats label.
     // @see \Drupal\webform\Plugin\WebformElementBase::getItemFormat
     $default_format = $this->configFactory->get('webform.settings')->get('format.' . $this->getPluginId() . '.item');
-    if ($default_format && isset($formats[$default_format])) {
+    if ($default_format && isset($date_formats[$default_format])) {
       $formats['fallback'] = t('Default date format (@label)', ['@label' => $date_formats[$default_format]->label()]);
     }
     return $formats;
@@ -401,6 +435,11 @@ abstract class DateBase extends WebformElementBase {
       $input_exists = FALSE;
       $input = NestedArray::getValue($form_state->getValues(), $element['#parents'], $input_exists);
       if (!isset($input['object'])) {
+        // Time picker converts all submitted time values to H:i:s format.
+        // @see \Drupal\webform\Element\WebformTime::validateWebformTime
+        if (isset($element['#date_time_element']) && $element['#date_time_element'] === 'timepicker') {
+          $element['#date_time_format'] = 'H:i:s';
+        }
         $input = $date_class::valueCallback($element, $input, $form_state);
         $form_state->setValueForElement($element, $input);
         $element['#value'] = $input;
@@ -411,7 +450,7 @@ abstract class DateBase extends WebformElementBase {
   /**
    * Webform element validation handler for date elements.
    *
-   * Note that #required is validated by _form_valistatic::formatDate() already.
+   * Note that #required is validated by _form_validate() already.
    *
    * @see \Drupal\Core\Render\Element\Number::validateNumber
    */
@@ -427,7 +466,7 @@ abstract class DateBase extends WebformElementBase {
     }
     elseif ($value) {
       $datetime = WebformDateHelper::createFromFormat($date_date_format, $value);
-      if ($datetime === FALSE || static::formatDate($date_date_format, $datetime->getTimestamp()) != $value) {
+      if ($datetime === FALSE || static::formatDate($date_date_format, $datetime->getTimestamp()) !== $value) {
         $form_state->setError($element, t('%name must be a valid date.', ['%name' => $name]));
         $value = '';
       }
@@ -577,7 +616,7 @@ abstract class DateBase extends WebformElementBase {
    * @return string
    *   Formatted date.
    */
-   protected static function formatDate($custom_format, $timestamp = NULL) {
+  protected static function formatDate($custom_format, $timestamp = NULL) {
     /** @var \Drupal\Core\Datetime\DateFormatterInterface $date_formatter */
     $date_formatter = \Drupal::service('date.formatter');
     return $date_formatter->format($timestamp ?: time(), 'custom', $custom_format);

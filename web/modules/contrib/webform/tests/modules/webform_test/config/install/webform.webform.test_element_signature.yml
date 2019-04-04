@@ -18,7 +18,6 @@ elements: |
   signature:
     '#type': webform_signature
     '#title': signature
-  
 css: ''
 javascript: ''
 settings:

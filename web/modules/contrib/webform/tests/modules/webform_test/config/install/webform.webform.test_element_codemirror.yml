@@ -81,7 +81,6 @@ elements: |
       
       {% set value = "Hello" %}
       {{ value }}
-  
 css: ''
 javascript: ''
 settings:

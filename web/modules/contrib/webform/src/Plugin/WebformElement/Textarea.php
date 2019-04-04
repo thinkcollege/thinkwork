@@ -73,20 +73,6 @@ class Textarea extends TextBase {
   /**
    * {@inheritdoc}
    */
-  public function prepare(array &$element, WebformSubmissionInterface $webform_submission = NULL) {
-    parent::prepare($element, $webform_submission);
-
-    // @todo Remove once Drupal 8.4.x+ is a dependency.
-    // Textarea Form API element now supports #maxlength attribute
-    // @see https://www.drupal.org/node/2887280
-    if (!empty($element['#maxlength'])) {
-      $element['#attributes']['maxlength'] = $element['#maxlength'];
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   protected function formatHtmlItem(array $element, WebformSubmissionInterface $webform_submission, array $options = []) {
     $value = $this->getValue($element, $webform_submission, $options);
 

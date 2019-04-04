@@ -98,7 +98,6 @@ elements: |
           unchecked: true
     page_5_markup:
       '#markup': 'This is page 5.'
-  
 css: ''
 javascript: ''
 settings:

@@ -3,6 +3,8 @@
 namespace Drupal\webform_devel\Commands;
 
 use Drupal\Core\Serialization\Yaml;
+use Drupal\Core\State\State;
+use Drupal\user\UserData;
 use Drupal\webform\Utility\WebformYaml;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
@@ -12,6 +14,34 @@ use Psr\Log\LogLevel;
  * Webform devel commandfile.
  */
 class WebformDevelCommands extends DrushCommands {
+
+  /**
+   * Provides the state system.
+   *
+   * @var \Drupal\Core\State\State
+   */
+  protected $state;
+
+  /**
+   * The user data service.
+   *
+   * @var \Drupal\user\UserData
+   */
+  protected $userData;
+
+  /**
+   * The construct method.
+   *
+   * @param \Drupal\Core\State\State $state
+   *   Provides the state system.
+   * @param \Drupal\user\UserData $user_data
+   *   The user data service.
+   */
+  public function __construct(State $state, UserData $user_data) {
+    parent::__construct();
+    $this->state = $state;
+    $this->userData = $user_data;
+  }
 
   /**
    * Executes devel export config.
@@ -78,10 +108,10 @@ class WebformDevelCommands extends DrushCommands {
     }
 
     $this->output()->writeln(dt('Resetting message closed via State API…'));
-    \Drupal::state()->delete('webform.element.message');
+    $this->state->delete('webform.element.message');
 
     $this->output()->writeln(dt('Resetting message closed via User Data…'));
-    \Drupal::service('user.data')->delete('webform', NULL, 'webform.element.message');
+    $this->userData->delete('webform', NULL, 'webform.element.message');
   }
 
 }

@@ -52,7 +52,6 @@ elements: |
       '#type': textfield
       '#title': nested_textfield
       '#default_value': '{value}'
-  
 css: ''
 javascript: ''
 settings:

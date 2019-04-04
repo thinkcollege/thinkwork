@@ -48,7 +48,6 @@ elements: |
     '#country_code__access': true
     '#county__access': true
     '#suburb__access': true
-  
 css: ''
 javascript: ''
 settings:

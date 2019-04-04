@@ -123,7 +123,6 @@ elements: |
       '#type': managed_file
       '#title': Files
       '#multiple': true
-  
 css: ''
 javascript: ''
 settings:

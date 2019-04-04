@@ -50,6 +50,7 @@
             not menu_level ? 'nav-link',
             item.in_active_trail ? 'active',
             item.below ? 'dropdown-toggle',
+            item.url.getOption('attributes').class ? item.url.getOption('attributes').class | join(' '),
           ]
         %}
         {% if item.below %}

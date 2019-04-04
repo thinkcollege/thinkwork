@@ -17,7 +17,6 @@ category: 'Test: Webform'
 elements: |
   description:
     '#markup': 'This webform is a template'
-  
 css: ''
 javascript: ''
 settings:

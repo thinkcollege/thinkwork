@@ -1294,6 +1294,26 @@ default:
     break;
 }
 
+// phpcs:set Generic.WhiteSpace.ScopeIndent exact true
+$shortArray = [
+    'hello',
+'world',
+];
+
+$shortArray = array(
+    'hello',
+'world',
+);
+
+function foo() {
+    echo 'foo';
+        echo 'bar';
+    if ($foo) {
+            echo 'baz';
+    }
+}
+// phpcs:set Generic.WhiteSpace.ScopeIndent exact false
+
 function test() {
     return [
         <<<'SQLDATA'
@@ -1331,6 +1351,39 @@ if ($oo) {
         echo $foo;
     } ?>
 </div>
+
+<div>
+    <?php echo
+        foo(
+            $foo
+        );
+    ?>
+</div>
+
+<?php
+
+if (true) {
+    ?>
+    <div>
+        <?php
+
+        if (true) {
+            ?>
+            <?php
+        }
+
+        if (true
+            || false) {
+            ?>
+            <?php
+        }
+
+        ?>
+    </div>
+    <?php
+}
+
+?>
 
 <?php
     if (true) {

@@ -60,7 +60,6 @@ elements: |
       '#type': textfield
       '#title': 'Draft loaded message'
       '#default_value': '{Custom draft loaded message}'
-  
 css: ''
 javascript: ''
 settings:

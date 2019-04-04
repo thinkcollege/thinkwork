@@ -18,7 +18,6 @@ elements: |
   custom:
     '#title': 'Custom Field'
     '#type': textfield
-  
 css: ''
 javascript: ''
 settings:

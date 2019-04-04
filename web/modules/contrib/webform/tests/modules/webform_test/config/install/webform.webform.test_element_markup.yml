@@ -29,7 +29,10 @@ elements: |
     '#type': webform_markup
     '#markup': '<p>This is displayed on the both the form and submission view.</p>'
     '#display_on': both
-  
+  markup_altered:
+    '#type': webform_markup
+    '#markup': '<p>Alter this markup.</p>'
+    '#display_on': both
 css: ''
 javascript: ''
 settings:

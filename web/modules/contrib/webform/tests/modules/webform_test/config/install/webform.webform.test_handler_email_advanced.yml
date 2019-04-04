@@ -55,7 +55,6 @@ elements: |
     '#title': Notes
     '#private': true
     '#default_value': 'These notes are private.'
-  
 css: ''
 javascript: ''
 settings:

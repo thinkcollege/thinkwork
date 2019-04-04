@@ -23,7 +23,6 @@ elements: |
   text_format:
     '#type': text_format
     '#title': text_format
-  
 css: ''
 javascript: ''
 settings:

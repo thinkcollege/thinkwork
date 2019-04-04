@@ -329,7 +329,7 @@ function template_preprocess_webform_submission_information(array &$variables) {
   $variables['language'] = isset($languages[$langcode]) ? $languages[$langcode]->getName() : $langcode;
 
   if ($source_url = $webform_submission->getSourceUrl()) {
-    $variables['uri'] = Link::fromTextAndUrl($source_url->setAbsolute(FALSE)->toString(), $source_url);;
+    $variables['uri'] = Link::fromTextAndUrl($source_url->setAbsolute(FALSE)->toString(), $source_url);
   }
 
   if ($webform->getSetting('token_update')) {
@@ -635,6 +635,23 @@ function template_preprocess_webform_message(array &$variables) {
 }
 
 /**
+ * Prepares variables for Webform HTML Editor markup templates.
+ *
+ * Default template: webform-html-editor-markup.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - markup: HTML markup.
+ *   - allowed_tags: Allowed tags.
+ */
+function template_preprocess_webform_html_editor_markup(array &$variables) {
+  $variables['content'] = [
+    '#markup' => $variables['markup'],
+    '#allowed_tags' => $variables['allowed_tags'],
+  ];
+}
+
+/**
  * Prepares variables for Webform horizontal rule templates.
  *
  * Default template: webform-horizontal-rule.html.twig.
@@ -865,6 +882,11 @@ function template_preprocess_webform_element_more(array &$variables) {
   // Make sure there is a unique id.
   if (empty($variables['id'])) {
     $variables['id'] = Html::getUniqueId('webform-element-more');
+  }
+
+  // Make sure attributes id is set.
+  if (!isset($variables['attributes']['id'])) {
+    $variables['attributes']['id'] = $variables['id'];
   }
 }
 

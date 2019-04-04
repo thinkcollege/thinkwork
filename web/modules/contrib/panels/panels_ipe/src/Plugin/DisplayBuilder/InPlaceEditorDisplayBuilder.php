@@ -11,7 +11,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\panels\Plugin\DisplayBuilder\StandardDisplayBuilder;
 use Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant;
 use Drupal\panels\Storage\PanelsStorageManagerInterface;
-use Drupal\user\SharedTempStoreFactory;
+use Drupal\Core\TempStore\SharedTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class InPlaceEditorDisplayBuilder extends StandardDisplayBuilder {
 
   /**
-   * @var \Drupal\user\SharedTempStore
+   * @var \Drupal\Core\TempStore\SharedTempStoreFactory
    */
   protected $tempStore;
 
@@ -48,7 +48,7 @@ class InPlaceEditorDisplayBuilder extends StandardDisplayBuilder {
    *   The context handler.
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The current user.
-   * @param \Drupal\user\SharedTempStoreFactory $temp_store_factory
+   * @param \Drupal\Core\TempStore\SharedTempStoreFactory $temp_store_factory
    *   The factory for the temp store object.
    * @param \Drupal\panels\Storage\PanelsStorageManagerInterface
    *   The Panels storage manager.
@@ -70,7 +70,7 @@ class InPlaceEditorDisplayBuilder extends StandardDisplayBuilder {
       $container->get('context.handler'),
       $container->get('current_user'),
       $container->get('module_handler'),
-      $container->get('user.shared_tempstore'),
+      $container->get('tempstore.shared'),
       $container->get('panels.storage_manager')
     );
   }

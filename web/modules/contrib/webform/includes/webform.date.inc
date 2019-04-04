@@ -26,7 +26,7 @@ function _webform_datelist_date_date_callback(array &$element, FormStateInterfac
   if ($no_abbreviate && isset($element['month']) && isset($element['month']['#options'])) {
     // Load translated date part labels from the appropriate calendar plugin.
     $date_helper = new DateHelper();
-    $element['month']['#options'] = $date_helper->monthNames($element['#required']);;
+    $element['month']['#options'] = $date_helper->monthNames($element['#required']);
   }
 }
 

@@ -34,6 +34,7 @@ class WebformCommands extends WebformCommandsBase {
    *
    * @command webform:export
    * @param $webform The webform ID you want to export (required unless --entity-type and --entity-id are specified)
+   * @option exporter The type of export. (delimited, table, yaml, or json)
    * @option delimiter Delimiter between columns (defaults to site-wide setting). This option may need to be wrapped in quotes. i.e. --delimiter="\t".
    * @option multiple-delimiter Delimiter between an element with multiple values (defaults to site-wide setting).
    * @option file-name File name used to export submission and uploaded filed. You may use tokens.
@@ -43,6 +44,7 @@ class WebformCommands extends WebformCommandsBase {
    * @option options-multiple-format Set to "separate" (default) or "compact" to determine how multiple select list values are exported.
    * @option entity-reference-items Comma-separated list of entity reference items (id, title, and/or url) to be exported.
    * @option excluded-columns Comma-separated list of component IDs or webform keys to exclude.
+   * @option uuid  Use UUIDs for all entity references. (Only applies to CSV download)
    * @option entity-type The entity type to which this submission was submitted from.
    * @option entity-id The ID of the entity of which this webform submission was submitted from.
    * @option range-type Range of submissions to export: "all", "latest", "serial", "sid", or "date".
@@ -53,11 +55,40 @@ class WebformCommands extends WebformCommandsBase {
    * @option state Submission state to be included: "completed", "draft" or "all" (default).
    * @option sticky Flagged/starred submission status.
    * @option files Download files: "1" or "0" (default). If set to 1, the exported CSV file and any submission file uploads will be download in a gzipped tar file.
-   * @option destination The full path and filename in which the CSV or archive should be stored. If omitted the CSV file or archive will be outputted to the commandline.
+   * @option destination The full path and filename in which the CSV or archive should be stored. If omitted the CSV file or archive will be outputted to the command line.
    * @aliases wfx
    */
-  public function drush_webform_export($webform = NULL, array $options = ['delimiter' => NULL, 'multiple-delimiter' => NULL, 'file-name' => NULL, 'header-format' => NULL, 'options-item-format' => NULL, 'options-single-format' => NULL, 'options-multiple-format' => NULL, 'entity-reference-items' => NULL, 'excluded-columns' => NULL, 'entity-type' => NULL, 'entity-id' => NULL, 'range-type' => NULL, 'range-latest' => NULL, 'range-start' => NULL, 'range-end' => NULL, 'order' => NULL, 'state' => NULL, 'sticky' => NULL, 'files' => NULL, 'destination' => NULL]) {
+  public function drush_webform_export($webform = NULL, array $options = ['exporter' => NULL, 'delimiter' => NULL, 'multiple-delimiter' => NULL, 'file-name' => NULL, 'header-format' => NULL, 'options-item-format' => NULL, 'options-single-format' => NULL, 'options-multiple-format' => NULL, 'entity-reference-items' => NULL, 'excluded-columns' => NULL, 'uuid' => NULL, 'entity-type' => NULL, 'entity-id' => NULL, 'range-type' => NULL, 'range-latest' => NULL, 'range-start' => NULL, 'range-end' => NULL, 'order' => NULL, 'state' => NULL, 'sticky' => NULL, 'files' => NULL, 'destination' => NULL]) {
     $this->cliService->drush_webform_export($webform);
+  }
+
+  /****************************************************************************/
+  // drush webform:import. DO NOT EDIT.
+  /****************************************************************************/
+
+  /**
+   * @hook validate webform:import
+   */
+  public function drush_webform_import_validate(CommandData $commandData) {
+    $arguments = $commandData->arguments();
+    array_shift($arguments);
+    call_user_func_array([$this->cliService, 'drush_webform_import_validate'], $arguments);
+  }
+
+  /**
+   * Imports webform submissions from a CSV file.
+   *
+   * @command webform:import
+   * @param $webform The webform ID you want to import (required unless --entity-type and --entity-id are specified)
+   * @param $import_uri The path or URI for the CSV file to be imported.
+   * @option skip_validation Skip form validation.
+   * @option treat_warnings_as_errors Treat all warnings as errors.
+   * @option entity-type The entity type to which this submission was submitted from.
+   * @option entity-id The ID of the entity of which this webform submission was submitted from.
+   * @aliases wfi
+   */
+  public function drush_webform_import($webform = NULL, $import_uri = NULL, array $options = ['skip_validation' => NULL, 'treat_warnings_as_errors' => NULL, 'entity-type' => NULL, 'entity-id' => NULL]) {
+    $this->cliService->drush_webform_import($webform, $import_uri);
   }
 
   /****************************************************************************/

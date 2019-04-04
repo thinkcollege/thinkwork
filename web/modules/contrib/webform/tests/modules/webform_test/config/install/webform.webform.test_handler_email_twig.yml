@@ -40,7 +40,6 @@ elements: |
     '#type': textarea
     '#required': true
     '#default_value': '{message}'
-  
 css: ''
 javascript: ''
 settings:

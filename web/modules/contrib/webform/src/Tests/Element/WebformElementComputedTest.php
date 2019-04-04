@@ -91,7 +91,7 @@ class WebformElementComputedTest extends WebformElementTestBase {
     /* Twig */
 
     // Get computed Twig form.
-    $this->drupalGet('webform/test_element_computed_twig');
+    $this->drupalGet('/webform/test_element_computed_twig');
 
     // Check Twig trim.
     $this->assertFieldByName('webform_computed_twig_trim', '<em>This is trimmed</em>  <br/>');
@@ -132,7 +132,7 @@ class WebformElementComputedTest extends WebformElementTestBase {
     /* Ajax */
 
     // Get computed ajax form.
-    $this->drupalGet('webform/test_element_computed_ajax');
+    $this->drupalGet('/webform/test_element_computed_ajax');
 
     // Check that a and b are hidden via #hide_empty.
     $this->assertRaw('<div style="display:none" class="js-form-item form-item js-form-type-item form-type-item js-form-item-webform-computed-token-a form-item-webform-computed-token-a">');

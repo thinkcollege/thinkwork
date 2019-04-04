@@ -28,7 +28,6 @@ elements: |
     '#prepopulate': true
   prepopulate_test:
     '#markup': '<a href="?textfield=value&textfield_prepopulate=value">?textfield=value&textfield_prepopulate=value</a>'
-  
 css: ''
 javascript: ''
 settings:

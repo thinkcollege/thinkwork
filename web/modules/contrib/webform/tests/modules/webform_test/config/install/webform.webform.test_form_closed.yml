@@ -17,7 +17,6 @@ category: 'Test: Webform'
 elements: |
   description:
     '#markup': 'This message should not be displayed'
-  
 css: ''
 javascript: ''
 settings:

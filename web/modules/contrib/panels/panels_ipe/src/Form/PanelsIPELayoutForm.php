@@ -11,7 +11,7 @@ use Drupal\Core\Plugin\PluginFormInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant;
-use Drupal\user\SharedTempStoreFactory;
+use Drupal\Core\TempStore\SharedTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -25,7 +25,7 @@ class PanelsIPELayoutForm extends FormBase {
   protected $renderer;
 
   /**
-   * @var \Drupal\user\SharedTempStore
+   * @var \Drupal\Core\TempStore\SharedTempStoreFactory
    */
   protected $tempStore;
 
@@ -53,7 +53,7 @@ class PanelsIPELayoutForm extends FormBase {
    *
    * @param \Drupal\Core\Layout\LayoutPluginManagerInterface $layout_manager
    * @param \Drupal\Core\Render\RendererInterface $renderer
-   * @param \Drupal\user\SharedTempStoreFactory $temp_store_factory
+   * @param \Drupal\Core\TempStore\SharedTempStoreFactory $temp_store_factory
    */
   public function __construct(LayoutPluginManagerInterface $layout_manager, RendererInterface $renderer, SharedTempStoreFactory $temp_store_factory) {
     $this->layoutManager = $layout_manager;
@@ -68,7 +68,7 @@ class PanelsIPELayoutForm extends FormBase {
     return new static(
       $container->get('plugin.manager.core.layout'),
       $container->get('renderer'),
-      $container->get('user.shared_tempstore')
+      $container->get('tempstore.shared')
     );
   }
 

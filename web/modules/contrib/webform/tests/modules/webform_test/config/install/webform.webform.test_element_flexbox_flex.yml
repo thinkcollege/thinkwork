@@ -805,7 +805,6 @@ elements: |
         style: 'padding: 30px; background: #ccc; text-align: center'
       flex:
         '#markup': 1
-  
 css: ''
 javascript: ''
 settings:

@@ -30,7 +30,6 @@ elements: |
   q:
     '#type': search
     '#title': 'Search Google'
-  
 css: ''
 javascript: ''
 settings:

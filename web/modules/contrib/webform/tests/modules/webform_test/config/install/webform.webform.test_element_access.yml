@@ -105,7 +105,6 @@ elements: |
       '#access_view_roles': {  }
       '#access_view_permissions':
         - 'access user profiles'
-  
 css: ''
 javascript: ''
 settings:

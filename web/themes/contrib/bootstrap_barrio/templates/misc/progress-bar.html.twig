@@ -12,14 +12,11 @@
  */
 #}
 {{ attach_library('bootstrap_barrio/progress') }}
-<div class="progress">
+<div class="progress" data-drupal-progress>
   {% if label %}
     <div class="progress__label">{{ label }}</div>
   {% endif %}
-  <progress class="progress progress-striped" value="{{ percent }}" max="100">
-    <div class="progress">
-      <span class="progress-bar" style="width: {{ percent }}%;">{{ percent }}%</span>
-    </div>
-  </progress>
-  <small class="progress__description">{{ message }}</small>
-</div>
+  <div class="progress__track"><div class="progress__bar" style="width: {{ percent }}%"></div></div>
+  <div class="progress__percentage">{{ percent }}%</div>
+  <div class="progress__description">{{ message }}</div>
+</div

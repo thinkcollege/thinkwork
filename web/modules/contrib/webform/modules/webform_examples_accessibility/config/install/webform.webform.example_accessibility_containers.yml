@@ -50,7 +50,6 @@ elements: |
     '#help': 'This is help text'
     '#required': true
     '#description': 'This is a description'
-  
 css: ''
 javascript: ''
 settings:

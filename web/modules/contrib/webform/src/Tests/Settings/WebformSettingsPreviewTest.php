@@ -41,7 +41,7 @@ class WebformSettingsPreviewTest extends WebformTestBase {
     $webform_preview = Webform::load('test_form_preview');
 
     // Check webform with optional preview.
-    $this->drupalGet('webform/test_form_preview');
+    $this->drupalGet('/webform/test_form_preview');
     $this->assertFieldByName('op', 'Submit');
     $this->assertFieldByName('op', 'Preview');
 
@@ -132,7 +132,7 @@ class WebformSettingsPreviewTest extends WebformTestBase {
     $webform_preview->save();
 
     // Check special characters in form page title.
-    $this->drupalGet('webform/test_form_preview');
+    $this->drupalGet('/webform/test_form_preview');
     $this->assertRaw('<title>This has special characters. \'"& | Drupal</title>');
     $this->assertRaw('<h1 class="page-title">This has special characters. &#039;&lt;&gt;&quot;&amp;</h1>');
 
@@ -170,7 +170,7 @@ class WebformSettingsPreviewTest extends WebformTestBase {
     $this->assertNoRaw('<label>Email</label>');
     $this->assertRaw('<div class="preview-custom webform-preview js-form-wrapper form-wrapper" data-drupal-selector="edit-preview" id="edit-preview">');
 
-    $this->drupalGet('webform/test_form_preview');
+    $this->drupalGet('/webform/test_form_preview');
     $this->assertNoFieldByName('op', 'Submit');
     $this->assertFieldByName('op', '{Preview}');
 

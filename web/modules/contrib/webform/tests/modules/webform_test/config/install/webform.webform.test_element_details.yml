@@ -30,7 +30,22 @@ elements: |
     '#title': 'Details title invisible'
     '#description': 'This is a description.'
     '#title_display': invisible
-  
+    details_title_invisible_markup:
+      '#markup': '<p>This is some markup</p>'
+  details_more:
+    '#type': details
+    '#title': 'details more'
+    '#more': 'This is more text'
+    '#open': true
+    details_more_markup:
+      '#markup': '<p>This is some markup</p>'
+  details_help:
+    '#type': details
+    '#title': 'details help'
+    '#help': 'This is help text.'
+    '#open': true
+    details_help_markup:
+      '#markup': '<p>This is some markup</p>'
 css: ''
 javascript: ''
 settings:

@@ -334,7 +334,7 @@ class WebformScheduledEmailTest extends WebformNodeTestBase {
     $this->drupalLogin($this->rootUser);
 
     // Check 'Other' email will be sent immediately message when testing.
-    $this->drupalGet('webform/test_handler_scheduled_email/test');
+    $this->drupalGet('/webform/test_handler_scheduled_email/test');
     $this->assertRaw('The <em class="placeholder">Other</em> email will be sent immediately upon submission.');
 
     // Check 'Other' email is sent immediately via testing.

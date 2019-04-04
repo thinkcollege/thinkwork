@@ -473,7 +473,6 @@ elements: |
       '#title': 'Machine name'
       '#description': 'This is a description for the ''machine_name'' element.'
       '#description_display': tooltip
-  
 css: ''
 javascript: ''
 settings:

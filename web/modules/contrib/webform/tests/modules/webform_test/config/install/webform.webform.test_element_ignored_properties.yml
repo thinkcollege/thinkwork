@@ -29,7 +29,6 @@ elements: |
     '#submit': '#submit'
     '#validate': '#validate'
     '#value_callback': '#value_callback'
-  
 css: ''
 javascript: ''
 settings:

@@ -6,6 +6,7 @@ global-styling:
   css:
     component:
       css/components/affix.css: {}
+      css/components/alerts.css: {}
       css/components/book.css: {}
       css/components/comments.css: {}
       css/components/contextual.css: {}
@@ -36,10 +37,12 @@ global-styling:
       css/components/vertical-tabs.css: {}
       css/components/views.css: {}
       css/components/ui-dialog.css: {}
+      css/components/progress.css: { weight: -10 }
     theme:
       css/print.css: { media: print }
   dependencies:
     - core/jquery
+    - core/jquery.once
     - core/drupal
 
 affix:
@@ -49,7 +52,11 @@ affix:
   css:
     component:
       css/components/affix.css: {}
-
+alerts:
+  version: VERSION
+  css:
+    component:
+      css/components/alerts.css: {}
 book-navigation:
   version: VERSION
   css:
@@ -115,6 +122,11 @@ tabs:
   css:
     component:
       css/components/tabs.css: {}
+
+toast:
+  version: VERSION
+  js:
+    js/toast.js: {}
 
 verticaltabs:
   version: VERSION

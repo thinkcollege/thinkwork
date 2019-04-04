@@ -61,7 +61,6 @@ elements: |
     '#type': webform_actions
     '#title': 'Submit button(s)'
     '#submit__label': Apply
-  
 css: ''
 javascript: ''
 settings:

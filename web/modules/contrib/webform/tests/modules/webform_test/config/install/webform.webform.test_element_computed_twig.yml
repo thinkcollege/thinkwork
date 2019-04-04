@@ -101,7 +101,6 @@ elements: |
     '#title': webform_computed_twig_spaceless
     '#whitespace': spaceless
     '#template': ' <em>This is spaceless</em>  <br/> '
-  
 css: ''
 javascript: ''
 settings:

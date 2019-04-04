@@ -101,7 +101,6 @@ elements: |
     '#attributes':
       class:
         - webform-horizontal-rule--glyph
-  
 css: ''
 javascript: ''
 settings:

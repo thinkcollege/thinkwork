@@ -13,6 +13,7 @@ use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
 use Drupal\webform\Plugin\WebformElement\WebformActions;
 use Drupal\webform\Plugin\WebformElement\WebformWizardPage;
+use Drupal\webform\Plugin\WebformElementAttachmentInterface;
 use Drupal\webform\Plugin\WebformHandlerMessageInterface;
 use Drupal\webform\Utility\WebformElementHelper;
 use Drupal\webform\Utility\WebformReflectionHelper;
@@ -31,6 +32,13 @@ use Drupal\webform\WebformSubmissionStorageInterface;
  * @ConfigEntityType(
  *   id = "webform",
  *   label = @Translation("Webform"),
+ *   label_collection = @Translation("Webforms"),
+ *   label_singular = @Translation("webform"),
+ *   label_plural = @Translation("webforms"),
+ *   label_count = @PluralTranslation(
+ *     singular = "@count webform",
+ *     plural = "@count webforms",
+ *   ),
  *   handlers = {
  *     "storage" = "\Drupal\webform\WebformEntityStorage",
  *     "view_builder" = "Drupal\webform\WebformEntityViewBuilder",
@@ -344,6 +352,13 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
    * @var array
    */
   protected $elementsManagedFiles = [];
+
+  /**
+   * Track attachment elements.
+   *
+   * @var array
+   */
+  protected $elementsAttachments = [];
 
   /**
    * The webform pages.
@@ -661,6 +676,14 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
   public function hasManagedFile() {
     $this->initElements();
     return (!empty($this->elementsManagedFiles)) ? TRUE : FALSE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function hasAttachments() {
+    $this->initElements();
+    return (!empty($this->elementsAttachments)) ? TRUE : FALSE;
   }
 
   /**
@@ -1107,6 +1130,14 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function getElementsAttachments() {
+    $this->initElements();
+    return $this->elementsAttachments;
+  }
+
+  /**
    * Check operation access for each element.
    *
    * @param string $operation
@@ -1145,6 +1176,22 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
     $elements = $this->getElementsInitializedAndFlattened();
     foreach ($elements as $element) {
       $element_plugin = $element_manager->getElementInstance($element);
+      $element_selectors = $element_plugin->getElementSelectorOptions($element);
+      foreach ($element_selectors as $element_selector_key => $element_selector_value) {
+        // Suffix duplicate selector optgroups with empty characters.
+        //
+        // This prevents elements with the same titles and multiple selectors
+        // from clobbering each other.
+        if (isset($selectors[$element_selector_key]) && is_array($element_selector_value)) {
+          while (isset($selectors[$element_selector_key])) {
+            $element_selector_key .= ' ';
+          }
+          $selectors[$element_selector_key] = $element_selector_value;
+        }
+        else {
+          $selectors[$element_selector_key] = $element_selector_value;
+        }
+      }
       $selectors += $element_plugin->getElementSelectorOptions($element);
     }
     return $selectors;
@@ -1203,6 +1250,7 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
     $this->elementsInitializedFlattenedAndHasValue = [];
     $this->elementsTranslations = [];
     $this->elementsManagedFiles = [];
+    $this->elementsAttachments = [];
 
     try {
       $config_translation = \Drupal::moduleHandler()->moduleExists('config_translation');
@@ -1211,8 +1259,8 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
       /** @var \Drupal\Core\Language\LanguageManagerInterface $language_manager */
       $language_manager = \Drupal::service('language_manager');
 
-      // If current webform is translated, load the base (default) webform and apply
-      // the translation to the elements.
+      // If current webform is translated, load the base (default) webform and
+      // apply the translation to the elements.
       if ($config_translation
         && ($this->langcode != $language_manager->getCurrentLanguage()->getId())) {
         // Always get the elements in the original language.
@@ -1268,6 +1316,7 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
     $this->elementsInitializedFlattenedAndHasValue = NULL;
     $this->elementsTranslations = NULL;
     $this->elementsManagedFiles = [];
+    $this->elementsAttachments = [];
   }
 
   /**
@@ -1401,6 +1450,11 @@ class Webform extends ConfigEntityBundleBase implements WebformInterface {
         // Track managed files.
         if ($element_plugin->hasManagedFiles($element)) {
           $this->elementsManagedFiles[$key] = $key;
+        }
+
+        // Track attachments.
+        if ($element_plugin instanceof WebformElementAttachmentInterface) {
+          $this->elementsAttachments[$key] = $key;
         }
 
         $element['#webform_multiple'] = $element_plugin->hasMultipleValues($element);

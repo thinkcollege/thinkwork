@@ -2,4 +2,3 @@ viewfield_item.edit_view:
   title: 'Edit view'
   route_name: entity.view.edit_display_form
   group: viewfield_item
-

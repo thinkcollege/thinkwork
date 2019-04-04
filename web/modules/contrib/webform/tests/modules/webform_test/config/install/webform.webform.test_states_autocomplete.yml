@@ -159,7 +159,6 @@ elements: |
       kitten_3:
         text: 'Cute Kitten 3'
         src: 'http://placekitten.com/130/200'
-  
 css: ''
 javascript: ''
 settings:

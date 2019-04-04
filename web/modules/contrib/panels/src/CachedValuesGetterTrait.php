@@ -2,7 +2,7 @@
 
 namespace Drupal\panels;
 
-use Drupal\user\SharedTempStoreFactory;
+use Drupal\Core\TempStore\SharedTempStoreFactory;
 
 /**
  * Provides a method for panels wizards cached values for non-wizard forms.
@@ -19,7 +19,7 @@ trait CachedValuesGetterTrait {
    * implementations are generally simpler and do not need the same degree of
    * customization. This trait accounts for both use cases.
    *
-   * @param \Drupal\user\SharedTempStoreFactory $tempstore
+   * @param \Drupal\Core\TempStore\SharedTempStoreFactory $tempstore
    *   The tempstore object in use for the desired cached values.
    * @param string $tempstore_id
    *   The tempstore identifier.

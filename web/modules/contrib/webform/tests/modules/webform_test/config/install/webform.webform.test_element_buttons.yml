@@ -31,7 +31,6 @@ elements: |
       '#title_display': inline
       '#options': yes_no
       '#options_display': side_by_side
-  
 css: ''
 javascript: ''
 settings:

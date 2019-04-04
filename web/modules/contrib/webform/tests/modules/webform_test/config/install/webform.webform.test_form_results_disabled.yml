@@ -17,7 +17,6 @@ category: 'Test: Form'
 elements: |
   description:
     '#markup': 'This webform will not save any submissions.'
-  
 css: ''
 javascript: ''
 settings:

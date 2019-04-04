@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * @file
+ * Mailgun test module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\mailgun\MailgunHandler;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function mailgun_test_form_mailgun_admin_settings_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Replace settings form validate with fake one.
+  $index = array_search('::validateForm', $form['#validate']);
+  $form['#validate'][$index] = 'mailgun_test_settings_form_validate';
+}
+
+/**
+ * Overridden validate for test purposes.
+ */
+function mailgun_test_settings_form_validate($form, FormStateInterface $form_state) {
+  if ($form_state->getValue('api_key') === 'key-1234567890workingabcdefghijklmno') {
+    // Do nothing. It's just to emulate correct API key.
+  }
+  elseif (MailgunHandler::validateKey($form_state->getValue('api_key')) === FALSE) {
+    $form_state->setErrorByName('api_key', t("Couldn't connect to the Mailgun API. Please check your API settings."));
+  }
+}

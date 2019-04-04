@@ -1200,7 +1200,6 @@ elements: |
         '#title': 'Machine name (Raw value)'
         '#default_value': loremipsum
         '#format': raw
-  
 css: ''
 javascript: ''
 settings:

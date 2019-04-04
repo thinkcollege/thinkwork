@@ -63,7 +63,7 @@ class WebformElementManagedFileTest extends WebformElementManagedFileTestBase {
    */
   public function testFileUpload() {
     /* Element rendering */
-    $this->drupalGet('webform/test_element_managed_file');
+    $this->drupalGet('/webform/test_element_managed_file');
 
     // Check single file upload button.
     $this->assertRaw('<label for="edit-managed-file-single-button-upload-button--2" class="button button-action webform-file-button">Choose file</label>');
@@ -78,18 +78,18 @@ class WebformElementManagedFileTest extends WebformElementManagedFileTestBase {
 
     $this->checkFileUpload('single', $this->files[0], $this->files[1]);
     $this->checkFileUpload('multiple', $this->files[2], $this->files[3]);
-    
+
     /* File placeholder */
 
     // Check placeholder is displayed.
-    $this->drupalGet('webform/test_element_managed_file');
+    $this->drupalGet('/webform/test_element_managed_file');
     $this->assertRaw('<div class="webform-managed-file-placeholder managed-file-placeholder js-form-wrapper form-wrapper" data-drupal-selector="edit-managed-file-single-placeholder-file-placeholder" id="edit-managed-file-single-placeholder-file-placeholder">This is the single file upload placeholder</div>');
     $this->assertRaw('<div class="webform-managed-file-placeholder managed-file-placeholder js-form-wrapper form-wrapper" data-drupal-selector="edit-managed-file-multiple-placeholder-file-placeholder" id="edit-managed-file-multiple-placeholder-file-placeholder">This is the multiple file upload placeholder</div>');
 
     $this->drupalLogin($this->rootUser);
 
     // Check placeholder is not displayed when files are uploaded.
-    $this->drupalGet('webform/test_element_managed_file/test');
+    $this->drupalGet('/webform/test_element_managed_file/test');
     $this->assertNoRaw('<div class="webform-managed-file-placeholder managed-file-placeholder js-form-wrapper form-wrapper" data-drupal-selector="edit-managed-file-single-placeholder-file-placeholder" id="edit-managed-file-single-placeholder-file-placeholder">This is the single file upload placeholder</div>');
     $this->assertNoRaw('<div class="webform-managed-file-placeholder managed-file-placeholder js-form-wrapper form-wrapper" data-drupal-selector="edit-managed-file-multiple-placeholder-file-placeholder" id="edit-managed-file-multiple-placeholder-file-placeholder">This is the multiple file upload placeholder</div>');
   }

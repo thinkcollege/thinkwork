@@ -195,7 +195,7 @@ class WebformExceptionHtmlSubscriber extends DefaultExceptionHtmlSubscriber {
         case WebformInterface::ACCESS_DENIED_DEFAULT:
         default:
           // Make the default 403 request so that we can add cacheable dependencies.
-          $this->makeSubrequest($event, '/system/403', Response::HTTP_FORBIDDEN);
+          $this->makeSubrequest($event, $this->getSystemSite403Path(), Response::HTTP_FORBIDDEN);
           break;
       }
 
@@ -231,13 +231,13 @@ class WebformExceptionHtmlSubscriber extends DefaultExceptionHtmlSubscriber {
           // Display message.
           $this->setMessage($webform_access_denied_message, $webform);
           // Make the default 403 request so that we can add cacheable dependencies.
-          $this->makeSubrequest($event, '/system/403', Response::HTTP_FORBIDDEN);
+          $this->makeSubrequest($event, $this->getSystemSite403Path(), Response::HTTP_FORBIDDEN);
           break;
 
         case WebformInterface::ACCESS_DENIED_DEFAULT:
         default:
           // Make the default 403 request so that we can add cacheable dependencies.
-          $this->makeSubrequest($event, '/system/403', Response::HTTP_FORBIDDEN);
+          $this->makeSubrequest($event, $this->getSystemSite403Path(), Response::HTTP_FORBIDDEN);
           break;
       }
       // Add cacheable dependencies.
@@ -267,6 +267,16 @@ class WebformExceptionHtmlSubscriber extends DefaultExceptionHtmlSubscriber {
     if ($exception instanceof HttpExceptionInterface && $exception->getStatusCode() === 403) {
       parent::onException($event);
     }
+  }
+
+  /**
+   * Get 403 path from system.site config.
+   *
+   * @return string
+   *   The custom 403 path or Drupal's default 403 path.
+   */
+  protected function getSystemSite403Path() {
+    return $this->configFactory->get('system.site')->get('page.403') ?: '/system/403';
   }
 
   /**

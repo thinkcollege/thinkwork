@@ -19,7 +19,6 @@ elements: |
     '#type': textfield
     '#title': Name
     '#required': true
-  
 css: ''
 javascript: ''
 settings:

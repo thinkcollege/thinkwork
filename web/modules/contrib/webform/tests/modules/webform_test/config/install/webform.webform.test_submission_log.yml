@@ -18,7 +18,6 @@ elements: |
   value:
     '#type': textfield
     '#title': 'Enter a value'
-  
 css: ''
 javascript: ''
 settings:

@@ -168,6 +168,14 @@ interface WebformInterface extends ConfigEntityInterface, EntityWithPluginCollec
   public function hasManagedFile();
 
   /**
+   * Determine if the webform's elements include attachments.
+   *
+   * @return bool
+   *   TRUE if the webform's elements include attachments.
+   */
+  public function hasAttachments();
+
+  /**
    * Determine if the webform is using a Flexbox layout.
    *
    * @return bool
@@ -360,7 +368,6 @@ interface WebformInterface extends ConfigEntityInterface, EntityWithPluginCollec
    *   TRUE if the webform is confidential.
    */
   public function isConfidential();
-
 
   /**
    * Determine if remote IP address is being stored.
@@ -696,12 +703,20 @@ interface WebformInterface extends ConfigEntityInterface, EntityWithPluginCollec
   public function getElementsInitializedFlattenedAndHasValue($operation = NULL);
 
   /**
-   * Get webform manager file elements.
+   * Get webform managed file elements.
    *
    * @return array
    *   Webform managed file elements.
    */
   public function getElementsManagedFiles();
+
+  /**
+   * Get webform attachemnt elements.
+   *
+   * @return array
+   *   Webform attachment elements.
+   */
+  public function getElementsAttachments();
 
   /**
    * Get webform element's selectors as options.

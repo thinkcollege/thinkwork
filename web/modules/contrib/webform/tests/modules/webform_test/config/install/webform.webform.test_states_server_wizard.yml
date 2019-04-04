@@ -152,6 +152,7 @@ elements: |
       '#type': textfield
       '#title': page_02_textfield_visible
       '#description': '<b>Visible:</b> page_01_trigger_checkbox:checked'
+      '#default_value': '{default_value}'
       '#states':
         visible:
           ':input[name="page_01_trigger_checkbox"]':
@@ -160,6 +161,7 @@ elements: |
       '#type': textfield
       '#title': page_02_textfield_visible_slide
       '#description': '<b>Visible (Slide):</b> page_01_trigger_checkbox:checked'
+      '#default_value': '{default_value}'
       '#states':
         visible-slide:
           ':input[name="page_01_trigger_checkbox"]':
@@ -168,6 +170,7 @@ elements: |
       '#type': textfield
       '#title': page_02_textfield_invisible
       '#description': '<b>Invisible:</b> page_01_trigger_checkbox:checked'
+      '#default_value': '{default_value}'
       '#states':
         invisible:
           ':input[name="page_01_trigger_checkbox"]':
@@ -176,6 +179,7 @@ elements: |
       '#type': textfield
       '#title': page_02_textfield_invisible_slide
       '#description': '<b>Invisible (Slide):</b> page_01_trigger_checkbox:checked'
+      '#default_value': '{default_value}'
       '#states':
         invisible-slide:
           ':input[name="page_01_trigger_checkbox"]':
@@ -216,7 +220,6 @@ elements: |
         collapsed:
           ':input[name="page_01_trigger_checkbox"]':
             checked: true
-  
 css: ''
 javascript: ''
 settings:
@@ -370,4 +373,12 @@ access:
     roles: {  }
     users: {  }
     permissions: {  }
-handlers: {  }
+handlers:
+  debug:
+    id: debug
+    label: Debug
+    handler_id: debug
+    status: true
+    conditions: {  }
+    weight: 1
+    settings: {  }

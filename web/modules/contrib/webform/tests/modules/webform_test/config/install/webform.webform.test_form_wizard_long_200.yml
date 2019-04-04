@@ -675,7 +675,6 @@ elements: |
     element_200:
       '#type': textfield
       '#title': 'Element #200'
-  
 css: ''
 javascript: ''
 settings:

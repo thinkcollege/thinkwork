@@ -132,7 +132,7 @@ class WebformCodeMirror extends WebformElementBase {
       '#required' => TRUE,
     ];
     $form['codemirror']['wrap'] = [
-      '#title' => $this->t('Wrap for long lines'),
+      '#title' => $this->t('Wrap long lines of text'),
       '#type' => 'checkbox',
       '#return_value' => TRUE,
     ];

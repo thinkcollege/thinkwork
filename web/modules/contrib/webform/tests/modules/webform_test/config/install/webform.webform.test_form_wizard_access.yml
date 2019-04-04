@@ -56,7 +56,6 @@ elements: |
       '#type': textfield
       '#title': textfield_private
       '#default_value': '{textfield_private}'
-  
 css: ''
 javascript: ''
 settings:

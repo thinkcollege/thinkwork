@@ -39,12 +39,12 @@ class WebformSettingsConfidentialTest extends WebformTestBase {
     $webform = Webform::load('test_form_confidential');
 
     // Check logout warning when accessing webform.
-    $this->drupalGet('webform/test_form_confidential');
+    $this->drupalGet('/webform/test_form_confidential');
     $this->assertNoFieldById('edit-name');
     $this->assertRaw('This form is confidential.');
 
     // Check no logout warning when testing webform.
-    $this->drupalGet('webform/test_form_confidential/test');
+    $this->drupalGet('/webform/test_form_confidential/test');
     $this->assertFieldById('edit-name');
     $this->assertNoRaw('This form is confidential.');
 
@@ -56,7 +56,7 @@ class WebformSettingsConfidentialTest extends WebformTestBase {
 
     // Check anonymous access to webform.
     $this->drupalLogout();
-    $this->drupalGet('webform/test_form_confidential');
+    $this->drupalGet('/webform/test_form_confidential');
     $this->assertFieldById('edit-name');
     $this->assertNoRaw('This form is confidential.');
 
@@ -67,7 +67,7 @@ class WebformSettingsConfidentialTest extends WebformTestBase {
     $this->assertEqual($webform_submission->getOwnerId(), 0);
 
     // Check that previous submissions are visible.
-    $this->drupalGet('webform/test_form_confidential');
+    $this->drupalGet('/webform/test_form_confidential');
     $this->assertRaw('View your previous submission');
 
     // Check that anonymous submission is not converted to authenticated.
@@ -78,7 +78,7 @@ class WebformSettingsConfidentialTest extends WebformTestBase {
 
     // Check that previous submissions $_SESSION was unset after login/logout.
     $this->drupalLogout();
-    $this->drupalGet('webform/test_form_confidential');
+    $this->drupalGet('/webform/test_form_confidential');
     $this->assertNoRaw('View your previous submission.');
   }
 

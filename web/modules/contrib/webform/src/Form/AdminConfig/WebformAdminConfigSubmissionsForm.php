@@ -72,7 +72,7 @@ class WebformAdminConfigSubmissionsForm extends WebformAdminConfigBaseForm {
     // Submission settings.
     $form['submission_settings'] = [
       '#type' => 'details',
-      '#title' => $this->t('Submission settings'),
+      '#title' => $this->t('Submission general settings'),
       '#open' => TRUE,
       '#tree' => TRUE,
     ];
@@ -161,7 +161,7 @@ class WebformAdminConfigSubmissionsForm extends WebformAdminConfigBaseForm {
     // Submission limits.
     $form['submission_limits'] = [
       '#type' => 'details',
-      '#title' => $this->t('Submission limits'),
+      '#title' => $this->t('Submission limit settings'),
       '#open' => TRUE,
       '#tree' => TRUE,
     ];
@@ -177,10 +177,36 @@ class WebformAdminConfigSubmissionsForm extends WebformAdminConfigBaseForm {
     ];
     $form['submission_limits']['token_tree_link'] = $this->tokenManager->buildTreeElement();
 
+    // Draft settings.
+    $form['draft_settings'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Submission draft settings'),
+      '#open' => TRUE,
+      '#tree' => TRUE,
+    ];
+    $form['draft_settings']['default_draft_button_label'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Default draft button label'),
+      '#required' => TRUE,
+      '#size' => 20,
+      '#default_value' => $settings['default_draft_button_label'],
+    ];
+    $form['draft_settings']['default_draft_saved_message'] = [
+      '#type' => 'webform_html_editor',
+      '#title' => $this->t('Default draft save message'),
+      '#default_value' => $settings['default_draft_saved_message'],
+    ];
+    $form['draft_settings']['default_draft_loaded_message'] = [
+      '#type' => 'webform_html_editor',
+      '#title' => $this->t('Default draft load message'),
+      '#default_value' => $settings['default_draft_loaded_message'],
+    ];
+    $form['draft_settings']['token_tree_link'] = $this->tokenManager->buildTreeElement();
+
     // Submission purging.
     $form['purge'] = [
       '#type' => 'details',
-      '#title' => $this->t('Submission purging'),
+      '#title' => $this->t('Submission purge settings'),
       '#open' => TRUE,
       '#tree' => TRUE,
     ];
@@ -195,7 +221,7 @@ class WebformAdminConfigSubmissionsForm extends WebformAdminConfigBaseForm {
     // Submission views.
     $form['views_settings'] = [
       '#type' => 'details',
-      '#title' => $this->t('Submission views'),
+      '#title' => $this->t('Submission views settings'),
       '#open' => TRUE,
       '#tree' => TRUE,
     ];
@@ -231,6 +257,7 @@ class WebformAdminConfigSubmissionsForm extends WebformAdminConfigBaseForm {
     $settings = $form_state->getValue('submission_settings')
       + $form_state->getValue('submission_behaviors')
       + $form_state->getValue('submission_limits')
+      + $form_state->getValue('draft_settings')
       + $form_state->getValue('views_settings');
 
     // Update config and submit form.

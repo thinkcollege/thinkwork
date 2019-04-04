@@ -22,7 +22,6 @@ elements: |
     '#title': 'Test required element with a custom error message.'
     '#required': true
     '#required_error': 'A custom error message'
-  
 css: ''
 javascript: ''
 settings:

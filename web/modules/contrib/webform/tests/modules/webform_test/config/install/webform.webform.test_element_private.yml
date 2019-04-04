@@ -23,7 +23,6 @@ elements: |
       '#type': textfield
       '#title': private
       '#private': true
-  
 css: ''
 javascript: ''
 settings:

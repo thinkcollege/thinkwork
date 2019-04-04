@@ -105,7 +105,6 @@ elements: |
       '#ajax': true
       '#hide_empty': true
       '#template': '[webform_submission:values:user:entity:created:clear]'
-  
 css: |
   .calculation {
     font-size: 2em;

@@ -130,7 +130,7 @@ class ViewfieldItem extends EntityReferenceItem {
   }
 
   /**
-   * Form API callback
+   * Form API callback.
    *
    * Requires that field defaults be supplied when the 'force_default' option
    * is checked.
@@ -152,9 +152,16 @@ class ViewfieldItem extends EntityReferenceItem {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public static function getPreconfiguredOptions() {
+    return [];
+  }
+
+  /**
    * Get an options array of views.
    *
-   * @param boolean $filter
+   * @param bool $filter
    *   (optional) Flag to filter the output using the 'allowed_views' setting.
    *
    * @return array
@@ -178,7 +185,7 @@ class ViewfieldItem extends EntityReferenceItem {
    *
    * @param string $entity_id
    *   The entity_id of the view.
-   * @param boolean $filter
+   * @param bool $filter
    *   (optional) Flag to filter the output using the 'allowed_display_types'
    *   setting.
    *
@@ -218,4 +225,5 @@ class ViewfieldItem extends EntityReferenceItem {
 
     return $display_type_options;
   }
+
 }
