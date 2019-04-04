@@ -127,7 +127,6 @@ elements: |
     '#type': textfield
     '#title': script
     '#default_value': '<script>alert(''hi'');</script>'
-  
 css: ''
 javascript: ''
 settings:

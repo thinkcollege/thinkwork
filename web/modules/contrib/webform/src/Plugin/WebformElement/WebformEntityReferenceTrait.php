@@ -564,12 +564,12 @@ trait WebformEntityReferenceTrait {
         'wrapper' => 'webform-entity-reference-selection-wrapper',
         'progress' => ['type' => 'fullscreen'],
       ],
-      // Hide button, add submit button trigger class, and disable validation.
+      // Disable validation, hide button, add submit button trigger class.
       '#attributes' => [
+        'formnovalidate' => 'formnovalidate',
         'class' => [
           'js-hide',
           'js-webform-entity-reference-submit',
-          'js-webform-novalidate',
         ],
       ],
     ];

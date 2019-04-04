@@ -60,9 +60,6 @@ interface WebformTokenManagerInterface {
    *     array of token replacements after they are generated.
    *   - clear: A boolean flag indicating that tokens should be removed from the
    *     final text if no replacement value can be generated.
-   * @param \Drupal\Core\Render\BubbleableMetadata|null $bubbleable_metadata
-   *   (optional) An object to which static::generate() and the hooks and
-   *   functions that it invokes will add their required bubbleable metadata.
    *
    * @return string|array
    *   Text or array with tokens replaced.

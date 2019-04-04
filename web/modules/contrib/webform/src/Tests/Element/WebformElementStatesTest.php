@@ -87,7 +87,7 @@ states_custom_condition:
     // Rendering.
     /**************************************************************************/
 
-    $this->drupalGet('webform/test_element_states');
+    $this->drupalGet('/webform/test_element_states');
 
     // Check 'States custom selector'.
     $this->assertRaw('<option value="custom_selector" selected="selected">custom_selector</option>');
@@ -176,12 +176,12 @@ states_custom_condition:
     /**************************************************************************/
 
     // Check that  'Edit source' button is not available.
-    $this->drupalGet('webform/test_element_states');
+    $this->drupalGet('/webform/test_element_states');
     $this->assertNoRaw('<input class="button button--danger js-form-submit form-submit" data-drupal-selector="edit-states-basic-actions-source" formnovalidate="formnovalidate" type="submit" id="edit-states-basic-actions-source" name="states_basic_table_source" value="Edit source" />');
 
     // Check that  'Edit source' button is available.
     $this->drupalLogin($this->rootUser);
-    $this->drupalGet('webform/test_element_states');
+    $this->drupalGet('/webform/test_element_states');
     $this->assertRaw('<input class="button button--danger js-form-submit form-submit" data-drupal-selector="edit-states-basic-actions-source" formnovalidate="formnovalidate" type="submit" id="edit-states-basic-actions-source" name="states_basic_table_source" value="Edit source" />');
     $this->assertNoFieldByName('states_basic[states]');
 

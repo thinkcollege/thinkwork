@@ -129,6 +129,9 @@ function webform_theme() {
       'variables' => ['message' => '', 'webform_submission' => NULL, 'handler' => NULL],
     ],
 
+    'webform_html_editor_markup' => [
+      'variables' => ['markup' => NULL, 'allowed_tags' => []],
+    ],
     'webform_horizontal_rule' => [
       'render element' => 'element',
     ],
@@ -450,6 +453,12 @@ function webform_preprocess_form_element_label(&$variables) {
 
   // Restructure the label's title to include #help.
   _webform_preprocess_help_title($variables['title'], $element);
+
+  // Remove label 'for' attribute.
+  if (!empty($element['#attributes']['webform-remove-for-attribute'])) {
+    unset($variables['attributes']['webform-remove-for-attribute']);
+    unset($variables['attributes']['for']);
+  }
 }
 
 /******************************************************************************/
@@ -648,6 +657,13 @@ function _webform_preprocess_element(array &$variables, $title_parents = ['title
     $variables['description']['content'] = [
       'description' => $variables['description']['content'],
     ];
+  }
+  elseif (isset($variables['description']) && empty($variables['description'])) {
+    // Unset $variable['description'] which can be set to NULL or empty string.
+    // This allows $variable['description'] to be converted to render array.
+    // @see template_preprocess_details()
+    // @see template_preprocess_form_element()
+    unset($variables['description']);
   }
 
   $title =& NestedArray::getValue($variables, $title_parents);

@@ -237,7 +237,6 @@ elements: |
       '#default_value':
         - 1
         - 2
-  
 css: ''
 javascript: ''
 settings:

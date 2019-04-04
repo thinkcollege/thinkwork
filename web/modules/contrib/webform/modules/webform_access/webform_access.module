@@ -299,6 +299,12 @@ function _webform_access_form_node_form_submit(&$form, FormStateInterface $form_
     'entity_id' => $node->id(),
   ];
   foreach ($field_names as $field_name) {
+    $value = $form_state->getValue($field_name);
+    // Handle hidden webform fields.
+    if ($value === NULL) {
+      continue;
+    }
+
     $record['field_name'] = $field_name;
     // Delete all existing records.
     \Drupal::database()->delete('webform_access_group_entity')
@@ -306,7 +312,6 @@ function _webform_access_form_node_form_submit(&$form, FormStateInterface $form_
       ->condition('entity_id', $record['entity_id'])
       ->condition('field_name', $record['field_name'])
       ->execute();
-    $value = $form_state->getValue($field_name);
     foreach ($value as $item) {
       $record['webform_id'] = $item['target_id'];
       foreach ($item['settings']['webform_access_group'] as $group_id) {

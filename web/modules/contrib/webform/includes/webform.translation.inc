@@ -59,7 +59,7 @@ function webform_form_config_translation_add_form_alter(&$form, FormStateInterfa
 
       /** @var \Drupal\webform\WebformTranslationManagerInterface $translation_manager */
       $translation_manager = \Drupal::service('webform.translation_manager');
-      $translation_langcode = $form_state->get('config_translation_language')->getId();;
+      $translation_langcode = $form_state->get('config_translation_language')->getId();
       $source_elements = $translation_manager->getSourceElements($webform);
       $translation_elements = $translation_manager->getTranslationElements($webform, $translation_langcode);
       $source_value = WebformYaml::encode($source_elements);
@@ -177,6 +177,21 @@ function _webform_form_config_translate_add_form_alter_yaml_element(array &$elem
  */
 function webform_lingotek_config_entity_document_upload(array &$source_data, ConfigEntityInterface &$entity, &$url) {
   switch ($entity->getEntityTypeId()) {
+    case 'field_config':
+      // Convert webform default data YAML string to an associative array.
+      /** @var \Drupal\field\Entity\FieldConfig $entity */
+      if ($entity->getFieldStorageDefinition()->getType() === 'webform') {
+        foreach ($source_data as &$field_settings) {
+          foreach ($field_settings as $setting_name => $setting_value) {
+            if (preg_match('/\.default_data$/', $setting_name)) {
+              $field_settings[$setting_name] = Yaml::decode($field_settings[$setting_name]);
+            }
+          }
+        }
+        _webform_lingotek_encode_tokens($field_settings);
+      }
+      break;
+
     case 'webform';
       /** @var \Drupal\webform\WebformTranslationManagerInterface $translation_manager */
       $translation_manager = \Drupal::service('webform.translation_manager');
@@ -187,7 +202,7 @@ function webform_lingotek_config_entity_document_upload(array &$source_data, Con
       $translation_elements = $translation_manager->getTranslationElements($entity, $entity->language()->getId());
       $source_data['elements'] = $translation_elements;
 
-      _webform_lingotek_decode_tokens($source_data);
+      _webform_lingotek_encode_tokens($source_data);
       break;
 
     case 'webform_options';
@@ -202,6 +217,21 @@ function webform_lingotek_config_entity_document_upload(array &$source_data, Con
  */
 function webform_lingotek_config_entity_translation_presave(ConfigEntityInterface &$translation, $langcode, &$data) {
   switch ($translation->getEntityTypeId()) {
+    case 'field_config':
+      // Convert webform default data associative array back to YAML string.
+      /** @var \Drupal\field\Entity\FieldConfig $translation */
+      if ($translation->getFieldStorageDefinition()->getType() === 'webform') {
+        foreach ($data as &$field_settings) {
+          _webform_lingotek_encode_tokens($field_settings);
+          foreach ($field_settings as $setting_name => $setting_value) {
+            if (preg_match('/\.default_data$/', $setting_name)) {
+              $field_settings[$setting_name] = $field_settings[$setting_name] ? Yaml::encode($field_settings[$setting_name]) : '';
+            }
+          }
+        }
+      }
+      break;
+
     case 'webform';
       _webform_lingotek_decode_tokens($data);
 
@@ -220,7 +250,7 @@ function webform_lingotek_config_entity_translation_presave(ConfigEntityInterfac
 }
 
 /**
- * Implements hook_lingotek_config_object_document_upload()
+ * Implements hook_lingotek_config_object_document_upload().
  */
 function webform_lingotek_config_object_document_upload(array &$data, $config_name) {
   if ($config_name !== 'webform.settings') {
@@ -233,9 +263,8 @@ function webform_lingotek_config_object_document_upload(array &$data, $config_na
   _webform_lingotek_encode_tokens($data);
 }
 
-
 /**
- * Implements hook_lingotek_config_object_translation_presave()
+ * Implements hook_lingotek_config_object_translation_presave().
  */
 function webform_lingotek_config_object_translation_presave(array &$data, $config_name) {
   if ($config_name !== 'webform.settings') {
@@ -265,7 +294,7 @@ function _webform_lingotek_encode_tokens(array &$data) {
     function ($matches) {
       // Encode all token characters to HTML entities.
       // @see https://stackoverflow.com/questions/6720826/php-convert-all-characters-to-html-entities.
-      $replacement = mb_encode_numericentity($matches[1], array(0x000000, 0x10ffff, 0, 0xffffff), 'UTF-8');
+      $replacement = mb_encode_numericentity($matches[1], [0x000000, 0x10ffff, 0, 0xffffff], 'UTF-8');
       return "[$replacement]";
     },
     $yaml
@@ -286,11 +315,10 @@ function _webform_lingotek_decode_tokens(array &$data) {
     function ($matches) {
       // Decode token HTML entities to characters.
       // @see https://stackoverflow.com/questions/6720826/php-convert-all-characters-to-html-entities.
-      $token = mb_decode_numericentity($matches[1], array(0x000000, 0x10ffff, 0, 0xffffff), 'UTF-8');
+      $token = mb_decode_numericentity($matches[1], [0x000000, 0x10ffff, 0, 0xffffff], 'UTF-8');
       return "[$token]";
     },
     $yaml
   );
   $data = Yaml::decode($yaml);
 }
-

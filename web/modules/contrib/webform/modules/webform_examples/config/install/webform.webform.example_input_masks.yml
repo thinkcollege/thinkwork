@@ -85,7 +85,6 @@ elements: |
       '#type': textfield
       '#title': lowercase
       '#input_mask': '''casing'': ''lower'''
-  
 css: ''
 javascript: ''
 settings:

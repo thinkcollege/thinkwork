@@ -139,7 +139,7 @@ class WebformTime extends WebformElementBase {
    * @return string
    *   Formatted time.
    */
-   protected static function formatTime($custom_format, $timestamp = NULL) {
+  protected static function formatTime($custom_format, $timestamp = NULL) {
     /** @var \Drupal\Core\Datetime\DateFormatterInterface $date_formatter */
     $date_formatter = \Drupal::service('date.formatter');
     return $date_formatter->format($timestamp ?: time(), 'custom', $custom_format);

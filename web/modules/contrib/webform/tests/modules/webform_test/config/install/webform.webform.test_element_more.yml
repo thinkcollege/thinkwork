@@ -61,7 +61,6 @@ elements: |
     '#more': '{This is an example of more}'
     '#description': '{This is a description}'
     '#description_display': tooltip
-  
 css: ''
 javascript: ''
 settings:

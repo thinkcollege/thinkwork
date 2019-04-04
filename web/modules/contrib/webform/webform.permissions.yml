@@ -20,12 +20,12 @@
 
 'edit webform source':
   title: 'Edit webform source code'
-  description: 'Editing webform source code allows users alter and possibly break a webform''s render array.'
+  description: 'Editing webform source code allows users to alter and possibly break a webform''s render array.'
   restrict access: true
 
 'edit webform twig':
   title: 'Edit webform Twig templates'
-  description: 'Editing inline Twig template allows users access any data exposed by Twig functions.'
+  description: 'Editing inline Twig template allows users to access any data exposed by Twig functions.'
   restrict access: true
 
 'edit webform assets':

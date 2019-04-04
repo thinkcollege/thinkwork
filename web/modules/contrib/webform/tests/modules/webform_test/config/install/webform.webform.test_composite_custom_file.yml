@@ -36,7 +36,6 @@ elements: |
       managed_file:
         '#type': managed_file
         '#title': managed_file
-  
 css: ''
 javascript: ''
 settings:

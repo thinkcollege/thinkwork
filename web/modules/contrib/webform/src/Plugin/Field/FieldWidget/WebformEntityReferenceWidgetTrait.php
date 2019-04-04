@@ -84,6 +84,9 @@ trait WebformEntityReferenceWidgetTrait {
     // Get target ID element.
     $target_id_element = $this->getTargetIdElement($items, $delta, $element, $form, $form_state);
 
+    // Determine if this is a paragraph.
+    $is_paragraph = ($items->getEntity()->getEntityTypeId() === 'paragraph');
+
     // Merge target ID and default element and set default #weight.
     // @see \Drupal\Core\Field\Plugin\Field\FieldWidget\EntityReferenceAutocompleteWidget::formElement
     $element = [
@@ -154,7 +157,21 @@ trait WebformEntityReferenceWidgetTrait {
     if ($this->getSetting('default_data')) {
       /** @var \Drupal\webform\WebformTokenManagerInterface $token_manager */
       $token_manager = \Drupal::service('webform.token_manager');
+      $token_types = ['webform', 'webform_submission'];
 
+      $default_data_example = "# This is an example of a comment.
+element_key: 'some value'
+
+# The below example uses a token to get the current node's title.
+# Add ':clear' to the end token to return an empty value when the token is missing.
+title: '[webform_submission:node:title:clear]'
+# The below example uses a token to get a field value from the current node.
+full_name: '[webform_submission:node:field_full_name:clear]";
+      if ($is_paragraph) {
+        $token_types[] = 'paragraph';
+        $default_data_example .= PHP_EOL . "# You can also use paragraphs tokens.
+some_value: '[paragraph:some_value:clear]";
+      }
       $element['settings']['default_data'] = [
         '#type' => 'webform_codemirror',
         '#mode' => 'yaml',
@@ -164,23 +181,17 @@ trait WebformEntityReferenceWidgetTrait {
         '#webform_element' => TRUE,
         '#description' => [
           'content' => ['#markup' => $this->t('Enter submission data as name and value pairs as <a href=":href">YAML</a> which will be used to prepopulate the selected webform.', [':href' => 'https://en.wikipedia.org/wiki/YAML']), '#suffix' => ' '],
-          'token' => $token_manager->buildTreeLink(),
+          'token' => $token_manager->buildTreeLink($token_types),
         ],
         '#more_title' => $this->t('Example'),
         '#more' => [
           '#theme' => 'webform_codemirror',
           '#type' => 'yaml',
-          '#code' => "# This is an example of a comment.
-element_key: 'some value'
-
-# The below example uses a token to get the current node's title.
-# Add ':clear' to the end token to return an empty value when the token is missing.
-title: '[webform_submission:node:title:clear]'
-# The below example uses a token to get a field value from the current node.
-full_name: '[webform_submission:node:field_full_name:clear]",
+          '#code' => $default_data_example,
         ],
       ];
-      $element['settings']['token_tree_link'] = $token_manager->buildTreeElement();
+      $element['settings']['token_tree_link'] = $token_manager->buildTreeElement($token_types);
+      $token_manager->elementValidate($element['settings']['default_data'], $token_types);
     }
 
     return $element;

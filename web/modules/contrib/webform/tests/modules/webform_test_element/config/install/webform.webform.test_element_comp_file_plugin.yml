@@ -27,7 +27,6 @@ elements: |
     '#title': webform_test_composite_file_multiple_header
     '#multiple': true
     '#multiple__header': true
-  
 css: ''
 javascript: ''
 settings:

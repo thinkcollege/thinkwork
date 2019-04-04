@@ -368,7 +368,7 @@ abstract class WebformBrowserTestBase extends BrowserTestBase {
       return $url['query']['sid'];
     }
     else {
-      $entity_ids = \Drupal::entityQuery('webform_submission')
+      $entity_ids = $this->container->get('entity_type.manager')->getStorage('webform_submission')->getQuery()
         ->sort('sid', 'DESC')
         ->condition('webform_id', $webform->id())
         ->accessCheck(FALSE)
@@ -393,7 +393,7 @@ abstract class WebformBrowserTestBase extends BrowserTestBase {
     /** @var \Drupal\webform\WebformSubmissionExporterInterface $exporter */
     $exporter = \Drupal::service('webform_submission.exporter');
     $options += $exporter->getDefaultExportOptions();
-    $this->drupalGet('admin/structure/webform/manage/' . $webform->id() . '/results/download', ['query' => $options]);
+    $this->drupalGet('/admin/structure/webform/manage/' . $webform->id() . '/results/download', ['query' => $options]);
   }
 
   /**

@@ -17,7 +17,6 @@ category: 'Test: Ajax'
 elements: |
   description:
     '#markup': 'This webform will redirect to the homepage when submitted.'
-  
 css: ''
 javascript: ''
 settings:

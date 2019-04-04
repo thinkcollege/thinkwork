@@ -81,10 +81,11 @@ class WebformDateHelper {
    *   PHP DateTimeZone object, string or NULL allowed.
    * @param array $settings
    *   An array of settings.
-   *   @see \Drupal\Core\Datetime\DrupalDateTime::__construct
    *
-   * @return \Drupal\Core\Datetime\DrupalDateTime|boolean
+   * @return \Drupal\Core\Datetime\DrupalDateTime|bool
    *   A new DateTimePlus object or FALSE if invalid date string.
+   *
+   * @see \Drupal\Core\Datetime\DrupalDateTime::__construct
    */
   public static function createFromFormat($format, $time, $timezone = NULL, array $settings = []) {
     $english_time = WebformDateHelper::convertDateStringToEnglish($format, $time);

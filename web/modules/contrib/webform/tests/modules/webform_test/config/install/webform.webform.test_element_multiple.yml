@@ -233,7 +233,6 @@ elements: |
     '#title': webform_multiple_no_items
     '#min_items': 0
     '#empty_items': 0
-  
 css: ''
 javascript: ''
 settings:

@@ -12,7 +12,6 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\webform\Plugin\WebformSourceEntityManager;
 use Drupal\webform\WebformMessageManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -154,20 +153,16 @@ class WebformEntityReferenceEntityFormatter extends WebformEntityReferenceFormat
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    // Get items entity, which is the entity that the webform
-    // is directly attached to.  For Paragraphs this would be the field's
+    // Get source entity, which is the entity that the webform
+    // is directly attached to. For Paragraphs this would be the field's
     // paragraph entity.
-    $items_entity = $items->getEntity();
-
-    // Get (main) source entity, which is the main parent entity for
-    // a paragraph entity.
-    $source_entity = WebformSourceEntityManager::getMainSourceEntity($items_entity);
+    $source_entity = $items->getEntity();
 
     // Determine if webform is previewed within a Paragraph on
     // node edit forms (via *.edit_form or .content_translation_add routes).
     $route = $this->routeMatch->getRouteName();
     $is_node_edit = (preg_match('/\.edit_form$/', $route) || preg_match('/\.content_translation_add$/', $route));
-    $is_paragraph = ($items_entity && $items_entity->getEntityTypeId() === 'paragraph');
+    $is_paragraph = ($source_entity && $source_entity->getEntityTypeId() === 'paragraph');
     $is_paragraph_node_edit = ($is_paragraph && $is_node_edit);
 
     $elements = [];

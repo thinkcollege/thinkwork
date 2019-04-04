@@ -91,7 +91,6 @@ elements: |
       '#message_close': true
       '#message_id': webform_test_message_custom
       '#message_storage': custom
-  
 css: ''
 javascript: ''
 settings:

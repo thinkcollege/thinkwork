@@ -34,7 +34,6 @@ elements: |
     '#title_tag': h5
     '#title_attributes':
       style: 'color: red'
-  
 css: ''
 javascript: ''
 settings:

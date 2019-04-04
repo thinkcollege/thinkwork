@@ -30,7 +30,6 @@ elements: |
     '#title': radios_other
     '#options': gender
     '#description': 'Check and enter ''Other'' to trigger an email.'
-  
 css: ''
 javascript: ''
 settings:

@@ -78,7 +78,7 @@ class WebformEntitySettingsSubmissionsForm extends WebformEntitySettingsBaseForm
     // Submission settings.
     $form['submission_settings'] = [
       '#type' => 'details',
-      '#title' => $this->t('Submission settings'),
+      '#title' => $this->t('Submission general settings'),
       '#open' => TRUE,
     ];
     $form['submission_settings']['submission_label'] = [
@@ -140,115 +140,6 @@ class WebformEntitySettingsSubmissionsForm extends WebformEntitySettingsBaseForm
       '#title' => $this->t('Exclude unselected checkboxes'),
       '#return_value' => TRUE,
       '#default_value' => $settings['submission_exclude_empty_checkbox'],
-    ];
-
-    // User settings.
-    $form['submission_user_settings'] = [
-      '#type' => 'details',
-      '#title' => $this->t('User settings'),
-      '#open' => TRUE,
-    ];
-    $form['submission_user_settings']['submission_user_duplicate'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Allow users to duplicate previous submissions'),
-      '#description' => $this->t('If checked, users will be able to duplicate their previous submissions.'),
-      '#return_value' => TRUE,
-      '#default_value' => $settings['submission_user_duplicate'],
-    ];
-    $form['submission_user_settings']['submission_columns'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Submission columns'),
-      '#description' => $this->t('Below columns are displayed to users who can view previous submissions and/or pending drafts.'),
-    ];
-    // Submission user columns.
-    // @see \Drupal\webform\Form\WebformResultsCustomForm::buildForm
-    $available_columns = $webform_submission_storage->getColumns($webform);
-    // Remove columns that should never be displayed to users.
-    $available_columns = array_diff_key($available_columns, array_flip(['uuid', 'in_draft', 'entity', 'sticky', 'locked', 'notes', 'uid']));
-    $custom_columns = $webform_submission_storage->getUserColumns($webform);
-    // Change sid's # to an actual label.
-    $available_columns['sid']['title'] = $this->t('Submission ID');
-    if (isset($custom_columns['sid'])) {
-      $custom_columns['sid']['title'] = $this->t('Submission ID');
-    }
-    // Get available columns as option.
-    $columns_options = [];
-    foreach ($available_columns as $column_name => $column) {
-      $title = (strpos($column_name, 'element__') === 0) ? ['data' => ['#markup' => '<b>' . $column['title'] . '</b>']] : $column['title'];
-      $key = (isset($column['key'])) ? str_replace('webform_', '', $column['key']) : $column['name'];
-      $columns_options[$column_name] = ['title' => $title, 'key' => $key];
-    }
-    // Get custom columns as the default value.
-    $columns_keys = array_keys($custom_columns);
-    $columns_default_value = array_combine($columns_keys, $columns_keys);
-    // Display columns in sortable table select element.
-    $form['submission_user_settings']['submission_columns']['submission_user_columns'] = [
-      '#type' => 'webform_tableselect_sort',
-      '#header' => [
-        'title' => $this->t('Title'),
-        'key' => $this->t('Key'),
-      ],
-      '#options' => $columns_options,
-      '#default_value' => $columns_default_value,
-    ];
-
-    // Access denied.
-    $form['access_denied'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Access denied'),
-      '#open' => TRUE,
-    ];
-    $form['access_denied']['submission_access_denied'] = [
-      '#type' => 'radios',
-      '#title' => $this->t('When a user is denied access to a submission'),
-      '#options' => [
-        WebformInterface::ACCESS_DENIED_DEFAULT => $this->t('Default (Displays the default access denied page)'),
-        WebformInterface::ACCESS_DENIED_PAGE => $this->t('Page (Displays message when access is denied to a submission)'),
-        WebformInterface::ACCESS_DENIED_LOGIN => $this->t('Login (Redirects to user login form and displays message)'),
-      ],
-      '#required' => TRUE,
-      '#default_value' => $settings['submission_access_denied'],
-    ];
-    $form['access_denied']['access_denied_container'] = [
-      '#type' => 'container',
-      '#states' => [
-        'visible' => [
-          ':input[name="submission_access_denied"]' => ['!value' => WebformInterface::ACCESS_DENIED_DEFAULT],
-        ],
-      ],
-    ];
-    $form['access_denied']['access_denied_container']['submission_access_denied_title'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Access denied title'),
-      '#description' => $this->t('Page title to be shown on access denied page'),
-      '#default_value' => $settings['submission_access_denied_title'],
-      '#states' => [
-        'visible' => [
-          ':input[name="submission_access_denied"]' => ['value' => WebformInterface::ACCESS_DENIED_PAGE],
-        ],
-      ],
-    ];
-    $form['access_denied']['access_denied_container']['submission_access_denied_message'] = [
-      '#type' => 'webform_html_editor',
-      '#title' => $this->t('Access denied message'),
-      '#description' => $this->t('Will be displayed either in-line or as a status message depending on the setting above.'),
-      '#default_value' => $settings['submission_access_denied_message'],
-    ];
-    $form['access_denied']['access_denied_container']['token_tree_link'] = $this->tokenManager->buildTreeElement();
-    $form['access_denied']['access_denied_container']['access_denied_attributes'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Access denied message attributes'),
-      '#open' => TRUE,
-      '#states' => [
-        'visible' => [
-          ':input[name="submission_access_denied"]' => ['value' => WebformInterface::ACCESS_DENIED_PAGE],
-        ],
-      ],
-    ];
-    $form['access_denied']['access_denied_container']['access_denied_attributes']['submission_access_denied_attributes'] = [
-      '#type' => 'webform_element_attributes',
-      '#title' => $this->t('Access denied message'),
-      '#default_value' => $settings['submission_access_denied_attributes'],
     ];
 
     // Submission behaviors.
@@ -336,10 +227,122 @@ class WebformEntitySettingsSubmissionsForm extends WebformEntitySettingsBaseForm
       '#weight' => $form['submission_behaviors']['token_update']['#weight'] + 1,
     ];
 
+    // User settings.
+    $form['submission_user_settings'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Submission user settings'),
+      '#open' => TRUE,
+    ];
+    $form['submission_user_settings']['submission_user_duplicate'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Allow users to duplicate previous submissions'),
+      '#description' => $this->t('If checked, users will be able to duplicate their previous submissions.'),
+      '#return_value' => TRUE,
+      '#default_value' => $settings['submission_user_duplicate'],
+    ];
+    $form['submission_user_settings']['submission_columns'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Submission user columns'),
+      '#description' => $this->t('Below columns are displayed to users who can view previous submissions and/or pending drafts.'),
+    ];
+    // Submission user columns.
+    // @see \Drupal\webform\Form\WebformResultsCustomForm::buildForm
+    $available_columns = $webform_submission_storage->getColumns($webform);
+    // Remove columns that should never be displayed to users.
+    $available_columns = array_diff_key($available_columns, array_flip(['uuid', 'in_draft', 'entity', 'sticky', 'locked', 'notes', 'uid']));
+    $custom_columns = $webform_submission_storage->getUserColumns($webform);
+    // Change sid's # to an actual label.
+    $available_columns['sid']['title'] = $this->t('Submission ID');
+    if (isset($custom_columns['sid'])) {
+      $custom_columns['sid']['title'] = $this->t('Submission ID');
+    }
+    // Get available columns as option.
+    $columns_options = [];
+    foreach ($available_columns as $column_name => $column) {
+      $title = (strpos($column_name, 'element__') === 0) ? ['data' => ['#markup' => '<b>' . $column['title'] . '</b>']] : $column['title'];
+      $key = (isset($column['key'])) ? str_replace('webform_', '', $column['key']) : $column['name'];
+      $columns_options[$column_name] = ['title' => $title, 'key' => $key];
+    }
+    // Get custom columns as the default value.
+    $columns_keys = array_keys($custom_columns);
+    $columns_default_value = array_combine($columns_keys, $columns_keys);
+    // Display columns in sortable table select element.
+    $form['submission_user_settings']['submission_columns']['submission_user_columns'] = [
+      '#type' => 'webform_tableselect_sort',
+      '#header' => [
+        'title' => $this->t('Title'),
+        'key' => $this->t('Key'),
+      ],
+      '#options' => $columns_options,
+      '#default_value' => $columns_default_value,
+    ];
+
+    // Access denied.
+    $form['access_denied'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Submission access denied settings'),
+      '#open' => TRUE,
+    ];
+    $form['access_denied']['submission_access_denied'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('When a user is denied access to a submission'),
+      '#description' => $this->t('Select what happens when a user is denied access to a submission.') .
+        '<br/><br/>' .
+        $this->t('Go to <a href=":href">form settings</a> to select what happens when a user is denied access to a webform.', [':href' => Url::fromRoute('entity.webform.settings_form', ['webform' => $webform->id()])->toString()]),
+      '#options' => [
+        WebformInterface::ACCESS_DENIED_DEFAULT => $this->t('Default (Displays the default access denied page)'),
+        WebformInterface::ACCESS_DENIED_PAGE => $this->t('Page (Displays message when access is denied to a submission)'),
+        WebformInterface::ACCESS_DENIED_LOGIN => $this->t('Login (Redirects to user login form and displays message)'),
+      ],
+      '#required' => TRUE,
+      '#default_value' => $settings['submission_access_denied'],
+    ];
+    $form['access_denied']['access_denied_container'] = [
+      '#type' => 'container',
+      '#states' => [
+        'visible' => [
+          ':input[name="submission_access_denied"]' => ['!value' => WebformInterface::ACCESS_DENIED_DEFAULT],
+        ],
+      ],
+    ];
+    $form['access_denied']['access_denied_container']['submission_access_denied_title'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Access denied title'),
+      '#description' => $this->t('Page title to be shown on access denied page'),
+      '#default_value' => $settings['submission_access_denied_title'],
+      '#states' => [
+        'visible' => [
+          ':input[name="submission_access_denied"]' => ['value' => WebformInterface::ACCESS_DENIED_PAGE],
+        ],
+      ],
+    ];
+    $form['access_denied']['access_denied_container']['submission_access_denied_message'] = [
+      '#type' => 'webform_html_editor',
+      '#title' => $this->t('Access denied message'),
+      '#description' => $this->t('Will be displayed either in-line or as a status message depending on the setting above.'),
+      '#default_value' => $settings['submission_access_denied_message'],
+    ];
+    $form['access_denied']['access_denied_container']['token_tree_link'] = $this->tokenManager->buildTreeElement();
+    $form['access_denied']['access_denied_container']['access_denied_attributes'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Access denied message attributes'),
+      '#open' => TRUE,
+      '#states' => [
+        'visible' => [
+          ':input[name="submission_access_denied"]' => ['value' => WebformInterface::ACCESS_DENIED_PAGE],
+        ],
+      ],
+    ];
+    $form['access_denied']['access_denied_container']['access_denied_attributes']['submission_access_denied_attributes'] = [
+      '#type' => 'webform_element_attributes',
+      '#title' => $this->t('Access denied message'),
+      '#default_value' => $settings['submission_access_denied_attributes'],
+    ];
+
     // Submission limits.
     $form['submission_limits'] = [
       '#type' => 'details',
-      '#title' => $this->t('Submission limits'),
+      '#title' => $this->t('Submission limit settings'),
       '#open' => TRUE,
     ];
     // Submission limits: Total.
@@ -546,7 +549,7 @@ class WebformEntitySettingsSubmissionsForm extends WebformEntitySettingsBaseForm
     // Purge settings.
     $form['purge_settings'] = [
       '#type' => 'details',
-      '#title' => $this->t('Submission purging'),
+      '#title' => $this->t('Submission purge settings'),
       '#open' => TRUE,
     ];
     $form['purge_settings']['purge'] = [
@@ -575,7 +578,7 @@ class WebformEntitySettingsSubmissionsForm extends WebformEntitySettingsBaseForm
     // Draft settings.
     $form['draft_settings'] = [
       '#type' => 'details',
-      '#title' => $this->t('Draft settings'),
+      '#title' => $this->t('Submission draft settings'),
       '#open' => TRUE,
     ];
     $form['draft_settings']['draft'] = [
@@ -641,7 +644,7 @@ class WebformEntitySettingsSubmissionsForm extends WebformEntitySettingsBaseForm
     // Autofill settings.
     $form['autofill_settings'] = [
       '#type' => 'details',
-      '#title' => $this->t('Autofill settings'),
+      '#title' => $this->t('Submission autofill settings'),
       '#open' => TRUE,
     ];
     $form['autofill_settings']['autofill'] = [
@@ -679,7 +682,7 @@ class WebformEntitySettingsSubmissionsForm extends WebformEntitySettingsBaseForm
     // Submission views.
     $form['views_settings'] = [
       '#type' => 'details',
-      '#title' => $this->t('Submission views'),
+      '#title' => $this->t('Submission views settings'),
       '#open' => TRUE,
     ];
     if (!$this->moduleHandler->moduleExists('webform_views')) {

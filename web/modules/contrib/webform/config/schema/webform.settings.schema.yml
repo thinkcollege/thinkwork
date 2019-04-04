@@ -461,6 +461,9 @@ webform.settings:
         default_batch_export_size:
           type: integer
           label: 'Batch export size'
+        default_batch_import_size:
+          type: integer
+          label: 'Batch import size'
         default_batch_update_size:
           type: integer
           label: 'Batch update size'

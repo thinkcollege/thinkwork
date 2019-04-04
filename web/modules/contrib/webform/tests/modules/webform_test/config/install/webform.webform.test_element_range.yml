@@ -70,7 +70,6 @@ elements: |
     '#output': right
     '#output__field_prefix': $
     '#output__field_suffix': '.00'
-  
 css: ''
 javascript: ''
 settings:

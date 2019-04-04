@@ -15,8 +15,6 @@ libraries-extend:
     - bootstrap_barrio/file
 
 ckeditor_stylesheets:
-  - css/base/elements.css
-  - css/components/captions.css
   - css/components/table.css
 
 regions:
@@ -43,8 +41,8 @@ regions:
   footer_fourth: 'Footer fourth'
   footer_fifth: 'Footer fifth'
 
-# Information added by Drupal.org packaging script on 2018-08-09
-version: '8.x-4.17'
+# Information added by Drupal.org packaging script on 2019-02-28
+version: '8.x-4.22'
 core: '8.x'
 project: 'bootstrap_barrio'
-datestamp: 1533828192
+datestamp: 1551325396

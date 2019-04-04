@@ -73,7 +73,6 @@ elements: |
     '#display_on': none
     '#store': true
     '#template': 'sid: [webform_submission:sid]'
-  
 css: ''
 javascript: ''
 settings:

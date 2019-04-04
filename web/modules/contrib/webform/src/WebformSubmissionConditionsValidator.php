@@ -39,9 +39,6 @@ class WebformSubmissionConditionsValidator implements WebformSubmissionCondition
     'open' => '!collapsed',
     'closed' => 'collapsed',
     'readwrite' => '!readonly',
-    // Below states are never used by the #states API.
-    // 'untouched' => '!touched',
-    // 'irrelevant' => '!relevant',
   ];
 
   /**
@@ -78,6 +75,8 @@ class WebformSubmissionConditionsValidator implements WebformSubmissionCondition
     // Loop through visible elements with #states.
     foreach ($visible_elements as &$element) {
       $states =& WebformElementHelper::getStates($element);
+      // Store original #states in #_webform_states.
+      $element['#_webform_states'] = $states;
       foreach ($states as $original_state => $conditions) {
         if (!is_array($conditions)) {
           continue;
@@ -104,7 +103,12 @@ class WebformSubmissionConditionsValidator implements WebformSubmissionCondition
 
         // Replace hidden cross page targets with hidden inputs.
         if ($has_cross_page_targets) {
-          $cross_page_targets = array_filter($targets, function ($visible) {return $visible === FALSE;});
+          $cross_page_targets = array_filter(
+            $targets,
+            function ($visible) {
+              return $visible === FALSE;
+            }
+          );
           $states[$original_state] = $this->replaceCrossPageTargets($conditions, $webform_submission, $cross_page_targets, $form);
           continue;
         }
@@ -170,6 +174,9 @@ class WebformSubmissionConditionsValidator implements WebformSubmissionCondition
    *   The conditions with cross page targets replaced with hidden inputs.
    */
   public function replaceCrossPageTargets(array $conditions, WebformSubmissionInterface $webform_submission, array $targets, array &$form) {
+    // Cache random cross page values.
+    static $cross_page_values = [];
+
     $cross_page_conditions = [];
     foreach ($conditions as $index => $value) {
       if (is_int($index) && is_array($value) && WebformArrayHelper::isSequential($value)) {
@@ -200,11 +207,16 @@ class WebformSubmissionConditionsValidator implements WebformSubmissionCondition
         }
 
         $target_trigger = $condition_result ? 'value' : '!value';
-        // IMPORTANT: Using a random value to make sure users can't determine
-        // the a hidden (computed) element's value/result.
-        $target_value = rand();
         $target_name = 'webform_states_' . md5($selector);
         $target_selector = ':input[name="' . $target_name . '"]';
+
+        // IMPORTANT:
+        // Using a random value to make sure users can't determine a hidden
+        // or computed element's value/result.
+        if (!isset($cross_page_values[$target_name])) {
+          $cross_page_values[$target_name] = rand();
+        }
+        $target_value = $cross_page_values[$target_name];
 
         if (is_int($index)) {
           unset($cross_page_conditions[$index][$selector]);
@@ -352,6 +364,10 @@ class WebformSubmissionConditionsValidator implements WebformSubmissionCondition
 
       // Skip if element's #states_clear is FALSE.
       if (isset($element['#states_clear']) && $element['#states_clear'] === FALSE) {
+        continue;
+      }
+
+      if (isset($element['#_webform_access']) && $element['#_webform_access'] === FALSE) {
         continue;
       }
 
@@ -634,7 +650,8 @@ class WebformSubmissionConditionsValidator implements WebformSubmissionCondition
     // @see \Drupal\webform\Element\WebformElementStates::processWebformStates
     switch ($trigger_state) {
       case 'empty':
-        $result = (empty($element_value) === (boolean) $trigger_value);
+        $empty = (empty($element_value) && $element_value !== '0');
+        $result = ($empty === (boolean) $trigger_value);
         break;
 
       case 'checked':
@@ -796,6 +813,13 @@ class WebformSubmissionConditionsValidator implements WebformSubmissionCondition
         }
       }
 
+      // Store original #access in #_webform_access for all elements.
+      // @see \Drupal\webform\WebformSubmissionConditionsValidator::submitFormRecursive
+      if (isset($element['#access'])) {
+        $element['#_webform_access'] = $element['#access'];
+      }
+
+      // Skip if element is not visible.
       if (isset($element['#access']) && $element['#access'] === FALSE) {
         continue;
       }

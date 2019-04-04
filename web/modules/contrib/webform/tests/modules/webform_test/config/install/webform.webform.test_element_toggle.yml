@@ -49,7 +49,6 @@ elements: |
         one: One
         two: Two
         three: Three
-  
 css: ''
 javascript: ''
 settings:

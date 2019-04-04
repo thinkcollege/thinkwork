@@ -107,7 +107,6 @@ elements: |
         two: Two
         three: Three
       '#destination__type': webform_email_multiple
-  
 css: ''
 javascript: ''
 settings:

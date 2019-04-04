@@ -329,7 +329,7 @@ abstract class WebformCompositeBase extends WebformElementBase {
   /**
    * {@inheritdoc}
    */
-  protected function formatCustomItem($type, array &$element, WebformSubmissionInterface $webform_submission, array $options = []) {
+  protected function formatCustomItem($type, array &$element, WebformSubmissionInterface $webform_submission, array $options = [], array $context = []) {
     $name = strtolower($type);
 
     // Parse element.composite_key from template and add composite element
@@ -340,17 +340,15 @@ abstract class WebformCompositeBase extends WebformElementBase {
       $composite_keys = array_unique($matches[1]);
 
       $item_function = 'format' . $type;
-      $options['context'] = [
-        'element' => [],
-      ];
+      $context['element'] = [];
       foreach ($composite_keys as $composite_key) {
         if (isset($composite_elements[$composite_key])) {
-          $options['context']['element'][$composite_key] = $this->$item_function(['#format' => NULL] + $element, $webform_submission, ['composite_key' => $composite_key] + $options);
+          $context['element'][$composite_key] = $this->$item_function(['#format' => NULL] + $element, $webform_submission, ['composite_key' => $composite_key] + $options);
         }
       }
     }
 
-    return parent::formatCustomItem($type, $element, $webform_submission, $options);
+    return parent::formatCustomItem($type, $element, $webform_submission, $options, $context);
   }
 
   /**
@@ -362,6 +360,12 @@ abstract class WebformCompositeBase extends WebformElementBase {
     }
 
     $format = $this->getItemFormat($element);
+
+    // Handle custom composite html items.
+    if ($format === 'custom' && !empty($element['#format_html'])) {
+      return $this->formatCustomItem('html', $element, $webform_submission, $options);
+    }
+
     switch ($format) {
       case 'list':
       case 'raw':
@@ -373,6 +377,9 @@ abstract class WebformCompositeBase extends WebformElementBase {
 
       default:
         $lines = $this->formatHtmlItemValue($element, $webform_submission, $options);
+        if (empty($lines)) {
+          return '';
+        }
         foreach ($lines as $key => $line) {
           if (is_string($line)) {
             $lines[$key] = ['#markup' => $line];
@@ -445,7 +452,7 @@ abstract class WebformCompositeBase extends WebformElementBase {
   protected function formatTextItems(array &$element, WebformSubmissionInterface $webform_submission, array $options = []) {
     $format = $this->getItemsFormat($element);
     if ($format === 'table') {
-       $element['#format_items'] = 'hr';
+      $element['#format_items'] = 'hr';
     }
     return parent::formatTextItems($element, $webform_submission, $options);
   }
@@ -459,6 +466,12 @@ abstract class WebformCompositeBase extends WebformElementBase {
     }
 
     $format = $this->getItemFormat($element);
+
+    // Handle custom composite text items.
+    if ($format === 'custom' && !empty($element['#format_text'])) {
+      return $this->formatCustomItem('text', $element, $webform_submission, $options);
+    }
+
     switch ($format) {
       case 'list':
       case 'raw':
@@ -835,12 +848,6 @@ abstract class WebformCompositeBase extends WebformElementBase {
         1 => $this->t('Yes'),
       ],
     ];
-
-    $item_pattern = &$form['display']['item']['patterns']['#value']['items']['#items'];
-    $composite_elements = $this->getCompositeElements();
-    foreach ($composite_elements as $composite_key => $composite_element) {
-      $item_pattern[] = "{{ element.$composite_key }}";
-    }
 
     // Hide single item display when multiple item display is set to 'table'.
     $form['display']['item']['#states']['invisible'] = [

@@ -26,7 +26,7 @@
       
       };
 
-      $('[data-toggle="affix"]').each(function() {
+      $('[data-toggle="affix"]').once().each(function() {
         var ele = $(this),
             wrapper = $('<div></div>');
     

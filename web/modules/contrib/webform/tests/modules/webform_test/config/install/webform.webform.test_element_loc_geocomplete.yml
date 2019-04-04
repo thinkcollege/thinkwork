@@ -94,7 +94,6 @@ elements: |
     '#title': 'Location with geolocation and hidden'
     '#geolocation': true
     '#hidden': true
-  
 css: ''
 javascript: ''
 settings:

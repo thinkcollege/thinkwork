@@ -33,7 +33,6 @@ elements: |
       '#type': webform_rating
       '#title': rating_required
       '#required': true
-  
 css: ''
 javascript: ''
 settings:

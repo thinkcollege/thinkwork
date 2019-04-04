@@ -91,7 +91,6 @@ elements: |
           url: 'http://example.com'
       '#title__help': 'This is link title help'
       '#url__help': 'This is link url help'
-  
 css: ''
 javascript: ''
 settings:

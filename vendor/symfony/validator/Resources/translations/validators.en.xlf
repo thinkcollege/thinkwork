@@ -326,6 +326,18 @@
                 <source>This value should be a multiple of {{ compared_value }}.</source>
                 <target>This value should be a multiple of {{ compared_value }}.</target>
             </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</target>
+            </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>This value should be valid JSON.</target>
+            </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>This collection should contain only unique elements.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

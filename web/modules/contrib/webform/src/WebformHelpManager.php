@@ -442,7 +442,7 @@ class WebformHelpManager implements WebformHelpManagerInterface {
           'data-source' => 'tbody tr',
           'data-parent' => 'tr',
           'data-summary' => '.webform-help-videos-summary',
-          'data-item-single' => $this->t('video'),
+          'data-item-singlular' => $this->t('video'),
           'data-item-plural' => $this->t('videos'),
           'data-no-results' => '.webform-help-videos-no-results',
           'title' => $this->t('Enter a keyword to filter by.'),
@@ -478,7 +478,6 @@ class WebformHelpManager implements WebformHelpManagerInterface {
           'cellspacing' => 0,
         ],
       ];
-
 
       $build['#attached']['library'][] = 'webform/webform.admin';
       $build['#attached']['library'][] = 'webform/webform.help';
@@ -974,6 +973,18 @@ class WebformHelpManager implements WebformHelpManagerInterface {
           ],
         ],
       ],
+      'import' => [
+        'title' => $this->t('Importing webform submissions'),
+        'content' => $this->t("This screencast shows how to import submissions using CSV (comma separated values) file."),
+        'youtube_id' => 'AYGr4O-jZBo',
+        'presentation_id' => '189XhD6m0879EMo44ym8uaZaIAFiEl8tkH31WUtge_u8',
+        'links' => [
+          [
+            'title' => $this->t('Webform module now supports importing submissions | Drupal.org'),
+            'url' => 'https://www.drupal.org/node/3040513',
+          ],
+        ],
+      ],
       'configuration' => [
         'title' => $this->t("Configuring the Webform module"),
         'content' => $this->t('This screencast walks through all the configuration settings available to manage forms, submissions, options, handlers, exporters, libraries and assets.'),
@@ -1126,6 +1137,22 @@ class WebformHelpManager implements WebformHelpManagerInterface {
           ],
         ],
       ],
+      'attachments' => [
+        'title' => $this->t('Sending webform email attachments'),
+        'content' => $this->t('This presentation shows how to set up and add email attachments via an email handler.'),
+        'youtube_id' => 'w7exQFDIHhQ',
+        'presentation_id' => '1DTE9nSg_CKhWkhBCmfks_o2RoeApTHc4orhNxrj2imk',
+        'links' => [
+          [
+            'title' => $this->t('How to send email attachments? | Drupal.org'),
+            'url' => 'https://www.drupal.org/node/3021480 ',
+          ],
+          [
+            'title' => $this->t('Webform Attachment sub-module | Drupal.org'),
+            'url' => 'https://www.drupal.org/node/3021481',
+          ],
+        ],
+      ],
       'translations' => [
         'title' => $this->t('Translating webforms'),
         'content' => $this->t("This screencast shows how to translate a webform's title, descriptions, label and messages."),
@@ -1193,6 +1220,12 @@ class WebformHelpManager implements WebformHelpManagerInterface {
         'content' => $this->t('This presentation gives you the extra knowledge you need to get the most out the Webform module.'),
         'youtube_id' => 'Yg2lAzE1heM',
         'presentation_id' => '1TMo0vBjkdtfcIsYWhxQnjO_rG9ebK64oHhdPvTvwNus',
+      ],
+      'healthcare' => [
+        'title' => $this->t('Webforms for Healthcare'),
+        'content' => $this->t('This presentation discusses how healthcare organizations can leverage the Webform module for Drupal 8.'),
+        'youtube_id' => 'YiK__YobDJw',
+        'presentation_id' => '1jxbJkovaubHrhvjIZ-_OoK0zsANqC1vG4HFvAxfszOE/edit?usp=sharing',
       ],
     ];
 
@@ -1721,7 +1754,7 @@ class WebformHelpManager implements WebformHelpManagerInterface {
       'group' => 'forms',
       'title' => $this->t('Webform: Test'),
       'content' => $this->t("The <strong>Test</strong> form allows a webform to be tested using a customizable test dataset.") . ' ' .
-        $this->t('Multiple test submissions can be created using the devel_generate module.'),
+        $this->t('Multiple test submissions can be created using the Devel generate module.'),
       'video_id' => 'forms',
       'routes' => [
         // @see /admin/structure/webform/manage/{webform}/test

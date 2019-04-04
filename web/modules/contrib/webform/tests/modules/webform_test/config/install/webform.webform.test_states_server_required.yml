@@ -430,7 +430,6 @@ elements: |
         required:
           ':input[name="composite_sub_elements_required_trigger"]':
             value: b
-  
 css: ''
 javascript: ''
 settings:

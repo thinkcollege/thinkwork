@@ -27,7 +27,6 @@ elements: |
     comments:
       '#type': textarea
       '#title': Comments
-  
 css: ''
 javascript: ''
 settings:

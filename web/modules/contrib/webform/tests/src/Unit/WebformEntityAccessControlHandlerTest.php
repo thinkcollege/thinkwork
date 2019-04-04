@@ -198,7 +198,7 @@ class WebformEntityAccessControlHandlerTest extends UnitTestCase {
       ->will(
         $this->returnCallback(
           function ($operation, AccountInterface $account, WebformInterface $webform) use ($options) {
-            $condition = in_array($operation, $options['access_rules']) || in_array($operation .'_any', $options['access_rules']);
+            $condition = in_array($operation, $options['access_rules']) || in_array($operation . '_any', $options['access_rules']);
             return AccessResult::allowedIf($condition)
               ->addCacheContexts(['access_rules_cache_context'])
               ->addCacheTags(['access_rules_cache_tag']);

@@ -65,7 +65,6 @@ elements: |
       Please enter a value for a and b.
       {% endif %}
       {% endspaceless %}
-  
 css: ''
 javascript: ''
 settings:

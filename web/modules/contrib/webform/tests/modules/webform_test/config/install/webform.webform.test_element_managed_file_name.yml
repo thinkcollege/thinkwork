@@ -27,7 +27,6 @@ elements: |
     '#title': 'File multiple'
     '#multiple': true
     '#file_name': 'file_multiple_[webform_submission:values:source_for_filename]'
-  
 css: ''
 javascript: ''
 settings:

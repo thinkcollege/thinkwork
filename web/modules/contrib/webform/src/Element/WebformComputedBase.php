@@ -138,11 +138,11 @@ abstract class WebformComputedBase extends FormElement {
           'wrapper' => $wrapper_id,
           'progress' => ['type' => 'none'],
         ],
-        // Hide button and disable validation.
+        // Disable validation, hide button, add submit button trigger class.
         '#attributes' => [
+          'formnovalidate' => 'formnovalidate',
           'class' => [
             'js-hide',
-            'js-webform-novalidate',
             'js-webform-computed-submit',
           ],
         ],

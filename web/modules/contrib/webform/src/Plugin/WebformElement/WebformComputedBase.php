@@ -2,10 +2,8 @@
 
 namespace Drupal\webform\Plugin\WebformElement;
 
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Mail\MailFormatHelper;
-use Drupal\Core\Render\Element;
 use Drupal\webform\Element\WebformComputedTwig as WebformComputedTwigElement;
 use Drupal\webform\Element\WebformComputedBase as WebformComputedBaseElement;
 use Drupal\webform\Plugin\WebformElementBase;
@@ -75,19 +73,14 @@ abstract class WebformComputedBase extends WebformElementBase implements Webform
     if (!$this->isDisplayOn($element, static::DISPLAY_ON_FORM)) {
       $element['#access'] = FALSE;
     }
-
-    $element['#element_validate'][] = [get_class($this), 'validateWebformComputed'];
   }
 
   /**
    * {@inheritdoc}
    */
-  public function replaceTokens(array &$element, EntityInterface $entity = NULL) {
-    foreach ($element as $key => $value) {
-      if (!Element::child($key) && !in_array($key, ['#template'])) {
-        $element[$key] = $this->tokenManager->replace($value, $entity);
-      }
-    }
+  protected function prepareElementValidateCallbacks(array &$element, WebformSubmissionInterface $webform_submission = NULL) {
+    parent::prepareElementValidateCallbacks($element, $webform_submission);
+    $element['#element_validate'][] = [get_class($this), 'validateWebformComputed'];
   }
 
   /**

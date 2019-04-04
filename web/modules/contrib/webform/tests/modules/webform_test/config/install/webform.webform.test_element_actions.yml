@@ -132,7 +132,6 @@ elements: |
     '#draft_hide': true
     '#wizard_prev_hide': true
     '#wizard_next_hide': true
-  
 css: ''
 javascript: ''
 settings:

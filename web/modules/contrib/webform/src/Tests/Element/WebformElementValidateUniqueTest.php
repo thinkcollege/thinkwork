@@ -38,8 +38,8 @@ class WebformElementValidateUniqueTest extends WebformElementTestBase {
     // Check post submission with default values does not trigger
     // unique errors.
     $sid = $this->postSubmission($webform, $edit);
-    $this->assertNoRaw('The value <em class="placeholder">{unique_textfield}</em> has already been submitted once for the <em class="placeholder">unique_textfield</em> element. You may have already submitted this webform, or you need to use a different value.</li>');;
-    $this->assertNoRaw('unique_textfield_multiple error message.');;
+    $this->assertNoRaw('The value <em class="placeholder">{unique_textfield}</em> has already been submitted once for the <em class="placeholder">unique_textfield</em> element. You may have already submitted this webform, or you need to use a different value.</li>');
+    $this->assertNoRaw('unique_textfield_multiple error message.');
     $this->assertNoRaw('unique_user_textfield error message.');
     $this->assertNoRaw('unique_entity_textfield error message.');
     $this->assertNoRaw('unique_error error message.');
@@ -48,8 +48,8 @@ class WebformElementValidateUniqueTest extends WebformElementTestBase {
     // Check post duplicate submission with default values does trigger
     // unique errors.
     $this->postSubmission($webform, $edit);
-    $this->assertRaw('The value <em class="placeholder">{unique_textfield}</em> has already been submitted once for the <em class="placeholder">unique_textfield</em> element. You may have already submitted this webform, or you need to use a different value.</li>');;
-    $this->assertRaw('unique_textfield_multiple error message.');;
+    $this->assertRaw('The value <em class="placeholder">{unique_textfield}</em> has already been submitted once for the <em class="placeholder">unique_textfield</em> element. You may have already submitted this webform, or you need to use a different value.</li>');
+    $this->assertRaw('unique_textfield_multiple error message.');
     $this->assertRaw('unique_user_textfield error message.');
     $this->assertRaw('unique_entity_textfield error message.');
     $this->assertRaw('unique_error error message.');
@@ -57,7 +57,7 @@ class WebformElementValidateUniqueTest extends WebformElementTestBase {
 
     // Check #unique element can be updated.
     $this->drupalPostForm("admin/structure/webform/manage/test_element_validate_unique/submission/$sid/edit", [], t('Save'));
-    $this->assertNoRaw('The value <em class="placeholder">{unique_textfield}</em> has already been submitted once for the <em class="placeholder">unique_textfield</em> element. You may have already submitted this webform, or you need to use a different value.</li>');;
+    $this->assertNoRaw('The value <em class="placeholder">{unique_textfield}</em> has already been submitted once for the <em class="placeholder">unique_textfield</em> element. You may have already submitted this webform, or you need to use a different value.</li>');
     $this->assertNoRaw('unique_user_textfield error message.');
     $this->assertNoRaw('unique_entity_textfield error message.');
     $this->assertNoRaw('unique_error error message.');
@@ -76,7 +76,7 @@ class WebformElementValidateUniqueTest extends WebformElementTestBase {
       'unique_textfield_multiple[items][2][_item_]' => '{same}',
     ];
     $this->drupalPostForm(NULL, $edit, t('Submit'));
-    $this->assertRaw('unique_textfield_multiple error message.');;
+    $this->assertRaw('unique_textfield_multiple error message.');
 
     // Purge existing submissions.
     $this->purgeSubmissions();

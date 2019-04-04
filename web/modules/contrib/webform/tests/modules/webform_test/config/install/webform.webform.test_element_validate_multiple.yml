@@ -78,7 +78,6 @@ elements: |
       '#title': webform_element_multiple_managed_file_two
       '#select2': true
       '#multiple': 2
-  
 css: ''
 javascript: ''
 settings:

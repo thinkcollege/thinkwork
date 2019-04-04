@@ -5,10 +5,10 @@ description: Allows site to send emails using Mailgun email service.
 package: Mail
 configure: mailgun.admin_settings_form
 dependencies:
-  - mailsystem
+  - mailsystem:mailsystem
 
-# Information added by Drupal.org packaging script on 2017-12-07
-version: '8.x-1.0-beta1'
+# Information added by Drupal.org packaging script on 2019-03-27
+version: '8.x-1.0-rc1'
 core: '8.x'
 project: 'mailgun'
-datestamp: 1512638288
+datestamp: 1553728984

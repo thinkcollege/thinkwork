@@ -378,7 +378,6 @@ elements: |
     '#type': webform_video_file
     '#title': 'Video file'
     '#disabled': true
-  
 css: ''
 javascript: ''
 settings:

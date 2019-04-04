@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\mailgun\MailgunHandler;
+use Drupal\mailgun\MailgunHandlerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -20,7 +21,7 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
   /**
    * Mailgun handler.
    *
-   * @var \Drupal\mailgun\MailgunHandler
+   * @var \Drupal\mailgun\MailgunHandlerInterface
    */
   protected $mailgunHandler;
 
@@ -37,7 +38,7 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $config_factory, MailgunHandler $mailgunHandler) {
+  public function __construct(ConfigFactoryInterface $config_factory, MailgunHandlerInterface $mailgunHandler) {
     parent::__construct($config_factory);
 
     $this->mailgunHandler = $mailgunHandler;
@@ -92,11 +93,8 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Mailgun API Key'),
       '#type' => 'textfield',
       '#required' => TRUE,
-      '#description' => $this->t('Enter your API key.'),
+      '#description' => $this->t('Enter your API key. It should be similar to: @key', ['@key' => 'key-1234567890abcdefghijklmnopqrstu']),
       '#default_value' => $api_key,
-      '#attributes' => [
-        'placeholder' => 'key-1234567890abcdefghijklmnopqrstuv',
-      ],
     ];
 
     // Don't show other settings until we don't set API key.
@@ -179,7 +177,7 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Do not track the following mails'),
       '#type' => 'textarea',
       '#default_value' => $config->get('tracking_exception'),
-      '#description' => $this->t('Add all mail keys you want to except from tracking. One key per line. Format: module:key (e.g.: user:password_reset)'),
+      '#description' => $this->t('Add all mail keys you want to except from tracking. One key per line. Format: module:key (e.g.: user:password_reset).'),
     ];
 
     $form['advanced_settings']['format'] = [
@@ -199,20 +197,20 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
       '#type' => 'select',
       '#options' => $options,
       '#default_value' => $config->get('format_filter'),
-      '#description' => $this->t('Format filter to use to render the message'),
+      '#description' => $this->t('Format filter to use to render the message.'),
     ];
     $form['advanced_settings']['format']['use_theme'] = [
       '#title' => $this->t('Use theme'),
       '#type' => 'checkbox',
       '#default_value' => $config->get('use_theme'),
-      '#description' => $this->t('Enable to pass the message through a theme function. Default "mailgun" or pass one with $message["params"]["theme"]'),
+      '#description' => $this->t('Enable to pass the message through a theme function. Default "mailgun" or pass one with $message["params"]["theme"].'),
     ];
 
     $form['advanced_settings']['use_queue'] = [
       '#title' => $this->t('Enable Queue'),
       '#type' => 'checkbox',
       '#default_value' => $config->get('use_queue'),
-      '#description' => $this->t('Enable to queue mails and send them out in background by cron'),
+      '#description' => $this->t('Enable to queue emails and send them out during cron run.'),
     ];
 
     $form['advanced_settings']['tagging_mailkey'] = [
@@ -220,7 +218,7 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#default_value' => $config->get('tagging_mailkey'),
       '#description' => $this->t('Add tag by mail key. See @link for details.', [
-        '@link' => Link::fromTextAndUrl($this->t('Tagging'), Url::fromUri('https://documentation.mailgun.com/user_manual.html#tagging', [
+        '@link' => Link::fromTextAndUrl($this->t("Mailgun's tagging documentation"), Url::fromUri('https://documentation.mailgun.com/user_manual.html#tagging', [
           'attributes' => [
             'onclick' => "target='_blank'",
           ],
@@ -235,9 +233,11 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    // Set default value for domain when we submit form for the first time.
+    $domain = $form_state->getValue('working_domain');
     $this->config(MAILGUN_CONFIG_NAME)
       ->set('api_key', $form_state->getValue('api_key'))
-      ->set('working_domain', $form_state->getValue('working_domain'))
+      ->set('working_domain', empty($domain) ? '_sender' : $domain)
       ->set('debug_mode', $form_state->getValue('debug_mode'))
       ->set('test_mode', $form_state->getValue('test_mode'))
       ->set('tracking_opens', $form_state->getValue('tracking_opens'))
@@ -249,7 +249,7 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
       ->set('tagging_mailkey', $form_state->getValue('tagging_mailkey'))
       ->save();
 
-    drupal_set_message($this->t('The configuration options have been saved.'));
+    $this->messenger()->addMessage($this->t('The configuration options have been saved.'));
   }
 
 }

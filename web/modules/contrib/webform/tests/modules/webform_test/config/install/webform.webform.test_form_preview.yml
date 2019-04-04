@@ -26,7 +26,7 @@ elements: |
       '#title': Name
       '#format_attributes':
         class:
-        - format-attributes-class
+          - format-attributes-class
   container:
     '#type': container
     '#title': container
@@ -51,7 +51,6 @@ elements: |
       '#format_attributes':
         class:
           - format-attributes-class
-  
 css: |
   .format-attributes-class {
     border: 1px dashed #ccc;

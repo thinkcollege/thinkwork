@@ -4,11 +4,11 @@ namespace Drupal\webform_submission_log;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\webform\WebformSubmissionInterface;
+
 /**
  * Interface for webform submission log manager.
  */
-interface WebformSubmissionLogManagerInterface{
+interface WebformSubmissionLogManagerInterface {
 
   /**
    * Insert submission log.

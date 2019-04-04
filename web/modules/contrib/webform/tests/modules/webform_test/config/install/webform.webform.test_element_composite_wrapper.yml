@@ -95,7 +95,44 @@ elements: |
       Two: Two
       Three: Three
     '#wrapper_type': container
-  
+  states_checkbox:
+    '#type': checkbox
+    '#title': states_checkbox
+  states_fieldset:
+    '#type': radios
+    '#title': states_fieldset
+    '#options':
+      One: One
+      Two: Two
+      Three: Three
+    '#states':
+      visible:
+        ':input[name="states_checkbox"]':
+          checked: true
+  states_form_item:
+    '#type': radios
+    '#title': states_form_item
+    '#options':
+      One: One
+      Two: Two
+      Three: Three
+    '#wrapper_type': form_element
+    '#states':
+      visible:
+        ':input[name="states_checkbox"]':
+          checked: true
+  states_container:
+    '#type': radios
+    '#title': states_container
+    '#options':
+      One: One
+      Two: Two
+      Three: Three
+    '#wrapper_type': container
+    '#states':
+      visible:
+        ':input[name="states_checkbox"]':
+          checked: true
 css: ''
 javascript: ''
 settings:

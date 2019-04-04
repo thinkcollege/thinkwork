@@ -116,7 +116,6 @@ elements: |
         include_anonymous: true
       '#default_value':
         - 1
-  
 css: ''
 javascript: ''
 settings:

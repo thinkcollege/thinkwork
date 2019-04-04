@@ -33,7 +33,6 @@ elements: |
     '#selection_handler': 'default:user'
     '#selection_settings':
       include_anonymous: true
-  
 css: ''
 javascript: ''
 settings:

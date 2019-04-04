@@ -54,7 +54,6 @@ elements: |
       class:
         - preview_next_button_attributes
       style: 'color: orange'
-  
 css: ''
 javascript: ''
 settings:

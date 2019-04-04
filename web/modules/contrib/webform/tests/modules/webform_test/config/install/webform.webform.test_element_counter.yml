@@ -79,7 +79,6 @@ elements: |
       '#counter_type': word
       '#counter_maximum': 10
       '#counter_maximum_message': '%d character(s) remaining. This is custom text'
-  
 css: ''
 javascript: ''
 settings:

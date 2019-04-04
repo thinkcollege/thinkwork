@@ -175,7 +175,7 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
     // Requirements.
     $form['requirements'] = [
       '#type' => 'details',
-      '#title' => $this->t('Requirements'),
+      '#title' => $this->t('Requirement settings'),
       '#description' => $this->t('The below requirements are checked by the <a href=":href">Status report</a>.', [':href' => Url::fromRoute('system.status')->toString()]),
       '#open' => TRUE,
       '#tree' => TRUE,
@@ -239,6 +239,14 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
       '#default_value' => $config->get('batch.default_batch_export_size'),
       '#description' => $this->t('Batch export size is used when submissions are being exported/downloaded.'),
     ];
+    $form['batch']['default_batch_import_size'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Batch import size'),
+      '#min' => 1,
+      '#required' => TRUE,
+      '#default_value' => $config->get('batch.default_batch_import_size'),
+      '#description' => $this->t('Batch import size is used when submissions are being imported/uploaded.'),
+    ];
     $form['batch']['default_batch_update_size'] = [
       '#type' => 'number',
       '#title' => $this->t('Batch update size'),
@@ -272,6 +280,7 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
       '#description' => '<p>' . $this->t('If older Webform configuration files are imported after the Webform module has been updated this may cause the older configuration to be out-of-sync and result in unexpected behaviors and errors.') . '</p>' .
         '<p>' . $this->t("Running the below 'Repair' command will apply all missing settings to older Webform configuration files.") . '</p>',
       '#help' => FALSE,
+      '#weight' => 100,
     ];
     $form['repair']['action'] = ['#type' => 'actions'];
     $form['repair']['action']['repair_configuration'] = [

@@ -25,7 +25,6 @@ elements: |
     '#height_title': '{height_title}'
     '#width_title': '{width_title}'
     '#default_value': 300x400
-  
 css: ''
 javascript: ''
 settings:

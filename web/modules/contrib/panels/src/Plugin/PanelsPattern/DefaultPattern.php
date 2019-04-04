@@ -7,7 +7,7 @@ use Drupal\Core\Plugin\PluginBase;
 use Drupal\Core\Url;
 use Drupal\ctools\ContextMapperInterface;
 use Drupal\panels\CachedValuesGetterTrait;
-use Drupal\user\SharedTempStoreFactory;
+use Drupal\Core\TempStore\SharedTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

@@ -47,7 +47,6 @@ elements: |
       '#attributes':
         readonly: readonly
         style: 'background-color: #eee'
-  
 css: ''
 javascript: ''
 settings:

@@ -12,6 +12,13 @@ use Drupal\webform_access\WebformAccessTypeInterface;
  * @ConfigEntityType(
  *   id = "webform_access_type",
  *   label = @Translation("Webform access type"),
+ *   label_collection = @Translation("Access types"),
+ *   label_singular = @Translation("access type"),
+ *   label_plural = @Translation("access types"),
+ *   label_count = @PluralTranslation(
+ *     singular = "@count access type",
+ *     plural = "@count access types",
+ *   ),
  *   handlers = {
  *     "storage" = "\Drupal\webform_access\WebformAccessTypeStorage",
  *     "access" = "Drupal\webform_access\WebformAccessTypeAccessControlHandler",

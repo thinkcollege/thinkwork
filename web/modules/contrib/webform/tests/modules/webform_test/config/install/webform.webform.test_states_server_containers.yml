@@ -73,7 +73,6 @@ elements: |
             checked: true
           ':input[name="visible_slide_textfield"]':
             filled: true
-  
 css: ''
 javascript: ''
 settings:

@@ -40,7 +40,6 @@ elements: |
   captcha_recaptcha:
     '#type': captcha
     '#captcha_type': recaptcha/reCAPTCHA
-  
 css: ''
 javascript: ''
 settings:

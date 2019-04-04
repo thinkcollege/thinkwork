@@ -34,6 +34,7 @@ class WebformSettingsPathTest extends WebformTestBase {
         'test' => ['#markup' => 'test'],
       ]),
     ]);
+    $webform->setSetting('draft', WebformInterface::DRAFT_ALL);
     $webform->save();
     $webform_path = '/webform/' . $webform->id();
     $form_path = '/form/' . str_replace('_', '-', $webform->id());
@@ -103,25 +104,25 @@ class WebformSettingsPathTest extends WebformTestBase {
 
     // Check custom submit and confirm path.
     $webform->setSettings(['page' => TRUE, 'page_submit_path' => 'page_submit_path', 'page_confirm_path' => 'page_confirm_path'])->save();
-    $this->drupalGet('page_submit_path');
+    $this->drupalGet('/page_submit_path');
     $this->assertResponse(200, 'Submit system path access permitted');
-    $this->drupalGet('page_confirm_path');
+    $this->drupalGet('/page_confirm_path');
     $this->assertResponse(200, 'Submit URL alias access permitted');
 
     // Check custom base path.
     $webform->setSettings(['page_submit_path' => '', 'page_confirm_path' => ''])->save();
     $this->drupalLogin($this->rootUser);
     $this->drupalPostForm('admin/structure/webform/config', ['page_settings[default_page_base_path]' => 'base/path'], t('Save configuration'));
-    $this->drupalGet('base/path/' . str_replace('_', '-', $webform->id()));
+    $this->drupalGet('/base/path/' . str_replace('_', '-', $webform->id()));
     $this->assertResponse(200, 'Submit URL alias with custom base path exists');
-    $this->drupalGet('base/path/' . str_replace('_', '-', $webform->id()) . '/confirmation');
+    $this->drupalGet('/base/path/' . str_replace('_', '-', $webform->id()) . '/confirmation');
     $this->assertResponse(200, 'Confirm URL alias with custom base path exists');
 
     // Check custom base path delete if accessing webform as page is disabled.
     $webform->setSettings(['page' => FALSE])->save();
-    $this->drupalGet('base/path/' . str_replace('_', '-', $webform->id()));
+    $this->drupalGet('/base/path/' . str_replace('_', '-', $webform->id()));
     $this->assertResponse(404, 'Submit URL alias does not exist.');
-    $this->drupalGet('base/path/' . str_replace('_', '-', $webform->id()) . '/confirmation');
+    $this->drupalGet('/base/path/' . str_replace('_', '-', $webform->id()) . '/confirmation');
     $this->assertResponse(404, 'Confirm URL alias does not exist.');
 
     // Disable automatic generation of paths.

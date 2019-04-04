@@ -33,7 +33,6 @@ elements: |
     '#terms_type': slideout
     '#terms_title': terms_of_service_slideout
     '#terms_content': 'These are the terms of service.'
-  
 css: ''
 javascript: ''
 settings:

@@ -44,7 +44,6 @@ elements: |
     '#type': textarea
     '#title': Comments
     '#description': 'What did you like most? What would you change? Advice for the speaker to make this session better?'
-  
 css: ''
 javascript: ''
 settings:

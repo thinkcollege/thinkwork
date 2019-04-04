@@ -10,7 +10,7 @@ use Drupal\Core\Layout\LayoutInterface;
 use Drupal\Core\Layout\LayoutPluginManagerInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
 use Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant;
-use Drupal\user\SharedTempStoreFactory;
+use Drupal\Core\TempStore\SharedTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -28,7 +28,7 @@ class LayoutChangeSettings extends FormBase {
   /**
    * The tempstore factory.
    *
-   * @var \Drupal\user\SharedTempStoreFactory
+   * @var \Drupal\Core\TempStore\SharedTempStoreFactory
    */
   protected $tempstore;
 
@@ -38,7 +38,7 @@ class LayoutChangeSettings extends FormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('plugin.manager.core.layout'),
-      $container->get('user.shared_tempstore')
+      $container->get('tempstore.shared')
     );
   }
 
@@ -47,7 +47,7 @@ class LayoutChangeSettings extends FormBase {
    *
    * @param \Drupal\Core\Layout\LayoutPluginManagerInterface $manager
    *   The layout plugin manager.
-   * @param \Drupal\user\SharedTempStoreFactory $tempstore
+   * @param \Drupal\Core\TempStore\SharedTempStoreFactory $tempstore
    *   The tempstore factory.
    */
   public function __construct(LayoutPluginManagerInterface $manager, SharedTempStoreFactory $tempstore) {

@@ -44,8 +44,9 @@ class WebformAccessTest extends WebformAccessTestBase {
       );
     }
 
-    // Check that employee and manager users can access webform results.
-    foreach ($this->users as $account) {
+    // Check that manager and employee users can access webform results.
+    foreach (['manager', 'employee'] as $name) {
+      $account = $this->users[$name];
       $this->drupalLogin($account);
       $this->drupalGet("/node/$nid/webform/results/submissions");
       $this->assertResponse(200);

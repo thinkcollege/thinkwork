@@ -83,7 +83,6 @@ elements: |
       '#type': url
       '#title': Website
       '#description': 'Enter your existing profile/resume/portfolio link.'
-  
 css: ''
 javascript: ''
 settings:

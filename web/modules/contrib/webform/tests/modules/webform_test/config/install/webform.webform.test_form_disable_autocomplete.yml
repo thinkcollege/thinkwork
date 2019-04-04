@@ -20,7 +20,6 @@ elements: |
   test:
     '#type': email
     '#title': 'Test autocompletion is disabled.'
-  
 css: ''
 javascript: ''
 settings:

@@ -7,7 +7,7 @@ use Drupal\Core\Mail\MailInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Render\RendererInterface;
-use Drupal\mailgun\MailgunHandler;
+use Drupal\mailgun\MailgunHandlerInterface;
 use Html2Text\Html2Text;
 use Drupal\Component\Utility\Html;
 use Psr\Log\LoggerInterface;
@@ -55,14 +55,14 @@ class MailgunMail implements MailInterface, ContainerFactoryPluginInterface {
   /**
    * Mailgun handler.
    *
-   * @var \Drupal\mailgun\MailgunHandler
+   * @var \Drupal\mailgun\MailgunHandlerInterface
    */
   protected $mailgunHandler;
 
   /**
    * Mailgun constructor.
    */
-  public function __construct(ImmutableConfig $settings, LoggerInterface $logger, RendererInterface $renderer, QueueFactory $queueFactory, MailgunHandler $mailgunHandler) {
+  public function __construct(ImmutableConfig $settings, LoggerInterface $logger, RendererInterface $renderer, QueueFactory $queueFactory, MailgunHandlerInterface $mailgunHandler) {
     $this->mailgunConfig = $settings;
     $this->logger = $logger;
     $this->renderer = $renderer;
@@ -111,9 +111,6 @@ class MailgunMail implements MailInterface, ContainerFactoryPluginInterface {
         '#message' => $message,
       ];
       $message['body'] = $this->renderer->renderRoot($render);
-
-      $converter = new Html2Text($message['body']);
-      $message['plain'] = $converter->getText();
     }
 
     return $message;
@@ -150,20 +147,12 @@ class MailgunMail implements MailInterface, ContainerFactoryPluginInterface {
       $mailgun_message['text'] = $converter->getText();
     }
 
-    // Add the CC and BCC fields if not empty.
-    if (!empty($message['params']['cc'])) {
-      $mailgun_message['cc'] = $message['params']['cc'];
+    // Add Cc / Bcc headers.
+    if (!empty($message['headers']['Cc'])) {
+      $mailgun_message['cc'] = $message['headers']['Cc'];
     }
-    if (!empty($message['params']['bcc'])) {
-      $mailgun_message['bcc'] = $message['params']['bcc'];
-    }
-
-    // Support CC / BCC provided by webform module.
-    if (!empty($message['params']['cc_mail'])) {
-      $mailgun_message['cc'] = $message['params']['cc_mail'];
-    }
-    if (!empty($message['params']['bcc_mail'])) {
-      $mailgun_message['bcc'] = $message['params']['bcc_mail'];
+    if (!empty($message['headers']['Bcc'])) {
+      $mailgun_message['bcc'] = $message['headers']['Bcc'];
     }
 
     // Add Reply-To as header according to Mailgun API.

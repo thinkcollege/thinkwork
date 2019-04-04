@@ -5,11 +5,11 @@ package: Field types
 # version: VERSION
 # core: 8.x
 dependencies:
-  - views
-  - field
+  - drupal:views
+  - drupal:field
 
-# Information added by Drupal.org packaging script on 2017-03-17
-version: '8.x-3.0-alpha2'
+# Information added by Drupal.org packaging script on 2019-03-29
+version: '8.x-3.0-alpha3'
 core: '8.x'
 project: 'viewfield'
-datestamp: 1489747688
+datestamp: 1553884989

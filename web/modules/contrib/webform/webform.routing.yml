@@ -198,6 +198,7 @@ entity.webform.user.drafts:
         type: 'entity:webform'
   requirements:
     _entity_access: 'webform.submission_create'
+    _custom_access: '\Drupal\webform\Access\WebformEntityAccess::checkDraftsAccess'
 
 entity.webform.user.submission:
   path: '/webform/{webform}/submissions/{webform_submission}'

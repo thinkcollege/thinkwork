@@ -22,7 +22,6 @@ elements: |
     '#title': Value
     '#required': true
     '#description': 'Enter a value to displayed in a custom message.'
-  
 css: ''
 javascript: ''
 settings:

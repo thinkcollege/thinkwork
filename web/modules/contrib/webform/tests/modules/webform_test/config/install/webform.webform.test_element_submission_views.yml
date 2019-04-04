@@ -46,7 +46,6 @@ elements: |
             - entity.webform.results_submissions
           node_routes:
             - entity.node.webform.results_submissions
-  
 css: ''
 javascript: ''
 settings:

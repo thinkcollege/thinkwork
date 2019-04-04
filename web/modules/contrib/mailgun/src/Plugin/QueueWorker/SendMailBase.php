@@ -6,7 +6,7 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\Core\Queue\RequeueException;
-use Drupal\mailgun\MailgunHandler;
+use Drupal\mailgun\MailgunHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -32,14 +32,14 @@ class SendMailBase extends QueueWorkerBase implements ContainerFactoryPluginInte
   /**
    * MailGun mail handler.
    *
-   * @var \Drupal\mailgun\MailgunHandler
+   * @var \Drupal\mailgun\MailgunHandlerInterface
    */
   protected $mailgunHandler;
 
   /**
    * SendMailBase constructor.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ImmutableConfig $settings, LoggerInterface $logger, MailgunHandler $mailgunHandler) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ImmutableConfig $settings, LoggerInterface $logger, MailgunHandlerInterface $mailgunHandler) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->mailgunConfig = $settings;
     $this->logger = $logger;

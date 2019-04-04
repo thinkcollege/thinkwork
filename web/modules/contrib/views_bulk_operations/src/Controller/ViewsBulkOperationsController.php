@@ -9,6 +9,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Drupal\views_bulk_operations\Service\ViewsBulkOperationsActionProcessorInterface;
 use Drupal\user\PrivateTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Drupal\Core\Ajax\AjaxResponse;
 
@@ -75,7 +76,12 @@ class ViewsBulkOperationsController extends ControllerBase implements ContainerI
     $this->deleteTempstoreData();
 
     $this->actionProcessor->executeProcessing($view_data);
-    return batch_process($view_data['redirect_url']);
+    if ($view_data['batch']) {
+      return batch_process($view_data['redirect_url']);
+    }
+    else {
+      return new RedirectResponse($view_data['redirect_url']->setAbsolute()->toString());
+    }
   }
 
   /**

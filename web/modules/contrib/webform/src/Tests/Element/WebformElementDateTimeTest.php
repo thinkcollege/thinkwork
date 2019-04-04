@@ -25,7 +25,19 @@ class WebformElementDateTimeTest extends WebformElementTestBase {
    */
   public function testDateTime() {
     $webform = Webform::load('test_element_datetime');
-    $this->drupalGet('webform/test_element_datetime');
+
+    // Check posted submission values.
+    $this->postSubmission($webform);
+    $this->assertRaw("datetime_default: '2009-08-18T16:00:00+1000'");
+    $this->assertRaw("datetime_multiple:
+  - '2009-08-18T16:00:00+1000'");
+    $this->assertRaw("datetime_custom_composite:
+  - datetime: '2009-08-18T16:00:00+1000'");
+
+    $this->drupalGet('/webform/test_element_datetime');
+
+    // Check datetime label has not for attributes.
+    $this->assertRaw('<label>datetime_default</label>');
 
     // Check '#format' values.
     $this->assertFieldByName('datetime_default[date]', '2009-08-18');
@@ -36,7 +48,7 @@ class WebformElementDateTimeTest extends WebformElementTestBase {
     $this->assertRaw('<input data-drupal-selector="edit-datetime-datepicker-timepicker-date" title="Date (e.g. ' . $now_date . ')" type="text" min="Mon, 01/01/1900" max="Sat, 12/31/2050" data-drupal-date-format="D, m/d/Y" id="edit-datetime-datepicker-timepicker-date" name="datetime_datepicker_timepicker[date]" value="Tue, 08/18/2009" size="15" maxlength="128" class="form-text" />');
     $this->assertRaw('<input data-drupal-selector="edit-datetime-datepicker-timepicker-time"');
     // Skip time which can change during the tests.
-    $this->assertRaw('type="text" step="1" data-webform-time-format="g:i A" id="edit-datetime-datepicker-timepicker-time" name="datetime_datepicker_timepicker[time]" value="4:00 PM" size="12" maxlength="10" class="form-time webform-time" />');
+    $this->assertRaw('type="text" step="1" data-webform-time-format="g:i A" id="edit-datetime-datepicker-timepicker-time" name="datetime_datepicker_timepicker[time]" value="4:00 PM" size="12" maxlength="12" class="form-time webform-time" />');
 
     // Check time with custom min/max/step attributes.
     $this->assertRaw('<input min="2009-01-01" data-min-year="2009" max="2009-12-31" data-max-year="2009" data-drupal-selector="edit-datetime-time-min-max-date"');
@@ -69,15 +81,15 @@ class WebformElementDateTimeTest extends WebformElementTestBase {
     $this->assertRaw('<em class="placeholder">datetime_min_max_time</em> must be on or after <em class="placeholder">2009-01-01 09:00:00</em>.');
 
     // Check datetime #date_max time validation.
-    $edit = ['datetime_min_max_time[time]' => '24:00:00'];
+    $edit = ['datetime_min_max_time[time]' => '01:00:00'];
     $this->drupalPostForm('webform/test_element_datetime', $edit, t('Submit'));
-    $this->assertRaw('<em class="placeholder">Time</em> must be on or before <em class="placeholder">17:00:00</em>.');
+    $this->assertRaw('<em class="placeholder">datetime_min_max_time: Time</em> must be on or after <em class="placeholder">09:00:00</em>.');
     $this->assertRaw('<em class="placeholder">datetime_min_max_time</em> must be on or after <em class="placeholder">2009-01-01 09:00:00</em>.');
 
     // Check datetime #date_min time validation.
     $edit = ['datetime_min_max_time[time]' => '01:00:00'];
     $this->drupalPostForm('webform/test_element_datetime', $edit, t('Submit'));
-    $this->assertRaw('<em class="placeholder">Time</em> must be on or after <em class="placeholder">09:00:00</em>.');
+    $this->assertRaw('<em class="placeholder">datetime_min_max_time: Time</em> must be on or after <em class="placeholder">09:00:00</em>.');
     $this->assertRaw('<em class="placeholder">datetime_min_max_time</em> must be on or after <em class="placeholder">2009-01-01 09:00:00</em>.');
 
     // Check: Issue #2723159: Datetime form element cannot validate when using a

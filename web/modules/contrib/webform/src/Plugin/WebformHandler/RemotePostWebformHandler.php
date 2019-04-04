@@ -375,7 +375,7 @@ class RemotePostWebformHandler extends WebformHandlerBase {
       '#default_value' => $this->configuration['excluded_data'],
     ];
 
-    $this->tokenManager->elementValidate($form);
+    $this->elementTokenValidate($form);
 
     return $this->setSettingsParents($form);
   }
@@ -427,13 +427,13 @@ class RemotePostWebformHandler extends WebformHandlerBase {
     $this->messageManager->setWebformSubmission($webform_submission);
 
     $request_url = $this->configuration[$state . '_url'];
-    $request_url = $this->tokenManager->replace($request_url, $webform_submission);
+    $request_url = $this->replaceTokens($request_url, $webform_submission);
     $request_method = (!empty($this->configuration['method'])) ? $this->configuration['method'] : 'POST';
     $request_type = ($request_method !== 'GET') ? $this->configuration['type'] : NULL;
 
     // Get request options with tokens replaced.
     $request_options = (!empty($this->configuration['custom_options'])) ? Yaml::decode($this->configuration['custom_options']) : [];
-    $request_options = $this->tokenManager->replaceNoRenderContext($request_options, $webform_submission);
+    $request_options = $this->replaceTokens($request_options, $webform_submission);
 
     try {
       if ($request_method === 'GET') {
@@ -477,7 +477,7 @@ class RemotePostWebformHandler extends WebformHandlerBase {
     if ($submission_has_token) {
       $response_data = $this->getResponseData($response);
       $token_data = ['webform_handler' => [$this->getHandlerId() => [$state => $response_data]]];
-      $submission_data = $this->tokenManager->replaceNoRenderContext($submission_data, $webform_submission, $token_data);
+      $submission_data = $this->replaceTokens($submission_data, $webform_submission, $token_data);
       $webform_submission->setData($submission_data);
       // Resave changes to the submission data without invoking any hooks
       // or handlers.
@@ -559,7 +559,7 @@ class RemotePostWebformHandler extends WebformHandlerBase {
     }
 
     // Replace tokens.
-    $data = $this->tokenManager->replaceNoRenderContext($data, $webform_submission);
+    $data = $this->replaceTokens($data, $webform_submission);
 
     return $data;
   }
@@ -860,7 +860,7 @@ class RemotePostWebformHandler extends WebformHandlerBase {
         ],
       ];
       $build_message = [
-        '#markup' => $this->tokenManager->replaceNoRenderContext($custom_response_message, $this->getWebform(), $token_data),
+        '#markup' => $this->replaceTokens($custom_response_message, $this->getWebform(), $token_data),
       ];
       $this->messenger()->addError(\Drupal::service('renderer')->renderPlain($build_message));
     }
@@ -888,6 +888,14 @@ class RemotePostWebformHandler extends WebformHandlerBase {
       }
     }
     return (!empty($this->configuration['message'])) ? $this->configuration['message'] : '';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function buildTokenTreeElement(array $token_types = [], $description = NULL) {
+    $description = $description ?: $this->t('Use [webform_submission:values:ELEMENT_KEY:raw] to get plain text values.');
+    return parent::buildTokenTreeElement($token_types, $description);
   }
 
 }

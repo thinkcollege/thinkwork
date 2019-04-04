@@ -180,7 +180,7 @@ class WebformElementFormatTest extends WebformElementTestBase {
     foreach ($elements as $label => $value) {
       $this->assertContains('<b>' . $label . '</b><br />' . $value, $body, new FormattableMarkup('Found @label: @value', [
         '@label' => $label,
-        '@value' => $value
+        '@value' => $value,
       ]));
     }
 
@@ -237,7 +237,7 @@ class WebformElementFormatTest extends WebformElementTestBase {
     foreach ($elements as $label => $value) {
       $this->assertContains('<h3>' . $label . '</h3>' . $value . '<hr />', $body, new FormattableMarkup('Found @label: @value', [
         '@label' => $label,
-        '@value' => $value
+        '@value' => $value,
       ]));
     }
 

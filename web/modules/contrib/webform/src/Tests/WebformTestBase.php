@@ -252,7 +252,7 @@ abstract class WebformTestBase extends WebTestBase {
     /** @var \Drupal\webform\WebformSubmissionExporterInterface $exporter */
     $exporter = \Drupal::service('webform_submission.exporter');
     $options += $exporter->getDefaultExportOptions();
-    $this->drupalGet('admin/structure/webform/manage/' . $webform->id() . '/results/download', ['query' => $options]);
+    $this->drupalGet('/admin/structure/webform/manage/' . $webform->id() . '/results/download', ['query' => $options]);
   }
 
   /**

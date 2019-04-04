@@ -48,6 +48,7 @@
           set link_classes = [
             'nav-link',
             item.in_active_trail ? 'active',
+            item.url.getOption('attributes').class ? item.url.getOption('attributes').class,
           ]
         %}
         {{ link(item.title, item.url, {'class': link_classes}) }}

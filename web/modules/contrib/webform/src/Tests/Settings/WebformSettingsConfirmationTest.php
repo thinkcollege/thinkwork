@@ -100,7 +100,7 @@ class WebformSettingsConfirmationTest extends WebformTestBase {
 
     // Check that the confirmation page's 'Back to form 'link includes custom
     // query parameters.
-    $this->drupalGet('webform/test_confirmation_page/confirmation', ['query' => ['custom' => 'param']]);
+    $this->drupalGet('/webform/test_confirmation_page/confirmation', ['query' => ['custom' => 'param']]);
 
     // Check confirmation page with custom query parameters.
     $sid = $this->postSubmission($webform_confirmation_page, [], NULL, ['query' => ['custom' => 'param']]);

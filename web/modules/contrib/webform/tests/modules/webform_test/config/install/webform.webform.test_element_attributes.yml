@@ -33,7 +33,6 @@ elements: |
         - four
       style: 'color: red'
       custom: test
-  
 css: ''
 javascript: ''
 settings:

@@ -26,6 +26,28 @@ elements: |
       /{{ value }}/
       
     '#default_value': '{textfield_custom}'
+  textfield_custom_token:
+    '#type': textfield
+    '#title': textfield_custom_token
+    '#format': custom
+    '#format_html': |
+      <em>[webform_submission:values:textfield_custom_token:raw]</em>
+      
+    '#format_text': |
+      /[webform_submission:values:textfield_custom_token:raw]/
+      
+    '#default_value': '{textfield_custom_token}'
+  textfield_custom_token_exception:
+    '#type': textfield
+    '#title': textfield_custom_token_exception
+    '#format': custom
+    '#format_html': |
+      <em>EXCEPTION[webform_submission:values:textfield_custom_token_exception]</em>
+      
+    '#format_text': |
+      /EXCEPTION[webform_submission:values:textfield_custom_token_exception]/
+      
+    '#default_value': '{textfield_custom_token_exception}'
   textfield_custom_value_multiple:
     '#type': textfield
     '#title': textfield_custom
@@ -108,6 +130,57 @@ elements: |
       state_province: '{state_province}'
       postal_code: '{postal_code}'
       country: '{country}'
+  address_multiple_custom:
+    '#type': webform_address
+    '#title': address_multiple_custom
+    '#multiple': true
+    '#default_value':
+      - address: '{01-address}'
+        address_2: '{01-address_2}'
+        city: '{01-city}'
+        state_province: '{01-state_province}'
+        postal_code: '{01-postal_code}'
+        country: '{01-country}'
+      - address: '{02-address}'
+        address_2: '{02-address_2}'
+        city: '{02-city}'
+        state_province: '{02-state_province}'
+        postal_code: '{02-postal_code}'
+        country: '{02-country}'
+    '#format': custom
+    '#format_html': |
+      element.address: {{ element.address }}<br/>
+      element.address_2: {{ element.address_2 }}<br/>
+      element.city: {{ element.city }}<br/>
+      element.state_province: {{ element.state_province }}<br/>
+      element.postal_code: {{ element.postal_code }}<br/>
+      element.country: {{ element.country }}<br/>
+      
+    '#format_text': |
+      element.address: {{ element.address }}
+      element.address_2: {{ element.address_2 }}
+      element.city: {{ element.city }}
+      element.state_province: {{ element.state_province }}
+      element.postal_code: {{ element.postal_code }}
+      element.country: {{ element.country }}
+      
+    '#format_items': custom
+    '#format_items_html': |
+      {% for item in items %}
+      <div>*****</div>
+      {{ item }}
+      <div>*****</div>
+      {% endfor %}
+      
+    '#format_items_text': |
+      {% for item in items %}
+      *****
+      {{ item }}
+      *****
+      {% endfor %}
+      
+    '#state_province__type': webform_select_other
+    '#country__type': webform_select_other
   fieldset_custom:
     '#type': fieldset
     '#title': fieldset_custom
@@ -140,7 +213,6 @@ elements: |
       '#type': textfield
       '#title': fieldset_custom_children_textfield
       '#default_value': '{fieldset_custom_children_textfield}'
-  
 css: ''
 javascript: ''
 settings:

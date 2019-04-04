@@ -23,3 +23,6 @@ views.field.views_bulk_operations_bulk_form:
     preconfiguration:
       type: ignore
       label: 'Preliminary configuration array'
+    clear_on_exposed:
+      type: boolean
+      label: 'Clear on exposed'

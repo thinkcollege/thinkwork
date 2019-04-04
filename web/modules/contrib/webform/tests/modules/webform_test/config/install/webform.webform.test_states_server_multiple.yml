@@ -27,7 +27,6 @@ elements: |
       required:
         ':input[name="trigger_required"]':
           checked: true
-  
 css: ''
 javascript: ''
 settings:

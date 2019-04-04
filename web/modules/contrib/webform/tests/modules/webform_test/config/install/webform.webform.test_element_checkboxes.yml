@@ -86,7 +86,6 @@ elements: |
         required:
           ':input[name="checkboxes_required_conditional_trigger"]':
             checked: true
-  
 css: ''
 javascript: ''
 settings:

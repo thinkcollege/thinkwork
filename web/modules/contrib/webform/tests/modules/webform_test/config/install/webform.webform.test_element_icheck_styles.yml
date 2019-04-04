@@ -911,7 +911,6 @@ elements: |
         three: Three
       '#default_value': one
       '#icheck': square-aero
-  
 css: ''
 javascript: ''
 settings:

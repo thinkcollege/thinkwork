@@ -8,7 +8,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\ctools\Form\AjaxFormTrait;
 use Drupal\panels\CachedValuesGetterTrait;
-use Drupal\user\SharedTempStoreFactory;
+use Drupal\Core\TempStore\SharedTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -51,7 +51,7 @@ class Panels extends ControllerBase {
   /**
    * Tempstore factory.
    *
-   * @var \Drupal\user\SharedTempStoreFactory
+   * @var \Drupal\Core\TempStore\SharedTempStoreFactory
    */
   protected $tempstore;
 
@@ -66,7 +66,7 @@ class Panels extends ControllerBase {
    *   The variant manager.
    * @param \Drupal\Core\Plugin\Context\ContextHandlerInterface $context_handler
    *   The context handler.
-   * @param \Drupal\user\SharedTempStoreFactory $tempstore
+   * @param \Drupal\Core\TempStore\SharedTempStoreFactory $tempstore
    *   The tempstore factory.
    */
   public function __construct(BlockManagerInterface $block_manager, PluginManagerInterface $condition_manager, PluginManagerInterface $variant_manager, ContextHandlerInterface $context_handler, SharedTempStoreFactory $tempstore) {
@@ -86,7 +86,7 @@ class Panels extends ControllerBase {
       $container->get('plugin.manager.condition'),
       $container->get('plugin.manager.display_variant'),
       $container->get('context.handler'),
-      $container->get('user.shared_tempstore'),
+      $container->get('tempstore.shared'),
       $container->get('plugin.manager.panels.pattern')
     );
   }

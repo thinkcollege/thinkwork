@@ -3,6 +3,7 @@
 namespace Drupal\mailgun;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Messenger\MessengerInterface;
 use Egulias\EmailValidator\EmailLexer;
 use Egulias\EmailValidator\EmailParser;
 use Egulias\EmailValidator\EmailValidator;
@@ -13,7 +14,7 @@ use Mailgun\Exception;
 /**
  * Mail handler to send out an email message array to the Mailgun API.
  */
-class MailgunHandler {
+class MailgunHandler implements MailgunHandlerInterface {
 
   /**
    * Configuration object.
@@ -37,34 +38,37 @@ class MailgunHandler {
   protected $mailgun;
 
   /**
+   * The messenger.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
    * Constructs a new \Drupal\mailgun\MailHandler object.
    *
+   * @param \Mailgun\Mailgun $mailgun_client
+   *   Mailgun PHP SDK Object.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   The config factory.
    * @param \Psr\Log\LoggerInterface $logger
    *   A logger instance.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger.
    */
-  public function __construct(ConfigFactoryInterface $configFactory, LoggerInterface $logger) {
+  public function __construct(Mailgun $mailgun_client, ConfigFactoryInterface $configFactory, LoggerInterface $logger, MessengerInterface $messenger) {
     $this->mailgunConfig = $configFactory->get(MAILGUN_CONFIG_NAME);
     $this->logger = $logger;
-    $this->mailgun = Mailgun::create($this->mailgunConfig->get('api_key'));
+    $this->mailgun = $mailgun_client;
+    $this->messenger = $messenger;
   }
 
   /**
-   * Connects to Mailgun API and sends out the email.
-   *
-   * @param array $mailgunMessage
-   *   A message array, as described in
-   *   https://documentation.mailgun.com/en/latest/api-sending.html#sending.
-   *
-   * @return bool
-   *   TRUE if the mail was successfully accepted by the API, FALSE otherwise.
-   *
-   * @see https://documentation.mailgun.com/en/latest/api-sending.html#sending
+   * {@inheritdoc}
    */
   public function sendMail(array $mailgunMessage) {
     try {
-      if (self::checkApiSettings() === FALSE) {
+      if (!$this->validateMailgunApiSettings()) {
         $this->logger->error('Failed to send message from %from to %to. Please check the Mailgun settings.',
           [
             '%from' => $mailgunMessage['from'],
@@ -101,12 +105,13 @@ class MailgunHandler {
       return TRUE;
     }
     catch (Exception $e) {
-      $this->logger->error('Exception occurred while trying to send test email from %from to %to. @code: @message.',
+      $this->logger->error('Exception occurred while trying to send test email from %from to %to. @code: @message @responseBodyMessage.',
         [
           '%from' => $mailgunMessage['from'],
           '%to' => $mailgunMessage['to'],
           '@code' => $e->getCode(),
           '@message' => $e->getMessage(),
+          '@responseBodyMessage' => $e->getResponseBody()['message'],
         ]
       );
       return FALSE;
@@ -114,7 +119,7 @@ class MailgunHandler {
   }
 
   /**
-   * Get domains list from API.
+   * {@inheritdoc}
    */
   public function getDomains() {
     $domains = [];
@@ -125,17 +130,19 @@ class MailgunHandler {
       }
     }
     catch (Exception $e) {
-      $this->logger->error('Could not retrieve domains from Mailgun API. @code: @message.', [
-        '@code' => $e->getCode(),
-        '@message' => $e->getMessage(),
-      ]);
+      $this->logger->error('Could not retrieve domains from Mailgun API. @code: @message.',
+        [
+          '@code' => $e->getCode(),
+          '@message' => $e->getMessage(),
+        ]
+      );
     }
 
     return $domains;
   }
 
   /**
-   * Get working domain for the message.
+   * {@inheritdoc}
    */
   private function getDomain($email) {
     $domain = $this->mailgunConfig->get('working_domain');
@@ -158,57 +165,65 @@ class MailgunHandler {
   }
 
   /**
-   * Check Mailgun library and API settings.
+   * {@inheritdoc}
+   *
+   * @deprecated Scheduled for removal.
+   *   Use MailgunHandlerInterface::moduleStatus() service method instead.
    */
   public static function status($showMessage = FALSE) {
-    return self::checkLibrary($showMessage) && self::checkApiSettings($showMessage);
+    return \Drupal::service('mailgun.mail_handler')
+      ->moduleStatus($showMessage);
   }
 
   /**
-   * Check that Mailgun PHP SDK is installed correctly.
+   * {@inheritdoc}
+   *
+   * @deprecated Scheduled for removal.
+   *   Use MailgunHandlerInterface::validateMailgunLibrary() service method
+   *   instead.
    */
   public static function checkLibrary($showMessage = FALSE) {
-    $libraryStatus = class_exists('\Mailgun\Mailgun');
-    if ($showMessage === FALSE) {
-      return $libraryStatus;
-    }
-
-    if ($libraryStatus === FALSE) {
-      drupal_set_message(t('The Mailgun library has not been installed correctly.'), 'warning');
-    }
-    return $libraryStatus;
+    return \Drupal::service('mailgun.mail_handler')
+      ->validateMailgunLibrary($showMessage);
   }
 
   /**
-   * Check if API settings are correct and not empty.
+   * {@inheritdoc}
+   *
+   * @deprecated Scheduled for removal.
+   *   Use MailgunHandlerInterface::validateMailgunApiSettings() service method
+   *   instead.
    */
   public static function checkApiSettings($showMessage = FALSE) {
-    $mailgunSettings = \Drupal::config(MAILGUN_CONFIG_NAME);
-    $apiKey = $mailgunSettings->get('api_key');
-    $workingDomain = $mailgunSettings->get('working_domain');
-
-    if (empty($apiKey) || empty($workingDomain)) {
-      if ($showMessage) {
-        drupal_set_message(t("Please check your API settings. API key and domain shouldn't be empty."), 'warning');
-      }
-      return FALSE;
-    }
-
-    if (self::validateKey($apiKey) === FALSE) {
-      if ($showMessage) {
-        drupal_set_message(t("Couldn't connect to the Mailgun API. Please check your API settings."), 'warning');
-      }
-      return FALSE;
-    }
-
-    return TRUE;
+    return \Drupal::service('mailgun.mail_handler')
+      ->validateMailgunApiSettings($showMessage);
   }
 
   /**
-   * Validates Mailgun API key.
+   * {@inheritdoc}
+   *
+   * @deprecated Scheduled for removal.
+   *   Use MailgunHandlerInterface::validateMailgunApiKey() service method
+   *   instead.
    */
   public static function validateKey($key) {
-    if (self::checkLibrary() === FALSE) {
+    return \Drupal::service('mailgun.mail_handler')
+      ->validateMailgunApiKey($key);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function moduleStatus($showMessage = FALSE) {
+    return $this->validateMailgunLibrary($showMessage)
+      && $this->validateMailgunApiSettings($showMessage);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateMailgunApiKey($key) {
+    if (!$this->validateMailgunLibrary()) {
       return FALSE;
     }
     $mailgun = Mailgun::create($key);
@@ -220,6 +235,45 @@ class MailgunHandler {
       return FALSE;
     }
     return TRUE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateMailgunApiSettings($showMessage = FALSE) {
+    $apiKey = $this->mailgunConfig->get('api_key');
+    $workingDomain = $this->mailgunConfig->get('working_domain');
+
+    if (empty($apiKey) || empty($workingDomain)) {
+      if ($showMessage) {
+        $this->messenger->addMessage(t("Please check your API settings. API key and domain shouldn't be empty."), 'warning');
+      }
+      return FALSE;
+    }
+
+    if (!$this->validateMailgunApiKey($apiKey)) {
+      if ($showMessage) {
+        $this->messenger->addMessage(t("Couldn't connect to the Mailgun API. Please check your API settings."), 'warning');
+      }
+      return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateMailgunLibrary($showMessage = FALSE) {
+    $libraryStatus = class_exists('\Mailgun\Mailgun');
+    if ($showMessage === FALSE) {
+      return $libraryStatus;
+    }
+
+    if ($libraryStatus === FALSE) {
+      $this->messenger->addMessage(t('The Mailgun library has not been installed correctly.'), 'warning');
+    }
+    return $libraryStatus;
   }
 
 }

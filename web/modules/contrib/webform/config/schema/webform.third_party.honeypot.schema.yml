@@ -1,6 +1,6 @@
 webform.admin_settings.third_party.honeypot:
   type: mapping
-  label: 'Webform test third party settings'
+  label: 'Honeypot third party settings'
   mapping:
     honeypot:
       type: boolean

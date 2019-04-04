@@ -127,7 +127,6 @@ elements: |
       Summary: [webform_submission:node:summary]
       Title: [webform_submission:node:title]
       URL: [webform_submission:node:url]
-  
 css: ''
 javascript: ''
 settings:

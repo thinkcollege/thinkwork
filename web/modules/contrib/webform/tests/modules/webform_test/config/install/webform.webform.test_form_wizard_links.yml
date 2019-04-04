@@ -29,7 +29,6 @@ elements: |
       '#title': 'Element 2'
       '#type': textfield
       '#default_value': '{element_2}'
-  
 css: ''
 javascript: ''
 settings:

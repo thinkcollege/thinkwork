@@ -966,7 +966,6 @@ elements: |
     toggle_rating:
       '#type': rating
       '#title': rating
-  
 css: ''
 javascript: ''
 settings:

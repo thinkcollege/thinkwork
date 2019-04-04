@@ -39,7 +39,6 @@ elements: |
       '#type': datelist
       '#title': datelist_basic
       '#multiple': true
-  
 css: ''
 javascript: ''
 settings:

@@ -29,7 +29,6 @@ elements: |
       three: Three
     '#required': true
     '#required_error': 'This is a custom required message'
-  
 css: ''
 javascript: ''
 settings:
