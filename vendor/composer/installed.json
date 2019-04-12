@@ -4597,6 +4597,55 @@
         }
     },
     {
+        "name": "drupal/htmlawed",
+        "version": "3.6.0",
+        "version_normalized": "3.6.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://git.drupalcode.org/project/htmLawed.git",
+            "reference": "8.x-3.6"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://ftp.drupal.org/files/projects/htmlawed-8.x-3.6.zip",
+            "reference": "8.x-3.6",
+            "shasum": "a8438b0349755e608be4d979cc4974d619c16dd1"
+        },
+        "require": {
+            "drupal/core": "~8.0"
+        },
+        "type": "drupal-module",
+        "extra": {
+            "branch-alias": {
+                "dev-3.x": "3.x-dev"
+            },
+            "drupal": {
+                "version": "8.x-3.6",
+                "datestamp": "1547929380",
+                "security-coverage": {
+                    "status": "covered",
+                    "message": "Covered by Drupal's security advisory policy"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packages.drupal.org/8/downloads",
+        "license": [
+            "GPL-2.0-or-later"
+        ],
+        "authors": [
+            {
+                "name": "alpha2zee",
+                "homepage": "https://www.drupal.org/user/201451"
+            }
+        ],
+        "description": "Use htmLawed to restrict and correct HTML for compliance with admin. policy and standards and for security",
+        "homepage": "https://www.drupal.org/project/htmlawed",
+        "support": {
+            "source": "https://git.drupalcode.org/project/htmlawed"
+        }
+    },
+    {
         "name": "drupal/imce",
         "version": "1.7.0",
         "version_normalized": "1.7.0.0",
@@ -7828,12 +7877,12 @@
         "version_normalized": "1.6.5.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/mikey179/vfsStream.git",
+            "url": "https://github.com/bovigo/vfsStream.git",
             "reference": "d5fec95f541d4d71c4823bb5e30cf9b9e5b96145"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/d5fec95f541d4d71c4823bb5e30cf9b9e5b96145",
+            "url": "https://api.github.com/repos/bovigo/vfsStream/zipball/d5fec95f541d4d71c4823bb5e30cf9b9e5b96145",
             "reference": "d5fec95f541d4d71c4823bb5e30cf9b9e5b96145",
             "shasum": ""
         },
