@@ -1,7 +1,7 @@
 parameters:
   session.storage.options:
     # Default ini options for sessions.
-    # Jenkins test sixteen
+    # Jenkins test seventeen
 
     # Some distributions of Linux (most notably Debian) ship their PHP
     # installations with garbage collection (gc) disabled. Since Drupal depends
