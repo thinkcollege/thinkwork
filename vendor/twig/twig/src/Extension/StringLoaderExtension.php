@@ -35,11 +35,7 @@ class_alias('Twig\Extension\StringLoaderExtension', 'Twig_Extension_StringLoader
 
 namespace {
 use Twig\Environment;
-<<<<<<< HEAD
-use Twig\Template;
-=======
 use Twig\TemplateWrapper;
->>>>>>> devel
 
 /**
  * Loads a template from a string.
@@ -47,14 +43,6 @@ use Twig\TemplateWrapper;
  *     {{ include(template_from_string("Hello {{ name }}")) }}
  *
  * @param string $template A template as a string or object implementing __toString()
-<<<<<<< HEAD
- *
- * @return Template
- */
-function twig_template_from_string(Environment $env, $template)
-{
-    return $env->createTemplate((string) $template);
-=======
  * @param string $name     An optional name of the template to be used in error messages
  *
  * @return TemplateWrapper
@@ -62,6 +50,5 @@ function twig_template_from_string(Environment $env, $template)
 function twig_template_from_string(Environment $env, $template, $name = null)
 {
     return $env->createTemplate((string) $template, $name);
->>>>>>> devel
 }
 }

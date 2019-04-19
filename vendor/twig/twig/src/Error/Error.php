@@ -63,11 +63,7 @@ class Error extends \Exception
      * @param Source|string|null $source   The source context where the error occurred
      * @param \Exception         $previous The previous exception
      */
-<<<<<<< HEAD
-    public function __construct($message, $lineno = -1, $source = null, \Exception $previous = null, $autoGuess = true)
-=======
     public function __construct($message, $lineno = -1, $source = null, \Exception $previous = null)
->>>>>>> devel
     {
         if (null === $source) {
             $name = null;
@@ -83,145 +79,6 @@ class Error extends \Exception
 
         $this->lineno = $lineno;
         $this->filename = $name;
-<<<<<<< HEAD
-
-        if ($autoGuess && (-1 === $lineno || null === $name || null === $this->sourcePath)) {
-            $this->guessTemplateInfo();
-        }
-
-        $this->rawMessage = $message;
-
-        $this->updateRepr();
-    }
-
-    /**
-     * Gets the raw message.
-     *
-     * @return string The raw message
-     */
-    public function getRawMessage()
-    {
-        return $this->rawMessage;
-    }
-
-    /**
-     * Gets the logical name where the error occurred.
-     *
-     * @return string The name
-     *
-     * @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead.
-     */
-    public function getTemplateFile()
-    {
-        @trigger_error(sprintf('The "%s" method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', __METHOD__), E_USER_DEPRECATED);
-
-        return $this->filename;
-    }
-
-    /**
-     * Sets the logical name where the error occurred.
-     *
-     * @param string $name The name
-     *
-     * @deprecated since 1.27 (to be removed in 2.0). Use setSourceContext() instead.
-     */
-    public function setTemplateFile($name)
-    {
-        @trigger_error(sprintf('The "%s" method is deprecated since version 1.27 and will be removed in 2.0. Use setSourceContext() instead.', __METHOD__), E_USER_DEPRECATED);
-
-        $this->filename = $name;
-
-        $this->updateRepr();
-    }
-
-    /**
-     * Gets the logical name where the error occurred.
-     *
-     * @return string The name
-     *
-     * @deprecated since 1.29 (to be removed in 2.0). Use getSourceContext() instead.
-     */
-    public function getTemplateName()
-    {
-        @trigger_error(sprintf('The "%s" method is deprecated since version 1.29 and will be removed in 2.0. Use getSourceContext() instead.', __METHOD__), E_USER_DEPRECATED);
-
-        return $this->filename;
-    }
-
-    /**
-     * Sets the logical name where the error occurred.
-     *
-     * @param string $name The name
-     *
-     * @deprecated since 1.29 (to be removed in 2.0). Use setSourceContext() instead.
-     */
-    public function setTemplateName($name)
-    {
-        @trigger_error(sprintf('The "%s" method is deprecated since version 1.29 and will be removed in 2.0. Use setSourceContext() instead.', __METHOD__), E_USER_DEPRECATED);
-
-        $this->filename = $name;
-        $this->sourceCode = $this->sourcePath = null;
-
-        $this->updateRepr();
-    }
-
-    /**
-     * Gets the template line where the error occurred.
-     *
-     * @return int The template line
-     */
-    public function getTemplateLine()
-    {
-        return $this->lineno;
-    }
-
-    /**
-     * Sets the template line where the error occurred.
-     *
-     * @param int $lineno The template line
-     */
-    public function setTemplateLine($lineno)
-    {
-        $this->lineno = $lineno;
-
-        $this->updateRepr();
-    }
-
-    /**
-     * Gets the source context of the Twig template where the error occurred.
-     *
-     * @return Source|null
-     */
-    public function getSourceContext()
-    {
-        return $this->filename ? new Source($this->sourceCode, $this->filename, $this->sourcePath) : null;
-    }
-
-    /**
-     * Sets the source context of the Twig template where the error occurred.
-     */
-    public function setSourceContext(Source $source = null)
-    {
-        if (null === $source) {
-            $this->sourceCode = $this->filename = $this->sourcePath = null;
-        } else {
-            $this->sourceCode = $source->getCode();
-            $this->filename = $source->getName();
-            $this->sourcePath = $source->getPath();
-        }
-
-        $this->updateRepr();
-    }
-
-    public function guess()
-    {
-        $this->guessTemplateInfo();
-        $this->updateRepr();
-    }
-
-    public function appendMessage($rawMessage)
-    {
-=======
         $this->rawMessage = $message;
         $this->updateRepr();
     }
@@ -353,7 +210,6 @@ class Error extends \Exception
 
     public function appendMessage($rawMessage)
     {
->>>>>>> devel
         $this->rawMessage .= $rawMessage;
         $this->updateRepr();
     }

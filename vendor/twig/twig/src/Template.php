@@ -60,198 +60,6 @@ abstract class Template implements \Twig_TemplateInterface
      * @return string The template name
      */
     abstract public function getTemplateName();
-<<<<<<< HEAD
-
-    /**
-     * Returns debug information about the template.
-     *
-     * @return array Debug information
-     */
-    public function getDebugInfo()
-    {
-        return [];
-    }
-
-    /**
-     * Returns the template source code.
-     *
-     * @return string The template source code
-     *
-     * @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead
-     */
-    public function getSource()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.27 and will be removed in 2.0. Use getSourceContext() instead.', E_USER_DEPRECATED);
-
-        return '';
-    }
-
-    /**
-     * Returns information about the original template source code.
-     *
-     * @return Source
-     */
-    public function getSourceContext()
-    {
-        return new Source('', $this->getTemplateName());
-    }
-
-    /**
-     * @deprecated since 1.20 (to be removed in 2.0)
-     */
-    public function getEnvironment()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.20 and will be removed in 2.0.', E_USER_DEPRECATED);
-
-        return $this->env;
-    }
-
-    /**
-     * Returns the parent template.
-     *
-     * This method is for internal use only and should never be called
-     * directly.
-     *
-     * @param array $context
-     *
-     * @return \Twig_TemplateInterface|TemplateWrapper|false The parent template or false if there is no parent
-     *
-     * @internal
-     */
-    public function getParent(array $context)
-    {
-        if (null !== $this->parent) {
-            return $this->parent;
-        }
-
-        try {
-            $parent = $this->doGetParent($context);
-
-            if (false === $parent) {
-                return false;
-            }
-
-            if ($parent instanceof self || $parent instanceof TemplateWrapper) {
-                return $this->parents[$parent->getSourceContext()->getName()] = $parent;
-            }
-
-            if (!isset($this->parents[$parent])) {
-                $this->parents[$parent] = $this->loadTemplate($parent);
-            }
-        } catch (LoaderError $e) {
-            $e->setSourceContext(null);
-            $e->guess();
-
-            throw $e;
-        }
-
-        return $this->parents[$parent];
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return false;
-    }
-
-    public function isTraitable()
-    {
-        return true;
-    }
-
-    /**
-     * Displays a parent block.
-     *
-     * This method is for internal use only and should never be called
-     * directly.
-     *
-     * @param string $name    The block name to display from the parent
-     * @param array  $context The context
-     * @param array  $blocks  The current set of blocks
-     */
-    public function displayParentBlock($name, array $context, array $blocks = [])
-    {
-        $name = (string) $name;
-
-        if (isset($this->traits[$name])) {
-            $this->traits[$name][0]->displayBlock($name, $context, $blocks, false);
-        } elseif (false !== $parent = $this->getParent($context)) {
-            $parent->displayBlock($name, $context, $blocks, false);
-        } else {
-            throw new RuntimeError(sprintf('The template has no parent and no traits defining the "%s" block.', $name), -1, $this->getSourceContext());
-        }
-    }
-
-    /**
-     * Displays a block.
-     *
-     * This method is for internal use only and should never be called
-     * directly.
-     *
-     * @param string $name      The block name to display
-     * @param array  $context   The context
-     * @param array  $blocks    The current set of blocks
-     * @param bool   $useBlocks Whether to use the current set of blocks
-     */
-    public function displayBlock($name, array $context, array $blocks = [], $useBlocks = true)
-    {
-        $name = (string) $name;
-
-        if ($useBlocks && isset($blocks[$name])) {
-            $template = $blocks[$name][0];
-            $block = $blocks[$name][1];
-        } elseif (isset($this->blocks[$name])) {
-            $template = $this->blocks[$name][0];
-            $block = $this->blocks[$name][1];
-        } else {
-            $template = null;
-            $block = null;
-        }
-
-        // avoid RCEs when sandbox is enabled
-        if (null !== $template && !$template instanceof self) {
-            throw new \LogicException('A block must be a method on a \Twig\Template instance.');
-        }
-
-        if (null !== $template) {
-            try {
-                $template->$block($context, $blocks);
-            } catch (Error $e) {
-                if (!$e->getSourceContext()) {
-                    $e->setSourceContext($template->getSourceContext());
-                }
-
-                // this is mostly useful for \Twig\Error\LoaderError exceptions
-                // see \Twig\Error\LoaderError
-                if (-1 === $e->getTemplateLine()) {
-                    $e->guess();
-                }
-
-                throw $e;
-            } catch (\Exception $e) {
-                throw new RuntimeError(sprintf('An exception has been thrown during the rendering of a template ("%s").', $e->getMessage()), -1, $template->getSourceContext(), $e);
-            }
-        } elseif (false !== $parent = $this->getParent($context)) {
-            $parent->displayBlock($name, $context, array_merge($this->blocks, $blocks), false);
-        } else {
-            @trigger_error(sprintf('Silent display of undefined block "%s" in template "%s" is deprecated since version 1.29 and will throw an exception in 2.0. Use the "block(\'%s\') is defined" expression to test for block existence.', $name, $this->getTemplateName(), $name), E_USER_DEPRECATED);
-        }
-    }
-
-    /**
-     * Renders a parent block.
-     *
-     * This method is for internal use only and should never be called
-     * directly.
-     *
-     * @param string $name    The block name to render from the parent
-     * @param array  $context The context
-     * @param array  $blocks  The current set of blocks
-     *
-     * @return string The rendered block
-     */
-    public function renderParentBlock($name, array $context, array $blocks = [])
-    {
-=======
 
     /**
      * Returns debug information about the template.
@@ -445,7 +253,6 @@ abstract class Template implements \Twig_TemplateInterface
      */
     public function renderParentBlock($name, array $context, array $blocks = [])
     {
->>>>>>> devel
         ob_start();
         $this->displayParentBlock($name, $context, $blocks);
 
@@ -548,11 +355,7 @@ abstract class Template implements \Twig_TemplateInterface
             }
 
             if ($template === $this->getTemplateName()) {
-<<<<<<< HEAD
-                $class = get_class($this);
-=======
                 $class = \get_class($this);
->>>>>>> devel
                 if (false !== $pos = strrpos($class, '___', -1)) {
                     $class = substr($class, 0, $pos);
                 }
@@ -638,14 +441,10 @@ abstract class Template implements \Twig_TemplateInterface
 
             throw $e;
         } catch (\Exception $e) {
-<<<<<<< HEAD
-            throw new RuntimeError(sprintf('An exception has been thrown during the rendering of a template ("%s").', $e->getMessage()), -1, $this->getSourceContext(), $e);
-=======
             $e = new RuntimeError(sprintf('An exception has been thrown during the rendering of a template ("%s").', $e->getMessage()), -1, $this->getSourceContext(), $e);
             $e->guess();
 
             throw $e;
->>>>>>> devel
         }
     }
 

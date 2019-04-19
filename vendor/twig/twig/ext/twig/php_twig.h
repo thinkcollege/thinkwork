@@ -15,11 +15,7 @@
 #ifndef PHP_TWIG_H
 #define PHP_TWIG_H
 
-<<<<<<< HEAD
-#define PHP_TWIG_VERSION "1.38.4"
-=======
 #define PHP_TWIG_VERSION "1.39.1"
->>>>>>> devel
 
 #include "php.h"
 

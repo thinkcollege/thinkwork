@@ -78,11 +78,7 @@ EOF
 // line 1
 \$__internal_%s = null;
 try {
-<<<<<<< HEAD
-    \$this->loadTemplate("foo.twig", null, 1)->display(twig_to_array(["foo" => true]));
-=======
     \$__internal_%s =     \$this->loadTemplate("foo.twig", null, 1);
->>>>>>> devel
 } catch (LoaderError \$e) {
     // ignore missing template
 }

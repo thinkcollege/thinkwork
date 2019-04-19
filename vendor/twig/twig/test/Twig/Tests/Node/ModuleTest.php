@@ -171,11 +171,7 @@ class __TwigTemplate_%x extends \Twig\Template
 
     public function getDebugInfo()
     {
-<<<<<<< HEAD
-        return array (  37 => 1,  35 => 2,  22 => 1,);
-=======
         return array (  36 => 1,  34 => 2,  28 => 1,);
->>>>>>> devel
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */

@@ -13,10 +13,7 @@
 namespace Twig\Node;
 
 use Twig\Compiler;
-<<<<<<< HEAD
-=======
 use Twig\Source;
->>>>>>> devel
 
 /**
  * Represents a node in the AST.
@@ -31,19 +28,9 @@ class Node implements \Twig_NodeInterface
     protected $tag;
 
     private $name;
-<<<<<<< HEAD
-
-    /**
-     * Constructor.
-     *
-     * The nodes are automatically made available as properties ($this->node).
-     * The attributes are automatically made available as array items ($this['name']).
-     *
-=======
     private $sourceContext;
 
     /**
->>>>>>> devel
      * @param array  $nodes      An array of named nodes
      * @param array  $attributes An array of attributes (should not be nodes)
      * @param int    $lineno     The line number
@@ -61,7 +48,6 @@ class Node implements \Twig_NodeInterface
         $this->lineno = $lineno;
         $this->tag = $tag;
     }
-<<<<<<< HEAD
 
     public function __toString()
     {
@@ -135,81 +121,6 @@ class Node implements \Twig_NodeInterface
 
     public function getTemplateLine()
     {
-=======
-
-    public function __toString()
-    {
-        $attributes = [];
-        foreach ($this->attributes as $name => $value) {
-            $attributes[] = sprintf('%s: %s', $name, str_replace("\n", '', var_export($value, true)));
-        }
-
-        $repr = [\get_class($this).'('.implode(', ', $attributes)];
-
-        if (\count($this->nodes)) {
-            foreach ($this->nodes as $name => $node) {
-                $len = \strlen($name) + 4;
-                $noderepr = [];
-                foreach (explode("\n", (string) $node) as $line) {
-                    $noderepr[] = str_repeat(' ', $len).$line;
-                }
-
-                $repr[] = sprintf('  %s: %s', $name, ltrim(implode("\n", $noderepr)));
-            }
-
-            $repr[] = ')';
-        } else {
-            $repr[0] .= ')';
-        }
-
-        return implode("\n", $repr);
-    }
-
-    /**
-     * @deprecated since 1.16.1 (to be removed in 2.0)
-     */
-    public function toXml($asDom = false)
-    {
-        @trigger_error(sprintf('%s is deprecated since version 1.16.1 and will be removed in 2.0.', __METHOD__), E_USER_DEPRECATED);
-
-        $dom = new \DOMDocument('1.0', 'UTF-8');
-        $dom->formatOutput = true;
-        $dom->appendChild($xml = $dom->createElement('twig'));
-
-        $xml->appendChild($node = $dom->createElement('node'));
-        $node->setAttribute('class', \get_class($this));
-
-        foreach ($this->attributes as $name => $value) {
-            $node->appendChild($attribute = $dom->createElement('attribute'));
-            $attribute->setAttribute('name', $name);
-            $attribute->appendChild($dom->createTextNode($value));
-        }
-
-        foreach ($this->nodes as $name => $n) {
-            if (null === $n) {
-                continue;
-            }
-
-            $child = $n->toXml(true)->getElementsByTagName('node')->item(0);
-            $child = $dom->importNode($child, true);
-            $child->setAttribute('name', $name);
-
-            $node->appendChild($child);
-        }
-
-        return $asDom ? $dom : $dom->saveXML();
-    }
-
-    public function compile(Compiler $compiler)
-    {
-        foreach ($this->nodes as $node) {
-            $node->compile($compiler);
-        }
-    }
-
-    public function getTemplateLine()
-    {
->>>>>>> devel
         return $this->lineno;
     }
 
@@ -321,8 +232,6 @@ class Node implements \Twig_NodeInterface
         return $this->name;
     }
 
-<<<<<<< HEAD
-=======
     public function setSourceContext(Source $source)
     {
         $this->sourceContext = $source;
@@ -338,7 +247,6 @@ class Node implements \Twig_NodeInterface
         return $this->sourceContext;
     }
 
->>>>>>> devel
     /**
      * @deprecated since 1.27 (to be removed in 2.0)
      */

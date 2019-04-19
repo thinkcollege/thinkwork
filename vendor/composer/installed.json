@@ -3307,19 +3307,6 @@
     },
     {
         "name": "drupal/core",
-<<<<<<< HEAD
-        "version": "8.6.13",
-        "version_normalized": "8.6.13.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/drupal/core.git",
-            "reference": "8d5b80030ac3f13df2d66aeef0ea388fd9a90632"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/drupal/core/zipball/8d5b80030ac3f13df2d66aeef0ea388fd9a90632",
-            "reference": "8d5b80030ac3f13df2d66aeef0ea388fd9a90632",
-=======
         "version": "8.6.15",
         "version_normalized": "8.6.15.0",
         "source": {
@@ -3331,7 +3318,6 @@
             "type": "zip",
             "url": "https://api.github.com/repos/drupal/core/zipball/936456cdeac25c6bbd2f55b0d587239c6a81ba86",
             "reference": "936456cdeac25c6bbd2f55b0d587239c6a81ba86",
->>>>>>> devel
             "shasum": ""
         },
         "require": {
@@ -3504,11 +3490,7 @@
             "symfony/debug": "^3.4.0",
             "symfony/phpunit-bridge": "^3.4.3"
         },
-<<<<<<< HEAD
-        "time": "2019-03-20T06:01:19+00:00",
-=======
         "time": "2019-04-17T20:00:11+00:00",
->>>>>>> devel
         "type": "drupal-core",
         "extra": {
             "merge-plugin": {
@@ -6394,7 +6376,7 @@
         "description": "Plugin to export views data into various file formats.",
         "homepage": "https://www.drupal.org/project/views_data_export",
         "support": {
-            "source": "https://git.drupalcode.org/project/views_data_export"
+            "source": "http://cgit.drupalcode.org/views_data_export"
         }
     },
     {
@@ -10433,13 +10415,8 @@
     },
     {
         "name": "symfony/class-loader",
-<<<<<<< HEAD
-        "version": "v3.4.24",
-        "version_normalized": "3.4.24.0",
-=======
         "version": "v3.4.26",
         "version_normalized": "3.4.26.0",
->>>>>>> devel
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/class-loader.git",
@@ -10562,19 +10539,6 @@
     },
     {
         "name": "symfony/console",
-<<<<<<< HEAD
-        "version": "v3.4.24",
-        "version_normalized": "3.4.24.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/console.git",
-            "reference": "98ae3cdc4bec48fe7ee24afc81dbb4a242186c9e"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/console/zipball/98ae3cdc4bec48fe7ee24afc81dbb4a242186c9e",
-            "reference": "98ae3cdc4bec48fe7ee24afc81dbb4a242186c9e",
-=======
         "version": "v3.4.26",
         "version_normalized": "3.4.26.0",
         "source": {
@@ -10586,7 +10550,6 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/console/zipball/15a9104356436cb26e08adab97706654799d31d8",
             "reference": "15a9104356436cb26e08adab97706654799d31d8",
->>>>>>> devel
             "shasum": ""
         },
         "require": {
@@ -10615,11 +10578,7 @@
             "symfony/lock": "",
             "symfony/process": ""
         },
-<<<<<<< HEAD
-        "time": "2019-03-31T11:33:18+00:00",
-=======
         "time": "2019-04-08T09:29:13+00:00",
->>>>>>> devel
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -10709,19 +10668,6 @@
     },
     {
         "name": "symfony/debug",
-<<<<<<< HEAD
-        "version": "v3.4.24",
-        "version_normalized": "3.4.24.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/debug.git",
-            "reference": "adbdd5d66342fb0a0bce7422ba68181842b6610d"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/debug/zipball/adbdd5d66342fb0a0bce7422ba68181842b6610d",
-            "reference": "adbdd5d66342fb0a0bce7422ba68181842b6610d",
-=======
         "version": "v3.4.26",
         "version_normalized": "3.4.26.0",
         "source": {
@@ -10733,7 +10679,6 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/debug/zipball/681afbb26488903c5ac15e63734f1d8ac430c9b9",
             "reference": "681afbb26488903c5ac15e63734f1d8ac430c9b9",
->>>>>>> devel
             "shasum": ""
         },
         "require": {
@@ -10746,11 +10691,7 @@
         "require-dev": {
             "symfony/http-kernel": "~2.8|~3.0|~4.0"
         },
-<<<<<<< HEAD
-        "time": "2019-03-10T17:07:42+00:00",
-=======
         "time": "2019-04-11T09:48:14+00:00",
->>>>>>> devel
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -10785,19 +10726,6 @@
     },
     {
         "name": "symfony/dependency-injection",
-<<<<<<< HEAD
-        "version": "v3.4.24",
-        "version_normalized": "3.4.24.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/dependency-injection.git",
-            "reference": "85172cca352fe0790fa6f485ad194862a8ac57ee"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/85172cca352fe0790fa6f485ad194862a8ac57ee",
-            "reference": "85172cca352fe0790fa6f485ad194862a8ac57ee",
-=======
         "version": "v3.4.26",
         "version_normalized": "3.4.26.0",
         "source": {
@@ -10809,7 +10737,6 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/dee85a9148399cdb2731603802842bcfd8afe5ab",
             "reference": "dee85a9148399cdb2731603802842bcfd8afe5ab",
->>>>>>> devel
             "shasum": ""
         },
         "require": {
@@ -10837,11 +10764,7 @@
             "symfony/proxy-manager-bridge": "Generate service proxies to lazy load them",
             "symfony/yaml": ""
         },
-<<<<<<< HEAD
-        "time": "2019-03-25T07:48:46+00:00",
-=======
         "time": "2019-04-16T11:13:42+00:00",
->>>>>>> devel
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -10935,13 +10858,8 @@
     },
     {
         "name": "symfony/event-dispatcher",
-<<<<<<< HEAD
-        "version": "v3.4.24",
-        "version_normalized": "3.4.24.0",
-=======
         "version": "v3.4.26",
         "version_normalized": "3.4.26.0",
->>>>>>> devel
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/event-dispatcher.git",
@@ -11108,19 +11026,6 @@
     },
     {
         "name": "symfony/http-foundation",
-<<<<<<< HEAD
-        "version": "v3.4.24",
-        "version_normalized": "3.4.24.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/http-foundation.git",
-            "reference": "61094ca72e8934c6502af5259ef6296eb09aa424"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/http-foundation/zipball/61094ca72e8934c6502af5259ef6296eb09aa424",
-            "reference": "61094ca72e8934c6502af5259ef6296eb09aa424",
-=======
         "version": "v3.4.26",
         "version_normalized": "3.4.26.0",
         "source": {
@@ -11132,7 +11037,6 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/http-foundation/zipball/90454ad44c95d75faf3507d56388056001b74baf",
             "reference": "90454ad44c95d75faf3507d56388056001b74baf",
->>>>>>> devel
             "shasum": ""
         },
         "require": {
@@ -11143,11 +11047,7 @@
         "require-dev": {
             "symfony/expression-language": "~2.8|~3.0|~4.0"
         },
-<<<<<<< HEAD
-        "time": "2019-03-25T07:48:46+00:00",
-=======
         "time": "2019-04-17T14:51:18+00:00",
->>>>>>> devel
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -11182,19 +11082,6 @@
     },
     {
         "name": "symfony/http-kernel",
-<<<<<<< HEAD
-        "version": "v3.4.24",
-        "version_normalized": "3.4.24.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/http-kernel.git",
-            "reference": "30a9e48839413e6a6a8dc8989da0e7dd76c8fcf8"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/http-kernel/zipball/30a9e48839413e6a6a8dc8989da0e7dd76c8fcf8",
-            "reference": "30a9e48839413e6a6a8dc8989da0e7dd76c8fcf8",
-=======
         "version": "v3.4.26",
         "version_normalized": "3.4.26.0",
         "source": {
@@ -11206,7 +11093,6 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/http-kernel/zipball/14fa41ccd38570b5e3120a3754bbaa144a15f311",
             "reference": "14fa41ccd38570b5e3120a3754bbaa144a15f311",
->>>>>>> devel
             "shasum": ""
         },
         "require": {
@@ -11252,11 +11138,7 @@
             "symfony/finder": "",
             "symfony/var-dumper": ""
         },
-<<<<<<< HEAD
-        "time": "2019-04-02T13:47:51+00:00",
-=======
         "time": "2019-04-17T15:57:07+00:00",
->>>>>>> devel
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -11657,13 +11539,8 @@
     },
     {
         "name": "symfony/process",
-<<<<<<< HEAD
-        "version": "v3.4.24",
-        "version_normalized": "3.4.24.0",
-=======
         "version": "v3.4.26",
         "version_normalized": "3.4.26.0",
->>>>>>> devel
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/process.git",
@@ -11780,13 +11657,8 @@
     },
     {
         "name": "symfony/routing",
-<<<<<<< HEAD
-        "version": "v3.4.24",
-        "version_normalized": "3.4.24.0",
-=======
         "version": "v3.4.26",
         "version_normalized": "3.4.26.0",
->>>>>>> devel
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/routing.git",
@@ -11863,19 +11735,6 @@
     },
     {
         "name": "symfony/serializer",
-<<<<<<< HEAD
-        "version": "v3.4.24",
-        "version_normalized": "3.4.24.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/serializer.git",
-            "reference": "c74469e1560e2d8926c068b319fcca66df8fdb4e"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/serializer/zipball/c74469e1560e2d8926c068b319fcca66df8fdb4e",
-            "reference": "c74469e1560e2d8926c068b319fcca66df8fdb4e",
-=======
         "version": "v3.4.26",
         "version_normalized": "3.4.26.0",
         "source": {
@@ -11887,7 +11746,6 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/serializer/zipball/14b3221cc41dcfef404205f0060cda873f43a534",
             "reference": "14b3221cc41dcfef404205f0060cda873f43a534",
->>>>>>> devel
             "shasum": ""
         },
         "require": {
@@ -11923,11 +11781,7 @@
             "symfony/property-info": "To deserialize relations.",
             "symfony/yaml": "For using the default YAML mapping loader."
         },
-<<<<<<< HEAD
-        "time": "2019-03-30T07:48:10+00:00",
-=======
         "time": "2019-04-11T05:44:34+00:00",
->>>>>>> devel
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -11962,19 +11816,6 @@
     },
     {
         "name": "symfony/translation",
-<<<<<<< HEAD
-        "version": "v3.4.24",
-        "version_normalized": "3.4.24.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/translation.git",
-            "reference": "629ac01240f6ebc253a621e19b84e329fe19a987"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/translation/zipball/629ac01240f6ebc253a621e19b84e329fe19a987",
-            "reference": "629ac01240f6ebc253a621e19b84e329fe19a987",
-=======
         "version": "v3.4.26",
         "version_normalized": "3.4.26.0",
         "source": {
@@ -11986,7 +11827,6 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/translation/zipball/aae26f143da71adc8707eb489f1dc86aef7d376b",
             "reference": "aae26f143da71adc8707eb489f1dc86aef7d376b",
->>>>>>> devel
             "shasum": ""
         },
         "require": {
@@ -12013,11 +11853,7 @@
             "symfony/config": "",
             "symfony/yaml": ""
         },
-<<<<<<< HEAD
-        "time": "2019-03-25T07:48:46+00:00",
-=======
         "time": "2019-04-10T16:00:48+00:00",
->>>>>>> devel
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -12052,19 +11888,6 @@
     },
     {
         "name": "symfony/validator",
-<<<<<<< HEAD
-        "version": "v3.4.24",
-        "version_normalized": "3.4.24.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/validator.git",
-            "reference": "8f16fba8d261c1e2fa19748f8043d74666fb9b61"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/validator/zipball/8f16fba8d261c1e2fa19748f8043d74666fb9b61",
-            "reference": "8f16fba8d261c1e2fa19748f8043d74666fb9b61",
-=======
         "version": "v3.4.26",
         "version_normalized": "3.4.26.0",
         "source": {
@@ -12076,7 +11899,6 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/validator/zipball/83da5259779aaf9dde220130e62b785f74e2ac49",
             "reference": "83da5259779aaf9dde220130e62b785f74e2ac49",
->>>>>>> devel
             "shasum": ""
         },
         "require": {
@@ -12118,11 +11940,7 @@
             "symfony/property-access": "For accessing properties within comparison constraints",
             "symfony/yaml": ""
         },
-<<<<<<< HEAD
-        "time": "2019-03-29T17:25:59+00:00",
-=======
         "time": "2019-04-16T11:21:44+00:00",
->>>>>>> devel
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -12228,13 +12046,8 @@
     },
     {
         "name": "symfony/yaml",
-<<<<<<< HEAD
-        "version": "v3.4.24",
-        "version_normalized": "3.4.24.0",
-=======
         "version": "v3.4.26",
         "version_normalized": "3.4.26.0",
->>>>>>> devel
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/yaml.git",
@@ -12389,19 +12202,6 @@
     },
     {
         "name": "twig/twig",
-<<<<<<< HEAD
-        "version": "v1.38.4",
-        "version_normalized": "1.38.4.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/twigphp/Twig.git",
-            "reference": "7732e9e7017d751313811bd118de61302e9c8b35"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/twigphp/Twig/zipball/7732e9e7017d751313811bd118de61302e9c8b35",
-            "reference": "7732e9e7017d751313811bd118de61302e9c8b35",
-=======
         "version": "v1.39.1",
         "version_normalized": "1.39.1.0",
         "source": {
@@ -12413,7 +12213,6 @@
             "type": "zip",
             "url": "https://api.github.com/repos/twigphp/Twig/zipball/23e7b6f0cfa1d7ba3de69f30d8e05cf957412fec",
             "reference": "23e7b6f0cfa1d7ba3de69f30d8e05cf957412fec",
->>>>>>> devel
             "shasum": ""
         },
         "require": {
@@ -12425,19 +12224,11 @@
             "symfony/debug": "^2.7",
             "symfony/phpunit-bridge": "^3.4.19|^4.1.8"
         },
-<<<<<<< HEAD
-        "time": "2019-03-23T14:27:19+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.38-dev"
-=======
         "time": "2019-04-16T17:12:57+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.39-dev"
->>>>>>> devel
             }
         },
         "installation-source": "dist",
@@ -12577,19 +12368,6 @@
     },
     {
         "name": "webflo/drupal-core-require-dev",
-<<<<<<< HEAD
-        "version": "8.6.13",
-        "version_normalized": "8.6.13.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/webflo/drupal-core-require-dev.git",
-            "reference": "ec02673dbd55068e4fff8edc322af4a226d7f59c"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/webflo/drupal-core-require-dev/zipball/ec02673dbd55068e4fff8edc322af4a226d7f59c",
-            "reference": "ec02673dbd55068e4fff8edc322af4a226d7f59c",
-=======
         "version": "8.6.15",
         "version_normalized": "8.6.15.0",
         "source": {
@@ -12601,7 +12379,6 @@
             "type": "zip",
             "url": "https://api.github.com/repos/webflo/drupal-core-require-dev/zipball/6b3d632fa16e56858706fe0394eafe88a13a9cd0",
             "reference": "6b3d632fa16e56858706fe0394eafe88a13a9cd0",
->>>>>>> devel
             "shasum": ""
         },
         "require": {
@@ -12609,11 +12386,7 @@
             "behat/mink-goutte-driver": "^1.2",
             "behat/mink-selenium2-driver": "1.3.x-dev",
             "drupal/coder": "^8.2.12",
-<<<<<<< HEAD
-            "drupal/core": "8.6.13",
-=======
             "drupal/core": "8.6.15",
->>>>>>> devel
             "jcalderonzumba/gastonjs": "^1.0.2",
             "jcalderonzumba/mink-phantomjs-driver": "^0.3.1",
             "mikey179/vfsstream": "^1.2",
@@ -12623,11 +12396,7 @@
             "symfony/debug": "^3.4.0",
             "symfony/phpunit-bridge": "^3.4.3"
         },
-<<<<<<< HEAD
-        "time": "2019-03-20T16:31:35+00:00",
-=======
         "time": "2019-04-17T20:31:37+00:00",
->>>>>>> devel
         "type": "metapackage",
         "notification-url": "https://packagist.org/downloads/",
         "license": [

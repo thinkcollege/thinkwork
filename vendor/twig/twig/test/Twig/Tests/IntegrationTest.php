@@ -343,8 +343,6 @@ class IteratorAggregateStub implements \IteratorAggregate
     public function getIterator()
     {
         return new \ArrayIterator($this->data);
-<<<<<<< HEAD
-=======
     }
 }
 
@@ -382,6 +380,5 @@ class SimpleIteratorForTesting implements Iterator
     {
         // for testing, make sure string length returned is not the same as the `iterator_count`
         return str_repeat('X', iterator_count($this) + 10);
->>>>>>> devel
     }
 }

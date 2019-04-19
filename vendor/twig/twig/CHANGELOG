@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 * 1.39.1 (2019-04-16)
 
  * fixed EscaperNodeVisitor
@@ -15,7 +13,6 @@
  * fixed "include" with "ignore missing" when an error loading occurs in the included template
  * added support for a new whitespace trimming option ({%~ ~%}, {{~ ~}}, {#~ ~#})
 
->>>>>>> devel
 * 1.38.4 (2019-03-23)
 
  * fixed CheckToStringNode implementation (broken when a function/filter is variadic)
