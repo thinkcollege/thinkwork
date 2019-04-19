@@ -334,8 +334,6 @@
                 <source>This value should be valid JSON.</source>
                 <target>Ez az érték érvényes JSON kell, hogy legyen.</target>
             </trans-unit>
-<<<<<<< HEAD
-=======
             <trans-unit id="87">
                 <source>This value should be positive.</source>
                 <target>Ennek az értéknek pozitívnak kell lennie.</target>
@@ -360,7 +358,6 @@
                 <source>This value is not a valid timezone.</source>
                 <target>Ez az érték nem egy érvényes időzóna.</target>
             </trans-unit>
->>>>>>> devel
         </body>
     </file>
 </xliff>

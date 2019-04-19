@@ -14,11 +14,7 @@
 #/web/sites/*/services.yml
 # Ignore Drupal's file directory
 /web/sites/*/files/
-<<<<<<< HEAD
-/files/*
-=======
 /web/files/*
->>>>>>> devel
 
 # Ignore SimpleTest multi-site environment.
 /web/sites/simpletest

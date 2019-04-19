@@ -338,8 +338,6 @@
                 <source>This collection should contain only unique elements.</source>
                 <target>Diese Sammlung darf keine doppelten Elemente enthalten.</target>
             </trans-unit>
-<<<<<<< HEAD
-=======
             <trans-unit id="88">
                 <source>This value should be positive.</source>
                 <target>Diese Zahl sollte positiv sein.</target>
@@ -364,7 +362,6 @@
                 <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
                 <target>Dieses Passwort ist Teil eines Datenlecks, es darf nicht verwendet werden.</target>
             </trans-unit>
->>>>>>> devel
         </body>
     </file>
 </xliff>
