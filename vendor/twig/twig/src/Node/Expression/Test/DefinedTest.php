@@ -47,7 +47,11 @@ class DefinedTest extends TestExpression
         } elseif ($node instanceof ConstantExpression || $node instanceof ArrayExpression) {
             $node = new ConstantExpression(true, $node->getTemplateLine());
         } else {
+<<<<<<< HEAD
             throw new SyntaxError('The "defined" test only works with simple variables.', $this->getTemplateLine(), null, null, false);
+=======
+            throw new SyntaxError('The "defined" test only works with simple variables.', $lineno);
+>>>>>>> devel
         }
 
         parent::__construct($node, $name, $arguments, $lineno);

@@ -57,6 +57,7 @@ class Profile implements \IteratorAggregate, \Serializable
     {
         return self::ROOT === $this->type;
     }
+<<<<<<< HEAD
 
     public function isTemplate()
     {
@@ -70,6 +71,21 @@ class Profile implements \IteratorAggregate, \Serializable
 
     public function isMacro()
     {
+=======
+
+    public function isTemplate()
+    {
+        return self::TEMPLATE === $this->type;
+    }
+
+    public function isBlock()
+    {
+        return self::BLOCK === $this->type;
+    }
+
+    public function isMacro()
+    {
+>>>>>>> devel
         return self::MACRO === $this->type;
     }
 
@@ -160,12 +176,36 @@ class Profile implements \IteratorAggregate, \Serializable
 
     public function serialize()
     {
+<<<<<<< HEAD
         return serialize([$this->template, $this->name, $this->type, $this->starts, $this->ends, $this->profiles]);
+=======
+        return serialize($this->__serialize());
+>>>>>>> devel
     }
 
     public function unserialize($data)
     {
+<<<<<<< HEAD
         list($this->template, $this->name, $this->type, $this->starts, $this->ends, $this->profiles) = unserialize($data);
+=======
+        $this->__unserialize(unserialize($data));
+    }
+
+    /**
+     * @internal
+     */
+    public function __serialize()
+    {
+        return [$this->template, $this->name, $this->type, $this->starts, $this->ends, $this->profiles];
+    }
+
+    /**
+     * @internal
+     */
+    public function __unserialize(array $data)
+    {
+        list($this->template, $this->name, $this->type, $this->starts, $this->ends, $this->profiles) = $data;
+>>>>>>> devel
     }
 }
 

@@ -14,6 +14,7 @@ namespace Twig\Error;
 /**
  * Exception thrown when an error occurs during template loading.
  *
+<<<<<<< HEAD
  * Automatic template information guessing is always turned off as
  * if a template cannot be loaded, there is nothing to guess.
  * However, when a template is loaded from another one, then, we need
@@ -22,14 +23,19 @@ namespace Twig\Error;
  *
  * This strategy makes Twig\Environment::resolveTemplate() much faster.
  *
+=======
+>>>>>>> devel
  * @author Fabien Potencier <fabien@symfony.com>
  */
 class LoaderError extends Error
 {
+<<<<<<< HEAD
     public function __construct($message, $lineno = -1, $source = null, \Exception $previous = null)
     {
         parent::__construct($message, $lineno, $source, $previous, false);
     }
+=======
+>>>>>>> devel
 }
 
 class_alias('Twig\Error\LoaderError', 'Twig_Error_Loader');

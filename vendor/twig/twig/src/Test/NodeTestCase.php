@@ -56,7 +56,11 @@ abstract class NodeTestCase extends TestCase
         $line = $line > 0 ? "// line {$line}\n" : '';
 
         if (\PHP_VERSION_ID >= 70000) {
+<<<<<<< HEAD
             return sprintf('%s($context["%s"] ?? null)', $line, $name, $name);
+=======
+            return sprintf('%s($context["%s"] ?? null)', $line, $name);
+>>>>>>> devel
         }
 
         if (\PHP_VERSION_ID >= 50400) {

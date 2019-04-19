@@ -498,6 +498,7 @@ EOF
         $this->assertEquals('foo', $twig->render('func_string_named_args'));
     }
 
+<<<<<<< HEAD
     /**
      * @expectedException \Twig\Error\RuntimeError
      * @expectedExceptionMessage Circular reference detected for Twig template "base.html.twig", path: base.html.twig -> base.html.twig in "base.html.twig" at line 1
@@ -525,6 +526,8 @@ EOF
         $twig->load('base1.html.twig');
     }
 
+=======
+>>>>>>> devel
     protected function getMockLoader($templateName, $templateContent)
     {
         // to be removed in 2.0
