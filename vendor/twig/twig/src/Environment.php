@@ -41,19 +41,11 @@ use Twig\TokenParser\TokenParserInterface;
  */
 class Environment
 {
-<<<<<<< HEAD
-    const VERSION = '1.38.4';
-    const VERSION_ID = 13804;
-    const MAJOR_VERSION = 2;
-    const MINOR_VERSION = 38;
-    const RELEASE_VERSION = 4;
-=======
     const VERSION = '1.39.1';
     const VERSION_ID = 13901;
     const MAJOR_VERSION = 1;
     const MINOR_VERSION = 39;
     const RELEASE_VERSION = 1;
->>>>>>> devel
     const EXTRA_VERSION = '';
 
     protected $charset;
@@ -91,10 +83,6 @@ class Environment
     private $runtimeLoaders = [];
     private $runtimes = [];
     private $optionsHash;
-<<<<<<< HEAD
-    private $loading = [];
-=======
->>>>>>> devel
 
     /**
      * Constructor.
@@ -482,10 +470,7 @@ class Environment
                 $this->cache->load($key);
             }
 
-<<<<<<< HEAD
-=======
             $source = null;
->>>>>>> devel
             if (!class_exists($cls, false)) {
                 $loader = $this->getLoader();
                 if (!$loader instanceof SourceContextLoaderInterface) {
@@ -517,36 +502,12 @@ class Environment
                 throw new RuntimeError(sprintf('Failed to load Twig template "%s", index "%s": cache might be corrupted.', $name, $index), -1, $source);
             }
         }
-<<<<<<< HEAD
-
-        if (!$this->runtimeInitialized) {
-            $this->initRuntime();
-        }
-
-        if (isset($this->loading[$cls])) {
-            throw new RuntimeError(sprintf('Circular reference detected for Twig template "%s", path: %s.', $name, implode(' -> ', array_merge($this->loading, [$name]))));
-        }
-
-        $this->loading[$cls] = $name;
-
-        try {
-            $this->loadedTemplates[$cls] = new $cls($this);
-            unset($this->loading[$cls]);
-        } catch (\Exception $e) {
-            unset($this->loading[$cls]);
-
-            throw $e;
-        }
-
-        return $this->loadedTemplates[$cls];
-=======
 
         if (!$this->runtimeInitialized) {
             $this->initRuntime();
         }
 
         return $this->loadedTemplates[$cls] = new $cls($this);
->>>>>>> devel
     }
 
     /**
@@ -555,21 +516,13 @@ class Environment
      * This method should not be used as a generic way to load templates.
      *
      * @param string $template The template name
-<<<<<<< HEAD
-=======
      * @param string $name     An optional name of the template to be used in error messages
->>>>>>> devel
      *
      * @return TemplateWrapper A template instance representing the given template name
      *
      * @throws LoaderError When the template cannot be found
      * @throws SyntaxError When an error occurred during compilation
      */
-<<<<<<< HEAD
-    public function createTemplate($template)
-    {
-        $name = sprintf('__string_template__%s', hash('sha256', $template, false));
-=======
     public function createTemplate($template, $name = null)
     {
         $hash = hash('sha256', $template, false);
@@ -578,7 +531,6 @@ class Environment
         } else {
             $name = sprintf('__string_template__%s', $hash);
         }
->>>>>>> devel
 
         $loader = new ChainLoader([
             new ArrayLoader([$name => $template]),
@@ -705,7 +657,6 @@ class Environment
      * @deprecated since 1.25 (to be removed in 2.0)
      */
     public function getLexer()
-<<<<<<< HEAD
     {
         @trigger_error(sprintf('The %s() method is deprecated since version 1.25 and will be removed in 2.0.', __FUNCTION__), E_USER_DEPRECATED);
 
@@ -795,97 +746,6 @@ class Environment
     {
         @trigger_error(sprintf('The %s() method is deprecated since version 1.25 and will be removed in 2.0.', __FUNCTION__), E_USER_DEPRECATED);
 
-=======
-    {
-        @trigger_error(sprintf('The %s() method is deprecated since version 1.25 and will be removed in 2.0.', __FUNCTION__), E_USER_DEPRECATED);
-
-        if (null === $this->lexer) {
-            $this->lexer = new Lexer($this);
-        }
-
-        return $this->lexer;
-    }
-
-    public function setLexer(\Twig_LexerInterface $lexer)
-    {
-        $this->lexer = $lexer;
-    }
-
-    /**
-     * Tokenizes a source code.
-     *
-     * @param string|Source $source The template source code
-     * @param string        $name   The template name (deprecated)
-     *
-     * @return TokenStream
-     *
-     * @throws SyntaxError When the code is syntactically wrong
-     */
-    public function tokenize($source, $name = null)
-    {
-        if (!$source instanceof Source) {
-            @trigger_error(sprintf('Passing a string as the $source argument of %s() is deprecated since version 1.27. Pass a Twig\Source instance instead.', __METHOD__), E_USER_DEPRECATED);
-            $source = new Source($source, $name);
-        }
-
-        if (null === $this->lexer) {
-            $this->lexer = new Lexer($this);
-        }
-
-        return $this->lexer->tokenize($source);
-    }
-
-    /**
-     * Gets the Parser instance.
-     *
-     * @return \Twig_ParserInterface
-     *
-     * @deprecated since 1.25 (to be removed in 2.0)
-     */
-    public function getParser()
-    {
-        @trigger_error(sprintf('The %s() method is deprecated since version 1.25 and will be removed in 2.0.', __FUNCTION__), E_USER_DEPRECATED);
-
-        if (null === $this->parser) {
-            $this->parser = new Parser($this);
-        }
-
-        return $this->parser;
-    }
-
-    public function setParser(\Twig_ParserInterface $parser)
-    {
-        $this->parser = $parser;
-    }
-
-    /**
-     * Converts a token stream to a node tree.
-     *
-     * @return ModuleNode
-     *
-     * @throws SyntaxError When the token stream is syntactically or semantically wrong
-     */
-    public function parse(TokenStream $stream)
-    {
-        if (null === $this->parser) {
-            $this->parser = new Parser($this);
-        }
-
-        return $this->parser->parse($stream);
-    }
-
-    /**
-     * Gets the Compiler instance.
-     *
-     * @return \Twig_CompilerInterface
-     *
-     * @deprecated since 1.25 (to be removed in 2.0)
-     */
-    public function getCompiler()
-    {
-        @trigger_error(sprintf('The %s() method is deprecated since version 1.25 and will be removed in 2.0.', __FUNCTION__), E_USER_DEPRECATED);
-
->>>>>>> devel
         if (null === $this->compiler) {
             $this->compiler = new Compiler($this);
         }
