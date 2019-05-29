@@ -40,7 +40,7 @@
         "drupal/entity_browser": "^2.0",
         "drupal/entity_reference_revisions": "^1.6",
         "drupal/exclude_node_title": "^1.0@beta",
-        "drupal/field_group": "^1.0",
+        "drupal/field_group": "^3.0",
         "drupal/fontyourface": "^3.2",
         "drupal/glossify": "^1.0@beta",
         "drupal/google_analytics": "^2.3",
