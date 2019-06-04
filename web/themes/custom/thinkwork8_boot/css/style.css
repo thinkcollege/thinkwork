@@ -1,7 +1,7 @@
 /** Just testing Jenkins II
  * @file
  * Subtheme specific CSS. Test Jenkins II
- 
+
  */
 /*body {background-color: #A7D48E;}*/
 /*
@@ -146,7 +146,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 .region-featured-top {
-	padding:0 10px;
+	margin:0;
 	margin-top:20px;
 	background-color:#468cc8;
 	color:#fff;
