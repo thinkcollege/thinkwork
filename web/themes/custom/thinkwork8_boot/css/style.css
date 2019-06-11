@@ -325,3 +325,4 @@ h1,h2,h3,h4,h5,h6 {
 }
 img.leftFloat {float: left;}
 img.rightFloat {float: right;}
+img.img-responsive {max-width: 100%; height: auto; display:block; }
