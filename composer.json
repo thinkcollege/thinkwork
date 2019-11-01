@@ -50,6 +50,7 @@
         "drupal/mailgun": "^1.0@beta",
         "drupal/mailsystem": "^4.1",
         "drupal/markdown": "^1.2",
+        "drupal/memcache": "^2.0",
         "drupal/migrate_manifest": "^1.8",
         "drupal/migrate_plus": "^4.1",
         "drupal/migrate_tools": "^4.1",
