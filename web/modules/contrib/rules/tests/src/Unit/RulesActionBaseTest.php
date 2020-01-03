@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\rules\Unit;
 
-use Drupal\Core\StringTranslation\TranslationWrapper;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\rules\Core\RulesActionBase;
 
 /**
@@ -46,7 +46,7 @@ class RulesActionBaseTest extends RulesUnitTestBase {
    * @covers ::summary
    */
   public function testTranslatedLabel() {
-    $translation_wrapper = $this->prophesize(TranslationWrapper::class);
+    $translation_wrapper = $this->prophesize(TranslatableMarkup::class);
     $translation_wrapper->__toString()->willReturn('something');
     $rules_action_base = $this->getMockForAbstractClass(
       RulesActionBase::class,

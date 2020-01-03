@@ -296,7 +296,7 @@ class ViewsAccordion extends StylePluginBase {
     $view_settings['header'] = '.' . $accordion_header_class;
     if ($view_settings['usegroupheader']) {
       // @TODO we cannot set a class for the grouping h3 apparently...
-      $view_settings['header'] = '.js-views-accodion-group-header';
+      $view_settings['header'] = '.js-views-accordion-group-header';
     }
 
     $this->view->element['#attached']['drupalSettings']['views_accordion'] = [$this->view->dom_id => $view_settings];

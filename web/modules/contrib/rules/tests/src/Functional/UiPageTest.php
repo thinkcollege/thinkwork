@@ -6,9 +6,6 @@ namespace Drupal\Tests\rules\Functional;
  * Tests that the Rules UI pages are reachable.
  *
  * @group RulesUi
- * @group legacy
- * @todo Remove the 'legacy' tag when Rules no longer uses deprecated code.
- * @see https://www.drupal.org/project/rules/issues/2922757
  */
 class UiPageTest extends RulesBrowserTestBase {
 
@@ -17,7 +14,7 @@ class UiPageTest extends RulesBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['rules'];
+  public static $modules = ['rules', 'rules_test'];
 
   /**
    * We use the minimal profile because we want to test local action links.
@@ -34,10 +31,13 @@ class UiPageTest extends RulesBrowserTestBase {
     $this->drupalLogin($account);
 
     $this->drupalGet('admin/config/workflow/rules');
-    $this->assertSession()->statusCodeEquals(200);
+
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+    $assert->statusCodeEquals(200);
 
     // Test that there is an empty reaction rule listing.
-    $this->assertSession()->pageTextContains('There is no Reaction Rule yet.');
+    $assert->pageTextContains('There are no reaction rules yet.');
   }
 
   /**
@@ -56,8 +56,10 @@ class UiPageTest extends RulesBrowserTestBase {
 
     $this->pressButton('Save');
 
-    $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->pageTextContains('Reaction rule Test rule has been created.');
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+    $assert->statusCodeEquals(200);
+    $assert->pageTextContains('Reaction rule Test rule has been created.');
 
     $this->clickLink('Add condition');
 
@@ -67,11 +69,11 @@ class UiPageTest extends RulesBrowserTestBase {
     $this->fillField('context[node][setting]', '1');
     $this->pressButton('Save');
 
-    $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->pageTextContains('You have unsaved changes.');
+    $assert->statusCodeEquals(200);
+    $assert->pageTextContains('You have unsaved changes.');
 
     $this->pressButton('Save');
-    $this->assertSession()->pageTextContains('Reaction rule Test rule has been updated. ');
+    $assert->pageTextContains('Reaction rule Test rule has been updated. ');
   }
 
   /**
@@ -88,11 +90,13 @@ class UiPageTest extends RulesBrowserTestBase {
     $this->fillField('context[node][setting]', '1');
     $this->pressButton('Save');
 
-    $this->assertSession()->pageTextContains('You have unsaved changes.');
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+    $assert->pageTextContains('You have unsaved changes.');
 
     // Edit and cancel.
     $this->pressButton('Cancel');
-    $this->assertSession()->pageTextContains('Canceled.');
+    $assert->pageTextContains('Canceled.');
 
     // Make sure that we are back at the overview listing page.
     $this->assertEquals(1, preg_match('#/admin/config/workflow/rules$#', $this->getSession()->getCurrentUrl()));
@@ -106,17 +110,56 @@ class UiPageTest extends RulesBrowserTestBase {
     $this->testCreateReactionRule();
 
     $this->clickLink('Delete');
-    $this->assertSession()->pageTextContains('Are you sure you want to delete Condition: Node is promoted from Test rule?');
+
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+    $assert->pageTextContains('Are you sure you want to delete Condition: Node is promoted from Test rule?');
 
     $this->pressButton('Delete');
-    $this->assertSession()->pageTextContains('You have unsaved changes.');
+    $assert->pageTextContains('You have unsaved changes.');
 
     $this->pressButton('Save');
-    $this->assertSession()->pageTextContains('Reaction rule Test rule has been updated. ');
+    $assert->pageTextContains('Reaction rule Test rule has been updated. ');
   }
 
   /**
-   * Tests that an action with a multiple context can be confugured.
+   * Tests that a condition with no context can be configured.
+   */
+  public function testNoContextCondition() {
+    // Setup a rule with one condition.
+    $this->testCreateReactionRule();
+
+    $this->clickLink('Add condition');
+    // The rules_test_true condition does not define context in its annotation.
+    $this->fillField('Condition', 'rules_test_true');
+    $this->pressButton('Continue');
+    // Pressing 'Save' will generate an exception and the test will fail if
+    // Rules does not support conditions without a context.
+    // Exception: Warning: Invalid argument supplied for foreach().
+    $this->pressButton('Save');
+  }
+
+  /**
+   * Tests that a negated condition has NOT prefixed to its label.
+   */
+  public function testNegatedCondition() {
+    // Setup a rule with one condition.
+    $this->testCreateReactionRule();
+
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+    // Check that the label shows up on the Rule edit page.
+    $assert->pageTextContains('Condition: Node is promoted');
+
+    // Edit the condition, negate it, then check the label again.
+    $this->clickLink('Edit');
+    $this->fillField('Negate', 1);
+    $this->pressButton('Save');
+    $assert->pageTextContains('Condition: NOT Node is promoted');
+  }
+
+  /**
+   * Tests that an action with a multiple context can be configured.
    */
   public function testMultipleContextAction() {
     $account = $this->drupalCreateUser(['administer rules']);
@@ -138,14 +181,16 @@ class UiPageTest extends RulesBrowserTestBase {
     // Push the data selection switch 2 times to make sure that also works and
     // does not throw PHP notices.
     $this->pressButton('Switch to data selection');
-    $this->pressButton('Switch to data selection');
+    $this->pressButton('Switch to the direct input mode');
 
     $this->fillField('context[to][setting]', 'klausi@example.com');
     $this->fillField('context[subject][setting]', 'subject');
     $this->fillField('context[message][setting]', 'message');
     $this->pressButton('Save');
 
-    $this->assertSession()->statusCodeEquals(200);
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+    $assert->statusCodeEquals(200);
   }
 
 }

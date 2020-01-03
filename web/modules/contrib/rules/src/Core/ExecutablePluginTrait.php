@@ -24,7 +24,7 @@ trait ExecutablePluginTrait {
       throw new InvalidPluginDefinitionException('The label is not defined for plugin ' . $this->getPluginId() . ' (' . __CLASS__ . ').');
     }
     // The label can be an instance of
-    // \Drupal\Core\StringTranslation\TranslationWrapper here, so make sure to
+    // \Drupal\Core\StringTranslation\TranslatableMarkup here, so make sure to
     // always return a primitive string representation here.
     return (string) $definition['label'];
   }

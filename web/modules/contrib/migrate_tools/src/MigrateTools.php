@@ -2,6 +2,8 @@
 
 namespace Drupal\migrate_tools;
 
+use Drupal\migrate_tools\Commands\MigrateToolsCommands;
+
 /**
  * Utility functionality for use in migrate_tools.
  */
@@ -19,7 +21,7 @@ class MigrateTools {
   public static function buildIdList(array $options) {
     $options += [
       'idlist' => NULL,
-      'idlist-delimiter' => ':',
+      'idlist-delimiter' => MigrateToolsCommands::DEFAULT_ID_LIST_DELIMITER,
     ];
     $id_list = [];
     if ($options['idlist']) {

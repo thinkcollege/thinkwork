@@ -114,7 +114,7 @@ abstract class ExpressionBase extends PluginBase implements ExpressionInterface 
    */
   public function getRoot() {
     if (isset($this->root)) {
-      // @todo: This seems to be the parent, not root.
+      // @todo This seems to be the parent, not root.
       return $this->root->getRoot();
     }
     return $this;

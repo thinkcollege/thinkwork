@@ -87,7 +87,7 @@ function viewfield_theme() {
  *
  * @see template_preprocess_field()
  */
-function template_preprocess_viewfield(&$variables, $hook) {
+function template_preprocess_viewfield(array &$variables) {
   $element = $variables['element'];
 
   // Creating variables for the template.
@@ -164,7 +164,7 @@ function viewfield_theme_suggestions_viewfield(array $variables) {
  *   An associative array containing:
  *   - element: An element to display in view mode.
  */
-function template_preprocess_viewfield_item(&$variables) {
+function template_preprocess_viewfield_item(array &$variables) {
   $element = &$variables['element'];
 
   $element['#contextual_links'] = [

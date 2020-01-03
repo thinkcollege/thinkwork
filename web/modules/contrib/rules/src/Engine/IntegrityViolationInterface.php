@@ -7,7 +7,7 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
 /**
  * Describes a violation of the integrity of a rule.
  *
- * Example: if the data selector node:field_example is used in an action but
+ * Example: if the data selector node.field_example is used in an action but
  * there is no "node" variable available in the context of the rule then a
  * violation is raised during the integrity check of the rule.
  */

@@ -22,7 +22,7 @@ services:
     arguments: ['@module_handler']
   logger.channel.rules:
     class: Drupal\rules\Logger\RulesLoggerChannel
-    arguments: ['@config.factory']
+    arguments: ['@config.factory', '@messenger']
   logger.ruleslog:
     class: Drupal\rules\Logger\RulesLog
     tags:

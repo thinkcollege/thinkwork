@@ -27,4 +27,17 @@ final class MigrateEvents {
    */
   const PREPARE_ROW = 'migrate_plus.prepare_row';
 
+  /**
+   * Name of the event fired when a source item is missing.
+   *
+   * This event allows modules to perform an action whenever a specific item is
+   * missing from the source. The event listener method receives a
+   * \Drupal\migrate\Event\MigrateRowDeleteEvent instance.
+   *
+   * @Event
+   *
+   * @see \Drupal\migrate\Event\MigrateRowDeleteEvent
+   */
+  const MISSING_SOURCE_ITEM = 'migrate_plus.missing_source_item';
+
 }

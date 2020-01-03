@@ -25,6 +25,8 @@ use Drupal\migrate\Row;
  *   - row: Skips the entire row.
  *   - process: Prevents further processing of the input property
  *
+ * @codingStandardsIgnoreStart
+ *
  * Examples:
  *
  * Example usage with minimal configuration:
@@ -35,7 +37,6 @@ use Drupal\migrate\Row;
  *     method: process
  *     value: blog
  * @endcode
- *
  * The above example will skip further processing of the input property if
  * the content_type source field equals "blog".
  *
@@ -50,9 +51,10 @@ use Drupal\migrate\Row;
  *       - article
  *       - testimonial
  * @endcode
- *
  * The above example will skip processing any row for which the source row's
  * content type field is not "article" or "testimonial".
+ *
+ * @codingStandardsIgnoreEnd
  */
 class SkipOnValue extends ProcessPluginBase {
 

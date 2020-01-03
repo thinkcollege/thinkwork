@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.1.0 - 2019-08-22
+
+- Added support for PSR-17 factories.
+- Dropped support for PHP < 7.1
+
 ## 1.0.0 - 2017-05-21
 
 No changes from 0.2.0.

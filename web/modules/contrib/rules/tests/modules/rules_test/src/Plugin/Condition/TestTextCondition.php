@@ -10,10 +10,11 @@ use Drupal\rules\Core\RulesConditionBase;
  * @Condition(
  *   id = "rules_test_string_condition",
  *   label = @Translation("Test condition using a string"),
+ *   category = @Translation("Tests"),
  *   context = {
  *     "text" = @ContextDefinition("string",
  *       label = @Translation("Text to compare")
- *     )
+ *     ),
  *   },
  *   configure_permissions = { "access test configuration" }
  * )

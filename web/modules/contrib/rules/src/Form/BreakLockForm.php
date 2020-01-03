@@ -114,7 +114,7 @@ class BreakLockForm extends ConfirmFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->rulesUiHandler->clearTemporaryStorage();
     $form_state->setRedirectUrl($this->rulesUiHandler->getBaseRouteUrl());
-    drupal_set_message($this->t('The lock has been broken and you may now edit this @component_type.', [
+    $this->messenger()->addMessage($this->t('The lock has been broken and you may now edit this @component_type.', [
       '@component_type' => $this->rulesUiHandler->getPluginDefinition()->component_type_label,
     ]));
   }

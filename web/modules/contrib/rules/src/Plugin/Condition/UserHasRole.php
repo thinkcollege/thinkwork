@@ -26,11 +26,11 @@ use Drupal\user\UserInterface;
  *       description = @Translation("If matching against all selected roles, the user must have <em>all</em> the roles selected."),
  *       default_value = "AND",
  *       required = FALSE
- *     )
+ *     ),
  *   }
  * )
  *
- * @todo: Add access callback information from Drupal 7.
+ * @todo Add access callback information from Drupal 7.
  */
 class UserHasRole extends RulesConditionBase {
 

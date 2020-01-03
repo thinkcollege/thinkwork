@@ -7,7 +7,7 @@ services:
     factory: mailgun.mailgun_client_factory:create
   mailgun.mail_handler:
     class: Drupal\mailgun\MailgunHandler
-    arguments: ['@mailgun.mailgun_client', '@config.factory', '@logger.channel.mailgun', '@messenger']
+    arguments: ['@mailgun.mailgun_client', '@config.factory', '@logger.channel.mailgun', '@messenger', '@email.validator']
   logger.channel.mailgun:
     class: Drupal\Core\Logger\LoggerChannel
     factory: logger.factory:get

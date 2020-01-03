@@ -14,25 +14,39 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 abstract class FormWidgetBase extends PluginBase implements FormWidgetInterface, ContainerFactoryPluginInterface {
 
   /**
-   * The typed data manager.
+   * The typed data plugin manager.
    *
    * @var \Drupal\Core\TypedData\TypedDataManagerInterface
    */
   protected $typedDataManager;
 
   /**
-   * {@inheritdoc}
+   * Constructs a FormWidgetBase object.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin ID for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\TypedData\TypedDataManagerInterface $typed_data_manager
+   *   The typed data plugin manager.
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static($configuration, $plugin_id, $plugin_definition, $container->get('typed_data_manager'));
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, TypedDataManagerInterface $typed_data_manager) {
+    parent::__construct($configuration + $this->defaultConfiguration(), $plugin_id, $plugin_definition);
+    $this->typedDataManager = $typed_data_manager;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, TypedDataManagerInterface $typedDataManager) {
-    parent::__construct($configuration + $this->defaultConfiguration(), $plugin_id, $plugin_definition);
-    $this->typedDataManager = $typedDataManager;
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('typed_data_manager')
+    );
   }
 
   /**

@@ -41,7 +41,7 @@ class UserUnblockTest extends RulesEntityIntegrationTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
     $this->enableModule('user');
     $this->action = $this->actionManager->createInstance('rules_user_unblock');
@@ -72,7 +72,7 @@ class UserUnblockTest extends RulesEntityIntegrationTestBase {
     $account->isAuthenticated()->willReturn($authenticated);
     // Mock activate.
     $account->activate()->shouldBeCalledTimes($expects);
-    // We do noe expect call of the 'save' method because user should be
+    // We do not expect to call the 'save' method because the user should be
     // auto-saved later.
     $account->save()->shouldNotBeCalled();
     // Test unblocking the user.

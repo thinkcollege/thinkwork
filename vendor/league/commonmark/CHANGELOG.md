@@ -4,6 +4,178 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [0.18.5] - 2019-03-28
+
+### Fixed
+
+ - Fixed the adjoining `Text` collapser not handling the full tree (thephpleague/commonmark-ext-autolink#10)
+
+## [0.18.4] - 2019-03-23
+
+### Changed
+
+ - Modified how URL normalization decodes certain characters in order to align with the JS library's output
+ - Disallowed unescaped `(` in parenthesized link title
+
+### Fixed
+
+ - Fixed two exponential backtracking issues
+
+## [0.18.3] - 2019-03-21
+
+This is a **security update** release.
+
+### Changed
+
+ - XML/HTML entities in attributes will no longer be preserved when rendering (#353)
+
+### Fixed
+
+ - Fix XSS vulnerability caused by improper preservation of entities when rendering (#353)
+
+### Deprecated
+
+ - Deprecated the `$preserveEntites` argument of `Xml::escape()` for removal in the next release (#353)
+
+## [0.18.2] - 2019-03-16
+
+### Fixed
+
+ - Fixed adjoining `Text` elements not being collapsed after delimiter processing
+
+### Deprecated
+
+ - Deprecated the `CommonmarkConverter::VERSION` constant for removal in 1.0.0
+
+## [0.18.1] - 2018-12-29
+
+This is a **security update** release.
+
+### Fixed
+
+ - Fix XSS vulnerability caused by URL normalization not handling/encoding newlines properly (#337, CVE-2018-20583)
+
+## [0.18.0] - 2018-09-18
+
+### Added
+
+ - Added `ConverterInterface` to `Converter` and `CommonMarkConverter` (#330)
+ - Added `ListItem::getListData()` method (#329)
+
+### Changed
+
+ - Links with `target="_blank"` will also get `rel="noopener noreferrer"` by default (#331)
+ - Implemented several performance optimizations (#324)
+
+## [0.17.5] - 2018-03-29
+
+### Fixed
+
+ - Fixed incorrect version constant value (again)
+ - Fixed release checklist to prevent the above from happening
+ - Fixed incorrect dates in CHANGELOG
+
+## [0.17.4] - 2018-03-28
+
+### Added
+
+ - Added `ListBlock::setTight()` method
+
+## [0.17.3] - 2018-03-26
+
+### Fixed
+
+ - Fixed incorrect version constant value
+
+## [0.17.2] - 2018-03-25
+
+### Added
+
+ - Added new `RegexHelper::isEscapable()` method
+
+### Fixed
+
+ - Fixed spec compliance bug where escaped spaces should not be allowed in link destinations
+
+## [0.17.1] - 2018-03-18
+
+### Added
+
+ - Added a new constant containing the current version: `CommonMarkConverter::VERSION` (#314)
+
+## [0.17.0] - 2017-12-30
+
+This release contains several breaking changes and a minimum PHP version bump - see <UPGRADE.md> for more details.
+
+### Added
+
+ - Added new `max_nesting_level` setting (#243)
+ - Added minor performance optimizations to `Cursor`
+
+### Changed
+
+ - Minimum PHP version is now 5.6.5.
+ - All full and partial regular expressions in `RegexHelper` are now defined as constants instead of being built on-the-fly.
+ - `Cursor::saveState()` now returns an `array` instead of a `CursorState` object.
+ - `Cursor::restoreState()` now accepts an `array` parameter instead of a `CursorState` object.
+ - Saving/restoring the Cursor state no longer tracks things that don't change (like the text content).
+ - `RegexHelper` is now `final`.
+ - References to `InlineContainer` changed to new `InlineContainerInterface` interface.
+ - `MiscExtension::addInlineParser()` and `MiscExtension::addBlockRenderer()` now return `$this` instead of nothing.
+
+### Fixed
+ - Fixed `Reference::normalizeReference()` not properly collapsing whitespace to a single space
+
+### Deprecated
+
+ - `RegexHelper::getInstance()` and all instance (non-static) methods have been deprecated.
+ - The `InlineContainer` interface has been deprecated. Use `InlineContainerInterface` instead.
+
+### Removed
+
+ - Removed support for PHP 5.4 and 5.5.
+ - Removed `CursorState` class
+ - Removed all previous deprecations:
+   - `Cursor::getFirstNonSpacePosition()`
+   - `Cursor::getFirstNonSpaceCharacter()`
+   - `Cursor::advanceWhileMatches()`
+   - `Cursor::advanceToFirstNonSpace()`
+   - `ElementRendererInterface::escape()`
+   - `HtmlRenderer::escape()`
+   - `RegexHelper::REGEX_UNICODE_WHITESPACE`
+   - `RegexHelper::getLinkDestinationRegex()`
+
+## [0.16.0] - 2017-10-30
+
+This release contains breaking changes, several performance improvements, and two deprecations:
+
+### Added
+
+ - Added new `Xml` utility class; moved HTML/XML escaping logic into there (see deprecations below)
+
+### Changed
+
+ - `Environment::getInlineParsersForCharacter()` now returns an empty array (instead of `null`) when no matching parsers are found
+ - Three utility classes are now marked `final`:
+   - `Html5Entities`
+   - `LinkParserHelper`
+   - `UrlEncoder`
+
+### Fixed
+
+ - Improved performance of several methods (for a 10% overall performance boost - #292)
+
+### Deprecated
+
+The following methods were deprecated and are scheduled for removal in 0.17.0 or 1.0.0 (whichever comes first).  See <UPGRADE.md> for more information.
+
+ - `Cursor::advanceWhileMatches()` deprecated; use `Cursor::match()` instead.
+ - `HtmlRenderer::escape()` deprecated; use `Xml::escape()` instead.
+
+### Removed
+
+ - Removed `DelimiterStack::findFirstMatchingOpener()` which was previously deprecated in 0.15.0
+
 ## [0.15.7] - 2017-10-26
 
 ### Fixed
@@ -536,7 +708,20 @@ An unused constant and static method were deprecated and will be removed in a fu
 ### Added
  - Initial commit (compatible with jgm/stmd:spec.txt @ 0275f34)
 
-[unreleased]: https://github.com/thephpleague/commonmark/compare/0.15.7...HEAD
+[unreleased]: https://github.com/thephpleague/commonmark/compare/0.18.5...HEAD
+[0.18.5]: https://github.com/thephpleague/commonmark/compare/0.18.4...0.18.5
+[0.18.4]: https://github.com/thephpleague/commonmark/compare/0.18.3...0.18.4
+[0.18.3]: https://github.com/thephpleague/commonmark/compare/0.18.2...0.18.3
+[0.18.2]: https://github.com/thephpleague/commonmark/compare/0.18.1...0.18.2
+[0.18.1]: https://github.com/thephpleague/commonmark/compare/0.18.0...0.18.1
+[0.18.0]: https://github.com/thephpleague/commonmark/compare/0.17.5...0.18.0
+[0.17.5]: https://github.com/thephpleague/commonmark/compare/0.17.4...0.17.5
+[0.17.4]: https://github.com/thephpleague/commonmark/compare/0.17.3...0.17.4
+[0.17.3]: https://github.com/thephpleague/commonmark/compare/0.17.2...0.17.3
+[0.17.2]: https://github.com/thephpleague/commonmark/compare/0.17.1...0.17.2
+[0.17.1]: https://github.com/thephpleague/commonmark/compare/0.17.0...0.17.1
+[0.17.0]: https://github.com/thephpleague/commonmark/compare/0.16.0...0.17.0
+[0.16.0]: https://github.com/thephpleague/commonmark/compare/0.15.7...0.16.0
 [0.15.7]: https://github.com/thephpleague/commonmark/compare/0.15.6...0.15.7
 [0.15.6]: https://github.com/thephpleague/commonmark/compare/0.15.5...0.15.6
 [0.15.5]: https://github.com/thephpleague/commonmark/compare/0.15.4...0.15.5

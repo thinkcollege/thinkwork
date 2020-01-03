@@ -18,22 +18,22 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   context = {
  *     "source" = @ContextDefinition("string",
  *       label = @Translation("Existing system path"),
- *       description = @Translation("Specifies the existing path you wish to alias. For example: node/28, forum/1, taxonomy/term/1+2.")
+ *       description = @Translation("Specifies the existing path you wish to alias. For example, '/node/28' or '/forum/1'.")
  *     ),
  *     "alias" = @ContextDefinition("string",
  *       label = @Translation("Path alias"),
- *       description = @Translation("Specify an alternative path by which this data can be accessed. For example, 'about' for an about page. Use a relative path and do not add a trailing slash.")
+ *       description = @Translation("Specify an alternative path by which this data can be accessed. For example, '/about' for an about page. Use an absolute path and do not add a trailing slash.")
  *     ),
  *     "language" = @ContextDefinition("language",
  *       label = @Translation("Language"),
  *       description = @Translation("If specified, the language for which the path alias applies."),
  *       default_value = NULL,
  *       required = FALSE
- *     )
+ *     ),
  *   }
  * )
  *
- * @todo: Add access callback information from Drupal 7.
+ * @todo Add access callback information from Drupal 7.
  */
 class PathAliasCreate extends RulesActionBase implements ContainerFactoryPluginInterface {
 

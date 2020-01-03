@@ -29,7 +29,7 @@ class PathAliasCreateTest extends RulesIntegrationTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
 
     $this->aliasStorage = $this->prophesize(AliasStorageInterface::class);
@@ -53,11 +53,11 @@ class PathAliasCreateTest extends RulesIntegrationTestBase {
    * @covers ::execute
    */
   public function testActionExecutionWithoutLanguage() {
-    $this->aliasStorage->save('node/1', 'about', LanguageInterface::LANGCODE_NOT_SPECIFIED)
+    $this->aliasStorage->save('/node/1', '/about', LanguageInterface::LANGCODE_NOT_SPECIFIED)
       ->shouldBeCalledTimes(1);
 
-    $this->action->setContextValue('source', 'node/1')
-      ->setContextValue('alias', 'about');
+    $this->action->setContextValue('source', '/node/1')
+      ->setContextValue('alias', '/about');
 
     $this->action->execute();
   }
@@ -71,11 +71,11 @@ class PathAliasCreateTest extends RulesIntegrationTestBase {
     $language = $this->prophesize(LanguageInterface::class);
     $language->getId()->willReturn('en');
 
-    $this->aliasStorage->save('node/1', 'about', 'en')
+    $this->aliasStorage->save('/node/1', '/about', 'en')
       ->shouldBeCalledTimes(1);
 
-    $this->action->setContextValue('source', 'node/1')
-      ->setContextValue('alias', 'about')
+    $this->action->setContextValue('source', '/node/1')
+      ->setContextValue('alias', '/about')
       ->setContextValue('language', $language->reveal());
 
     $this->action->execute();

@@ -17,32 +17,32 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   context = {
  *     "type" = @ContextDefinition("string",
  *       label = @Translation("Entity type"),
- *       description = @Translation("Specifies the type of the entity that should be fetched."),
+ *       description = @Translation("Specifies the type of the entity that should be fetched.")
  *     ),
  *     "field_name" = @ContextDefinition("string",
  *       label = @Translation("Field name"),
- *       description = @Translation("Name of the field by which the entity is to be selected.."),
+ *       description = @Translation("Name of the field by which the entity is to be selected..")
  *     ),
  *     "field_value" = @ContextDefinition("any",
  *       label = @Translation("Field value"),
- *       description = @Translation("The field value of the entity to be fetched."),
+ *       description = @Translation("The field value of the entity to be fetched.")
  *     ),
  *     "limit" = @ContextDefinition("integer",
  *       label = @Translation("Limit"),
- *       description = @Translation("Limit the maximum number of fetched entities."),
+ *       description = @Translation("Limit the maximum number of fetched entities. Leave blank for all matching entities."),
  *       default_value = NULL,
- *       required = FALSE,
+ *       required = FALSE
  *     ),
  *   },
  *   provides = {
  *      "entity_fetched" = @ContextDefinition("entity",
  *        label = @Translation("Fetched entity"),
- *        multiple = TRUE,
- *      )
+ *        multiple = TRUE
+ *      ),
  *   }
  * )
  *
- * @todo: Add access callback information from Drupal 7.
+ * @todo Add access callback information from Drupal 7.
  */
 class EntityFetchByField extends RulesActionBase implements ContainerFactoryPluginInterface {
 

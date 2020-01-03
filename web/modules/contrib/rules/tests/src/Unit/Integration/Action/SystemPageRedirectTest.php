@@ -3,8 +3,8 @@
 namespace Drupal\Tests\rules\Unit\Integration\Action {
 
   use Drupal\Tests\rules\Unit\Integration\RulesIntegrationTestBase;
+  use Drupal\Core\Logger\LoggerChannelInterface;
   use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-  use Psr\Log\LoggerInterface;
   use Symfony\Component\HttpFoundation\ParameterBag;
   use Symfony\Component\HttpFoundation\Request;
   use Symfony\Component\HttpFoundation\RequestStack;
@@ -19,7 +19,7 @@ namespace Drupal\Tests\rules\Unit\Integration\Action {
     /**
      * A mocked logger.
      *
-     * @var \Psr\Log\LoggerInterface|\Prophecy\Prophecy\ProphecyInterface
+     * @var \Drupal\Core\Logger\LoggerChannelInterface|\Prophecy\Prophecy\ProphecyInterface
      */
     protected $logger;
 
@@ -68,11 +68,11 @@ namespace Drupal\Tests\rules\Unit\Integration\Action {
     /**
      * {@inheritdoc}
      */
-    public function setUp() {
+    protected function setUp() {
       parent::setUp();
 
       // Mock a logger.
-      $this->logger = $this->prophesize(LoggerInterface::class);
+      $this->logger = $this->prophesize(LoggerChannelInterface::class);
 
       // Mock the logger service, make it return our mocked logger, and register
       // it in the container.

@@ -14,7 +14,7 @@ use Drupal\rules\Core\RulesConditionBase;
  *   context = {
  *     "list" = @ContextDefinition("list",
  *       label = @Translation("List"),
- *       description = @Translation("A multi value data element to have its count compared, specified by using a data selector, eg 'node:uid:entity:roles'.")
+ *       description = @Translation("A multi value data element to have its count compared, specified by using a data selector, eg 'node.uid.entity.roles'.")
  *     ),
  *     "operator" = @ContextDefinition("string",
  *       label = @Translation("Operator"),
@@ -23,14 +23,14 @@ use Drupal\rules\Core\RulesConditionBase;
  *     "value" = @ContextDefinition("integer",
  *       label = @Translation("Count"),
  *       description = @Translation("The count to compare the data count with.")
- *     )
+ *     ),
  *   }
  * )
  *
- * @todo: Add access callback information from Drupal 7?
- * @todo: set ContextDefinition default value
- * @todo: set ContextDefinition options list
- * @todo: set ContextDefinition restriction
+ * @todo Add access callback information from Drupal 7?
+ * @todo set ContextDefinition default value
+ * @todo Set ContextDefinition options list
+ * @todo Set ContextDefinition restriction
  */
 class DataListCountIs extends RulesConditionBase {
 
@@ -52,10 +52,10 @@ class DataListCountIs extends RulesConditionBase {
       case '==':
         return count($list) == $value;
 
-      case '<';
+      case '<':
         return count($list) < $value;
 
-      case '>';
+      case '>':
         return count($list) > $value;
 
     }

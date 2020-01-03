@@ -20,7 +20,7 @@ use Drupal\rules\Exception\InvalidArgumentException;
  *     "roles" = @ContextDefinition("entity:user_role",
  *       label = @Translation("Roles"),
  *       multiple = TRUE
- *     )
+ *     ),
  *   }
  * )
  */

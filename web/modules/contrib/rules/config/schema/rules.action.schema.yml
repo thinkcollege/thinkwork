@@ -18,7 +18,7 @@ rules.action.context_values.rules_system_message:
 
 rules.action.context_values.rules_send_email:
   type: mapping
-  label: Send e-mail action context values
+  label: Send email action context values
   mapping:
     to:
       type: sequence

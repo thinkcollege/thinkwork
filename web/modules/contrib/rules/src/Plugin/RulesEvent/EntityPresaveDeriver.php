@@ -54,7 +54,7 @@ class EntityPresaveDeriver extends DeriverBase implements ContainerDeriverInterf
       }
 
       $this->derivatives[$entity_type_id] = [
-        'label' => $this->t('Before saving @entity_type', ['@entity_type' => $entity_type->getLowercaseLabel()]),
+        'label' => $this->t('Before saving a @entity_type', ['@entity_type' => $entity_type->getSingularLabel()]),
         'category' => $entity_type->getLabel(),
         'entity_type_id' => $entity_type_id,
         'context' => [

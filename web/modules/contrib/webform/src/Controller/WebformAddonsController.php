@@ -4,13 +4,15 @@ namespace Drupal\webform\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Render\Markup;
 use Drupal\webform\Element\WebformMessage;
 use Drupal\webform\WebformAddonsManagerInterface;
+use Drupal\webform\WebformThemeManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Provides route responses for webform add-on.
+ * Provides route responses for Webform add-ons.
  */
 class WebformAddonsController extends ControllerBase implements ContainerInjectionInterface {
 
@@ -20,6 +22,13 @@ class WebformAddonsController extends ControllerBase implements ContainerInjecti
    * @var \Symfony\Component\HttpFoundation\Request
    */
   protected $request;
+
+  /**
+   * The webform theme manager.
+   *
+   * @var \Drupal\webform\WebformThemeManagerInterface
+   */
+  protected $themeManager;
 
   /**
    * The webform add-ons manager.
@@ -33,11 +42,14 @@ class WebformAddonsController extends ControllerBase implements ContainerInjecti
    *
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   The request stack.
+   * @param \Drupal\webform\Controller\WebformThemeManagerInterface $theme_manager
+   *   The webform theme manager.
    * @param \Drupal\webform\WebformAddonsManagerInterface $addons
    *   The webform add-ons manager.
    */
-  public function __construct(RequestStack $request_stack, WebformAddonsManagerInterface $addons) {
+  public function __construct(RequestStack $request_stack,  WebformThemeManagerInterface $theme_manager, WebformAddonsManagerInterface $addons) {
     $this->request = $request_stack->getCurrentRequest();
+    $this->themeManager = $theme_manager;
     $this->addons = $addons;
   }
 
@@ -47,12 +59,13 @@ class WebformAddonsController extends ControllerBase implements ContainerInjecti
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('request_stack'),
+      $container->get('webform.theme_manager'),
       $container->get('webform.addons_manager')
     );
   }
 
   /**
-   * Returns the Webform extend page.
+   * Returns the Webform add-ons page.
    *
    * @return array
    *   The webform submission webform.
@@ -66,6 +79,10 @@ class WebformAddonsController extends ControllerBase implements ContainerInjecti
     ];
 
     // Filter.
+    $is_claro_theme = $this->themeManager->isActiveTheme('claro');
+    $data_source = $is_claro_theme ? '.admin-item' : 'li';
+    $data_parent = $is_claro_theme ? '.admin-item' : 'li';
+
     $build['filter'] = [
       '#type' => 'search',
       '#title' => $this->t('Filter'),
@@ -79,8 +96,8 @@ class WebformAddonsController extends ControllerBase implements ContainerInjecti
         'data-item-plural' => $this->t('add-ons'),
         'data-no-results' => '.webform-addons-no-results',
         'data-element' => '.admin-list',
-        'data-source' => 'li',
-        'data-parent' => 'li',
+        'data-source' => $data_source,
+        'data-parent' => $data_parent,
         'title' => $this->t('Enter a keyword to filter by.'),
         'autofocus' => 'autofocus',
       ],
@@ -116,6 +133,14 @@ class WebformAddonsController extends ControllerBase implements ContainerInjecti
       ];
       $projects = $this->addons->getProjects($category_name);
       foreach ($projects as $project_name => &$project) {
+        // Append (Experimental) to title.
+        if (!empty($project['experimental'])) {
+          $project['title'] .= ' [' . $this->t('EXPERIMENTAL') . ']';
+        }
+        // Prepend logo to title.
+        if (isset($project['logo'])) {
+          $project['title'] = Markup::create('<img src="' . $project['logo']->toString() . '" alt="' . $project['title'] . '"/>' . $project['title']);
+        }
         $project['description'] .= '<br /><small>' . $project['url']->toString() . '</small>';
 
         // Append recommended to project's description.

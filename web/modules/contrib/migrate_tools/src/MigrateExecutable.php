@@ -114,7 +114,7 @@ class MigrateExecutable extends MigrateExecutableBase {
     $this->listeners[MigrateEvents::POST_ROW_DELETE] = [$this, 'onPostRowDelete'];
     $this->listeners[MigratePlusEvents::PREPARE_ROW] = [$this, 'onPrepareRow'];
     foreach ($this->listeners as $event => $listener) {
-      \Drupal::service('event_dispatcher')->addListener($event, $listener);
+      $this->getEventDispatcher()->addListener($event, $listener);
     }
   }
 
@@ -235,7 +235,7 @@ class MigrateExecutable extends MigrateExecutableBase {
    */
   public function onPostImport(MigrateImportEvent $event) {
     $migrate_last_imported_store = \Drupal::keyValue('migrate_last_imported');
-    $migrate_last_imported_store->set($event->getMigration()->id(), round(microtime(TRUE) * 1000));
+    $migrate_last_imported_store->set($event->getMigration()->id(), round(\Drupal::time()->getCurrentMicroTime() * 1000));
     $this->progressMessage();
     $this->removeListeners();
   }
@@ -245,7 +245,7 @@ class MigrateExecutable extends MigrateExecutableBase {
    */
   protected function removeListeners() {
     foreach ($this->listeners as $event => $listener) {
-      \Drupal::service('event_dispatcher')->removeListener($event, $listener);
+      $this->getEventDispatcher()->removeListener($event, $listener);
     }
   }
 
@@ -290,7 +290,11 @@ class MigrateExecutable extends MigrateExecutableBase {
     $migrate_last_imported_store = \Drupal::keyValue('migrate_last_imported');
     $migrate_last_imported_store->set($event->getMigration()->id(), FALSE);
     $this->rollbackMessage();
-    $this->removeListeners();
+    // If this is a sync import, then don't remove listeners or post import will
+    // not be executed. Leave it to post import to remove listeners.
+    if (empty($event->getMigration()->syncSource)) {
+      $this->removeListeners();
+    }
   }
 
   /**
@@ -358,15 +362,12 @@ class MigrateExecutable extends MigrateExecutableBase {
    * @throws \Drupal\migrate\MigrateSkipRowException
    */
   public function onPrepareRow(MigratePrepareRowEvent $event) {
-    // TODO: remove after 8.6 suppor is sunset.
+    // TODO: remove after 8.6 support is sunset.
     // @see https://www.drupal.org/project/migrate_tools/issues/3008316
     if (!empty($this->idlist)) {
       $row = $event->getRow();
-      // TODO: replace for $source_id = $row->getSourceIdValues();
-      // when https://www.drupal.org/node/2698023 is fixed.
       $migration = $event->getMigration();
-      $source_id = array_merge(array_flip(array_keys($migration->getSourcePlugin()
-        ->getIds())), $row->getSourceIdValues());
+      $source_id = $source_id = $row->getSourceIdValues();
       $skip = TRUE;
       foreach ($this->idlist as $item) {
         if (array_values($source_id) == $item) {
@@ -378,7 +379,7 @@ class MigrateExecutable extends MigrateExecutableBase {
         throw new MigrateSkipRowException('Skipped due to idlist.', FALSE);
       }
     }
-    if ($this->feedback && ($this->counter) && $this->counter % $this->feedback == 0) {
+    if ($this->feedback && $this->counter && $this->counter % $this->feedback == 0) {
       $this->progressMessage(FALSE);
       $this->resetCounters();
     }

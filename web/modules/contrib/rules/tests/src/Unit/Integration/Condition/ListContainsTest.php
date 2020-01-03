@@ -21,7 +21,7 @@ class ListContainsTest extends RulesIntegrationTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
 
     $this->condition = $this->conditionManager->createInstance('rules_list_contains');

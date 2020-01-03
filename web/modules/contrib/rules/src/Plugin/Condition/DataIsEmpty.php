@@ -19,12 +19,12 @@ use Drupal\rules\Core\RulesConditionBase;
  *   context = {
  *     "data" = @ContextDefinition("any",
  *       label = @Translation("Data to check"),
- *       description = @Translation("The data to be checked to be empty, specified by using a data selector, e.g. 'node:uid:entity:name:value'.")
- *     )
+ *       description = @Translation("The data to be checked to be empty, specified by using a data selector, e.g. 'node.uid.entity.name.value'.")
+ *     ),
  *   }
  * )
  *
- * @todo: Add access callback information from Drupal 7.
+ * @todo Add access callback information from Drupal 7.
  */
 class DataIsEmpty extends RulesConditionBase {
 

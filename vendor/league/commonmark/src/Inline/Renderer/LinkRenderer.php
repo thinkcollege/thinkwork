@@ -21,6 +21,7 @@ use League\CommonMark\Inline\Element\Link;
 use League\CommonMark\Util\Configuration;
 use League\CommonMark\Util\ConfigurationAwareInterface;
 use League\CommonMark\Util\RegexHelper;
+use League\CommonMark\Util\Xml;
 
 class LinkRenderer implements InlineRendererInterface, ConfigurationAwareInterface
 {
@@ -43,16 +44,20 @@ class LinkRenderer implements InlineRendererInterface, ConfigurationAwareInterfa
 
         $attrs = [];
         foreach ($inline->getData('attributes', []) as $key => $value) {
-            $attrs[$key] = $htmlRenderer->escape($value, true);
+            $attrs[$key] = Xml::escape($value);
         }
 
         $forbidUnsafeLinks = $this->config->getConfig('safe') || !$this->config->getConfig('allow_unsafe_links');
         if (!($forbidUnsafeLinks && RegexHelper::isLinkPotentiallyUnsafe($inline->getUrl()))) {
-            $attrs['href'] = $htmlRenderer->escape($inline->getUrl(), true);
+            $attrs['href'] = Xml::escape($inline->getUrl());
         }
 
         if (isset($inline->data['title'])) {
-            $attrs['title'] = $htmlRenderer->escape($inline->data['title'], true);
+            $attrs['title'] = Xml::escape($inline->data['title']);
+        }
+
+        if (isset($attrs['target']) && $attrs['target'] === '_blank' && !isset($attrs['rel'])) {
+            $attrs['rel'] = 'noopener noreferrer';
         }
 
         return new HtmlElement('a', $attrs, $htmlRenderer->renderInlines($inline->children()));

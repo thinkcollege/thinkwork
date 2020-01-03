@@ -72,7 +72,7 @@ interface ExecutionMetadataStateInterface {
    * Applies a data selector and returns the corresponding data definition.
    *
    * @param string $property_path
-   *   The property path, example: "node:title:value".
+   *   The property path, example: "node.title.value".
    * @param string $langcode
    *   The language code.
    *

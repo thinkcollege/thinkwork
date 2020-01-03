@@ -10,13 +10,14 @@ use Drupal\rules\Core\RulesActionBase;
  * @RulesAction(
  *   id = "rules_test_node",
  *   label = @Translation("Test action string."),
+ *   category = @Translation("Tests"),
  *   context = {
  *     "node" = @ContextDefinition("entity:node",
  *       label = @Translation("Node to det the title on")
  *     ),
  *     "title" = @ContextDefinition("string",
  *       label = @Translation("New title that should be set")
- *     )
+ *     ),
  *   }
  * )
  */

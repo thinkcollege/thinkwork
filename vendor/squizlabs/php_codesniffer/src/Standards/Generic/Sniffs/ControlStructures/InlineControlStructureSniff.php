@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\ControlStructures;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class InlineControlStructureSniff implements Sniff
@@ -138,6 +138,15 @@ class InlineControlStructureSniff implements Sniff
         if ($nextNonEmpty === false) {
             // Live coding or parse error.
             return;
+        }
+
+        if ($tokens[$nextNonEmpty]['code'] === T_COLON) {
+            // Alternative control structure.
+            // T_END... missing. Either live coding, parse error or end
+            // tag in short open tags and scan run with short_open_tag=Off.
+            // Bow out completely as any further detection will be unreliable
+            // and create incorrect fixes or cause fixer conflicts.
+            return ($phpcsFile->numTokens + 1);
         }
 
         unset($nextNonEmpty, $start);

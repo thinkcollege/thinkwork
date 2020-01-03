@@ -11,6 +11,7 @@ use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\Discovery\RecursiveExtensionFilterIterator;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Path\AliasManagerInterface;
 use Drupal\Core\Plugin\Context\LazyContextRepository;
@@ -23,6 +24,7 @@ use Drupal\typed_data\DataFetcher;
 use Drupal\typed_data\DataFilterManager;
 use Drupal\typed_data\PlaceholderResolver;
 use Drupal\Tests\UnitTestCase;
+use Drupal\Tests\rules\Unit\TestMessenger;
 use Prophecy\Argument;
 
 /**
@@ -110,6 +112,8 @@ abstract class RulesIntegrationTestBase extends UnitTestCase {
   protected $enabledModules;
 
   /**
+   * The Drupal service container.
+   *
    * @var \Drupal\Core\DependencyInjection\Container
    */
   protected $container;
@@ -143,9 +147,16 @@ abstract class RulesIntegrationTestBase extends UnitTestCase {
   protected $dataFilterManager;
 
   /**
+   * The messenger service.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
     $container = new ContainerBuilder();
     // Register plugin managers used by Rules, but mock some unwanted
@@ -162,7 +173,7 @@ abstract class RulesIntegrationTestBase extends UnitTestCase {
         return [$arguments[0], $enabled_modules[$arguments[0]]];
       });
 
-    // Wed don't care about alter() calls on the module handler.
+    // We don't care about alter() calls on the module handler.
     $this->moduleHandler->alter(Argument::any(), Argument::any(), Argument::any(), Argument::any())
       ->willReturn(NULL);
 
@@ -212,8 +223,9 @@ abstract class RulesIntegrationTestBase extends UnitTestCase {
     $this->entityTypeBundleInfo->getBundleInfo()->willReturn([]);
 
     $this->dataFetcher = new DataFetcher();
+    $this->messenger = new TestMessenger();
 
-    $this->dataFilterManager = new DataFilterManager($this->namespaces, $this->moduleHandler->reveal());
+    $this->dataFilterManager = new DataFilterManager($this->namespaces, $this->cacheBackend, $this->moduleHandler->reveal());
     $this->placeholderResolver = new PlaceholderResolver($this->dataFetcher, $this->dataFilterManager);
 
     $container->set('entity.manager', $this->entityManager->reveal());
@@ -226,6 +238,7 @@ abstract class RulesIntegrationTestBase extends UnitTestCase {
     $container->set('plugin.manager.condition', $this->conditionManager);
     $container->set('plugin.manager.rules_expression', $this->rulesExpressionManager);
     $container->set('plugin.manager.rules_data_processor', $this->rulesDataProcessorManager);
+    $container->set('messenger', $this->messenger);
     $container->set('typed_data_manager', $this->typedDataManager);
     $container->set('string_translation', $this->getStringTranslationStub());
     $container->set('uuid', $uuid_service);
@@ -239,10 +252,10 @@ abstract class RulesIntegrationTestBase extends UnitTestCase {
   /**
    * Fakes the enabling of a module and adds its namespace for plugin loading.
    *
-   * Default behaviour works fine for core modules.
+   * This method allows plugins provided by a module to be discoverable.
    *
    * @param string $name
-   *   The name of the module that's gonna be enabled.
+   *   The name of the module that's going to be enabled.
    * @param array $namespaces
    *   Map of the association between module's namespaces and filesystem paths.
    */
@@ -250,10 +263,57 @@ abstract class RulesIntegrationTestBase extends UnitTestCase {
     $this->enabledModules[$name] = TRUE;
 
     if (empty($namespaces)) {
-      $namespaces = ['Drupal\\' . $name => $this->root . '/core/modules/' . $name . '/src'];
+      $namespaces = ['Drupal\\' . $name => $this->root . '/' . $this->constructModulePath($name) . '/src'];
     }
     foreach ($namespaces as $namespace => $path) {
       $this->namespaces[$namespace] = $path;
+    }
+  }
+
+  /**
+   * Determines the path to a module's class files.
+   *
+   * Core modules and contributed modules are located in different places, and
+   * the testbot (DrupalCI) does not use same directory structure as most live
+   * Drupal sites, so we must discover the path instead of hardwiring it.
+   *
+   * This method discovers modules the same way as Drupal core, so it should
+   * work for core and contributed modules in all environments.
+   *
+   * @see \Drupal\Core\Extension\ExtensionDiscovery
+   */
+  protected function constructModulePath($module) {
+    // Use Unix paths regardless of platform, skip dot directories, follow
+    // symlinks (to allow extensions to be linked from elsewhere), and return
+    // the RecursiveDirectoryIterator instance to have access to getSubPath(),
+    // since SplFileInfo does not support relative paths.
+    $flags = \FilesystemIterator::UNIX_PATHS;
+    $flags |= \FilesystemIterator::SKIP_DOTS;
+    $flags |= \FilesystemIterator::FOLLOW_SYMLINKS;
+    $flags |= \FilesystemIterator::CURRENT_AS_SELF;
+    $directory_iterator = new \RecursiveDirectoryIterator($this->root, $flags);
+
+    // Filter the recursive scan to discover extensions only.
+    // Important: Without a RecursiveFilterIterator, RecursiveDirectoryIterator
+    // would recurse into the entire filesystem directory tree without any kind
+    // of limitations.
+    $filter = new RecursiveExtensionFilterIterator($directory_iterator);
+    // Ensure we find testing modules too!
+    $filter->acceptTests(TRUE);
+
+    // The actual recursive filesystem scan is only invoked by instantiating the
+    // RecursiveIteratorIterator.
+    $iterator = new \RecursiveIteratorIterator($filter,
+      \RecursiveIteratorIterator::LEAVES_ONLY,
+      // Suppress filesystem errors in case a directory cannot be accessed.
+      \RecursiveIteratorIterator::CATCH_GET_CHILD
+
+    );
+
+    $info_files = new \RegexIterator($iterator, "/^$module.info.yml$/");
+    foreach ($info_files as $file) {
+      // There should only be one match.
+      return $file->getSubPath();
     }
   }
 

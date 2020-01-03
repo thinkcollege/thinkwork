@@ -41,21 +41,26 @@ class OAuth2 extends AuthenticationPluginBase implements ContainerFactoryPluginI
       case 'authorization_code':
         $grant_type = new AuthorizationCode($client, $this->configuration);
         break;
+
       case 'client_credentials':
         $grant_type = new ClientCredentials($client, $this->configuration);
         break;
+
       case 'urn:ietf:params:oauth:grant-type:jwt-bearer':
         $grant_type = new JwtBearer($client, $this->configuration);
         break;
+
       case 'password':
         $grant_type = new PasswordCredentials($client, $this->configuration);
         break;
+
       case 'refresh_token':
         $grant_type = new RefreshToken($client, $this->configuration);
         break;
+
       default:
         throw new MigrateException("Unrecognized grant_type {$this->configuration['grant_type']}.");
-      break;
+
     }
     $middleware = new OAuthMiddleware($client, $grant_type);
 

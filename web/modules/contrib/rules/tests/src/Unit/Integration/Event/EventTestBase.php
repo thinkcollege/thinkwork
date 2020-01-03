@@ -22,7 +22,7 @@ abstract class EventTestBase extends RulesEntityIntegrationTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
     $this->moduleHandler->getModuleDirectories()
       ->willReturn(['rules' => __DIR__ . '/../../../../../']);

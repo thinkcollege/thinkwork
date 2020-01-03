@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *   context = {
  *     "url" = @ContextDefinition("string",
  *       label = @Translation("URL"),
- *       description = @Translation("A Drupal path, path alias, or external URL to redirect to. Enter (optional) queries after ? and (optional) anchor after #."),
+ *       description = @Translation("A Drupal path, path alias, or external URL to redirect to. Enter (optional) queries after ? and (optional) anchor after #.")
  *     ),
  *   }
  * )
@@ -29,7 +29,7 @@ class SystemPageRedirect extends RulesActionBase implements ContainerFactoryPlug
   /**
    * The logger for the rules channel.
    *
-   * @var \Psr\Log\LoggerInterface
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
    */
   protected $logger;
 
@@ -48,7 +48,7 @@ class SystemPageRedirect extends RulesActionBase implements ContainerFactoryPlug
   protected $request;
 
   /**
-   * Constructs a PageRedirect object.
+   * Constructs a SystemPageRedirect object.
    *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.

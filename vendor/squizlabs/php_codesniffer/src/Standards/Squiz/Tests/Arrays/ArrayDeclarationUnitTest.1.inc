@@ -404,6 +404,26 @@ $paths = array(
           Init::ROOT_DIR.'/цвет' => 'синий',
          );
 
+$foo = array(<<<JSON
+{
+}
+JSON
+       );
+
+$array = array(
+          'a'   => fn() => return 1,
+          'bb'  => fn() => return 2,
+          'ccc' => ( true ) ?
+              fn() => return 1 :
+              fn() => return 2,
+         );
+
+$array = array(
+          1 => '1',
+          2 => fn ($x) => yield 'a' => $x,
+          3 => '3',
+         );
+
 // Intentional syntax error.
 $a = array(
       'a' =>

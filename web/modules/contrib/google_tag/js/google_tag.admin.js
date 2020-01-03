@@ -1,8 +1,6 @@
 /**
  * @file
  * Behaviors and utility functions for administrative pages.
- *
- * @author Jim Berry ("solotandem", http://drupal.org/user/240748)
  */
 
 (function ($) {
@@ -13,71 +11,62 @@
   * Provides summary information for the vertical tabs.
   */
   Drupal.behaviors.gtmInsertionSettings = {
-    attach: function (context) {
+    attach: function (context, settings) {
 
-      $('details#edit-path', context).drupalSetSummary(function (context) {
-        var $radio = $('input[name="path_toggle"]:checked', context);
-        if ($radio.val() == 'exclude listed') {
-          if (!$('textarea[name="path_list"]', context).val()) {
-            return Drupal.t('All paths');
+      // Pass context parameters to outer function.
+      function toggleValuesSummary(element, plural, adjective) {
+        // Return a callback function as expected by drupalSetSummary().
+        return function (context) {
+          console.log("inside toggleValuesSummary");
+          console.log("plural=" + plural);
+          var str = '';
+          var toggle = $('input[type="radio"]:checked', context).val();
+          var values;
+          if (element == 'checkbox') {
+            values = $('input[type="checkbox"]:checked + label', context).length;
           }
           else {
-            return Drupal.t('All paths except listed paths');
+            var values = $('textarea', context).val();
           }
-        }
-        else {
-          if (!$('textarea[name="path_list"]', context).val()) {
-            return Drupal.t('No paths');
+          if (toggle == 'exclude listed') {
+            if (!values) {
+              str = 'All !plural';
+            }
+            else {
+              str = 'All !plural except !adjective !plural';
+            }
           }
           else {
-            return Drupal.t('Only listed paths');
+            if (!values) {
+              str = 'No !plural';
+            }
+            else {
+              str = 'Only !adjective !plural';
+            }
           }
+          const args = {'!plural': plural, '!adjective': adjective};
+          return Drupal.t(Drupal.formatString(str, args));
         }
-      });
+      }
 
-      $('details#edit-role', context).drupalSetSummary(function (context) {
-        var vals = [];
-        $('input[type="checkbox"]:checked', context).each(function () {
-          vals.push($.trim($(this).next('label').text()));
-        });
-        var $radio = $('input[name="role_toggle"]:checked', context);
-        if ($radio.val() == 'exclude listed') {
-          if (!vals.length) {
-            return Drupal.t('All roles');
-          }
-          else {
-            return Drupal.t('All roles except selected roles');
-          }
-        }
-        else {
-          if (!vals.length) {
-            return Drupal.t('No roles');
-          }
-          else {
-            return Drupal.t('Only selected roles');
-          }
-        }
-      });
+      // @todo Magic to use 'data-drupal-selector' vs. 'details#edit-path'?
+      var element, plural, adjective;
 
-      $('details#edit-status', context).drupalSetSummary(function (context) {
-        var $radio = $('input[name="status_toggle"]:checked', context);
-        if ($radio.val() == 'exclude listed') {
-          if (!$('textarea[name="status_list"]', context).val()) {
-            return Drupal.t('All statuses');
-          }
-          else {
-            return Drupal.t('All statuses except listed statuses');
-          }
-        }
-        else {
-          if (!$('textarea[name="status_list"]', context).val()) {
-            return Drupal.t('No statuses');
-          }
-          else {
-            return Drupal.t('Only listed statuses');
-          }
-        }
-      });
+      element = 'checkbox';
+      adjective = 'selected';
+      var selectors = ['role', 'gtag-domain', 'gtag-language'];
+      for (const selector of selectors) {
+        plural = selector.replace('gtag-', '') + 's';
+        $('[data-drupal-selector="edit-' + selector + '"]', context).drupalSetSummary(toggleValuesSummary(element, plural, adjective));
+      }
+
+      element = 'textarea';
+      adjective = 'listed';
+      selectors = ['path', 'status'];
+      for (const selector of selectors) {
+        plural = selector.replace('gtag-', '').replace('status', 'statuse') + 's';
+        $('[data-drupal-selector="edit-' + selector + '"]', context).drupalSetSummary(toggleValuesSummary(element, plural, adjective));
+      }
     }
   };
 

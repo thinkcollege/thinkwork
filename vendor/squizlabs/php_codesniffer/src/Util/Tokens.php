@@ -74,6 +74,7 @@ define('T_OPEN_USE_GROUP', 'PHPCS_T_OPEN_USE_GROUP');
 define('T_CLOSE_USE_GROUP', 'PHPCS_T_CLOSE_USE_GROUP');
 define('T_ZSR', 'PHPCS_T_ZSR');
 define('T_ZSR_EQUAL', 'PHPCS_T_ZSR_EQUAL');
+define('T_FN_ARROW', 'T_FN_ARROW');
 
 // Some PHP 5.5 tokens, replicated for lower versions.
 if (defined('T_FINALLY') === false) {
@@ -112,6 +113,15 @@ if (defined('T_COALESCE_EQUAL') === false) {
 
 if (defined('T_YIELD_FROM') === false) {
     define('T_YIELD_FROM', 'PHPCS_T_YIELD_FROM');
+}
+
+// Some PHP 7.4 tokens, replicated for lower versions.
+if (defined('T_BAD_CHARACTER') === false) {
+    define('T_BAD_CHARACTER', 'PHPCS_T_BAD_CHARACTER');
+}
+
+if (defined('T_FN') === false) {
+    define('T_FN', 'PHPCS_T_FN');
 }
 
 // Tokens used for parsing doc blocks.
@@ -339,17 +349,19 @@ final class Tokens
      * @var array<int, int>
      */
     public static $parenthesisOpeners = [
-        T_ARRAY    => T_ARRAY,
-        T_FUNCTION => T_FUNCTION,
-        T_CLOSURE  => T_CLOSURE,
-        T_WHILE    => T_WHILE,
-        T_FOR      => T_FOR,
-        T_FOREACH  => T_FOREACH,
-        T_SWITCH   => T_SWITCH,
-        T_IF       => T_IF,
-        T_ELSEIF   => T_ELSEIF,
-        T_CATCH    => T_CATCH,
-        T_DECLARE  => T_DECLARE,
+        T_ARRAY      => T_ARRAY,
+        T_LIST       => T_LIST,
+        T_FUNCTION   => T_FUNCTION,
+        T_CLOSURE    => T_CLOSURE,
+        T_ANON_CLASS => T_ANON_CLASS,
+        T_WHILE      => T_WHILE,
+        T_FOR        => T_FOR,
+        T_FOREACH    => T_FOREACH,
+        T_SWITCH     => T_SWITCH,
+        T_IF         => T_IF,
+        T_ELSEIF     => T_ELSEIF,
+        T_CATCH      => T_CATCH,
+        T_DECLARE    => T_DECLARE,
     ];
 
     /**

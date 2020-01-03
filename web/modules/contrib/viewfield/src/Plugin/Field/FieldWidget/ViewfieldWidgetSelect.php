@@ -2,13 +2,17 @@
 
 namespace Drupal\viewfield\Plugin\Field\FieldWidget;
 
+use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Field\Plugin\Field\FieldWidget\OptionsSelectWidget;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 
 /**
+ * Plugin implementation of the 'viewfield_select' widget.
+ *
  * @FieldWidget(
  *   id = "viewfield_select",
  *   label = @Translation("Viewfield"),
@@ -24,7 +28,7 @@ class ViewfieldWidgetSelect extends OptionsSelectWidget {
     $field_type = $this->fieldDefinition->getType();
     $item = $items[$delta];
 
-    $element = ['target_id' => parent::formElement($items, $delta, $element, $form, $form_state)];
+    $element['target_id'] = parent::formElement($items, $delta, $element, $form, $form_state);
     $element['target_id']['#field_type'] = $field_type;
     $element['target_id']['#field_item'] = $item;
     $element['target_id']['#description'] = $this->t('View name.');
@@ -55,30 +59,26 @@ class ViewfieldWidgetSelect extends OptionsSelectWidget {
     $display_id_options = NULL;
     $default_display_id = NULL;
     $default_arguments = NULL;
+    $default_items_to_display = NULL;
     $item_value = $item->getValue();
-    $triggering_element = $form_state->getTriggeringElement();
 
-    // Use form state values if available when Ajax callback has run.
-    if (isset($triggering_element['#field_type']) && $triggering_element['#field_type'] == $field_type) {
-      $form_state_value = $form_state->getValue($form_state_keys);
-      if (isset($form_state_value['target_id'])) {
-        $default_target_id = $form_state_value['target_id'];
-        $display_id_options = $item->getDisplayOptions($form_state_value['target_id']);
-        // Set current default value if valid, otherwise use the first option.
-        if (isset($display_id_options[$form_state_value['display_id']])) {
-          $default_display_id = $form_state_value['display_id'];
-        }
-        elseif (!empty($display_id_options)) {
-          $default_display_id = current(array_keys($display_id_options));
-        }
-        $default_arguments = $form_state_value['arguments'];
-      }
-    }
-    elseif (isset($item_value['target_id'])) {
+    // Set initial default values from the item if they exist.
+    if (isset($item_value['target_id'])) {
       $default_target_id = $item_value['target_id'];
       $display_id_options = $item->getDisplayOptions($item_value['target_id']);
       $default_display_id = $item_value['display_id'];
       $default_arguments = $item_value['arguments'];
+      $default_items_to_display = $item_value['items_to_display'];
+    }
+
+    // Set default values based on values from form_state, if they exist.
+    $values = $form_state->getValue($this->fieldDefinition->getName());
+    if (!empty($values[$delta])) {
+      $default_target_id = $values[$delta]['target_id'];
+      $default_display_id = $values[$delta]['display_id'];
+      $default_arguments = $values[$delta]['arguments'];
+      $display_id_options = $item->getDisplayOptions($default_target_id);
+      $default_items_to_display = $values[$delta]['items_to_display'];
     }
 
     // #default_value needs special handling, otherwise it consists of an array
@@ -89,11 +89,12 @@ class ViewfieldWidgetSelect extends OptionsSelectWidget {
     $display_id_class = $this->createDisplayClass($form_state_keys);
 
     // Use primary target_id field to control visibility of secondary ones.
-    $primary_field_name = $form_state_keys[0] . '[' . implode('][', array_slice($form_state_keys, 1)) . '][target_id]';
+    $field_key =  $form_state_keys[0] . '[' . implode('][', array_slice($form_state_keys, 1)) . ']';
+    $primary_field_name = $field_key . '[target_id]';
     $primary_field_visible_test = [':input[name="' . $primary_field_name . '"]' => ['!value' => '_none']];
 
     $element['display_id'] = [
-      '#title' => 'Display',
+      '#title' => $this->t('Display'),
       '#type' => 'select',
       '#options' => $display_id_options,
       '#default_value' => $default_display_id,
@@ -103,8 +104,23 @@ class ViewfieldWidgetSelect extends OptionsSelectWidget {
       '#states' => ['visible' => $primary_field_visible_test],
     ];
 
-    $element['arguments'] = [
-      '#title' => 'Arguments',
+    $element['view_options'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Advanced options'),
+      '#weight' => 20,
+      '#open' => false,
+      '#parents' => $form_state_keys,
+      '#states' => [
+        'open' => [
+          [':input[name="' . $field_key .'[arguments]"]' => ['filled' => TRUE]],
+          [':input[name="' . $field_key .'[items_to_display]"]' => ['filled' => TRUE]],
+        ],
+        'visible' => $primary_field_visible_test,
+      ],
+    ];
+
+    $element['view_options']['arguments'] = [
+      '#title' => $this->t('Arguments'),
       '#type' => 'textfield',
       '#default_value' => $default_arguments,
       '#description' => $this->t('Separate contextual filters with a "/". Each filter may use "+" or "," for multi-value arguments.<br>This field supports tokens.'),
@@ -113,19 +129,38 @@ class ViewfieldWidgetSelect extends OptionsSelectWidget {
       '#maxlength' => 255,
     ];
 
-    $element['token_help'] = [
+    // Get entity types from the $items.
+    $entity_type = $items->getEntity()->getEntityTypeId();
+
+    // Token expects the value "term" for taxonomy_term entities.
+    if ($entity_type == 'taxonomy_term') {
+      $entity_type = 'term';
+    }
+
+    $element['view_options']['token_help'] = [
       '#type' => 'item',
       '#weight' => 30,
       '#states' => ['visible' => $primary_field_visible_test],
       'tokens' => [
         '#theme' => 'token_tree_link',
-        '#token_types' => [$items->getEntity()->getEntityTypeId()],
+        '#token_types' => [$entity_type],
       ],
     ];
 
+    $element['view_options']['items_to_display'] = [
+      '#title' => $this->t('Items to display'),
+      '#type' => 'textfield',
+      '#default_value' => $default_items_to_display,
+      '#description' => $this->t('Override the number of items to display. This also disables the pager if one is configured. Leave empty for default limit.'),
+      '#weight' => 40,
+      '#states' => ['visible' => $primary_field_visible_test],
+    ];
+
+    $element['#attached']['library'][] = 'viewfield/viewfield';
+
     return $element;
   }
-
+  
   /**
    * {@inheritdoc}
    */
@@ -202,14 +237,23 @@ class ViewfieldWidgetSelect extends OptionsSelectWidget {
       unset($values[$index]);
     }
 
-    // Transpose selections from field => delta to delta => field.
-    //    $items = [];
-    //    foreach ($values as $value) {
-    //      $items[] = [$element['#key_column'] => $value];
-    //    }
-    //    $form_state->setValueForElement($element, $items);.
     $target_id = !empty($values[0]) ? $values[0] : NULL;
     $form_state->setValueForElement($element, $target_id);
+  }
+
+  public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
+    $values = parent::massageFormValues($values, $form, $form_state); // TODO: Change the autogenerated stub
+    foreach ($values as $key => $value) {
+    }
+    return $values;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function errorElement(array $element, ConstraintViolationInterface $error, array $form, FormStateInterface $form_state) {
+    $element = $element;
+    return $element['target_id'];
   }
 
   /**
@@ -239,6 +283,8 @@ class ViewfieldWidgetSelect extends OptionsSelectWidget {
     $selector = '.' . $this->createDisplayClass($form_state_keys);
     $response = new AjaxResponse();
     $response->addCommand(new HtmlCommand($selector, $html));
+    $response->addCommand(new InvokeCommand($selector, 'ajaxEnableElements'));
+    $form_state->setRebuild(TRUE);
 
     return $response;
   }
@@ -252,7 +298,7 @@ class ViewfieldWidgetSelect extends OptionsSelectWidget {
    * @return string
    *   The display input field class.
    */
-  protected function createDisplayClass($components) {
+  protected function createDisplayClass(array $components) {
     return implode('-', $components) . '-display-id';
   }
 

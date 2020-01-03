@@ -45,7 +45,7 @@ abstract class RulesUnitTestBase extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
 
     $this->trueConditionExpression = $this->prophesize(ConditionExpressionInterface::class);

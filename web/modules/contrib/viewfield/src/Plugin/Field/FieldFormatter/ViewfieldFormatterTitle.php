@@ -16,6 +16,7 @@ use Drupal\views\Views;
  * )
  */
 class ViewfieldFormatterTitle extends FormatterBase {
+
   /**
    * {@inheritdoc}
    */
@@ -44,11 +45,11 @@ class ViewfieldFormatterTitle extends FormatterBase {
         '#items' => [
           $this->t('<strong>View:</strong> @title (@id)', [
             '@title' => $title,
-            '@id' => $target_id
+            '@id' => $target_id,
           ]),
           $this->t('<strong>Display:</strong> @display (@id)', [
             '@display' => $display_name,
-            '@id' => $display_id
+            '@id' => $display_id,
           ]),
           $this->t('<strong>Arguments:</strong> @arguments', ['@arguments' => $arguments]),
         ],
@@ -56,5 +57,5 @@ class ViewfieldFormatterTitle extends FormatterBase {
     }
     return $elements;
   }
-}
 
+}

@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\migrate_plus\Kernel\Plugin\migrate_plus\data_parser;
 
+use Drupal\Migrate\MigrateException;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
@@ -11,30 +12,54 @@ use Drupal\KernelTests\KernelTestBase;
  */
 class SimpleXmlTest extends KernelTestBase {
 
-  public static $modules = ['migrate', 'migrate_plus'];
+  /**
+   * {@inheritdoc}
+   */
+  protected static $modules = ['migrate', 'migrate_plus'];
 
   /**
-   * Tests reducing single values.
+   * Path for the xml file.
    *
-   * @throws \Drupal\Component\Plugin\Exception\PluginException
-   * @throws \Exception
+   * @var string
    */
-  public function testReduceSingleValue() {
-    $path = $this->container
-      ->get('module_handler')
-      ->getModule('migrate_plus')
-      ->getPath();
-    $url = $path . '/tests/data/simple_xml_reduce_single_value.xml';
+  protected $path;
 
-    /** @var \Drupal\migrate_plus\DataParserPluginManager $plugin_manager */
-    $plugin_manager = $this->container
+  /**
+   * The plugin manager.
+   *
+   * @var \Drupal\migrate_plus\DataParserPluginManager
+   */
+  protected $pluginManager;
+
+  /**
+   * The plugin configuration.
+   *
+   * @var array
+   */
+  protected $configuration;
+
+  /**
+   * The expected result.
+   *
+   * @var array
+   */
+  protected $expected;
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    parent::setUp();
+    $this->path = $this->container->get('module_handler')
+      ->getModule('migrate_plus')->getPath();
+    $this->pluginManager = $this->container
       ->get('plugin.manager.migrate_plus.data_parser');
-    $conf = [
+    $this->configuration = [
       'plugin' => 'url',
       'data_fetcher_plugin' => 'file',
       'data_parser_plugin' => 'simple_xml',
       'destination' => 'node',
-      'urls' => [$url],
+      'urls' => [],
       'ids' => ['id' => ['type' => 'integer']],
       'fields' => [
         [
@@ -50,18 +75,7 @@ class SimpleXmlTest extends KernelTestBase {
       ],
       'item_selector' => '/items/item',
     ];
-    $parser = $plugin_manager->createInstance('simple_xml', $conf);
-
-    $data = [];
-    foreach ($parser as $item) {
-      $values = [];
-      foreach ($item['values'] as $value) {
-        $values[] = (string) $value;
-      }
-      $data[] = $values;
-    }
-
-    $expected = [
+    $this->expected = [
       [
         'Value 1',
         'Value 2',
@@ -70,7 +84,120 @@ class SimpleXmlTest extends KernelTestBase {
         'Value 1 (single)',
       ],
     ];
+  }
 
+  /**
+   * Tests reducing single values.
+   */
+  public function testReduceSingleValue() {
+    $url = $this->path . '/tests/data/simple_xml_reduce_single_value.xml';
+    $this->configuration['urls'][0] = $url;
+    $parser = $this->pluginManager->createInstance('simple_xml', $this->configuration);
+    $this->assertResults($this->expected, $parser);
+  }
+
+  /**
+   * Test reading non standard conforming XML.
+   *
+   * XML file with lots of different white spaces before the starting tag.
+   */
+  public function testReadNonStandardXmlWhitespace() {
+    $url = $this->path . '/tests/data/simple_xml_invalid_multi_whitespace.xml';
+    $this->configuration['urls'][0] = $url;
+
+    $parser = $this->pluginManager->createInstance('simple_xml', $this->configuration);
+    $this->assertResults($this->expected, $parser);
+  }
+
+  /**
+   * Test reading non standard conforming XML .
+   *
+   * XML file with one empty line before the starting tag.
+   */
+  public function testReadNonStandardXml2() {
+    $url = $this->path . '/tests/data/simple_xml_invalid_single_line.xml';
+    $this->configuration['urls'][0] = $url;
+
+    $parser = $this->pluginManager->createInstance('simple_xml', $this->configuration);
+    $this->assertResults($this->expected, $parser);
+  }
+
+  /**
+   * Test reading broken XML (missing closing tag).
+   *
+   * @throws \Drupal\Migrate\MigrateException
+   */
+  public function testReadBrokenXmlMissingTag() {
+    $url = $this->path . '/tests/data/simple_xml_broken_missing_tag.xml';
+    $this->configuration['urls'][0] = $url;
+
+    $this->setExpectedException(MigrateException::class);
+    $this->expectExceptionMessageRegExp('/^Fatal Error 73/');
+    $parser = $this->pluginManager->createInstance('simple_xml', $this->configuration);
+    $this->assertResults($this->expected, $parser);
+  }
+
+  /**
+   * Test reading broken XML (tag mismatch).
+   *
+   * @throws \Drupal\Migrate\MigrateException
+   */
+  public function testReadBrokenXmlTagMismatch() {
+    $url = $this->path . '/tests/data/simple_xml_broken_tag_mismatch.xml';
+    $this->configuration['urls'][0] = $url;
+
+    $this->setExpectedException(MigrateException::class);
+    $this->expectExceptionMessageRegExp('/^Fatal Error 76/');
+    $parser = $this->pluginManager->createInstance('simple_xml', $this->configuration);
+    $this->assertResults($this->expected, $parser);
+  }
+
+  /**
+   * Test reading non XML.
+   *
+   * @throws \Drupal\Migrate\MigrateException
+   */
+  public function testReadNonXml() {
+    $url = $this->path . '/tests/data/simple_xml_non_xml.xml';
+    $this->configuration['urls'][0] = $url;
+
+    $this->setExpectedException(MigrateException::class);
+    $this->expectExceptionMessageRegExp('/^Fatal Error 46/');
+    $parser = $this->pluginManager->createInstance('simple_xml', $this->configuration);
+    $this->assertResults($this->expected, $parser);
+  }
+
+  /**
+   * Tests reading non-existing XML.
+   *
+   * @throws \Drupal\Migrate\MigrateException
+   */
+  public function testReadNonExistingXml() {
+    $url = $this->path . '/tests/data/simple_xml_non_existing.xml';
+    $this->configuration['urls'][0] = $url;
+
+    $this->setExpectedException(MigrateException::class, 'file parser plugin: could not retrieve data from modules/migrate_plus/tests/data/simple_xml_non_existing.xml');
+    $parser = $this->pluginManager->createInstance('simple_xml', $this->configuration);
+    $this->assertResults($this->expected, $parser);
+  }
+
+  /**
+   * Parses and asserts the results match expectations.
+   *
+   * @param array|string $expected
+   *   The expected results.
+   * @param \Traversable $parser
+   *   An iterable data result to parse.
+   */
+  protected function assertResults($expected, \Traversable $parser) {
+    $data = [];
+    foreach ($parser as $item) {
+      $values = [];
+      foreach ($item['values'] as $value) {
+        $values[] = (string) $value;
+      }
+      $data[] = $values;
+    }
     $this->assertEquals($expected, $data);
   }
 

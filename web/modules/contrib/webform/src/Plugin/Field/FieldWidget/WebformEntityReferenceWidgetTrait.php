@@ -107,6 +107,7 @@ trait WebformEntityReferenceWidgetTrait {
     $element['settings']['status'] = [
       '#type' => 'radios',
       '#title' => $this->t('Status'),
+      '#description' => $this->t('The open, closed, or scheduled status applies to only this webform instance.'),
       '#options' => [
         WebformInterface::STATUS_OPEN => $this->t('Open'),
         WebformInterface::STATUS_CLOSED => $this->t('Closed'),
@@ -209,6 +210,15 @@ some_value: '[paragraph:some_value:clear]";
     foreach ($values as &$item) {
       $item += $item['settings'];
       unset($item['settings']);
+
+      // Set default values.
+      $item += [
+        'target_id' => '',
+        'default_data' => NULL,
+        'status' => '',
+        'open' => '',
+        'close' => '',
+      ];
 
       if ($item['status'] === WebformInterface::STATUS_SCHEDULED) {
         $states = ['open', 'close'];

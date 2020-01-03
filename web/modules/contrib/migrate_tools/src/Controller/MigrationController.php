@@ -220,7 +220,11 @@ class MigrationController extends ControllerBase implements ContainerInjectionIn
         $row[] = '';
       }
       if (isset($process_line[0]['plugin'])) {
-        $row[] = ['data' => Xss::filterAdmin($process_line[0]['plugin'])];
+        $process_line_plugins = [];
+        foreach ($process_line as $process_line_row) {
+          $process_line_plugins[] = Xss::filterAdmin($process_line_row['plugin']);
+        }
+        $row[] = ['data' => implode(', ', $process_line_plugins)];
       }
       else {
         $row[] = '';

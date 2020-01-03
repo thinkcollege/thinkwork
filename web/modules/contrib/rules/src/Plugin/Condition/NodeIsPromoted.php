@@ -15,11 +15,11 @@ use Drupal\rules\Core\RulesConditionBase;
  *   context = {
  *     "node" = @ContextDefinition("entity:node",
  *       label = @Translation("Node")
- *     )
+ *     ),
  *   }
  * )
  *
- * @todo: Add access callback information from Drupal 7.
+ * @todo Add access callback information from Drupal 7.
  */
 class NodeIsPromoted extends RulesConditionBase {
 

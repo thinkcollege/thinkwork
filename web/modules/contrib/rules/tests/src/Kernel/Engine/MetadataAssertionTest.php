@@ -7,17 +7,14 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\rules\Context\ContextConfig;
 use Drupal\rules\Context\ContextDefinition;
 use Drupal\rules\Engine\RulesComponent;
-use Drupal\Tests\rules\Kernel\RulesDrupalTestBase;
+use Drupal\Tests\rules\Kernel\RulesKernelTestBase;
 
 /**
  * Tests asserting metadata works correctly.
  *
  * @group Rules
- * @group legacy
- * @todo Remove the 'legacy' tag when Rules no longer uses deprecated code.
- * @see https://www.drupal.org/project/rules/issues/2922757
  */
-class MetadataAssertionTest extends RulesDrupalTestBase {
+class MetadataAssertionTest extends RulesKernelTestBase {
 
   /**
    * {@inheritdoc}
@@ -34,11 +31,18 @@ class MetadataAssertionTest extends RulesDrupalTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
 
     $this->installSchema('system', ['sequences']);
     $this->installEntitySchema('user');
+
+    // The global CurrentUserContext doesn't work properly without a
+    // fully-installed user module.
+    // @see https://www.drupal.org/project/rules/issues/2989417
+    $this->container->get('module_handler')->loadInclude('user', 'install');
+    user_install();
+
     $this->installEntitySchema('node');
     $this->installConfig(['field']);
 

@@ -141,7 +141,7 @@ class ConditionForm implements ExpressionFormInterface {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $condition_id = $form_state->get('condition_id');
-    // Nothing todo as long as the first step is not completed.
+    // Nothing to do as long as the first step is not completed.
     if (!$condition_id) {
       return;
     }

@@ -6,6 +6,7 @@ use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\rules\Annotation\RulesExpression;
+use Drupal\rules\Context\ContextConfig;
 
 /**
  * Plugin manager for all Rules expressions.
@@ -46,33 +47,37 @@ class ExpressionManager extends DefaultPluginManager implements ExpressionManage
   /**
    * {@inheritdoc}
    */
-  public function createRule(array $configuration = []) {
-    return $this->createInstance('rules_rule', $configuration);
+  public function createRule(ContextConfig $configuration = NULL) {
+    $config_array = is_null($configuration) ? [] : $configuration->toArray();
+    return $this->createInstance('rules_rule', $config_array);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function createActionSet(array $configuration = []) {
-    return $this->createInstance('rules_action_set', $configuration);
+  public function createActionSet(ContextConfig $configuration = NULL) {
+    $config_array = is_null($configuration) ? [] : $configuration->toArray();
+    return $this->createInstance('rules_action_set', $config_array);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function createAction($id, array $configuration = []) {
+  public function createAction($id, ContextConfig $configuration = NULL) {
+    $config_array = is_null($configuration) ? [] : $configuration->toArray();
     return $this->createInstance('rules_action', [
       'action_id' => $id,
-    ] + $configuration);
+    ] + $config_array);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function createCondition($id, array $configuration = []) {
+  public function createCondition($id, ContextConfig $configuration = NULL) {
+    $config_array = is_null($configuration) ? [] : $configuration->toArray();
     return $this->createInstance('rules_condition', [
       'condition_id' => $id,
-    ] + $configuration);
+    ] + $config_array);
   }
 
   /**

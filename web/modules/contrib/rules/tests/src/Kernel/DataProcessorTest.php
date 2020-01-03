@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\rules\Kernel;
 
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\rules\Context\ContextDefinition;
 use Drupal\rules\Context\ContextConfig;
 use Drupal\rules\Engine\RulesComponent;
@@ -10,11 +11,8 @@ use Drupal\rules\Engine\RulesComponent;
  * Test the data processor plugins during Rules evaluation.
  *
  * @group Rules
- * @group legacy
- * @todo Remove the 'legacy' tag when Rules no longer uses deprecated code.
- * @see https://www.drupal.org/project/rules/issues/2922757
  */
-class DataProcessorTest extends RulesDrupalTestBase {
+class DataProcessorTest extends RulesKernelTestBase {
 
   /**
    * Tests that the numeric offset plugin works.
@@ -46,10 +44,10 @@ class DataProcessorTest extends RulesDrupalTestBase {
 
     $component->execute();
 
-    $messages = drupal_set_message();
+    $messages = $this->messenger->all();
     // The original value was 1 and the processor adds 1, so the result should
     // be 2.
-    $this->assertEquals((string) $messages['status'][0], '2');
+    $this->assertEquals((string) $messages[MessengerInterface::TYPE_STATUS][0], '2');
   }
 
 }

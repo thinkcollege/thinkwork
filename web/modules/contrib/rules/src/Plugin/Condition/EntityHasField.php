@@ -20,11 +20,11 @@ use Drupal\rules\Core\RulesConditionBase;
  *     "field" = @ContextDefinition("string",
  *       label = @Translation("Field"),
  *       description = @Translation("The name of the field to check for.")
- *     )
+ *     ),
  *   }
  * )
  *
- * @todo: Add access callback information from Drupal 7.
+ * @todo Add access callback information from Drupal 7.
  */
 class EntityHasField extends RulesConditionBase {
 

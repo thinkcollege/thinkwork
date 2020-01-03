@@ -176,6 +176,14 @@ interface WebformInterface extends ConfigEntityInterface, EntityWithPluginCollec
   public function hasAttachments();
 
   /**
+   * Determine if the webform's elements include computed values.
+   *
+   * @return bool
+   *   TRUE if the webform's elements include computed values.
+   */
+  public function hasComputed();
+
+  /**
    * Determine if the webform is using a Flexbox layout.
    *
    * @return bool
@@ -711,7 +719,7 @@ interface WebformInterface extends ConfigEntityInterface, EntityWithPluginCollec
   public function getElementsManagedFiles();
 
   /**
-   * Get webform attachemnt elements.
+   * Get webform attachment elements.
    *
    * @return array
    *   Webform attachment elements.
@@ -719,12 +727,23 @@ interface WebformInterface extends ConfigEntityInterface, EntityWithPluginCollec
   public function getElementsAttachments();
 
   /**
+   * Get webform computed elements.
+   *
+   * @return array
+   *   Webform computed elements.
+   */
+  public function getElementsComputed();
+
+  /**
    * Get webform element's selectors as options.
+   *
+   * @param array $options
+   *   (Optional) Options to be appled to element selectors.
    *
    * @return array
    *   Webform elements selectors as options.
    */
-  public function getElementsSelectorOptions();
+  public function getElementsSelectorOptions(array $options = []);
 
   /**
    * Get webform element options as autocomplete source values.
@@ -741,6 +760,14 @@ interface WebformInterface extends ConfigEntityInterface, EntityWithPluginCollec
    *   Webform elements that can be prepopulated.
    */
   public function getElementsPrepopulate();
+
+  /**
+   * Get webform elements default data.
+   *
+   * @return array
+   *   Webform elements default data.
+   */
+  public function getElementsDefaultData();
 
   /**
    * Sets elements (YAML) value.
@@ -782,13 +809,17 @@ interface WebformInterface extends ConfigEntityInterface, EntityWithPluginCollec
    * @param string $operation
    *   The webform submission operation.
    *   Usually 'default', 'add', 'edit', 'edit_all', 'api', or 'test'.
+   * @param \Drupal\webform\WebformSubmissionInterface|null $webform_submission
+   *   (Optional) A webform submission. If a webform submission is defined and
+   *   the 'wizard_progress_states' is TRUE, wizard page conditional logic
+   *   will be evaluated.
    *
    * @return array
    *   An associative array of webform wizard pages.
    *
    * @see \Drupal\webform\Entity\WebformSubmission
    */
-  public function getPages($operation = '');
+  public function getPages($operation = '', WebformSubmissionInterface $webform_submission = NULL);
 
   /**
    * Get webform wizard page.
@@ -820,6 +851,16 @@ interface WebformInterface extends ConfigEntityInterface, EntityWithPluginCollec
    *   TRUE if the webform has any message handlers.
    */
   public function hasMessageHandler();
+
+  /**
+   * Determine if a webform handler requires anonymous submission tracking.
+   *
+   * @return bool
+   *   TRUE if a webform handler requires anonymous submission tracking.
+   *
+   * @see \Drupal\webform_options_limit\Plugin\WebformHandler\OptionsLimitWebformHandler
+   */
+  public function hasAnonymousSubmissionTrackingHandler();
 
   /**
    * Returns a specific webform handler.
@@ -895,8 +936,13 @@ interface WebformInterface extends ConfigEntityInterface, EntityWithPluginCollec
    *   (optional) An additional variable that is passed by reference.
    * @param mixed $context2
    *   (optional) An additional variable that is passed by reference.
+   * @param mixed $context3
+   *   (optional) An additional variable that is passed by reference.
+   *
+   * @return \Drupal\Core\Access\AccessResult|null
+   *   If 'access' method is invoked an AccessResult is returned.
    */
-  public function invokeHandlers($method, &$data, &$context1 = NULL, &$context2 = NULL);
+  public function invokeHandlers($method, &$data, &$context1 = NULL, &$context2 = NULL, &$context3 = NULL);
 
   /**
    * Invoke elements method.

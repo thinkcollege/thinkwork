@@ -13,10 +13,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @RulesAction(
  *   id = "rules_entity_path_alias_create",
- *   deriver = "Drupal\rules\Plugin\RulesAction\EntityPathAliasCreateDeriver",
+ *   deriver = "Drupal\rules\Plugin\RulesAction\EntityPathAliasCreateDeriver"
  * )
  *
- * @todo: Add access callback information from Drupal 7.
+ * @todo Add access callback information from Drupal 7.
  */
 class EntityPathAliasCreate extends RulesActionBase implements ContainerFactoryPluginInterface {
 
@@ -78,7 +78,7 @@ class EntityPathAliasCreate extends RulesActionBase implements ContainerFactoryP
       $entity->save();
     }
 
-    $path = $entity->toUrl()->getInternalPath();
+    $path = '/' . $entity->toUrl()->getInternalPath();
     $langcode = $entity->language()->getId();
     $this->aliasStorage->save($path, $alias, $langcode);
   }

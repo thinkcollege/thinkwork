@@ -2,7 +2,7 @@
   "name": "drupal/mailgun",
   "type": "drupal-module",
   "require": {
-    "mailgun/mailgun-php": ">=2.3",
+    "mailgun/mailgun-php": ">=2.3 <3.0",
     "php-http/curl-client": "^1.0",
     "guzzlehttp/psr7": "^1.0",
     "drupal/mailsystem": "*",

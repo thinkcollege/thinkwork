@@ -127,7 +127,7 @@ class ActionForm implements ExpressionFormInterface {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $action_id = $form_state->get('action_id');
-    // Nothing todo as long as the first step is not completed.
+    // Nothing to do as long as the first step is not completed.
     if (!$action_id) {
       return;
     }

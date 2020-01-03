@@ -6,8 +6,8 @@ package: Migration
 dependencies:
 - migrate
 
-# Information added by Drupal.org packaging script on 2018-11-05
-version: '8.x-1.8'
+# Information added by Drupal.org packaging script on 2019-07-10
+version: '8.x-1.9'
 core: '8.x'
 project: 'migrate_manifest'
-datestamp: 1541449405
+datestamp: 1562733189

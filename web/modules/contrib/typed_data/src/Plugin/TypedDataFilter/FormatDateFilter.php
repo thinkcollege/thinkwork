@@ -121,7 +121,7 @@ class FormatDateFilter extends DataFilterBase implements ContainerFactoryPluginI
       $fails[] = $this->t("If 'custom' is given as date type, a custom date formatting string must be provided; e.g., 'Y-m-d H:i:s'.");
     }
     return $fails;
-    // @todo: Should we validate timezones and langcodes also?
+    // @todo Should we validate timezones and langcodes also?
   }
 
 }

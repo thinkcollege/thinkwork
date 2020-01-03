@@ -13,6 +13,61 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Copy a file from a blob into a file.
  *
+ * The source value is an indexed array of two values:
+ * - The destination URI, e.g. 'public://example.txt'.
+ * - The binary blob data.
+ *
+ * Available configuration keys:
+ * - reuse: true
+ *
+ * @codingStandardsIgnoreStart
+ *
+ * Examples:
+ * @code
+ * uri:
+ *   plugin: file_blob
+ *   source:
+ *     - 'public://example.txt'
+ *     - blob
+ * @endcode
+ * Above, a basic configuration.
+ *
+ * @code
+ * source:
+ *   constants:
+ *     destination: public://images
+ * process:
+ *   destination_blob:
+ *     plugin: callback
+ *     callable: base64_decode
+ *     source:
+ *       - blob
+ *   destination_basename:
+ *     plugin: callback
+ *     callable: basename
+ *     source: file_name
+ *   destination_path:
+ *     plugin: concat
+ *     source:
+ *       - constants/destination
+ *       - @destination_basename
+ *   uri:
+ *     plugin: file_blob
+ *     source:
+ *       - @destination_path
+ *       - @destination_blob
+ * @endcode
+   In the example above, it is necessary to manipulate  the values before they
+ * are processed by this plugin. This is because this plugin takes a binary blob
+ * and saves it as a file. In many cases, as in this example, the data is base64
+ * encoded and should be decoded first. In destination_blob, the incoming data
+ * is decoded from base64 to binary. The destination_path element is
+ * concatenating the base filename with the destination directory set in the
+ * constants to create the final path. The resulting values are then referenced
+ * as the source of the file_blob plugin.
+ *
+ * @codingStandardsIgnoreEnd
+ *
  * @MigrateProcessPlugin(
  *   id = "file_blob"
  * )
@@ -78,7 +133,15 @@ class FileBlob extends ProcessPluginBase implements ContainerFactoryPluginInterf
       return $destination;
     }
     $dir = $this->getDirectory($destination);
-    if (!file_prepare_directory($dir, FILE_CREATE_DIRECTORY)) {
+    // TODO: remove after 8.6 is no longer supported in
+    // https://www.drupal.org/project/migrate_plus/issues/3035587
+    if (version_compare(\Drupal::VERSION, '8.7', '>=')) {
+      $success = $this->fileSystem->prepareDirectory($dir, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
+      if (!$success) {
+        throw new MigrateSkipProcessException("Could not create directory '$dir'");
+      }
+    }
+    elseif (file_prepare_directory($dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
       throw new MigrateSkipProcessException("Could not create directory '$dir'");
     }
     if ($this->putFile($destination, $blob, $replace)) {
@@ -95,14 +158,26 @@ class FileBlob extends ProcessPluginBase implements ContainerFactoryPluginInterf
    * @param string $blob
    *   The base64 encoded file contents.
    * @param int $replace
-   *   (optional) FILE_EXISTS_REPLACE (default) or FILE_EXISTS_ERROR, depending
-   *   on the configuration.
+   *   (optional) either FileSystemInterface::EXISTS_REPLACE; (default) or
+   *   FileSystemInterface::EXISTS_ERROR, depending on the configuration.
    *
    * @return bool|string
    *   File path on success, FALSE on failure.
    */
-  protected function putFile($destination, $blob, $replace = FILE_EXISTS_REPLACE) {
-    if ($path = file_destination($destination, $replace)) {
+  protected function putFile($destination, $blob, $replace = FileSystemInterface::EXISTS_REPLACE) {
+    // TODO: remove after 8.6 is no longer supported in
+    // https://www.drupal.org/project/migrate_plus/issues/3035587
+    if (!isset($replace)) {
+      $replace = FILE_EXISTS_REPLACE;
+    }
+    if (version_compare(\Drupal::VERSION, '8.7', '>=')) {
+      $path = $this->fileSystem->getDestinationFilename($destination, $replace);
+    }
+    else {
+      $path = file_destination($destination, $replace);
+    }
+
+    if ($path) {
       if (file_put_contents($path, $blob)) {
         return $path;
       }
@@ -119,15 +194,28 @@ class FileBlob extends ProcessPluginBase implements ContainerFactoryPluginInterf
    * Determines how to handle file conflicts.
    *
    * @return int
-   *   Either FILE_EXISTS_REPLACE (default) or FILE_EXISTS_ERROR, depending on
-   *   the configuration.
+   *   Either FileSystemInterface::EXISTS_REPLACE; (default) or
+   *   FileSystemInterface::EXISTS_ERROR, depending on the configuration.
    */
   protected function getOverwriteMode() {
-    if (!empty($this->configuration['reuse'])) {
-      return FILE_EXISTS_ERROR;
+    // TODO: remove after 8.6 is no longer supported in
+    // https://www.drupal.org/project/migrate_plus/issues/3035587
+    if (isset($this->configuration['reuse']) && !empty($this->configuration['reuse'])) {
+      if (version_compare(\Drupal::VERSION, '8.7', '>=')) {
+        return FileSystemInterface::EXISTS_ERROR;
+      }
+      else {
+        return FILE_EXISTS_ERROR;
+      }
+
     }
 
-    return FILE_EXISTS_REPLACE;
+    if (version_compare(\Drupal::VERSION, '8.7', '>=')) {
+      return FileSystemInterface::EXISTS_REPLACE;
+    }
+    else {
+      return FILE_EXISTS_REPLACE;
+    }
   }
 
   /**

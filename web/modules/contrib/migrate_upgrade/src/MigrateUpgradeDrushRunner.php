@@ -310,6 +310,7 @@ class MigrateUpgradeDrushRunner {
     foreach ($this->migrationList as $migration_id => $migration) {
       drush_print(dt('Exporting @migration as @new_migration',
         ['@migration' => $migration_id, '@new_migration' => $this->modifyId($migration_id)]));
+      $migration_details = [];
       $migration_details['id'] = $migration_id;
       $migration_details['label'] = $migration->label();
       $plugin_definition = $migration->getPluginDefinition();

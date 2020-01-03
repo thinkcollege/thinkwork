@@ -7,8 +7,9 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Plugin\PluginBase;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Access\AccessResult;
 use Drupal\webform\Utility\WebformElementHelper;
 use Drupal\webform\WebformInterface;
 use Drupal\webform\WebformSubmissionConditionsValidatorInterface;
@@ -139,7 +140,6 @@ abstract class WebformHandlerBase extends PluginBase implements WebformHandlerIn
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, LoggerChannelFactoryInterface $logger_factory, ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, WebformSubmissionConditionsValidatorInterface $conditions_validator) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->setConfiguration($configuration);
     $this->loggerFactory = $logger_factory;
     $this->configFactory = $config_factory;
     $this->submissionStorage = $entity_type_manager->getStorage('webform_submission');
@@ -148,6 +148,8 @@ abstract class WebformHandlerBase extends PluginBase implements WebformHandlerIn
     // @todo Webform 8.x-6.x: Properly inject the token manager.
     // @todo Webform 8.x-6.x: Update handlers that injects the token manager.
     $this->tokenManager = \Drupal::service('webform.token_manager');
+
+    $this->setConfiguration($configuration);
   }
 
   /**
@@ -369,6 +371,13 @@ abstract class WebformHandlerBase extends PluginBase implements WebformHandlerIn
   /**
    * {@inheritdoc}
    */
+  public function hasAnonymousSubmissionTracking() {
+    return FALSE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function checkConditions(WebformSubmissionInterface $webform_submission) {
     // Return TRUE if conditions are disabled for the handler.
     if (!$this->supportsConditions()) {
@@ -476,7 +485,12 @@ abstract class WebformHandlerBase extends PluginBase implements WebformHandlerIn
     $values = $form_state->getValues();
     foreach ($values as $key => $value) {
       if (array_key_exists($key, $this->configuration)) {
-        $this->configuration[$key] = $value;
+        if (is_bool($this->configuration[$key])) {
+          $this->configuration[$key] = (int) $value;
+        }
+        else {
+          $this->configuration[$key] = $value;
+        }
       }
     }
   }
@@ -489,6 +503,11 @@ abstract class WebformHandlerBase extends PluginBase implements WebformHandlerIn
    * {@inheritdoc}
    */
   public function alterElements(array &$elements, WebformInterface $webform) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public function alterElement(array &$element, FormStateInterface $form_state, array $context) {}
 
   /****************************************************************************/
   // Webform submission methods.
@@ -530,7 +549,7 @@ abstract class WebformHandlerBase extends PluginBase implements WebformHandlerIn
   /**
    * {@inheritdoc}
    */
-  public function preCreate(array $values) {}
+  public function preCreate(array &$values) {}
 
   /**
    * {@inheritdoc}
@@ -561,6 +580,13 @@ abstract class WebformHandlerBase extends PluginBase implements WebformHandlerIn
    * {@inheritdoc}
    */
   public function postSave(WebformSubmissionInterface $webform_submission, $update = TRUE) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public function access(WebformSubmissionInterface $webform_submission, $operation, AccountInterface $account = NULL) {
+    return AccessResult::neutral();
+  }
 
   /****************************************************************************/
   // Preprocessing methods.
@@ -593,6 +619,13 @@ abstract class WebformHandlerBase extends PluginBase implements WebformHandlerIn
   /****************************************************************************/
   // Element methods.
   /****************************************************************************/
+
+  /**
+   * {@inheritdoc}
+   */
+  public function accessElement(array &$element, $operation, AccountInterface $account = NULL) {
+    return AccessResult::neutral();
+  }
 
   /**
    * {@inheritdoc}
@@ -715,7 +748,7 @@ abstract class WebformHandlerBase extends PluginBase implements WebformHandlerIn
    * @return array
    *   A render array containing a token tree link wrapped in a div.
    */
-  protected function buildTokenTreeElement(array $token_types = [], $description = NULL) {
+  protected function buildTokenTreeElement(array $token_types = ['webform', 'webform_submission'], $description = NULL) {
     return $this->tokenManager->buildTreeElement($token_types, $description);
   }
 
@@ -783,40 +816,6 @@ abstract class WebformHandlerBase extends PluginBase implements WebformHandlerIn
         'data' => $data,
       ]);
     }
-  }
-
-  /****************************************************************************/
-  // TEMP: Messenger methods to be remove once Drupal 8.6.x+ is supported version.
-  /****************************************************************************/
-
-  /**
-   * The messenger.
-   *
-   * @var \Drupal\Core\Messenger\MessengerInterface
-   */
-  protected $messenger;
-
-  /**
-   * Sets the messenger.
-   *
-   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
-   *   The messenger.
-   */
-  public function setMessenger(MessengerInterface $messenger) {
-    $this->messenger = $messenger;
-  }
-
-  /**
-   * Gets the messenger.
-   *
-   * @return \Drupal\Core\Messenger\MessengerInterface
-   *   The messenger.
-   */
-  public function messenger() {
-    if (!isset($this->messenger)) {
-      $this->messenger = \Drupal::messenger();
-    }
-    return $this->messenger;
   }
 
 }

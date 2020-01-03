@@ -47,7 +47,7 @@ class RulesSettingsForm extends ConfigFormBase {
         LogLevel::ERROR => $this->t('Log errors only'),
       ],
       '#default_value' => $config->get('log_level_system') ? $config->get('log_level_system') : LogLevel::WARNING,
-      '#description' => $this->t('Evaluations errors are logged to available loggers.'),
+      '#description' => $this->t('Evaluation errors are logged to available loggers.'),
       '#states' => [
         // Hide the log_level radios when the debug log is disabled.
         'invisible' => [

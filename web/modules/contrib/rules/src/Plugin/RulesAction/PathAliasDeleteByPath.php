@@ -17,12 +17,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   context = {
  *     "path" = @ContextDefinition("string",
  *       label = @Translation("Existing system path"),
- *       description = @Translation("Specifies the existing path you wish to delete the alias of, for example 'node/1'. Use a relative path and do not add a trailing slash.")
- *     )
+ *       description = @Translation("Specifies the existing path for which you wish to delete the alias. For example, '/node/1'. Use an absolute path and do not add a trailing slash.")
+ *     ),
  *   }
  * )
  *
- * @todo: Add access callback information from Drupal 7.
+ * @todo Add access callback information from Drupal 7.
  */
 class PathAliasDeleteByPath extends RulesActionBase implements ContainerFactoryPluginInterface {
 
@@ -69,7 +69,7 @@ class PathAliasDeleteByPath extends RulesActionBase implements ContainerFactoryP
    *   Existing system path.
    */
   protected function doExecute($path) {
-    $this->aliasStorage->delete(['path' => $path]);
+    $this->aliasStorage->delete(['source' => $path]);
   }
 
 }

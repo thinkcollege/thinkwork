@@ -9,7 +9,6 @@ use Drupal\Core\TypedData\MapDataDefinition;
 use Drupal\Core\TypedData\TypedDataTrait;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\typed_data\Traits\BrowserTestHelpersTrait;
-use Drupal\typed_data\Util\StateTrait;
 use Drupal\typed_data\Widget\FormWidgetManagerTrait;
 
 /**
@@ -23,7 +22,6 @@ class TextareaWidgetTest extends BrowserTestBase {
 
   use BrowserTestHelpersTrait;
   use FormWidgetManagerTrait;
-  use StateTrait;
   use TypedDataTrait;
 
   /**
@@ -46,7 +44,7 @@ class TextareaWidgetTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
     $this->widget = $this->getFormWidgetManager()->createInstance('textarea');
   }
@@ -80,21 +78,23 @@ class TextareaWidgetTest extends BrowserTestBase {
       ->setLabel('Example string')
       ->setDescription('Some example string')
       ->setDefaultValue('default1');
-    $this->getState()->set('typed_data_widgets.definition', $context_definition);
+    \Drupal::state()->set('typed_data_widgets.definition', $context_definition);
 
     $this->drupalLogin($this->createUser([], NULL, TRUE));
     $path = 'admin/config/user-interface/typed-data-widgets/' . $this->widget->getPluginId();
     $this->drupalGet($path);
 
-    $this->assertSession()->elementTextContains('css', 'label[for=edit-data-value]', $context_definition->getLabel());
-    $this->assertSession()->elementTextContains('css', 'div[id=edit-data-value--description]', $context_definition->getDescription());
-    $this->assertSession()->fieldValueEquals('data[value]', $context_definition->getDefaultValue());
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+    $assert->elementTextContains('css', 'label[for=edit-data-value]', $context_definition->getLabel());
+    $assert->elementTextContains('css', 'div[id=edit-data-value--description]', $context_definition->getDescription());
+    $assert->fieldValueEquals('data[value]', $context_definition->getDefaultValue());
 
     $this->fillField('data[value]', 'jump');
     $this->pressButton('Submit');
 
     $this->drupalGet($path);
-    $this->assertSession()->fieldValueEquals('data[value]', 'jump');
+    $assert->fieldValueEquals('data[value]', 'jump');
   }
 
 }

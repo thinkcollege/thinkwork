@@ -7,3 +7,14 @@ services:
     class: Drupal\migrate_tools\Routing\RouteProcessor
     tags:
     - { name: route_processor_outbound }
+  migrate_tools.migration_drush_command_progress:
+    class: Drupal\migrate_tools\EventSubscriber\MigrationDrushCommandProgress
+    tags:
+      - { name: event_subscriber }
+    arguments: ['@logger.channel.migrate_tools']
+  migrate_tools.migration_sync:
+    class: Drupal\migrate_tools\EventSubscriber\MigrationImportSync
+    tags:
+      - { name: event_subscriber }
+    arguments:
+      - '@event_dispatcher'

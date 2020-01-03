@@ -14,8 +14,9 @@ use Drupal\migrate\Row;
  *   id = "str_replace"
  * )
  *
- * To do a simple hardcoded string replace use the following:
+ * @codingStandardsIgnoreStart
  *
+ * To do a simple hardcoded string replace, use the following:
  * @code
  * field_text:
  *   plugin: str_replace
@@ -23,7 +24,6 @@ use Drupal\migrate\Row;
  *   search: foo
  *   replace: bar
  * @endcode
- *
  * If the value of text is "vero eos et accusam et justo vero" in source, foo is
  * "et" in search and bar is "that" in replace, field_text will be "vero eos
  * that accusam that justo vero".
@@ -37,7 +37,6 @@ use Drupal\migrate\Row;
  *   search: foo
  *   replace: bar
  * @endcode
- *
  * If the value of text is "VERO eos et accusam et justo vero" in source, foo is
  * "vero" in search and bar is "that" in replace, field_text will be "that eos
  * et accusam et justo that".
@@ -51,7 +50,6 @@ use Drupal\migrate\Row;
  *   search: foo
  *   replace: bar
  * @endcode
- *
  * If the value of text is "vero eos et 123 accusam et justo 123 duo" in source,
  * foo is "/[0-9]{3}/" in search and bar is "the" in replace, field_text will be
  * "vero eos et the accusam et justo the duo".
@@ -68,6 +66,8 @@ use Drupal\migrate\Row;
  *   search: ["AT", "CH", "DK"]
  *   replace: ["Austria", "Switzerland", "Denmark"]
  * @endcode
+ *
+ * @codingStandardsIgnoreEnd
  */
 class StrReplace extends ProcessPluginBase {
 

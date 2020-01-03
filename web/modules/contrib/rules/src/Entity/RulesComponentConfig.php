@@ -27,15 +27,15 @@ use Drupal\rules\Engine\RulesComponent;
  *     "form" = {
  *        "add" = "\Drupal\rules\Form\RulesComponentAddForm",
  *        "edit" = "\Drupal\rules\Form\RulesComponentEditForm",
- *        "delete" = "\Drupal\Core\Entity\EntityDeleteForm"
- *      }
+ *        "delete" = "\Drupal\Core\Entity\EntityDeleteForm",
+ *      },
  *   },
  *   admin_permission = "administer rules",
  *   config_prefix = "component",
  *   entity_keys = {
  *     "id" = "id",
  *     "label" = "label",
- *     "status" = "status"
+ *     "status" = "status",
  *   },
  *   config_export = {
  *     "id",
@@ -69,7 +69,7 @@ class RulesComponentConfig extends ConfigEntityBase implements RulesUiComponentP
   protected $label;
 
   /**
-   * The description of the rule, which is used only in the interface.
+   * The description of the rule, which is used only in the user interface.
    *
    * @var string
    */
@@ -92,9 +92,9 @@ class RulesComponentConfig extends ConfigEntityBase implements RulesUiComponentP
   /**
    * The component configuration as nested array.
    *
-   * See \Drupal\rules\Engine\RulesComponent::getConfiguration()
-   *
    * @var array
+   *
+   * @see \Drupal\rules\Engine\RulesComponent::getConfiguration()
    */
   protected $component = [];
 
@@ -238,6 +238,16 @@ class RulesComponentConfig extends ConfigEntityBase implements RulesUiComponentP
    */
   public function getDescription() {
     return $this->description;
+  }
+
+  /**
+   * Checks if there are tags associated with this config.
+   *
+   * @return bool
+   *   TRUE if the config has tags.
+   */
+  public function hasTags() {
+    return !empty($this->tags);
   }
 
   /**

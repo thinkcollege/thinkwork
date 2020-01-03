@@ -120,7 +120,7 @@ class ReactionRuleEditForm extends RulesComponentFormBase {
     // Also remove the temporarily stored component, it has been persisted now.
     $this->rulesUiHandler->clearTemporaryStorage();
 
-    drupal_set_message($this->t('Reaction rule %label has been updated.', ['%label' => $this->entity->label()]));
+    $this->messenger()->addMessage($this->t('Reaction rule %label has been updated.', ['%label' => $this->entity->label()]));
   }
 
   /**
@@ -128,7 +128,7 @@ class ReactionRuleEditForm extends RulesComponentFormBase {
    */
   public function cancel(array $form, FormStateInterface $form_state) {
     $this->rulesUiHandler->clearTemporaryStorage();
-    drupal_set_message($this->t('Canceled.'));
+    $this->messenger()->addMessage($this->t('Canceled.'));
     $form_state->setRedirect('entity.rules_reaction_rule.collection');
   }
 

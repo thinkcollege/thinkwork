@@ -4,20 +4,26 @@ namespace Drupal\rules\Logger;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannel;
-use Psr\Log\LoggerTrait;
+use Drupal\Core\Messenger\MessengerInterface;
 
 /**
  * Logs rules log entries in the available loggers.
  */
 class RulesLoggerChannel extends LoggerChannel {
-  use LoggerTrait;
 
   /**
    * A configuration object with rules settings.
    *
-   * @var ImmutableConfig
+   * @var \Drupal\Core\Config\ImmutableConfig
    */
   protected $config;
+
+  /**
+   * The messenger service.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
 
   /**
    * Static storage of log entries.
@@ -31,10 +37,13 @@ class RulesLoggerChannel extends LoggerChannel {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   Config factory instance.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger service.
    */
-  public function __construct(ConfigFactoryInterface $config_factory) {
+  public function __construct(ConfigFactoryInterface $config_factory, MessengerInterface $messenger) {
     parent::__construct('rules');
     $this->config = $config_factory->get('rules.settings');
+    $this->messenger = $messenger;
   }
 
   /**
@@ -55,7 +64,7 @@ class RulesLoggerChannel extends LoggerChannel {
     }
     if ($this->config->get('debug_screen')) {
       if ($this->levelTranslation[$this->config->get('log_level_screen')] >= $this->levelTranslation[$level]) {
-        drupal_set_message($message, $level);
+        $this->messenger->addMessage($message, $level);
       }
     }
   }

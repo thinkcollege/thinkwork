@@ -3,10 +3,10 @@
 namespace Drupal\rules\Plugin\RulesAction;
 
 use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\rules\Core\RulesActionBase;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -20,40 +20,40 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     "to" = @ContextDefinition("email",
  *       label = @Translation("Send to"),
  *       description = @Translation("Email address(es) drupal will send an email to."),
- *       multiple = TRUE,
+ *       multiple = TRUE
  *     ),
  *     "subject" = @ContextDefinition("string",
  *       label = @Translation("Subject"),
- *       description = @Translation("The email's subject."),
+ *       description = @Translation("The email's subject.")
  *     ),
  *     "message" = @ContextDefinition("string",
  *       label = @Translation("Message"),
- *       description = @Translation("The email's message body."),
+ *       description = @Translation("The email's message body.")
  *     ),
  *     "reply" = @ContextDefinition("email",
  *       label = @Translation("Reply to"),
- *       description = @Translation("The mail's reply-to address. Leave it empty to use the site-wide configured address."),
+ *       description = @Translation("The email's reply-to address. Leave it empty to use the site-wide configured address."),
  *       default_value = NULL,
- *       required = FALSE,
+ *       required = FALSE
  *     ),
  *     "language" = @ContextDefinition("language",
  *       label = @Translation("Language"),
- *       description = @Translation("If specified, the language used for getting the mail message and subject."),
+ *       description = @Translation("If specified, the language used for getting the email message and subject."),
  *       default_value = NULL,
- *       required = FALSE,
+ *       required = FALSE
  *     ),
  *   }
  * )
  *
- * @todo: Define that message Context should be textarea comparing with textfield Subject
- * @todo: Add access callback information from Drupal 7.
+ * @todo Define that message Context should be textarea comparing with textfield Subject
+ * @todo Add access callback information from Drupal 7.
  */
 class SystemSendEmail extends RulesActionBase implements ContainerFactoryPluginInterface {
 
   /**
    * The logger channel the action will write log messages to.
    *
-   * @var \Psr\Log\LoggerInterface
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
    */
   protected $logger;
 
@@ -63,7 +63,7 @@ class SystemSendEmail extends RulesActionBase implements ContainerFactoryPluginI
   protected $mailManager;
 
   /**
-   * Constructs a SendEmail object.
+   * Constructs a SystemSendEmail object.
    *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
@@ -71,12 +71,12 @@ class SystemSendEmail extends RulesActionBase implements ContainerFactoryPluginI
    *   The plugin ID for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Psr\Log\LoggerInterface $logger
+   * @param \Drupal\Core\Logger\LoggerChannelInterface $logger
    *   The alias storage service.
    * @param \Drupal\Core\Mail\MailManagerInterface $mail_manager
    *   The mail manager service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, LoggerInterface $logger, MailManagerInterface $mail_manager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, LoggerChannelInterface $logger, MailManagerInterface $mail_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->logger = $logger;
     $this->mailManager = $mail_manager;
@@ -115,7 +115,7 @@ class SystemSendEmail extends RulesActionBase implements ContainerFactoryPluginI
       'subject' => $subject,
       'message' => $message,
     ];
-    // Set a unique key for this mail.
+    // Set a unique key for this email.
     $key = 'rules_action_mail_' . $this->getPluginId();
 
     $recipients = implode(', ', $to);

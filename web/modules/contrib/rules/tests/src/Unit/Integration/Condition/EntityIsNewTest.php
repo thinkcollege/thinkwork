@@ -21,7 +21,7 @@ class EntityIsNewTest extends RulesEntityIntegrationTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
     $this->condition = $this->conditionManager->createInstance('rules_entity_is_new');
   }

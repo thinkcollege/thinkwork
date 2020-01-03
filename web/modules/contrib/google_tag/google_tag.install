@@ -7,29 +7,45 @@
  * @author Jim Berry ("solotandem", http://drupal.org/user/240748)
  */
 
+use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\Url;
+
 /**
  * Implements hook_requirements().
  */
 function google_tag_requirements($phase) {
   $requirements = array();
   if ($phase == 'runtime') {
-    $config = \Drupal::config('google_tag.settings');
-    if (!preg_match('/^GTM-\w{4,}$/', $config->get('container_id'))) {
+    $containers = \Drupal::service('entity_type.manager')->getStorage('google_tag_container')->loadMultiple();
+    if (empty($containers)) {
       // Google Tag Manager container ID has not been set.
       $requirements['google_tag'] = array(
         'title' => t('Google Tag Manager'),
-        'description' => t('Configure this integration module on its <a href=":url">settings page</a>.', array(':url' => \Drupal::url('google_tag.settings_form'))),
+        'description' => t('Configure default settings on the <a href=":url1">module settings page</a>. Afterwards, add a container on the <a href=":url2">container management page</a>.', array(':url1' => Url::fromRoute('google_tag.settings_form')->toString(), ':url2' => Url::fromRoute('entity.google_tag_container.collection')->toString())),
         'severity' => REQUIREMENT_WARNING,
         'value' => t('Not configured'),
       );
     }
   }
   if ($phase == 'runtime' || $phase == 'update' || $phase == 'install') {
+    $phase == 'install' ? require_once __DIR__ . '/google_tag.module' : '';
     // Adapted from system_requirements().
-    $directory = 'public://google_tag';
-    $phase == 'install' ? module_load_include('module', 'google_tag') : '';
+    $directory = \Drupal::config('google_tag.settings')->get('uri');
+    if (empty($directory)) {
+      if ($phase == 'runtime' || $phase == 'update') {
+        $requirements['google_tag_snippet_parent_directory'] = array(
+          'title' => t('Google Tag Manager'),
+          'description' => t('The snippet parent directory is not set. Configure default settings on the <a href=":url1">module settings page</a>.', array(':url1' => Url::fromRoute('google_tag.settings_form')->toString())),
+          'severity' => REQUIREMENT_ERROR,
+          'value' => t('Not configured'),
+        );
+        return $requirements;
+      }
+      $directory = 'public:/';
+    }
+    $directory .= '/google_tag';
     if (!is_dir($directory) || !_google_tag_is_writable($directory) || !_google_tag_is_executable($directory)) {
-      __file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+      _file_prepare_directory($directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
     }
     $is_executable = _google_tag_is_executable($directory);
     $is_writable = _google_tag_is_writable($directory);
@@ -93,8 +109,8 @@ function google_tag_requirements($phase) {
  * Implements hook_install().
  */
 function google_tag_install() {
-  global $google_tag_display_message;
-  $google_tag_display_message = TRUE;
+  global $_google_tag_display_message;
+  $_google_tag_display_message = TRUE;
   _google_tag_assets_create();
 }
 
@@ -102,7 +118,91 @@ function google_tag_install() {
  * Implements hook_uninstall().
  */
 function google_tag_uninstall() {
-  @file_unmanaged_delete_recursive('public://google_tag');
-  \Drupal::service('asset.js.collection_optimizer')->deleteAll();
+  if (\Drupal::config('google_tag.settings')->get('flush_snippets')) {
+    $directory = \Drupal::config('google_tag.settings')->get('uri');
+    if (!empty($directory)) {
+      // Remove snippet file directory.
+      \Drupal::service('file_system')->deleteRecursive($directory . '/google_tag');
+    }
+  }
+
+  // Reset the URL query argument so browsers reload snippet files.
   _drupal_flush_css_js();
+}
+
+/**
+ * Convert config item to separate module settings and container config items.
+ */
+function google_tag_update_8101(&$sandbox) {
+  $data = \Drupal::config('google_tag.settings')->get();
+  if (!empty($data['_default_container'])) {
+    // Config appears to be updated; do nothing.
+    return t('Config appears to be updated; no changes made');
+  }
+
+  // Create a container configuration item.
+  $container_config = \Drupal::service('config.factory')->getEditable('google_tag.container.primary');
+  if (!empty($container_config->get())) {
+    // Config appears to be updated; do nothing.
+    return t('Config appears to be updated; no changes made');
+  }
+
+  $keys = array_flip(['uri', 'compact_snippet', 'include_file', 'rebuild_snippets', 'debug_output', '_core']);
+  $data = array_diff_key($data, $keys);
+  $container_data = ['status' => TRUE, 'id' => 'primary', 'label' => 'Primary', 'weight' => 0] + $data;
+  $container_config->setData($container_data)->save();
+
+  // Update the module configuration item.
+  $module_config = \Drupal::service('config.factory')->getEditable('google_tag.settings');
+  $module_data = $module_config->get();
+  unset($keys['_core']);
+  $data['container_id'] = '';
+  $module_data = array_intersect_key($module_data, $keys);
+  $module_data = ['uri' => 'public://google_tag'] + $module_data + ['_default_container' => $data];
+  $module_config->setData($module_data)->save();
+
+  return t('Converted config item to separate settings and container config items');
+}
+
+/**
+ * Install the container configuration entity type.
+ */
+function google_tag_update_8102(&$sandbox) {
+  $type_manager = \Drupal::entityTypeManager();
+  $type_manager->clearCachedDefinitions();
+  $entity_type = $type_manager->getDefinition('google_tag_container');
+  \Drupal::entityDefinitionUpdateManager()->installEntityType($entity_type);
+
+  return t('Installed the google_tag_container entity type');
+}
+
+/**
+ * Update the snippet parent URI and add the flush_snippets setting.
+ */
+function google_tag_update_8103(&$sandbox) {
+  $module_config = \Drupal::service('config.factory')->getEditable('google_tag.settings');
+  $module_data = $module_config->get();
+
+  // Update the module settings.
+  $snippet_uri_changed = TRUE;
+  $uri = isset($module_data['uri']) ? $module_data['uri'] : 'public:/';
+  if (substr($uri, -11) == '/google_tag') {
+    // Remove the default directory as this will be appended in code.
+    $uri = substr($uri, 0, -11);
+    $snippet_uri_changed = FALSE;
+  }
+  if (substr($uri, -3) == '://') {
+    // Remove the last slash from a bare stream wrapper.
+    $uri = substr($uri, 0, -1);
+  }
+
+  $module_data = ['uri' => $uri, 'flush_snippets' => FALSE] + $module_data;
+  $keys = array_flip(['uri', 'compact_snippet', 'include_file', 'rebuild_snippets', 'flush_snippets', 'debug_output']);
+  $module_data = array_merge($keys, $module_data);
+  $module_config->setData($module_data)->save();
+
+  if ($snippet_uri_changed) {
+    return t('Updated the snippet parent URI and added the flush_snippets setting. The old snippet directory was not deleted.');
+  }
+  return t('Added the flush_snippets setting and retained the snippet parent URI.');
 }

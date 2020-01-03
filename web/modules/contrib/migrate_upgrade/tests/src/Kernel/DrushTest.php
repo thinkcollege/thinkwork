@@ -2,9 +2,12 @@
 
 namespace Drupal\Tests\migrate_upgrade\Kernel {
 
+  use Drupal\Component\Plugin\PluginBase;
   use Drupal\KernelTests\FileSystemModuleDiscoveryDataProviderTrait;
+  use Drupal\migrate_drupal\MigrationConfigurationTrait;
   use Drupal\migrate_plus\Entity\Migration;
   use Drupal\migrate_upgrade\Commands\MigrateUpgradeCommands;
+  use Drupal\Tests\DeprecatedModulesTestTrait;
   use Drupal\Tests\migrate_drupal\Kernel\MigrateDrupalTestBase;
   use Drupal\Tests\migrate_drupal\Traits\CreateMigrationsTrait;
 
@@ -17,8 +20,10 @@ namespace Drupal\Tests\migrate_upgrade\Kernel {
    */
   class DrushTest extends MigrateDrupalTestBase {
 
-    use FileSystemModuleDiscoveryDataProviderTrait;
     use CreateMigrationsTrait;
+    use FileSystemModuleDiscoveryDataProviderTrait;
+    use MigrationConfigurationTrait;
+    use DeprecatedModulesTestTrait;
 
     /**
      * The migration plugin manager.
@@ -50,6 +55,7 @@ namespace Drupal\Tests\migrate_upgrade\Kernel {
         'migrate_plus',
         'migrate_upgrade',
       ]);
+      self::$modules = $this->removeDeprecatedModules(self::$modules);
       parent::setUp();
       $this->installSchema('system', ['key_value', 'key_value_expire']);
       $this->installConfig(self::$modules);
@@ -64,17 +70,16 @@ namespace Drupal\Tests\migrate_upgrade\Kernel {
      * Tests that all D6 migrations are generated as migrate plus entities.
      */
     public function testD6Migrations() {
-      $skipped_migrations = [
-        'upgrade_d6_entity_reference_translation_comment__comment_forum',
-      ];
-      $migrations = $this->drupal6Migrations();
+      $this->drupal6Migrations();
       $options = [
         'configure-only' => TRUE,
         'legacy-db-key' => $this->sourceDatabase->getKey(),
       ];
       $this->commands->upgrade($options);
+
       $migrate_plus_migrations = Migration::loadMultiple();
-      $this->assertMigrations($migrations, $migrate_plus_migrations, $skipped_migrations);
+      $migrations = $this->getMigrations($this->sourceDatabase->getKey(), 6);
+      $this->assertMigrations($migrations, $migrate_plus_migrations);
       $optional = array_flip($migrate_plus_migrations['upgrade_d6_url_alias']->toArray()['migration_dependencies']['optional']);
       $this->assertArrayHasKey('upgrade_d6_node_translation_page', $optional);
     }
@@ -83,10 +88,7 @@ namespace Drupal\Tests\migrate_upgrade\Kernel {
      * Tests that all D7 migrations are generated as migrate plus entities.
      */
     public function testD7Migrations() {
-      $skipped_migrations = [
-        'upgrade_d7_entity_reference_translation_comment__comment_forum',
-      ];
-      $migrations = $this->drupal7Migrations();
+      $this->drupal7Migrations();
       $this->sourceDatabase->update('system')
         ->fields(['status' => 1])
         ->condition('name', 'profile')
@@ -96,8 +98,10 @@ namespace Drupal\Tests\migrate_upgrade\Kernel {
         'legacy-db-key' => $this->sourceDatabase->getKey(),
       ];
       $this->commands->upgrade($options);
+
       $migrate_plus_migrations = Migration::loadMultiple();
-      $this->assertMigrations($migrations, $migrate_plus_migrations, $skipped_migrations);
+      $migrations = $this->getMigrations($this->sourceDatabase->getKey(), 7);
+      $this->assertMigrations($migrations, $migrate_plus_migrations);
       $optional = array_flip($migrate_plus_migrations['upgrade_d7_url_alias']->toArray()['migration_dependencies']['optional']);
       $this->assertArrayHasKey('upgrade_d7_node_translation_page', $optional);
     }
@@ -109,17 +113,13 @@ namespace Drupal\Tests\migrate_upgrade\Kernel {
      *   The migrations.
      * @param \Drupal\migrate_plus\Entity\MigrationInterface[] $migrate_plus_migrations
      *   The migrate plus config entities.
-     * @param array $skipped_migrations
-     *   The migrations to skip.
      */
-    protected function assertMigrations(array $migrations, array $migrate_plus_migrations, array $skipped_migrations) {
+    protected function assertMigrations(array $migrations, array $migrate_plus_migrations) {
       foreach ($migrations as $id => $migration) {
-        $migration_id = 'upgrade_' . str_replace(':', '_', $migration->id());
-        if (in_array($migration_id, $skipped_migrations, TRUE)) {
-          continue;
-        }
+        $migration_id = 'upgrade_' . str_replace(PluginBase::DERIVATIVE_SEPARATOR, '_', $migration->id());
         $this->assertArrayHasKey($migration_id, $migrate_plus_migrations);
       }
+      $this->assertEquals(count($migrations), count($migrate_plus_migrations));
     }
 
   }

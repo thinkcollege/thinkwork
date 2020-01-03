@@ -6,9 +6,6 @@ namespace Drupal\Tests\rules\Functional;
  * Tests that editing a rule locks it for another user.
  *
  * @group RulesUi
- * @group legacy
- * @todo Remove the 'legacy' tag when Rules no longer uses deprecated code.
- * @see https://www.drupal.org/project/rules/issues/2922757
  */
 class TempStorageTest extends RulesBrowserTestBase {
 
@@ -49,37 +46,39 @@ class TempStorageTest extends RulesBrowserTestBase {
     $this->fillField('context[node][setting]', '1');
     $this->pressButton('Save');
 
-    $this->assertSession()->pageTextContains('You have unsaved changes.');
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+    $assert->pageTextContains('You have unsaved changes.');
 
     // Now check with the second user that the rule is being edited and locked.
     $account_2 = $this->drupalCreateUser(['administer rules']);
     $this->drupalLogin($account_2);
 
     $this->drupalGet('admin/config/workflow/rules/reactions/edit/test_rule');
-    $this->assertSession()->pageTextContains('This rule is being edited by user ' . $account_1->getUsername() . ', and is therefore locked from editing by others.');
+    $assert->pageTextContains('This rule is being edited by user ' . $account_1->getDisplayName() . ', and is therefore locked from editing by others.');
 
     $this->pressButton('Cancel');
-    $this->assertSession()->pageTextNotContains('Canceled.');
-    $this->assertSession()->pageTextContains('This rule is being edited by user ' . $account_1->getUsername() . ', and is therefore locked from editing by others.');
+    $assert->pageTextNotContains('Canceled.');
+    $assert->pageTextContains('This rule is being edited by user ' . $account_1->getDisplayName() . ', and is therefore locked from editing by others.');
 
     $this->pressButton('Save');
-    $this->assertSession()->pageTextNotContains('Reaction rule Test rule has been updated.');
-    $this->assertSession()->pageTextContains('This rule is being edited by user ' . $account_1->getUsername() . ', and is therefore locked from editing by others.');
+    $assert->pageTextNotContains('Reaction rule Test rule has been updated.');
+    $assert->pageTextContains('This rule is being edited by user ' . $account_1->getDisplayName() . ', and is therefore locked from editing by others.');
 
     $this->clickLink('Edit');
     $current_url = $this->getSession()->getCurrentUrl();
     $this->pressButton('Save');
 
     $this->assertEquals($current_url, $this->getSession()->getCurrentUrl());
-    $this->assertSession()->pageTextContains('This rule is being edited by user ' . $account_1->getUsername() . ', and is therefore locked from editing by others.');
+    $assert->pageTextContains('This rule is being edited by user ' . $account_1->getDisplayName() . ', and is therefore locked from editing by others.');
 
     // Try breaking the lock to edit the rule.
     $this->clickLink('break this lock');
 
-    $this->assertSession()->pageTextContains('By breaking this lock, any unsaved changes made by ' . $account_1->getUsername() . ' will be lost.');
+    $assert->pageTextContains('By breaking this lock, any unsaved changes made by ' . $account_1->getDisplayName() . ' will be lost.');
     $this->pressButton('Break lock');
 
-    $this->assertSession()->pageTextContains('The lock has been broken and you may now edit this rule.');
+    $assert->pageTextContains('The lock has been broken and you may now edit this rule.');
     // The link to edit the condition is now gone because the changes have been
     // reverted.
     $this->assertFalse($this->getSession()->getPage()->hasLink('Edit'));

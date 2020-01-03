@@ -1,12 +1,11 @@
 name: Sub-pathauto
 type: module
 description: Provides support for extending sub-paths of URL aliases.
-# core: 8.x
+core: 8.x
 configure: subpathauto.admin_settings
 
 
-# Information added by Drupal.org packaging script on 2018-10-03
-version: '8.x-1.0-rc1'
-core: '8.x'
+# Information added by Drupal.org packaging script on 2019-12-20
+version: '8.x-1.0'
 project: 'subpathauto'
-datestamp: 1538584984
+datestamp: 1576842187

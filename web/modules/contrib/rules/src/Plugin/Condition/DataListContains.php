@@ -20,14 +20,14 @@ use Drupal\Core\Entity\EntityInterface;
  *     "item" = @ContextDefinition("any",
  *       label = @Translation("Item"),
  *       description = @Translation("The item to check for.")
- *     )
+ *     ),
  *   }
  * )
  *
- * @todo: Add access callback information from Drupal 7?
- * @todo: Add group information from Drupal 7?
- * @todo: set ContextDefinition restriction
- * @todo: Add info alter
+ * @todo Add access callback information from Drupal 7?
+ * @todo Add group information from Drupal 7?
+ * @todo Set ContextDefinition restriction
+ * @todo Add info alter
  */
 class DataListContains extends RulesConditionBase {
 

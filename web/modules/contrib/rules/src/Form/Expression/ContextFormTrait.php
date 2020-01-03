@@ -72,7 +72,7 @@ trait ContextFormTrait {
     }
     elseif ($context_definition->isMultiple()) {
       $element['#type'] = 'textarea';
-      // @todo get a description for possible values that can be filled in.
+      // @todo Get a description for possible values that can be filled in.
       $element['#description'] = $this->t('Enter one value per line for this multi-valued context.');
 
       // Glue the list of values together as one item per line in the text area.
@@ -108,23 +108,30 @@ trait ContextFormTrait {
    */
   protected function getContextConfigFromFormValues(FormStateInterface $form_state, array $context_definitions) {
     $context_config = ContextConfig::create();
-    foreach ($form_state->getValue('context') as $context_name => $value) {
-      if ($form_state->get("context_$context_name") == 'selector') {
-        $context_config->map($context_name, $value['setting']);
-      }
-      else {
-        // Each line of the textarea is one value for multiple contexts.
-        if ($context_definitions[$context_name]->isMultiple()) {
-          $values = explode("\n", $value['setting']);
-          $context_config->setValue($context_name, $values);
+    if ($form_state->hasValue('context')) {
+      foreach ($form_state->getValue('context') as $context_name => $value) {
+        if ($form_state->get("context_$context_name") == 'selector') {
+          $context_config->map($context_name, $value['setting']);
         }
         else {
-          $context_config->setValue($context_name, $value['setting']);
-        }
-        // For now, always add in the token context processor - if it's present.
-        // @todo: Improve this in https://www.drupal.org/node/2804035.
-        if ($this->getDataProcessorManager()->getDefinition('rules_tokens')) {
-          $context_config->process($context_name, 'rules_tokens');
+          // Each line of the textarea is one value for 'multiple' contexts.
+          if ($context_definitions[$context_name]->isMultiple()) {
+            // Textareas should always have \r\n line breaks, but for more
+            // robust parsing we should also accommodate just \n or just \r.
+            //
+            // Additionally, we want to remove leading and trailing whitespace
+            // from each line, and discard any empty lines.
+            $values = preg_split('/\s*\R\s*/', $value['setting'], NULL, PREG_SPLIT_NO_EMPTY);
+            $context_config->setValue($context_name, $values);
+          }
+          else {
+            $context_config->setValue($context_name, $value['setting']);
+          }
+          // For now, always add in the token context processor if it's present.
+          // @todo Improve this in https://www.drupal.org/node/2804035.
+          if ($this->getDataProcessorManager()->getDefinition('rules_tokens')) {
+            $context_config->process($context_name, 'rules_tokens');
+          }
         }
       }
     }

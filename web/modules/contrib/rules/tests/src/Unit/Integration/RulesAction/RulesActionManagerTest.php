@@ -8,12 +8,13 @@ use Drupal\Tests\rules\Unit\Integration\RulesIntegrationTestBase;
 /**
  * Tests the Rules action manager.
  *
+ * @coversDefaultClass \Drupal\rules\Core\RulesActionManager
  * @group Rules
  */
 class RulesActionManagerTest extends RulesIntegrationTestBase {
 
   /**
-   * @cover getDiscovery()
+   * @covers ::getDiscovery
    */
   public function testContextDefinitionAnnotations() {
     $definitions = $this->actionManager->getDefinitions();

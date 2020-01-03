@@ -16,7 +16,7 @@ use Drupal\rules\Core\RulesConditionBase;
  *     "entity" = @ContextDefinition("entity",
  *       label = @Translation("Entity"),
  *       description = @Translation("Specifies the entity for which to evaluate the condition."),
- *       assignment_restriction = "selector",
+ *       assignment_restriction = "selector"
  *     ),
  *     "type" = @ContextDefinition("string",
  *       label = @Translation("Type"),
@@ -25,11 +25,11 @@ use Drupal\rules\Core\RulesConditionBase;
  *     "bundle" = @ContextDefinition("string",
  *       label = @Translation("Bundle"),
  *       description = @Translation("The bundle of the evaluated entity.")
- *     )
+ *     ),
  *   }
  * )
  *
- * @todo: Add access callback information from Drupal 7?
+ * @todo Add access callback information from Drupal 7?
  */
 class EntityIsOfBundle extends RulesConditionBase {
 

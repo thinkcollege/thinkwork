@@ -14,7 +14,7 @@ use Drupal\rules\Core\RulesActionBase;
  *   context = {
  *     "data" = @ContextDefinition("any",
  *       label = @Translation("Data"),
- *       description = @Translation("Specifies the data to be modified using a data selector, e.g. 'node:author:name'."),
+ *       description = @Translation("Specifies the data to be modified using a data selector, e.g. 'node.author.name'."),
  *       allow_null = TRUE,
  *       assignment_restriction = "selector"
  *     ),
@@ -23,7 +23,7 @@ use Drupal\rules\Core\RulesActionBase;
  *       description = @Translation("The new value to set for the specified data."),
  *       default_value = NULL,
  *       required = FALSE
- *     )
+ *     ),
  *   }
  * )
  *

@@ -46,7 +46,7 @@ abstract class RulesEntityIntegrationTestBase extends RulesIntegrationTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setup();
 
     require_once $this->root . '/core/includes/entity.inc';

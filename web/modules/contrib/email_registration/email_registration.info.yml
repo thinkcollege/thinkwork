@@ -5,8 +5,8 @@ description: 'Allows users to register with an email address as their username.'
 dependencies:
   - drupal:user
 
-# Information added by Drupal.org packaging script on 2018-12-21
-version: '8.x-1.0-rc6'
+# Information added by Drupal.org packaging script on 2019-05-08
+version: '8.x-1.0-rc7'
 core: '8.x'
 project: 'email_registration'
-datestamp: 1545350889
+datestamp: 1557344285

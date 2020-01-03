@@ -28,7 +28,7 @@ class EntitySaveTest extends RulesEntityIntegrationTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
 
     $this->entity = $this->prophesizeEntity(EntityInterface::class);

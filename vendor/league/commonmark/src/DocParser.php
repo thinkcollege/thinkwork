@@ -16,9 +16,8 @@ namespace League\CommonMark;
 
 use League\CommonMark\Block\Element\AbstractBlock;
 use League\CommonMark\Block\Element\Document;
-use League\CommonMark\Block\Element\InlineContainer;
+use League\CommonMark\Block\Element\InlineContainerInterface;
 use League\CommonMark\Block\Element\Paragraph;
-use League\CommonMark\Node\NodeWalker;
 
 class DocParser
 {
@@ -33,12 +32,18 @@ class DocParser
     private $inlineParserEngine;
 
     /**
+     * @var int|float
+     */
+    private $maxNestingLevel;
+
+    /**
      * @param Environment $environment
      */
     public function __construct(Environment $environment)
     {
         $this->environment = $environment;
         $this->inlineParserEngine = new InlineParserEngine($environment);
+        $this->maxNestingLevel = $environment->getConfig('max_nesting_level', INF);
     }
 
     /**
@@ -76,6 +81,7 @@ class DocParser
     public function parse($input)
     {
         $context = new Context(new Document(), $this->getEnvironment());
+        $context->setEncoding(mb_detect_encoding($input, 'ASCII,UTF-8', true) ?: 'ISO-8859-1');
 
         $lines = $this->preProcessInput($input);
         foreach ($lines as $line) {
@@ -83,11 +89,12 @@ class DocParser
             $this->incorporateLine($context);
         }
 
-        while ($context->getTip()) {
-            $context->getTip()->finalize($context, count($lines));
+        $lineCount = count($lines);
+        while ($tip = $context->getTip()) {
+            $tip->finalize($context, $lineCount);
         }
 
-        $this->processInlines($context, $context->getDocument()->walker());
+        $this->processInlines($context);
 
         $this->processDocument($context);
 
@@ -96,10 +103,10 @@ class DocParser
 
     private function incorporateLine(ContextInterface $context)
     {
-        $cursor = new Cursor($context->getLine());
         $context->getBlockCloser()->resetTip();
-
         $context->setBlocksParsed(false);
+
+        $cursor = new Cursor($context->getLine(), $context->getEncoding());
 
         $this->resetContainer($context, $cursor);
         $context->getBlockCloser()->setLastMatchedContainer($context->getContainer());
@@ -140,15 +147,17 @@ class DocParser
         }
     }
 
-    private function processInlines(ContextInterface $context, NodeWalker $walker)
+    private function processInlines(ContextInterface $context)
     {
-        while (($event = $walker->next()) !== null) {
+        $walker = $context->getDocument()->walker();
+
+        while ($event = $walker->next()) {
             if (!$event->isEntering()) {
                 continue;
             }
 
             $node = $event->getNode();
-            if ($node instanceof InlineContainer) {
+            if ($node instanceof InlineContainerInterface) {
                 $this->inlineParserEngine->parse($node, $context->getDocument()->getReferenceMap());
             }
         }
@@ -162,20 +171,25 @@ class DocParser
      */
     private function resetContainer(ContextInterface $context, Cursor $cursor)
     {
-        $context->setContainer($context->getDocument());
+        $container = $context->getDocument();
 
-        while ($context->getContainer()->hasChildren()) {
-            $lastChild = $context->getContainer()->lastChild();
+        while ($lastChild = $container->lastChild()) {
+            if (!($lastChild instanceof AbstractBlock)) {
+                break;
+            }
+
             if (!$lastChild->isOpen()) {
                 break;
             }
 
-            $context->setContainer($lastChild);
-            if (!$context->getContainer()->matchesNextLine($cursor)) {
-                $context->setContainer($context->getContainer()->parent()); // back up to the last matching block
+            $container = $lastChild;
+            if (!$container->matchesNextLine($cursor)) {
+                $container = $container->parent(); // back up to the last matching block
                 break;
             }
         }
+
+        $context->setContainer($container);
     }
 
     /**
@@ -195,8 +209,9 @@ class DocParser
                 }
             }
 
-            if (!$parsed || $context->getContainer()->acceptsLines()) {
+            if (!$parsed || $context->getContainer()->acceptsLines() || $context->getTip()->getDepth() >= $this->maxNestingLevel) {
                 $context->setBlocksParsed(true);
+                break;
             }
         }
     }
@@ -209,9 +224,9 @@ class DocParser
      */
     private function isLazyParagraphContinuation(ContextInterface $context, Cursor $cursor)
     {
-        return !$context->getBlockCloser()->areAllClosed() &&
+        return $context->getTip() instanceof Paragraph &&
+            !$context->getBlockCloser()->areAllClosed() &&
             !$cursor->isBlank() &&
-            $context->getTip() instanceof Paragraph &&
             count($context->getTip()->getStrings()) > 0;
     }
 
@@ -219,19 +234,20 @@ class DocParser
      * @param ContextInterface $context
      * @param Cursor           $cursor
      */
-    private function setAndPropagateLastLineBlank(ContextInterface $context, $cursor)
+    private function setAndPropagateLastLineBlank(ContextInterface $context, Cursor $cursor)
     {
-        if ($cursor->isBlank() && $lastChild = $context->getContainer()->lastChild()) {
+        $container = $context->getContainer();
+
+        if ($cursor->isBlank() && $lastChild = $container->lastChild()) {
             if ($lastChild instanceof AbstractBlock) {
                 $lastChild->setLastLineBlank(true);
             }
         }
 
-        $container = $context->getContainer();
         $lastLineBlank = $container->shouldLastLineBeBlank($cursor, $context->getLineNumber());
 
         // Propagate lastLineBlank up through parents:
-        while ($container) {
+        while ($container instanceof AbstractBlock) {
             $container->setLastLineBlank($lastLineBlank);
             $container = $container->parent();
         }

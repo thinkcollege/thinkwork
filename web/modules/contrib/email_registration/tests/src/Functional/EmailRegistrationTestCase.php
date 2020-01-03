@@ -3,6 +3,7 @@
 namespace Drupal\Tests\email_registration\Functional;
 
 use Drupal\Tests\BrowserTestBase;
+use Drupal\user\Entity\User;
 
 /**
  * Tests the email registration module.
@@ -106,6 +107,16 @@ class EmailRegistrationTestCase extends BrowserTestBase {
     $this->drupalPostForm('/user/register', $register, t('Create new account'));
     $account = user_load_by_mail($register['mail']);
     $this->assertTrue($next_unique_name === $account->getAccountName());
+    $this->drupalLogout();
+
+    // Check if custom username stays the same when user is edited.
+    $user = $this->createUser();
+    $name = $user->label();
+    $this->drupalLogin($user);
+    $this->drupalPostForm('/user/' . $user->id() . '/edit', [], 'Save');
+    $this->assertEqual($name, User::load($user->id())->label(), 'Username should not change after empty edit.');
+    $this->drupalLogout($user);
+    $this->drupalLogin($user);
   }
 
 }

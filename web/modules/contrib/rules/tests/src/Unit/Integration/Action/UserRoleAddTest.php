@@ -23,7 +23,7 @@ class UserRoleAddTest extends RulesEntityIntegrationTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
     $this->enableModule('user');
     $this->action = $this->actionManager->createInstance('rules_user_role_add');
@@ -49,7 +49,7 @@ class UserRoleAddTest extends RulesEntityIntegrationTestBase {
 
     $account->hasRole('administrator')->willReturn(FALSE);
     $account->addRole('administrator')->shouldBeCalledTimes(1);
-    // We do noe expect call of the 'save' method because user should be
+    // We do not expect to call the 'save' method because the user should be
     // auto-saved later.
     $account->save()->shouldNotBeCalled();
 
@@ -92,7 +92,7 @@ class UserRoleAddTest extends RulesEntityIntegrationTestBase {
     $administrator = $this->prophesize(RoleInterface::class);
     $administrator->id()->willReturn('administrator');
 
-    // Test adding of three roles role.
+    // Test adding of three roles.
     $this->action
       ->setContextValue('user', $account->reveal())
       ->setContextValue('roles', [

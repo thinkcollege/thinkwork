@@ -3,14 +3,11 @@
 namespace Drupal\Tests\rules\Kernel;
 
 /**
- * Tests that mails actually go out twith send email action.
+ * Tests that mails actually go out with the send email action.
  *
  * @group Rules
- * @group legacy
- * @todo Remove the 'legacy' tag when Rules no longer uses deprecated code.
- * @see https://www.drupal.org/project/rules/issues/2922757
  */
-class RulesMailTest extends RulesDrupalTestBase {
+class RulesMailTest extends RulesKernelTestBase {
 
   /**
    * The action manager used to instantiate the action plugin.
@@ -29,7 +26,7 @@ class RulesMailTest extends RulesDrupalTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
     // Use the state system collector mail backend.
     $this->container->get('config.factory')->getEditable('system.mail')

@@ -2,6 +2,16 @@ views.style.views_accordion:
   type: views_style
   label: 'Views Accordion'
   mapping:
+    grouping:
+      type: sequence
+      label: 'Grouping field number %i'
+      sequence:
+        type: mapping
+        label: 'Field'
+        mapping:
+          use-grouping-header:
+            type: integer
+            label: 'Use the group header as the Accordion header'
     disableifone:
       type: integer
       label: 'Disable if only one result'
@@ -32,5 +42,3 @@ views.style.views_accordion:
     icon_active_header:
       type: 'string'
       label: 'Opened row header icon'
-
-

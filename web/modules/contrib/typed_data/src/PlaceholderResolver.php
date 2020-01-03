@@ -10,6 +10,8 @@ use Drupal\typed_data\Exception\InvalidArgumentException;
 
 /**
  * Resolver for placeholder tokens based upon typed data.
+ *
+ * @see \Drupal\Core\Utility\Token
  */
 class PlaceholderResolver implements PlaceholderResolverInterface {
 
@@ -177,12 +179,17 @@ class PlaceholderResolver implements PlaceholderResolverInterface {
     // Matches tokens with the following pattern: {{ $name.$property_path }}
     // $name and $property_path may not contain {{ }} characters.
     // $name may not contain . or whitespace characters, but $property_path may.
-    preg_match_all('/
-      \{\{             # {{ - pattern start
-      ([^\{\}.|]+)     # match $name not containing whitespace . | { or }
-      ((.|\|)          # . or | - separator
-      ([^\{\}]+))?     # match $property_path not containing { or }
-      \}\}             # }} - pattern end
+    $number_of_tokens = preg_match_all('/
+      \{\{\s*            # {{ - pattern start
+      ([^\s\{\}.|]*)     # $match[1] $name not containing whitespace . | { or }
+      (                  # $match[2] begins
+        (
+          (\.|\s*\|\s*)  # . with no spaces on either side, or | as separator
+          [^\s\{\}.|]    # after separator we need at least one character
+        )
+        ([^\{\}]*)       # but then almost anything goes up until pattern end
+      )?                 # $match[2] is optional
+      \s*\}\}            # }} - pattern end
       /x', $text, $matches);
 
     $names = $matches[1];
@@ -194,10 +201,10 @@ class PlaceholderResolver implements PlaceholderResolverInterface {
     // $results['node']['title'] = '{{node.title}}';
     // where '{{node.title}}' is found in the source text.
     $results = [];
-    for ($i = 0; $i < count($tokens); $i++) {
+    for ($i = 0; $i < $number_of_tokens; $i++) {
       // Remove leading whitespaces and ".", but not the | denoting a filter.
       $main_part = trim($tokens[$i], ". \t\n\r\0\x0B");
-      $results[trim($names[$i])][$main_part] = $matches[0][$i];
+      $results[$names[$i]][$main_part] = $matches[0][$i];
     }
 
     return $results;

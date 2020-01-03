@@ -6,11 +6,8 @@ namespace Drupal\Tests\rules\Kernel;
  * Tests that rules_entity_view() does not throw fatal errors.
  *
  * @group Rules
- * @group legacy
- * @todo Remove the 'legacy' tag when Rules no longer uses deprecated code.
- * @see https://www.drupal.org/project/rules/issues/2922757
  */
-class EntityViewTest extends RulesDrupalTestBase {
+class EntityViewTest extends RulesKernelTestBase {
 
   /**
    * Modules to enable.
@@ -22,25 +19,16 @@ class EntityViewTest extends RulesDrupalTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
+
+    $this->installEntitySchema('user');
+    $this->installEntitySchema('node');
 
     $this->installConfig(['system']);
     $this->installConfig(['field']);
     $this->installConfig(['node']);
     $this->installSchema('system', ['sequences']);
-
-    // Drupal 8.0.x needs the router table installed which is done automatically
-    // in Drupal 8.1.x. Remove this once Drupal 8.0.x is unsupported.
-    if (!empty(drupal_get_module_schema('system', 'router'))) {
-      $this->installSchema('system', ['router']);
-    }
-
-    $this->installEntitySchema('user');
-    $this->installEntitySchema('node');
-
-    // Make sure that the node routes get picked when used during rendering.
-    $this->container->get('router.builder')->rebuild();
   }
 
   /**

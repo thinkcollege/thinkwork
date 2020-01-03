@@ -15,11 +15,11 @@ use Drupal\user\UserInterface;
  *   context = {
  *     "user" = @ContextDefinition("entity:user",
  *       label = @Translation("User")
- *     )
+ *     ),
  *   }
  * )
  *
- * @todo: Add access callback information from Drupal 7.
+ * @todo Add access callback information from Drupal 7.
  */
 class UserIsBlocked extends RulesConditionBase {
 

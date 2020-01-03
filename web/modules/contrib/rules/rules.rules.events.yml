@@ -45,7 +45,7 @@ rules_system_logger_event:
   label: 'System log entry is created'
   category: 'System'
   context:
-    # @todo: create a TypedData logger-entry object: https://www.drupal.org/node/2625238
+    # @todo Create a TypedData logger-entry object: https://www.drupal.org/node/2625238
     logger_entry:
       type: 'any'
       label: 'Logger entry'

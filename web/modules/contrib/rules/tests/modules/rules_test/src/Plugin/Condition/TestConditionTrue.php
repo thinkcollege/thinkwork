@@ -9,7 +9,8 @@ use Drupal\rules\Core\RulesConditionBase;
  *
  * @Condition(
  *   id = "rules_test_true",
- *   label = @Translation("Test condition returning true")
+ *   label = @Translation("Test condition returning true"),
+ *   category = @Translation("Tests")
  * )
  */
 class TestConditionTrue extends RulesConditionBase {

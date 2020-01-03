@@ -21,7 +21,7 @@ class EntityHasFieldTest extends RulesEntityIntegrationTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
 
     $this->condition = $this->conditionManager->createInstance('rules_entity_has_field');

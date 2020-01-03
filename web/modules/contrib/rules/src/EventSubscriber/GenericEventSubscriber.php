@@ -63,7 +63,7 @@ class GenericEventSubscriber implements EventSubscriberInterface {
 
     // If there is no state service there is nothing we can do here. This static
     // method could be called early when the container is built, so the state
-    // service might no always be available.
+    // service might not always be available.
     if (!\Drupal::hasService('state')) {
       return [];
     }
@@ -92,7 +92,7 @@ class GenericEventSubscriber implements EventSubscriberInterface {
    *   The event name.
    */
   public function onRulesEvent(Event $event, $event_name) {
-    // Get event metadata and the to be triggered events.
+    // Get event metadata and the to-be-triggered events.
     $event_definition = $this->eventManager->getDefinition($event_name);
     $handler_class = $event_definition['class'];
     $triggered_events = [$event_name];
@@ -112,7 +112,7 @@ class GenericEventSubscriber implements EventSubscriberInterface {
         $value = $event->getArgument($context_name);
       }
       // Else there must be a getter method or public property.
-      // @todo: Add support for the getter method.
+      // @todo Add support for the getter method.
       else {
         $value = $event->$context_name;
       }

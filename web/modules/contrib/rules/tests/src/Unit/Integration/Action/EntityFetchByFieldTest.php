@@ -23,7 +23,7 @@ class EntityFetchByFieldTest extends RulesEntityIntegrationTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
 
     $this->action = $this->actionManager->createInstance('rules_entity_fetch_by_field');

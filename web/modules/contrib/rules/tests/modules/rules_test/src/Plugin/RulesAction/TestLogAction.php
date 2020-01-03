@@ -13,11 +13,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @RulesAction(
  *   id = "rules_test_log",
  *   label = @Translation("Test action logging."),
+ *   category = @Translation("Tests"),
  *   context = {
  *     "message" = @ContextDefinition("string",
  *       label = @Translation("Message to log"),
- *       required = false
- *     )
+ *       required = FALSE
+ *     ),
  *   }
  * )
  */

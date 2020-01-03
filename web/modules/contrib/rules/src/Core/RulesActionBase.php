@@ -34,7 +34,7 @@ abstract class RulesActionBase extends ContextAwarePluginBase implements RulesAc
     catch (ContextException $e) {
       // Catch the undocumented exception thrown when no context value is set
       // for a required context.
-      // @todo: Remove once https://www.drupal.org/node/2677162 is fixed.
+      // @todo Remove once https://www.drupal.org/node/2677162 is fixed.
       if (strpos($e->getMessage(), 'context is required') === FALSE) {
         throw $e;
       }
@@ -91,7 +91,7 @@ abstract class RulesActionBase extends ContextAwarePluginBase implements RulesAc
    * {@inheritdoc}
    */
   public function executeMultiple(array $objects) {
-    // @todo: Remove this once it is removed from the interface.
+    // @todo Remove this once it is removed from the interface.
   }
 
   /**

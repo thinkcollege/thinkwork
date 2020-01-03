@@ -17,9 +17,9 @@ build:
       run_tests.standard:
         types: 'Simpletest,PHPUnit-Unit,PHPUnit-Kernel,PHPUnit-Functional'
         testgroups: '--all'
-        suppress-deprecations: false
+        suppress-deprecations: true
       run_tests.js:
         types: 'PHPUnit-FunctionalJavascript'
         testgroups: '--all'
-        suppress-deprecations: false
+        suppress-deprecations: true
       nightwatchjs: {  }

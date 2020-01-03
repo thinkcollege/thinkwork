@@ -4,6 +4,7 @@ namespace Drupal\migrate_tools\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\FormBase;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\migrate\MigrateMessage;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
@@ -27,9 +28,12 @@ class MigrationExecuteForm extends FormBase {
    *
    * @param \Drupal\migrate\Plugin\MigrationPluginManagerInterface $migration_plugin_manager
    *   The plugin manager for config entity-based migrations.
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   *   The current route match.
    */
-  public function __construct(MigrationPluginManagerInterface $migration_plugin_manager) {
+  public function __construct(MigrationPluginManagerInterface $migration_plugin_manager, RouteMatchInterface $route_match) {
     $this->migrationPluginManager = $migration_plugin_manager;
+    $this->routeMatch = $route_match;
   }
 
   /**
@@ -37,7 +41,8 @@ class MigrationExecuteForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('plugin.manager.migration')
+      $container->get('plugin.manager.migration'),
+      $container->get('current_route_match')
     );
   }
 
@@ -52,90 +57,105 @@ class MigrationExecuteForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $form = $form ?: [];
 
-    $form = [];
+    /** @var \Drupal\migrate_plus\Entity\MigrationInterface $migration */
+    $migration = $this->getRouteMatch()->getParameter('migration');
+    $form['#title'] = $this->t('Execute migration %label', ['%label' => $migration->label()]);
 
-    $form['operations'] = $this->migrateMigrateOperations();
+    $form = $this->buildFormOperations($form, $form_state);
+    $form = $this->buildFormOptions($form, $form_state);
+
+    $form['submit'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Execute'),
+    ];
 
     return $form;
   }
 
   /**
-   * Get Operations.
+   * Build the operation form field.
+   *
+   * @param array $form
+   *   The execution form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   *
+   * @return array
+   *   The execution form updated with the operations.
    */
-  private function migrateMigrateOperations() {
-    // Build the 'Update options' form.
-    $form = [
-      '#type' => 'fieldset',
-      '#title' => $this->t('Operations'),
-    ];
+  protected function buildFormOperations(array $form, FormStateInterface $form_state) {
+    // Build the migration execution form.
     $options = [
       'import' => $this->t('Import'),
       'rollback' => $this->t('Rollback'),
       'stop' => $this->t('Stop'),
       'reset' => $this->t('Reset'),
     ];
+
     $form['operation'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Choose an operation to run'),
+      '#type' => 'radios',
+      '#title' => $this->t('Operation'),
+      '#description' => $this->t('Choose an operation to run.'),
       '#options' => $options,
       '#default_value' => 'import',
       '#required' => TRUE,
-    ];
-    $form['submit'] = [
-      '#type' => 'submit',
-      '#value' => $this->t('Execute'),
-    ];
-    $definitions = [];
-    $definitions[] = $this->t('Import: Imports all previously unprocessed records from the source, plus any records marked for update, into destination Drupal objects.');
-    $definitions[] = $this->t('Rollback: Deletes all Drupal objects created by the import.');
-    $definitions[] = $this->t('Stop: Cleanly interrupts any import or rollback processes that may currently be running.');
-    $definitions[] = $this->t('Reset: Sometimes a process may fail to stop cleanly, and be left stuck in an Importing or Rolling Back status. Choose Reset to clear the status and permit other operations to proceed.');
-    $form['definitions'] = [
-      '#theme' => 'item_list',
-      '#title' => $this->t('Definitions'),
-      '#list_type' => 'ul',
-      '#items' => $definitions,
-    ];
-
-    $form['options'] = [
-      '#type' => 'fieldset',
-      '#title' => $this->t('Options'),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
-    ];
-    $form['options']['update'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Update'),
-      '#description' => $this->t('Check this box to update all previously-imported content
-      in addition to importing new content. Leave unchecked to only import
-      new content'),
-    ];
-    $form['options']['force'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Ignore dependencies'),
-      '#description' => $this->t('Check this box to ignore dependencies when running imports
-      - all tasks will run whether or not their dependent tasks have
-      completed.'),
-    ];
-    $form['options']['limit'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Limit to:'),
-      '#size' => 10,
-      '#description' => $this->t('Set a limit of how many items to process for each migration task.'),
+      'import' => [
+        '#description' => $this->t('Imports all previously unprocessed records from the source, plus any records marked for update, into destination Drupal objects.'),
+      ],
+      'rollback' => [
+        '#description' => $this->t('Deletes all Drupal objects created by the import.'),
+      ],
+      'stop' => [
+        '#description' => $this->t('Cleanly interrupts any import or rollback processes that may currently be running.'),
+      ],
+      'reset' => [
+        '#description' => $this->t('Sometimes a process may fail to stop cleanly, and be left stuck in an Importing or Rolling Back status. Choose Reset to clear the status and permit other operations to proceed.'),
+      ],
     ];
 
     return $form;
   }
 
   /**
-   * {@inheritdoc}
+   * Build the execution options form field.
+   *
+   * @param array $form
+   *   The execution form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   *
+   * @return array
+   *   The execution form updated with the execution options.
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    if (empty($form_state->getValue('operation'))) {
-      $form_state->setErrorByName('operation', $this->t('Please select an operation.'));
-      return;
-    }
+  protected function buildFormOptions(array $form, FormStateInterface $form_state) {
+    $form['options'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Additional execution options'),
+      '#open' => FALSE,
+    ];
+
+    $form['options']['update'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Update'),
+      '#description' => $this->t('Check this box to update all previously-imported content in addition to importing new content. Leave unchecked to only import new content'),
+    ];
+
+    $form['options']['force'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Ignore dependencies'),
+      '#description' => $this->t('Check this box to ignore dependencies when running imports - all tasks will run whether or not their dependent tasks have completed.'),
+    ];
+
+    $form['options']['limit'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Limit to:'),
+      '#size' => 10,
+      '#description' => $this->t('Set a limit of how many items to process for each migration task.'),
+    ];
+
+    return $form;
   }
 
   /**
@@ -165,7 +185,7 @@ class MigrationExecuteForm extends FormBase {
       $force = 0;
     }
 
-    $migration = \Drupal::routeMatch()->getParameter('migration');
+    $migration = $this->getRouteMatch()->getParameter('migration');
     if ($migration) {
       /** @var \Drupal\migrate\Plugin\MigrationInterface $migration_plugin */
       $migration_plugin = $this->migrationPluginManager->createInstance($migration->id(), $migration->toArray());

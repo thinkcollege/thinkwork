@@ -5,10 +5,10 @@ namespace Drupal\rules\Plugin\RulesAction;
 use Drupal\Component\Plugin\Derivative\DeriverBase;
 use Drupal\Core\Entity\ContentEntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
+use Drupal\rules\Context\ContextDefinition;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -57,18 +57,18 @@ class EntityPathAliasCreateDeriver extends DeriverBase implements ContainerDeriv
       }
 
       $this->derivatives["entity:$entity_type_id"] = [
-        'label' => $this->t('Create @entity_type path alias', ['@entity_type' => $entity_type->getLowercaseLabel()]),
+        'label' => $this->t('Create a @entity_type path alias', ['@entity_type' => $entity_type->getSingularLabel()]),
         'category' => $this->t('Path'),
         'entity_type_id' => $entity_type_id,
         'context' => [
           'entity' => ContextDefinition::create("entity:$entity_type_id")
             ->setLabel($entity_type->getLabel())
             ->setRequired(TRUE)
-            ->setDescription($this->t('The @entity_type for which to create a path alias.', ['@entity_type' => $entity_type->getLowercaseLabel()])),
+            ->setDescription($this->t('The @entity_type for which to create a path alias.', ['@entity_type' => $entity_type->getSingularLabel()])),
           'alias' => ContextDefinition::create('string')
             ->setLabel($this->t('Path alias'))
             ->setRequired(TRUE)
-            ->setDescription($this->t("Specify an alternative path by which the content can be accessed. For example, 'about' for an about page. Use a relative path and do not add a trailing slash.")),
+            ->setDescription($this->t("Specify an alternative path by which the content can be accessed. For example, '/about' for an about page. Use an absolute path and do not add a trailing slash.")),
         ],
         'provides' => [],
       ] + $base_plugin_definition;

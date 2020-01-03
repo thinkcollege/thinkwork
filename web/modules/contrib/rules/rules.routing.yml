@@ -1,6 +1,5 @@
 # Declaration of Rules routings.
 
-
 ### Rules settings form
 rules.settings:
   path: '/admin/config/workflow/rules/settings'
@@ -9,7 +8,6 @@ rules.settings:
     _title: 'Rules settings'
   requirements:
     _permission: 'administer rules'
-
 
 ### Rules Reactions
 entity.rules_reaction_rule.collection:

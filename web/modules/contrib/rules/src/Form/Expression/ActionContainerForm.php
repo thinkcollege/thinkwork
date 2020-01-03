@@ -42,7 +42,7 @@ class ActionContainerForm implements ExpressionFormInterface {
       '#theme' => 'table',
       '#caption' => $this->t('Actions'),
       '#header' => [$this->t('Elements'), $this->t('Operations')],
-      '#empty' => t('None'),
+      '#empty' => $this->t('None'),
     ];
 
     foreach ($this->actionSet as $action) {

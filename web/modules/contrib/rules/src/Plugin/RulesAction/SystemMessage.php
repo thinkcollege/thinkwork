@@ -3,8 +3,11 @@
 namespace Drupal\rules\Plugin\RulesAction;
 
 use Drupal\Component\Utility\Xss;
+use Drupal\Core\Messenger\MessengerInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Render\Markup;
 use Drupal\rules\Core\RulesActionBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a 'Show a message on the site' action.
@@ -25,13 +28,49 @@ use Drupal\rules\Core\RulesActionBase;
  *       description = @Translation("If disabled and the message has been already shown, then the message won't be repeated."),
  *       default_value = NULL,
  *       required = FALSE
- *     )
+ *     ),
  *   }
  * )
  *
- * @todo: Add access callback information from Drupal 7.
+ * @todo Add access callback information from Drupal 7.
  */
-class SystemMessage extends RulesActionBase {
+class SystemMessage extends RulesActionBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * The messenger service.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
+   * Constructs a SystemMessage object.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin ID for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger service.
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, MessengerInterface $messenger) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->messenger = $messenger;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('messenger')
+    );
+  }
 
   /**
    * Set a system message.
@@ -48,7 +87,7 @@ class SystemMessage extends RulesActionBase {
     // flag in the context definition.
     $message = Xss::filterAdmin($message);
     $repeat = (bool) $repeat;
-    drupal_set_message(Markup::create($message), $type, $repeat);
+    $this->messenger->addMessage(Markup::create($message), $type, $repeat);
   }
 
 }

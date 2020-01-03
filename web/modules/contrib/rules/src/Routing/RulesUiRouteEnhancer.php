@@ -40,7 +40,7 @@ class RulesUiRouteEnhancer implements EnhancerInterface {
    * {@inheritdoc}
    */
   public function enhance(array $defaults, Request $request) {
-    // @var $route \Symfony\Component\Routing\Route
+    /** @var \Symfony\Component\Routing\Route $route */
     $route = $defaults[RouteObjectInterface::ROUTE_OBJECT];
     if ($plugin_id = $route->getOption('_rules_ui')) {
       $defaults['rules_ui_handler'] = $this->rulesUiManager->createInstance($plugin_id);

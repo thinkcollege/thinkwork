@@ -1,7 +1,7 @@
 services:
   plugin.manager.typed_data_filter:
     class: Drupal\typed_data\DataFilterManager
-    arguments: ['@container.namespaces', '@module_handler']
+    parent: default_plugin_manager
   plugin.manager.typed_data_form_widget:
     class: Drupal\typed_data\Widget\FormWidgetManager
     arguments: ['@container.namespaces', '@module_handler']

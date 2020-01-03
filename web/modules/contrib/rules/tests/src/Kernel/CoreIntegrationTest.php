@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\rules\Kernel;
 
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\node\Entity\Node;
 use Drupal\rules\Context\ContextConfig;
 use Drupal\rules\Context\ContextDefinition;
@@ -13,11 +14,8 @@ use Drupal\user\Entity\User;
  * Test using Drupal core integration of Rules API.
  *
  * @group Rules
- * @group legacy
- * @todo Remove the 'legacy' tag when Rules no longer uses deprecated code.
- * @see https://www.drupal.org/project/rules/issues/2922757
  */
-class CoreIntegrationTest extends RulesDrupalTestBase {
+class CoreIntegrationTest extends RulesKernelTestBase {
 
   /**
    * Modules to enable.
@@ -29,7 +27,7 @@ class CoreIntegrationTest extends RulesDrupalTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
 
     $this->installSchema('system', ['sequences']);
@@ -159,8 +157,8 @@ class CoreIntegrationTest extends RulesDrupalTestBase {
       ->setContextValue('type', 'status')
       ->execute();
 
-    $messages = drupal_set_message();
-    $this->assertEquals((string) $messages['status'][0], 'Hello klausi!');
+    $messages = $this->messenger->all();
+    $this->assertEquals((string) $messages[MessengerInterface::TYPE_STATUS][0], 'Hello klausi!');
   }
 
   /**
@@ -202,8 +200,8 @@ class CoreIntegrationTest extends RulesDrupalTestBase {
       ->setContextValue('type', 'status')
       ->execute();
 
-    $messages = drupal_set_message();
-    $this->assertEquals((string) $messages['status'][0], 'The node was created in the year 1970');
+    $messages = $this->messenger->all();
+    $this->assertEquals((string) $messages[MessengerInterface::TYPE_STATUS][0], 'The node was created in the year 1970');
   }
 
   /**
@@ -315,8 +313,8 @@ class CoreIntegrationTest extends RulesDrupalTestBase {
 
     // Test using global context during execution.
     $component->execute();
-    $messages = drupal_set_message();
-    $this->assertEquals((string) $messages['status'][0], 'hubert');
+    $messages = $this->messenger->all();
+    $this->assertEquals((string) $messages[MessengerInterface::TYPE_STATUS][0], 'hubert');
   }
 
 }

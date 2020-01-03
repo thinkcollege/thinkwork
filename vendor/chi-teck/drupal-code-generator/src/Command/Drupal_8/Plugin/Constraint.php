@@ -22,11 +22,11 @@ class Constraint extends BaseGenerator {
    * {@inheritdoc}
    */
   protected function interact(InputInterface $input, OutputInterface $output) {
-    $questions = Utils::defaultPluginQuestions();
+    $questions = Utils::moduleQuestions() + Utils::pluginQuestions();
 
     $default_plugin_id = function (array $vars) {
       // Unlike other plugin types. Constraint IDs use camel case.
-      return Utils::camelize($vars['name'] . $vars['plugin_label']);
+      return Utils::camelize($vars['machine_name'] . $vars['plugin_label']);
     };
     $questions['plugin_id'] = new Question('Constraint ID', $default_plugin_id);
     $plugin_id_validator = function ($value) {
@@ -36,6 +36,12 @@ class Constraint extends BaseGenerator {
       return $value;
     };
     $questions['plugin_id']->setValidator($plugin_id_validator);
+
+    $default_class = function ($vars) {
+      $unprefixed_plugin_id = preg_replace('/^' . Utils::camelize($vars['machine_name']) . '/', '', $vars['plugin_id']);
+      return Utils::camelize($unprefixed_plugin_id) . 'Constraint';
+    };
+    $questions['class'] = new Question('Plugin class', $default_class);
 
     $input_types = [
       'entity' => 'Entity',
@@ -47,7 +53,6 @@ class Constraint extends BaseGenerator {
     $questions['input_type'] = new ChoiceQuestion('Type of data to validate', $type_choices, 'Item list');
 
     $vars = &$this->collectVars($input, $output, $questions);
-    $vars['class'] = Utils::camelize($vars['plugin_label']) . 'Constraint';
     $vars['input_type'] = array_search($vars['input_type'], $input_types);
 
     $this->addFile()

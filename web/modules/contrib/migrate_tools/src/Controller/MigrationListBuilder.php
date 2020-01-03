@@ -2,17 +2,16 @@
 
 namespace Drupal\migrate_tools\Controller;
 
-use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityHandlerInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Routing\CurrentRouteMatch;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate_plus\Entity\MigrationGroup;
 use Drupal\Core\Url;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -41,7 +40,7 @@ class MigrationListBuilder extends ConfigEntityListBuilder implements EntityHand
   /**
    * The logger service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
   protected $logger;
 
@@ -56,10 +55,10 @@ class MigrationListBuilder extends ConfigEntityListBuilder implements EntityHand
    *   The current route match service.
    * @param \Drupal\migrate\Plugin\MigrationPluginManagerInterface $migration_plugin_manager
    *   The plugin manager for config entity-based migrations.
-   * @param \Drupal\Core\Logger\LoggerChannelInterface $logger
+   * @param \Psr\Log\LoggerInterface $logger
    *   The logger service.
    */
-  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, CurrentRouteMatch $current_route_match, MigrationPluginManagerInterface $migration_plugin_manager, LoggerChannelInterface $logger) {
+  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, CurrentRouteMatch $current_route_match, MigrationPluginManagerInterface $migration_plugin_manager, LoggerInterface $logger) {
     parent::__construct($entity_type, $storage);
     $this->currentRouteMatch = $current_route_match;
     $this->migrationPluginManager = $migration_plugin_manager;
@@ -72,7 +71,7 @@ class MigrationListBuilder extends ConfigEntityListBuilder implements EntityHand
   public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
     return new static(
       $entity_type,
-      $container->get('entity.manager')->getStorage($entity_type->id()),
+      $container->get('entity_type.manager')->getStorage($entity_type->id()),
       $container->get('current_route_match'),
       $container->get('plugin.manager.migration'),
       $container->get('logger.channel.migrate_tools')
@@ -160,7 +159,7 @@ class MigrationListBuilder extends ConfigEntityListBuilder implements EntityHand
       $row['machine_name'] = $migration->id();
       $row['status'] = $migration->getStatusLabel();
     }
-    catch (PluginException $e) {
+    catch (\Exception $e) {
       $this->logger->warning('Migration entity id %id is malformed: %orig', ['%id' => $migration_entity->id(), '%orig' => $e->getMessage()]);
       return NULL;
     }
@@ -211,7 +210,7 @@ class MigrationListBuilder extends ConfigEntityListBuilder implements EntityHand
         ],
       ];
     }
-    catch (PluginException $e) {
+    catch (\Exception $e) {
       // Derive the stats.
       $row['status'] = $this->t('No data found');
       $row['total'] = $this->t('N/A');

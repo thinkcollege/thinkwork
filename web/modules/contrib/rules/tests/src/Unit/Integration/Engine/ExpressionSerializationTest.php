@@ -19,7 +19,7 @@ class ExpressionSerializationTest extends RulesIntegrationTestBase {
   public function testActionExpressionSerialization() {
     $action = $this->rulesExpressionManager
       ->createAction('rules_test_string', ContextConfig::create()
-        ->setValue('text', 'test')->toArray()
+        ->setValue('text', 'test')
       );
     $serialized_expression = serialize($action);
     $action = unserialize($serialized_expression);
@@ -34,7 +34,7 @@ class ExpressionSerializationTest extends RulesIntegrationTestBase {
    */
   public function testConditionExpressionSerialization() {
     $condition = $this->rulesExpressionManager
-      ->createCondition('rules_test_false', []);
+      ->createCondition('rules_test_false');
     $serialized_expression = serialize($condition);
     $condition = unserialize($serialized_expression);
     $result = $condition->execute();
@@ -79,7 +79,7 @@ class ExpressionSerializationTest extends RulesIntegrationTestBase {
     $expression->addAction('rules_test_string', ContextConfig::create()
       ->setValue('text', 'test'));
     $condition = $this->rulesExpressionManager
-      ->createCondition('rules_test_false', []);
+      ->createCondition('rules_test_false');
     $condition->negate(TRUE);
     $expression->addExpressionObject($condition);
 

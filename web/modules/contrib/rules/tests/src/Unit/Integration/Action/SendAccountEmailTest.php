@@ -21,7 +21,7 @@ namespace Drupal\Tests\rules\Unit\Integration\Action {
     /**
      * {@inheritdoc}
      */
-    public function setUp() {
+    protected function setUp() {
       parent::setUp();
 
       $this->enableModule('user');
@@ -34,7 +34,7 @@ namespace Drupal\Tests\rules\Unit\Integration\Action {
      * @covers ::summary
      */
     public function testSummary() {
-      $this->assertEquals('Send account e-mail', $this->action->summary());
+      $this->assertEquals('Send account email', $this->action->summary());
     }
 
     /**
@@ -50,7 +50,7 @@ namespace Drupal\Tests\rules\Unit\Integration\Action {
 
       $this->action->execute();
 
-      // To ge the notifications that were sent, we call the _user_mail_notify()
+      // To get the notifications that were sent, we call _user_mail_notify()
       // with no parameters.
       $notifications = _user_mail_notify();
       $this->assertSame([$mail_type => 1], $notifications);

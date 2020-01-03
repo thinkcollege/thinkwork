@@ -131,7 +131,7 @@ trait ContextHandlerIntegrityTrait {
    */
   protected function checkDataTypeCompatible(CoreContextDefinitionInterface $context_definition, DataDefinitionInterface $provided, $context_name, IntegrityViolationList $violation_list) {
     // Compare data types. For now, fail if they are not equal.
-    // @todo: Add support for matching based upon type-inheritance.
+    // @todo Add support for matching based upon type-inheritance.
     $target_type = $context_definition->getDataDefinition()->getDataType();
 
     // Special case any and entity target types for now.

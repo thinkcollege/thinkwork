@@ -20,11 +20,11 @@ use Drupal\rules\Core\RulesConditionBase;
  *     "type" = @ContextDefinition("string",
  *       label = @Translation("Type"),
  *       description = @Translation("The entity type specified by the condition.")
- *     )
+ *     ),
  *   }
  * )
  *
- * @todo: Add access callback information from Drupal 7?
+ * @todo Add access callback information from Drupal 7?
  */
 class EntityIsOfType extends RulesConditionBase {
 

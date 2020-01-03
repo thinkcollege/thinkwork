@@ -43,7 +43,7 @@ class EventComponentResolver implements RulesComponentResolverInterface {
    * {@inheritdoc}
    */
   public function getMultiple(array $event_ids) {
-    // @todo: Improve this by adding a custom expression plugin that clones
+    // @todo Improve this by adding a custom expression plugin that clones
     // the state after each rule, such that added variables added by one rule
     // are not interfering with the variables of another rule.
     $results = [];

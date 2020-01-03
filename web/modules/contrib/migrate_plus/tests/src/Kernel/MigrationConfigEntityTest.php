@@ -21,6 +21,7 @@ class MigrationConfigEntityTest extends MigrateTestBase {
     'taxonomy',
     'text',
     'system',
+    'user',
   ];
 
   /**

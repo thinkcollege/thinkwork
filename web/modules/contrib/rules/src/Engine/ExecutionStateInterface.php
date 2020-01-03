@@ -110,7 +110,7 @@ interface ExecutionStateInterface {
    *
    * @param string $selector
    *   The data selector that specifies the target object to be saved. Example:
-   *   node:uid:entity.
+   *   node.uid.entity.
    *
    * @return $this
    */

@@ -20,7 +20,7 @@ class LoopTest extends RulesEntityIntegrationTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
     $this->enableModule('node');
   }
@@ -136,7 +136,7 @@ class LoopTest extends RulesEntityIntegrationTestBase {
     $node->get('field_text')->willReturn($field_text);
 
     // We cannot use EntityDataDefinitionInterface here because the context
-    // system in core violates the interface and relies on the actuoal class.
+    // system in core violates the interface and relies on the actual class.
     // @see https://www.drupal.org/node/2660216
     $node_definition = $this->prophesize(EntityDataDefinition::class);
     $node_definition->getPropertyDefinition("field_text")->willReturn($list_definition);

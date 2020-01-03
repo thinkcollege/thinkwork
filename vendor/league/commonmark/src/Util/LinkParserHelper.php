@@ -16,7 +16,7 @@ namespace League\CommonMark\Util;
 
 use League\CommonMark\Cursor;
 
-class LinkParserHelper
+final class LinkParserHelper
 {
     /**
      * Attempt to parse link destination
@@ -27,31 +27,28 @@ class LinkParserHelper
      */
     public static function parseLinkDestination(Cursor $cursor)
     {
-        if ($res = $cursor->match(RegexHelper::getInstance()->getLinkDestinationBracesRegex())) {
+        if ($res = $cursor->match(RegexHelper::REGEX_LINK_DESTINATION_BRACES)) {
             // Chop off surrounding <..>:
             return UrlEncoder::unescapeAndEncode(
-                RegexHelper::unescape(substr($res, 1, strlen($res) - 2))
+                RegexHelper::unescape(substr($res, 1, -1))
             );
         }
 
         $oldState = $cursor->saveState();
         $openParens = 0;
         while (($c = $cursor->getCharacter()) !== null) {
-            if ($c === '\\') {
-                $cursor->advance();
-                if ($cursor->getCharacter()) {
-                    $cursor->advance();
-                }
+            if ($c === '\\' && RegexHelper::isEscapable($cursor->peek())) {
+                $cursor->advanceBy(2);
             } elseif ($c === '(') {
                 $cursor->advance();
                 $openParens++;
             } elseif ($c === ')') {
                 if ($openParens < 1) {
                     break;
-                } else {
-                    $cursor->advance();
-                    $openParens--;
                 }
+
+                $cursor->advance();
+                $openParens--;
             } elseif (preg_match(RegexHelper::REGEX_WHITESPACE_CHAR, $c)) {
                 break;
             } else {
@@ -78,11 +75,14 @@ class LinkParserHelper
      */
     public static function parseLinkLabel(Cursor $cursor)
     {
-        $escapedChar = RegexHelper::getInstance()->getPartialRegex(RegexHelper::ESCAPED_CHAR);
-        $match = $cursor->match('/^\[(?:[^\\\\\[\]]|' . $escapedChar . '|\\\\)*\]/');
+        $match = $cursor->match('/^\[(?:[^\\\\\[\]]|\\\\.){0,1000}\]/');
+        if ($match === null) {
+            return 0;
+        }
+
         $length = mb_strlen($match, 'utf-8');
 
-        if ($match === null || $length > 1001 || preg_match('/[^\\\\]\\\\\]$/', $match)) {
+        if ($length > 1001) {
             return 0;
         }
 
@@ -98,9 +98,9 @@ class LinkParserHelper
      */
     public static function parseLinkTitle(Cursor $cursor)
     {
-        if ($title = $cursor->match(RegexHelper::getInstance()->getLinkTitleRegex())) {
+        if ($title = $cursor->match('/' . RegexHelper::PARTIAL_LINK_TITLE . '/')) {
             // Chop off quotes from title and unescape
-            return RegexHelper::unescape(substr($title, 1, strlen($title) - 2));
+            return RegexHelper::unescape(substr($title, 1, -1));
         }
     }
 }

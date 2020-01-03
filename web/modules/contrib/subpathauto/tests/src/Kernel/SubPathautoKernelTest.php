@@ -6,6 +6,7 @@ use Drupal\KernelTests\KernelTestBase;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
 use Drupal\simpletest\UserCreationTrait;
+use Drupal\user\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -47,6 +48,9 @@ class SubPathautoKernelTest extends KernelTestBase {
     $this->installSchema('system', 'sequences');
     $this->installEntitySchema('user');
     $this->installEntitySchema('node');
+    if ($this->container->get('entity_type.manager')->hasDefinition('path_alias')) {
+      $this->installEntitySchema('path_alias');
+    }
 
     $this->installConfig('subpathauto');
 
@@ -64,6 +68,8 @@ class SubPathautoKernelTest extends KernelTestBase {
     Node::create(['type' => 'page', 'title' => 'test'])->save();
     $this->aliasStorage->save('/node/1', '/kittens');
     $this->aliasWhiteList->set('node', TRUE);
+
+    User::create(['uid' => 0, 'name' => 'anonymous user'])->save();
   }
 
   /**

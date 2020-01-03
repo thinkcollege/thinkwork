@@ -113,7 +113,7 @@ class EditExpressionForm extends FormBase {
 
     $this->rulesUiHandler->validateLock($form, $form_state);
 
-    // @todo: This ignores ExpressionFormInterface::validateForm().
+    // @todo This ignores ExpressionFormInterface::validateForm().
 
     $component = $this->buildComponent($form, $form_state);
     $violations = $component->checkIntegrity();

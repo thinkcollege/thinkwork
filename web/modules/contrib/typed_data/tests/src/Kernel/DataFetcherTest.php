@@ -65,8 +65,13 @@ class DataFetcherTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
+
+    $this->installEntitySchema('user');
+    $this->installEntitySchema('node');
+    $this->installSchema('system', ['sequences']);
+
     $this->typedDataManager = $this->container->get('typed_data_manager');
     $this->dataFetcher = $this->container->get('typed_data.data_fetcher');
 
@@ -87,11 +92,6 @@ class DataFetcherTest extends KernelTestBase {
       'entity_type' => 'node',
       'bundle' => 'page',
     ])->save();
-
-    $this->installSchema('system', ['sequences']);
-    $this->installEntitySchema('user');
-    $this->installEntitySchema('node');
-
     $this->node = $this->entityTypeManager->getStorage('node')
       ->create([
         'title' => 'test',

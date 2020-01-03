@@ -64,7 +64,7 @@ class MigrateManifest {
         // The info will be stored underneath that key as another array.
         // Any other info is just dropped. It can't be mapped and doesn't match
         // our expected input.
-        $migration_info[key($migration_info)] = current($manifest_row);
+        $migration_info[key($manifest_row)] = current($manifest_row);
       }
       else {
         // If it wasn't an array then the info is just the migration_id.

@@ -3,6 +3,8 @@
 namespace Drupal\Tests\webform\Functional;
 
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\webform\Traits\WebformSubmissionViewAccessTrait;
+use Drupal\user\Entity\User;
 use Drupal\webform\Entity\Webform;
 use Drupal\webform\Entity\WebformSubmission;
 use Drupal\webform\WebformInterface;
@@ -13,6 +15,8 @@ use Drupal\webform\WebformInterface;
  * @group webform_browser
  */
 class WebformSubmissionViewsAccessTest extends BrowserTestBase {
+
+  use WebformSubmissionViewAccessTrait;
 
   /**
    * Modules to enable.
@@ -72,7 +76,12 @@ class WebformSubmissionViewsAccessTest extends BrowserTestBase {
     /** @var \Drupal\webform\WebformInterface $webform */
     $webform = Webform::load('contact');
 
-    // Create any access user, own access user, and no (anonymous) access user.
+    // Create anonymous, any access user, own access user, and no (anonymous) access user.
+    $anonymous_user = User::getAnonymousUser();
+    user_role_grant_permissions('anonymous', [
+      'access webform overview',
+      'view own webform submission',
+    ]);
     $own_webform_user = $this->drupalCreateUser([
       'access webform overview',
       'edit own webform',
@@ -93,6 +102,7 @@ class WebformSubmissionViewsAccessTest extends BrowserTestBase {
     // Create an array of the accounts.
     /** @var \Drupal\user\Entity\User[] $accounts */
     $accounts = [
+      'anonymous_user' => $anonymous_user,
       'own_webform_user' => $own_webform_user,
       'any_submission_user' => $any_submission_user,
       'own_submission_user' => $own_submission_user,
@@ -106,9 +116,14 @@ class WebformSubmissionViewsAccessTest extends BrowserTestBase {
     $this->checkUserSubmissionAccess($webform, $accounts);
 
     // Clear any and own permissions for all accounts.
-    foreach ($accounts as &$account) {
-      $roles = $account->getRoles(TRUE);
-      $rid = reset($roles);
+    foreach ($accounts as $account_type => &$account) {
+      if ($account_type === 'anonymous_user') {
+        $rid = 'anonymous';
+      }
+      else {
+        $roles = $account->getRoles(TRUE);
+        $rid = reset($roles);
+      }
       user_role_revoke_permissions($rid, [
         'view any webform submission',
         'view own webform submission',
@@ -139,60 +154,6 @@ class WebformSubmissionViewsAccessTest extends BrowserTestBase {
         'uid' => $account->id(),
         'data' => $submission_generate->getData($webform),
       ])->save();
-    }
-  }
-
-  /**
-   * Check user submission access.
-   *
-   * @param \Drupal\webform\WebformInterface $webform
-   *   The webform.
-   * @param array $accounts
-   *   An associative array of test users.
-   *
-   * @see \Drupal\webform_access\Tests\WebformAccessSubmissionViewsTest::checkUserSubmissionAccess
-   */
-  protected function checkUserSubmissionAccess(WebformInterface $webform, array $accounts) {
-    /** @var \Drupal\webform\WebformSubmissionStorageInterface $webform_submission_storage */
-    $webform_submission_storage = \Drupal::entityTypeManager()
-      ->getStorage('webform_submission');
-
-    // Reset the static cache to make sure we are hitting actual fresh access
-    // results.
-    \Drupal::entityTypeManager()->getStorage('webform_submission')->resetCache();
-    \Drupal::entityTypeManager()->getAccessControlHandler('webform_submission')->resetCache();
-
-    foreach ($accounts as $account_type => $account) {
-      // Login the current user.
-      $this->drupalLogin($account);
-
-      // Get the webform_test_views_access view and the sid for each
-      // displayed record.  Submission access is controlled via the query.
-      // @see webform_query_webform_submission_access_alter()
-      $this->drupalGet('/admin/structure/webform/test/views_access');
-
-      $views_sids = [];
-      foreach ($this->getSession()->getPage()->findAll('css', '.view .view-content tbody .views-field-sid') as $node) {
-        $views_sids[] = $node->getText();
-      }
-      sort($views_sids);
-
-      $expected_sids = [];
-
-      // Load all webform submissions and check access using the access method.
-      // @see \Drupal\webform\WebformSubmissionAccessControlHandler::checkAccess
-      $webform_submissions = $webform_submission_storage->loadByEntities($webform);
-
-      foreach ($webform_submissions as $webform_submission) {
-        if ($webform_submission->access('view', $account)) {
-          $expected_sids[] = $webform_submission->id();
-        }
-      }
-
-      sort($expected_sids);
-
-      // Check that the views sids is equal to the expected sids.
-      $this->assertSame($expected_sids, $views_sids, "User '" . $account_type . "' access has correct access through view on webform submission entity type.");
     }
   }
 

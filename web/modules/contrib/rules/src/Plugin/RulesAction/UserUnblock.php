@@ -16,11 +16,11 @@ use Drupal\user\UserInterface;
  *     "user" = @ContextDefinition("entity:user",
  *       label = @Translation("User"),
  *       description = @Translation("Specifies the user, that should be unblocked.")
- *     )
+ *     ),
  *   }
  * )
  *
- * @todo: Add access callback information from Drupal 7.
+ * @todo Add access callback information from Drupal 7.
  */
 class UserUnblock extends RulesActionBase {
   /**

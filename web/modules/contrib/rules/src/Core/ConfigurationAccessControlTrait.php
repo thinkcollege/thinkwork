@@ -30,7 +30,7 @@ trait ConfigurationAccessControlTrait {
     if (!$account) {
       $account = \Drupal::currentUser();
     }
-    // We treat these as our "super-user" accesses.  We let the reaction
+    // We treat these as our "super-user" accesses. We let the reaction
     // rule and component permissions control the main admin UI.
     $admin_perms = [
       'administer rules',

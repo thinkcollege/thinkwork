@@ -7,9 +7,9 @@ migrations with a wine theme.
 SETUP
 -----
 To demonstrate XML migrations as realistically as possible, the setup module
-provides the source data as REST services. So the migrations' references to these
-services can be set up accurately, if you install migrate_example_advanced via
-drush be sure to use the --uri parameter, e.g.
+provides the source data as REST services. So the migrations' references to
+these services can be set up accurately, if you install migrate_example_advanced
+via drush be sure to use the --uri parameter, e.g.
 
 drush en -y migrate_example_advanced --uri=http://d8.local:8083/
 

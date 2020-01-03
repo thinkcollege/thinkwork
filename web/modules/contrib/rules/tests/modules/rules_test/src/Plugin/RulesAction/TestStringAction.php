@@ -10,16 +10,17 @@ use Drupal\rules\Core\RulesActionBase;
  * @RulesAction(
  *   id = "rules_test_string",
  *   label = @Translation("Test action string."),
+ *   category = @Translation("Tests"),
  *   context = {
  *     "text" = @ContextDefinition("string",
  *       label = @Translation("Text to concatenate")
- *     )
+ *     ),
  *   },
  *   configure_permissions = { "access test configuration" },
  *   provides = {
  *     "concatenated" = @ContextDefinition("string",
  *       label = @Translation("Concatenated result")
- *     )
+ *     ),
  *   }
  * )
  */

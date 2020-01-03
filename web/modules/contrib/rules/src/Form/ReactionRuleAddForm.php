@@ -52,8 +52,6 @@ class ReactionRuleAddForm extends RulesComponentFormBase {
    * {@inheritdoc}
    */
   public function form(array $form, FormStateInterface $form_state) {
-    $form = parent::form($form, $form_state);
-
     $event_definitions = $this->eventManager->getGroupedDefinitions();
     $options = [];
     foreach ($event_definitions as $group => $definitions) {
@@ -68,10 +66,10 @@ class ReactionRuleAddForm extends RulesComponentFormBase {
       '#title' => $this->t('React on event'),
       '#options' => $options,
       '#required' => TRUE,
-      '#description' => $this->t('Whenever the event occurs, rule evaluation is triggered.'),
+      '#description' => $this->t('Rule evaluation is triggered whenever the selected event occurs.'),
     ];
 
-    return $form;
+    return $form + parent::form($form, $form_state);
   }
 
   /**
@@ -80,7 +78,7 @@ class ReactionRuleAddForm extends RulesComponentFormBase {
   public function save(array $form, FormStateInterface $form_state) {
     parent::save($form, $form_state);
 
-    drupal_set_message($this->t('Reaction rule %label has been created.', ['%label' => $this->entity->label()]));
+    $this->messenger()->addMessage($this->t('Reaction rule %label has been created.', ['%label' => $this->entity->label()]));
     $form_state->setRedirect('entity.rules_reaction_rule.edit_form', ['rules_reaction_rule' => $this->entity->id()]);
   }
 

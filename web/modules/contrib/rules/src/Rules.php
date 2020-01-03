@@ -17,14 +17,4 @@ class Rules {
    */
   const CONFIG_VERSION = 3.0;
 
-  /**
-   * Returns the Rules expression manager service.
-   *
-   * @return \Drupal\rules\Engine\ExpressionManager
-   *   The Rules expression manager service.
-   */
-  public static function expressionManager() {
-    return \Drupal::service('plugin.manager.rules_expression');
-  }
-
 }

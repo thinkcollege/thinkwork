@@ -23,7 +23,7 @@ use Drupal\rules\Core\RulesConditionBase;
  *     ),
  *     "match" = @ContextDefinition("string",
  *        label = @Translation("Matching text")
- *     )
+ *     ),
  *   }
  * )
  */

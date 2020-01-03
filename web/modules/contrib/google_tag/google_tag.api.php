@@ -2,10 +2,12 @@
 
 /**
  * @file
- * Documents hooks provided by this module.
+ * Hooks provided by this module.
  *
  * @author Jim Berry ("solotandem", http://drupal.org/user/240748)
  */
+
+use Drupal\google_tag\Entity\Container;
 
 /**
  * @addtogroup hooks
@@ -21,8 +23,10 @@
  *
  * @param bool $satisfied
  *   The snippet insertion state.
+ * @param \Drupal\google_tag\Entity\Container $container
+ *   The associated container object.
  */
-function hook_google_tag_insert_alter(&$satisfied) {
+function hook_google_tag_insert_alter(&$satisfied, Container $container) {
   // Do something to the state.
   $state = !$state;
 }
@@ -36,8 +40,10 @@ function hook_google_tag_insert_alter(&$satisfied) {
  * @param array $snippets
  *   Associative array of snippets keyed by type: script, noscript and
  *   data_layer.
+ * @param \Drupal\google_tag\Entity\Container $container
+ *   The associated container object.
  */
-function hook_google_tag_snippets_alter(&$snippets) {
+function hook_google_tag_snippets_alter(array &$snippets, Container $container) {
   // Do something to the script snippet.
   $snippets['script'] = str_replace('insertBefore', 'insertAfter', $snippets['script']);
 }

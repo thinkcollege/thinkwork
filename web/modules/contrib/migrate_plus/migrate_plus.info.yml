@@ -5,9 +5,12 @@ package: Migration
 # core: 8.x
 dependencies:
   - drupal:migrate (>=8.3)
+test_dependencies:
+  - entity
+  - profile
 
-# Information added by Drupal.org packaging script on 2019-01-07
-version: '8.x-4.1'
+# Information added by Drupal.org packaging script on 2019-04-19
+version: '8.x-4.2'
 core: '8.x'
 project: 'migrate_plus'
-datestamp: 1546879116
+datestamp: 1555683500

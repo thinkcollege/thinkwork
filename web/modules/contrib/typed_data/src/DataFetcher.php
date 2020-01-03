@@ -168,9 +168,10 @@ class DataFetcher implements DataFetcherInterface {
     if ($partial_property_path == '') {
       return array_keys($data_definitions);
     }
+
     $results = [];
-    // If the supplied path is part of the top level variable names then suggest
-    // them directly.
+    // Suggest top level variables where the partial path matches the start of
+    // the top level variable name.
     foreach ($data_definitions as $variable_name => $data_definition) {
       if (stripos($variable_name, $partial_property_path) === 0) {
         $results = array_merge($results, $this->getAutocompleteSuggestion($data_definition, $variable_name));
@@ -180,8 +181,25 @@ class DataFetcher implements DataFetcherInterface {
       return $results;
     }
 
-    $parts = explode('.', $partial_property_path);
-    $first_part = array_shift($parts);
+    // Partial path now contains more than just a top level variable. In order
+    // to separate the variable parts we have to account for the syntax of
+    // global context variables versus local context variables.
+    // Global context variables begin with '@' and have a colon separating the
+    // global context from the variable.
+    $colon = strpos($partial_property_path, ':');
+    if ($colon === FALSE) {
+      // This is NOT a global context variable, so we only have to worry about
+      // the '.' separators.
+      $parts = explode('.', $partial_property_path);
+      $first_part = array_shift($parts);
+    }
+    else {
+      // This IS a global context variable, so the entire string up to and
+      // including the ':' needs to be removed before we split the remainder
+      // at the '.' separators.
+      $parts = explode('.', substr($partial_property_path, $colon + 1));
+      $first_part = substr($partial_property_path, 0, $colon + 1) . array_shift($parts);
+    }
 
     if (!isset($data_definitions[$first_part])) {
       return [];
@@ -269,7 +287,7 @@ class DataFetcher implements DataFetcherInterface {
    * @return array[]
    *   A list of autocomplete suggestions - valid property paths for the
    *   provided data definition. Each entry is an array with the following keys:
-   *   - value: the data selecor property path.
+   *   - value: the data selector property path.
    *   - label: the human readable label suggestion.
    */
   protected function getAutocompleteSuggestion(DataDefinitionInterface $data_definition, $variable_name) {

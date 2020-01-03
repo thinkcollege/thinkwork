@@ -8,6 +8,7 @@
 [![Build Status](https://img.shields.io/travis/thephpleague/commonmark/master.svg?style=flat-square)](https://travis-ci.org/thephpleague/commonmark)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/thephpleague/commonmark.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/commonmark/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/commonmark.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/commonmark)
+[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/9bf971c0-458f-4a19-9898-127728dbd65d.svg?style=flat-square)](https://insight.sensiolabs.com/projects/9bf971c0-458f-4a19-9898-127728dbd65d)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/126/badge)](https://bestpractices.coreinfrastructure.org/projects/126)
 
 **league/commonmark** is a PHP-based Markdown parser created by [Colin O'Dell][@colinodell] which supports the full [CommonMark] spec.  It is based on the [CommonMark JS reference implementation][commonmark.js] by [John MacFarlane] \([@jgm]\).
@@ -41,6 +42,8 @@ echo $converter->convertToHtml('# Hello World!');
 
 // <h1>Hello World!</h1>
 ```
+
+:warning: **Security warning:** If you will be parsing untrusted input from users, please consider setting the `html_input` and `allow_unsafe_links` options. See <https://commonmark.thephpleague.com/security/> for more details.
 
 ## Advanced Usage & Customization
 
@@ -96,11 +99,14 @@ Documentation can be found at [commonmark.thephpleague.com][docs].
 ### Integrations
 
 - [CakePHP 3](https://github.com/gourmet/common-mark)
-- [Drupal](https://www.drupal.org/project/commonmark)
+- [Drupal 7 & 8](https://www.drupal.org/project/markdown)
 - [Laravel 4 & 5](https://github.com/GrahamCampbell/Laravel-Markdown)
 - [Sculpin](https://github.com/bcremer/sculpin-commonmark-bundle)
-- [Symfony](https://github.com/webuni/commonmark-bundle)
-- [Twig](https://github.com/webuni/commonmark-twig-renderer)
+- [Symfony 2 & 3](https://github.com/webuni/commonmark-bundle)
+- [Symfony 4](https://github.com/avensome/commonmark-bundle)
+- [Twig Markdown extension](https://github.com/twigphp/markdown-extension)
+- [Twig-based renderer](https://github.com/webuni/commonmark-twig-renderer)
+- [Twig filter and tag](https://github.com/aptoma/twig-markdown)
 
 ### CommonMark Extras
 
@@ -115,6 +121,7 @@ Custom parsers/renderers can be bundled into extensions which extend CommonMark.
  - [CommonMark Attributes Extension](https://github.com/webuni/commonmark-attributes-extension) - Adds a syntax to define attributes on the various HTML elements.
  - [Alt Three Emoji](https://github.com/AltThree/Emoji) An emoji parser for CommonMark.
  - [uafrica/commonmark-ext](https://github.com/uafrica/commonmark-ext) - Adds strikethrough support.
+ - [Sup Sub extensions](https://github.com/OWS/commonmark-sup-sub-extensions) - Adds support of superscript and subscript (`<sup>` and `<sub>` HTML tags)
 
 If you build your own, feel free to submit a PR to add it to this list!
 
@@ -126,80 +133,9 @@ Check out the other cool things people are doing with `league/commonmark`: <http
 
 This project aims to fully support the entire [CommonMark spec]. Other flavors of Markdown may work but are not supported.  Any/all changes made to the [spec][CommonMark spec] or [JS reference implementation][commonmark.js] should eventually find their way back into this codebase.
 
-The following table shows which versions of league/commonmark are compatible with which version of the CommonMark spec:
+league/commonmark 0.15.5 and higher supports version 0.28 of the [CommonMark spec].
 
-<table>
-    <thead>
-        <tr>
-            <th>league/commonmark</th>
-            <th>CommonMark spec</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><strong>0.15.6</strong><br>0.15.5</td>
-            <td><strong><a href="http://spec.commonmark.org/0.28/">0.28</a></strong></td>
-        </tr>
-        <tr>
-            <td>0.15.4<br>0.15.3<br>0.15.2</td>
-            <td><a href="http://spec.commonmark.org/0.27/">0.27</a></td>
-        </tr>
-        <tr>
-            <td>0.15.1<br>0.15.0</td>
-            <td><a href="http://spec.commonmark.org/0.26/">0.26</a></td>
-        </tr>
-        <tr>
-            <td>0.14.0<br>0.13.4<br>0.13.3<br>0.13.2</td>
-            <td><a href="http://spec.commonmark.org/0.25/">0.25</a></td>
-        </tr>
-        <tr>
-            <td>0.13.1<br>0.13.0</td>
-            <td><a href="http://spec.commonmark.org/0.24/">0.24</a></td>
-        </tr>
-        <tr>
-            <td>0.12.x<br>0.11.x</td>
-            <td><a href="http://spec.commonmark.org/0.22/">0.22</a></td>
-        </tr>
-        <tr>
-            <td>0.10.0</td>
-            <td><a href="http://spec.commonmark.org/0.21/">0.21</a></td>
-        </tr>
-        <tr>
-            <td>0.9.0</td>
-            <td><a href="http://spec.commonmark.org/0.20/">0.20</a>
-        </tr>
-        <tr>
-            <td>0.8.0</td>
-            <td><a href="http://spec.commonmark.org/0.19/">0.19</a>
-        </tr>
-        <tr>
-            <td>0.7.2<br>0.7.1<br>0.7.0<br>0.6.1</td>
-            <td><a href="http://spec.commonmark.org/0.18/">0.18</a><br><a href="http://spec.commonmark.org/0.17/">0.17</a></td>
-        </tr>
-        <tr>
-            <td>0.6.0</td>
-            <td><a href="http://spec.commonmark.org/0.16/">0.16</a><br><a href="http://spec.commonmark.org/0.15/">0.15</a><br><a href="http://spec.commonmark.org/0.14/">0.14</a></td>
-        </tr>
-        <tr>
-            <td>0.5.x<br>0.4.0</td>
-            <td><a href="http://spec.commonmark.org/0.13/">0.13</a></td>
-        </tr>
-        <tr>
-            <td>0.3.0</td>
-            <td><a href="http://spec.commonmark.org/0.12/">0.12</a></td>
-        </tr>
-        <tr>
-            <td>0.2.x</td>
-            <td><a href="http://spec.commonmark.org/0.10/">0.10</a></td>
-        </tr>
-        <tr>
-            <td>0.1.x</td>
-            <td><a href="https://github.com/jgm/CommonMark/blob/2cf0750a7a507eded4cf3c9a48fd1f924d0ce538/spec.txt">0.01</a></td>
-        </tr>
-    </tbody>
-</table>
-
-This package is **not** part of CommonMark, but rather a compatible derivative.
+(This package is **not** part of CommonMark, but rather a compatible derivative.)
 
 ## Testing
 
@@ -219,17 +155,17 @@ $ ./tests/benchmark/benchmark.php
 
 ## Versioning
 
-[SemVer](http://semver.org/) will be followed closely.  0.x.0 versions will introduce breaking changes to the codebase, so be careful which version constraints you use. **It's highly recommended that you use [Composer's caret operator](https://getcomposer.org/doc/articles/versions.md#caret) to ensure compatibility**; for example: `^0.15`.  This is equivalent to `>=0.15.0 <0.16.0`.
+[SemVer](http://semver.org/) will be followed closely.  0.x.0 versions will introduce breaking changes to the codebase, so be careful which version constraints you use. **It's highly recommended that you use [Composer's caret operator](https://getcomposer.org/doc/articles/versions.md#caret) to ensure compatibility**; for example: `^0.18`.  This is equivalent to `>=0.18.0 <0.19.0`.
 
 0.x.y releases should not introduce breaking changes to the codebase; however, they might change the resulting AST or HTML output of parsed Markdown (due to bug fixes, minor spec changes, etc.)  As a result, you might get slightly different HTML, but any custom code built onto this library will still function correctly.
 
-If you're only using the `CommonMarkConverter` class to convert Markdown (no other class references, custom parsers, etc.), then it should be safe to use a broader constraint like `~0.15`, `>0.15`, etc.  I personally promise to never break this specific class in any future 0.x release.
+If you're only using the `CommonMarkConverter` class or `ConverterInterface` to convert Markdown (no other class references, custom parsers, etc.), then it should be safe to use a broader constraint like `~0.18`, `>0.18`, etc.  I personally promise to never break this specific class in any future 0.x release.
 
 ## Stability
 
 While this package does work well, the underlying code should not be considered "stable" yet.  The original spec and JS parser may undergo changes in the near future which will result in corresponding changes to this code.  Any methods tagged with `@api` are not expected to change, but other methods/classes might.
 
-Major release 1.0.0 will be reserved for when both CommonMark and this project are considered stable (see [outstanding CommonMark spec issues](http://talk.commonmark.org/t/issues-to-resolve-before-1-0-release/1287)).  0.x.y will be used until that happens.
+Major release 1.0.0 will be reserved for when either the CommonMark spec or this project are considered stable (see [outstanding CommonMark spec issues](http://talk.commonmark.org/t/issues-to-resolve-before-1-0-release/1287)).  0.x.y will be used until that happens.
 
 ## Contributing
 
@@ -261,7 +197,11 @@ Also a huge thank you to [JetBrains](https://www.jetbrains.com/) for supporting 
 
 ## License ##
 
-**league/commonmark** is licensed under the BSD-3 license.  See the `LICENSE` file for more details.
+**league/commonmark** is licensed under the BSD-3 license.  See the [`LICENSE`](LICENSE) file for more details.
+
+## Governance
+
+This project is primarily maintained by [Colin O'Dell][@colinodell].  Members of the [PHP League] Leadership Team may occasionally assist with some of these duties.
 
 [CommonMark]: http://commonmark.org/
 [CommonMark spec]: http://spec.commonmark.org/
@@ -276,3 +216,4 @@ Also a huge thank you to [JetBrains](https://www.jetbrains.com/) for supporting 
 [@jgm]: https://github.com/jgm
 [jgm/stmd]: https://github.com/jgm/stmd
 [Composer]: https://getcomposer.org/
+[PHP League]: https://thephpleague.com

@@ -28,7 +28,7 @@ class PathAliasExistsTest extends RulesIntegrationTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
 
     $this->condition = $this->conditionManager->createInstance('rules_path_alias_exists');
@@ -55,16 +55,16 @@ class PathAliasExistsTest extends RulesIntegrationTestBase {
    * @covers ::evaluate
    */
   public function testConditionEvaluationAliasWithPath() {
-    $this->aliasManager->getPathByAlias('alias-for-path', NULL)
-      ->willReturn('path-with-alias')
+    $this->aliasManager->getPathByAlias('/alias-for-path', NULL)
+      ->willReturn('/path-with-alias')
       ->shouldBeCalledTimes(1);
 
-    $this->aliasManager->getPathByAlias('alias-for-path', 'en')
-      ->willReturn('path-with-alias')
+    $this->aliasManager->getPathByAlias('/alias-for-path', 'en')
+      ->willReturn('/path-with-alias')
       ->shouldBeCalledTimes(1);
 
     // First, only set the path context.
-    $this->condition->setContextValue('alias', 'alias-for-path');
+    $this->condition->setContextValue('alias', '/alias-for-path');
 
     // Test without language context set.
     $this->assertTrue($this->condition->evaluate());
@@ -80,16 +80,16 @@ class PathAliasExistsTest extends RulesIntegrationTestBase {
    * @covers ::evaluate
    */
   public function testConditionEvaluationAliasWithoutPath() {
-    $this->aliasManager->getPathByAlias('alias-for-path-that-does-not-exist', NULL)
-      ->willReturn('alias-for-path-that-does-not-exist')
+    $this->aliasManager->getPathByAlias('/alias-for-path-that-does-not-exist', NULL)
+      ->willReturn('/alias-for-path-that-does-not-exist')
       ->shouldBeCalledTimes(1);
 
-    $this->aliasManager->getPathByAlias('alias-for-path-that-does-not-exist', 'en')
-      ->willReturn('alias-for-path-that-does-not-exist')
+    $this->aliasManager->getPathByAlias('/alias-for-path-that-does-not-exist', 'en')
+      ->willReturn('/alias-for-path-that-does-not-exist')
       ->shouldBeCalledTimes(1);
 
     // First, only set the path context.
-    $this->condition->setContextValue('alias', 'alias-for-path-that-does-not-exist');
+    $this->condition->setContextValue('alias', '/alias-for-path-that-does-not-exist');
 
     // Test without language context set.
     $this->assertFalse($this->condition->evaluate());

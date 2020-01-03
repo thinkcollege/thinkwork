@@ -100,6 +100,10 @@ class ExecutionState implements ExecutionStateInterface {
    */
   public function getVariable($name) {
     if (!$this->hasVariable($name)) {
+      // @todo This crashes site in certain circumstances - for example if
+      // you're reacting on a "Drupal is initializing" event ... Need to handle
+      // a problem here gracefully - maybe disable the rule that caused the
+      // problem?
       throw new EvaluationException("Unable to get variable $name, it is not defined.");
     }
     return $this->variables[$name];
@@ -118,7 +122,7 @@ class ExecutionState implements ExecutionStateInterface {
   public function hasVariable($name) {
     if (!array_key_exists($name, $this->variables)) {
       // If there is no such variable, lazy-add global context variables. That
-      // way can safe time fetching global context if its not needed.
+      // way can save time fetching global context if it is not needed.
       if (!($name[0] === '@' && strpos($name, ':') !== FALSE)) {
         return FALSE;
       }

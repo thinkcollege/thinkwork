@@ -10,7 +10,7 @@ use Drupal\rules\Core\RulesActionBase;
  * @RulesAction(
  *   id = "rules_variable_add",
  *   label = @Translation("Add a variable"),
- *   category = @Translation("Variable"),
+ *   category = @Translation("Data"),
  *   context = {
  *     "type" = @ContextDefinition("string",
  *       label = @Translation("Type"),
@@ -23,7 +23,7 @@ use Drupal\rules\Core\RulesActionBase;
  *   provides = {
  *     "variable_added" = @ContextDefinition("any",
  *        label = @Translation("Added variable")
- *      )
+ *      ),
  *    }
  * )
  */

@@ -66,8 +66,17 @@ class PlaceholderResolverTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
+
+    $this->installEntitySchema('user');
+    $this->installEntitySchema('node');
+    $this->installSchema('system', ['sequences']);
+
+    // Make sure default date formats are there for testing the format_date
+    // filter.
+    $this->installConfig(['system']);
+
     $this->typedDataManager = $this->container->get('typed_data_manager');
     $this->entityTypeManager = $this->container->get('entity_type.manager');
     $this->placeholderResolver = $this->container->get('typed_data.placeholder_resolver');
@@ -89,19 +98,11 @@ class PlaceholderResolverTest extends KernelTestBase {
       'bundle' => 'page',
     ])->save();
 
-    $this->installSchema('system', ['sequences']);
-    $this->installEntitySchema('user');
-    $this->installEntitySchema('node');
-
     $this->node = $this->entityTypeManager->getStorage('node')
       ->create([
         'title' => 'test',
         'type' => 'page',
       ]);
-
-    // Make sure default date formats are there for testing the format_date
-    // filter.
-    $this->installConfig(['system']);
   }
 
   /**
@@ -124,6 +125,84 @@ class PlaceholderResolverTest extends KernelTestBase {
     $this->assertEquals([
       'date' => [
         '| filter' => '{{ date | filter }}',
+      ],
+    ], $placeholders);
+    // Test a simple placeholder with and without a filter.
+    $text = "text {{ date | filter }} text {{ date }}";
+    $placeholders = $this->placeholderResolver->scan($text);
+    $this->assertEquals([
+      'date' => [
+        '| filter' => '{{ date | filter }}',
+        '' => '{{ date }}',
+      ],
+    ], $placeholders);
+    // Test a compound placeholder with and without a filter.
+    $text = "text {{ node.title.value | lower }} text {{ node.title.value }}";
+    $placeholders = $this->placeholderResolver->scan($text);
+    $this->assertEquals([
+      'node' => [
+        'title.value | lower' => '{{ node.title.value | lower }}',
+        'title.value' => '{{ node.title.value }}',
+      ],
+    ], $placeholders);
+  }
+
+  /**
+   * @covers ::scan
+   */
+  public function testEmptyPlaceholders() {
+    $text = 'text {{ }} text';
+    $placeholders = $this->placeholderResolver->scan($text);
+    $this->assertEquals([
+      '' => [
+        '' => '{{ }}',
+      ],
+    ], $placeholders);
+  }
+
+  /**
+   * @covers ::scan
+   */
+  public function testNoPlaceholders() {
+    $text = 'test text does not have any placeholders';
+    $placeholders = $this->placeholderResolver->scan($text);
+    $this->assertEquals([], $placeholders);
+  }
+
+  /**
+   * @covers ::scan
+   */
+  public function testMalformedPlaceholders() {
+    $text = "text {{ node. title }} text";
+    $placeholders = $this->placeholderResolver->scan($text);
+    $this->assertEquals([], $placeholders);
+
+    $text = "text {{ node .title }} text";
+    $placeholders = $this->placeholderResolver->scan($text);
+    $this->assertEquals([], $placeholders);
+
+    $text = "text {{node.}} text";
+    $placeholders = $this->placeholderResolver->scan($text);
+    $this->assertEquals([], $placeholders);
+
+    $text = "text {{ node| }} text";
+    $placeholders = $this->placeholderResolver->scan($text);
+    $this->assertEquals([], $placeholders);
+
+    $text = "text {{ no de }} text";
+    $placeholders = $this->placeholderResolver->scan($text);
+    $this->assertEquals([], $placeholders);
+  }
+
+  /**
+   * @covers ::scan
+   */
+  public function testFilterOnly() {
+    $text = "text {{ |filter }} text";
+    $placeholders = $this->placeholderResolver->scan($text);
+    $this->assertEquals([
+      '' => [
+        '|filter' => '{{ |filter }}',
       ],
     ], $placeholders);
   }

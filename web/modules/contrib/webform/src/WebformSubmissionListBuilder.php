@@ -253,8 +253,8 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
   public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
     return new static(
       $entity_type,
-      $container->get('entity.manager')->getStorage($entity_type->id()),
-      $container->get('entity.manager'),
+      $container->get('entity_type.manager')->getStorage($entity_type->id()),
+      $container->get('entity_type.manager'),
       $container->get('current_route_match'),
       $container->get('request_stack'),
       $container->get('current_user'),
@@ -848,7 +848,11 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
       case 'created':
       case 'completed':
       case 'changed':
-        return ($is_raw) ? $entity->{$name}->value : $entity->{$name}->value ? \Drupal::service('date.formatter')->format($entity->{$name}->value) : '';
+        /** @var \Drupal\Core\Datetime\DateFormatterInterface $date_formatter */
+        $date_formatter = \Drupal::service('date.formatter');
+        return ($is_raw ? $entity->{$name}->value :
+          ($entity->{$name}->value ? $date_formatter->format($entity->{$name}->value) : '')
+        );
 
       case 'entity':
         $source_entity = $entity->getSourceEntity();
@@ -1023,7 +1027,7 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
         ];
       }
 
-      if ($entity->access('create') && $webform->getSetting('submission_user_duplicate')) {
+      if ($entity->access('duplicate') && $webform->getSetting('submission_user_duplicate')) {
         $operations['duplicate'] = [
           'title' => $this->t('Duplicate'),
           'weight' => 23,
@@ -1065,14 +1069,14 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
         ];
       }
 
-      if ($webform->access('submission_update_any') && $webform->hasMessageHandler()) {
+      if ($entity->access('resend') && $webform->hasMessageHandler()) {
         $operations['resend'] = [
           'title' => $this->t('Resend'),
           'weight' => 22,
           'url' => $this->requestHandler->getUrl($entity, $this->sourceEntity, 'webform_submission.resend_form'),
         ];
       }
-      if ($webform->access('submission_update_any')) {
+      if ($entity->access('duplicate')) {
         $operations['duplicate'] = [
           'title' => $this->t('Duplicate'),
           'weight' => 23,
@@ -1290,8 +1294,7 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
       return $result;
     }
     else {
-      $order = $this->request->query->get('order', '');
-      if ($order) {
+      if ($order && $order['sql']) {
         $query->tableSort($header);
       }
       else {
@@ -1408,7 +1411,8 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
 
     // Filter by draft. (Only applies to user submissions and drafts)
     if (isset($this->draft)) {
-      $query->condition('in_draft', $this->draft);
+      // Cast boolean to integer to support SQLite.
+      $query->condition('in_draft', (int) $this->draft);
     }
 
     return $query;

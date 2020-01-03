@@ -104,7 +104,7 @@ class SettingsForm extends ConfigFormBase {
    */
   public function cancel(array $form, FormStateInterface $form_state) {
     $this->rulesUiHandler->clearTemporaryStorage();
-    drupal_set_message($this->t('Canceled.'));
+    $this->messenger()->addMessage($this->t('Canceled.'));
     $form_state->setRedirectUrl($this->rulesUiHandler->getBaseRouteUrl());
   }
 

@@ -14,6 +14,7 @@
 
 namespace League\CommonMark;
 
+use League\CommonMark\Inline\AdjoiningTextCollapser;
 use League\CommonMark\Inline\Element\Text;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Reference\ReferenceMap;
@@ -41,6 +42,8 @@ class InlineParserEngine
         }
 
         $this->processInlines($inlineParserContext);
+
+        AdjoiningTextCollapser::collapseTextNodes($container);
     }
 
     /**
@@ -51,12 +54,7 @@ class InlineParserEngine
      */
     protected function parseCharacter($character, InlineParserContext $inlineParserContext)
     {
-        $matchingParsers = $this->environment->getInlineParsersForCharacter($character);
-        if (empty($matchingParsers)) {
-            return false;
-        }
-
-        foreach ($matchingParsers as $parser) {
+        foreach ($this->environment->getInlineParsersForCharacter($character) as $parser) {
             if ($parser->parse($inlineParserContext)) {
                 return true;
             }

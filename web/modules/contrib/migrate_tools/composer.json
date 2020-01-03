@@ -10,18 +10,18 @@
   },
   "license": "GPL-2.0-or-later",
   "require": {
-    "drupal/migrate_plus": "^4"
+    "drupal/migrate_plus": "^4 || ^5"
   },
   "require-dev": {
     "drupal/migrate_plus": "4.x-dev",
     "drupal/migrate_source_csv": "^2.2",
-    "drush/drush": "^9"
+    "drush/drush": "^10"
   },
   "minimum-stability": "dev",
   "extra": {
     "drush": {
       "services": {
-        "drush.services.yml": "^9"
+        "drush.services.yml": "^9 || ^10"
       }
     }
   }

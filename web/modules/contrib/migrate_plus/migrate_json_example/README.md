@@ -18,5 +18,6 @@ See config/optional/migrate_plus.migration.product.yml for details about the
 migration.
 
 Thanks to Jeff Geerling and Christophe for the original code:
-- https://www.jeffgeerling.com/blog/2016/migrate-custom-json-feed-drupal-8-migrate-source-json
-- https://colorfield.be/blog/drupal-8-json-custom-migration
+https://www.jeffgeerling.com/blog/2016/migrate-custom-json-feed-drupal-8-migrate-source-json
+
+https://colorfield.be/blog/drupal-8-json-custom-migration

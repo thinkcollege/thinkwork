@@ -5,10 +5,10 @@ package: Rules
 # core: 8.x
 configure: entity.rules_reaction_rule.collection
 dependencies:
- - typed_data:typed_data
+  - typed_data:typed_data
 
-# Information added by Drupal.org packaging script on 2018-05-18
-version: '8.x-3.0-alpha4'
+# Information added by Drupal.org packaging script on 2019-08-19
+version: '8.x-3.0-alpha5'
 core: '8.x'
 project: 'rules'
-datestamp: 1526654299
+datestamp: 1566193993
