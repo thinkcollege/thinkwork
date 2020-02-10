@@ -10,7 +10,7 @@ services:
     arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@event_dispatcher']
   views_bulk_operations.access:
     class: Drupal\views_bulk_operations\Access\ViewsBulkOperationsAccess
-    arguments: ['@user.private_tempstore']
+    arguments: ['@tempstore.private']
     tags:
       - { name: access_check, applies_to: _views_bulk_operation_access }
   views_bulk_operations.view_data_provider:

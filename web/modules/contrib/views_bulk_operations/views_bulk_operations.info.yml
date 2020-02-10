@@ -2,12 +2,11 @@ type: module
 name: 'Views Bulk Operations'
 description: 'Adds an ability to perform bulk operations on selected entities from view results.'
 package: 'Views'
-# core: 8.x
+core: 8.x
 dependencies:
-  - drupal:views (>=8.4)
+  - drupal:views (>=8.5)
 
-# Information added by Drupal.org packaging script on 2019-02-21
-version: '8.x-2.5'
-core: '8.x'
+# Information added by Drupal.org packaging script on 2020-02-04
+version: '8.x-2.6'
 project: 'views_bulk_operations'
-datestamp: 1550740388
+datestamp: 1580808226

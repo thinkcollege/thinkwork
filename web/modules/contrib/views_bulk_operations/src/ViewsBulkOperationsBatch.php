@@ -93,7 +93,7 @@ class ViewsBulkOperationsBatch {
     if ($success) {
       $results['redirect_url'] = $results['redirect_after_processing'];
       unset($results['redirect_after_processing']);
-      $tempstore_factory = \Drupal::service('user.private_tempstore');
+      $tempstore_factory = \Drupal::service('tempstore.private');
       $current_user = \Drupal::service('current_user');
       $tempstore_name = 'views_bulk_operations_' . $results['view_id'] . '_' . $results['display_id'];
       $results['prepopulated'] = TRUE;
