@@ -178,6 +178,9 @@ class ViewsBulkOperationsActionManager extends ActionManager {
     $event->alterParameters = $this->alterParameters;
     $event->definitions = &$definitions;
     $this->eventDispatcher->dispatch(static::ALTER_ACTIONS_EVENT, $event);
+
+    // Include the expected behaviour (hook system) to avoid security issues.
+    parent::alterDefinitions($definitions);
   }
 
 }

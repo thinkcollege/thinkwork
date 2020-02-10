@@ -6583,21 +6583,21 @@
     },
     {
         "name": "drupal/views_bulk_operations",
-        "version": "2.5.0",
-        "version_normalized": "2.5.0.0",
+        "version": "2.6.0",
+        "version_normalized": "2.6.0.0",
         "source": {
             "type": "git",
             "url": "https://git.drupalcode.org/project/views_bulk_operations.git",
-            "reference": "8.x-2.5"
+            "reference": "8.x-2.6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://ftp.drupal.org/files/projects/views_bulk_operations-8.x-2.5.zip",
-            "reference": "8.x-2.5",
-            "shasum": "3ec848b4f235720d05cb9713ea80a86415b6909f"
+            "url": "https://ftp.drupal.org/files/projects/views_bulk_operations-8.x-2.6.zip",
+            "reference": "8.x-2.6",
+            "shasum": "517b671adb55c3ad023032607d360dab77db9f22"
         },
         "require": {
-            "drupal/core": "^8.4"
+            "drupal/core": "~8.5"
         },
         "type": "drupal-module",
         "extra": {
@@ -6605,8 +6605,8 @@
                 "dev-2.x": "2.x-dev"
             },
             "drupal": {
-                "version": "8.x-2.5",
-                "datestamp": "1550740384",
+                "version": "8.x-2.6",
+                "datestamp": "1580924749",
                 "security-coverage": {
                     "status": "covered",
                     "message": "Covered by Drupal's security advisory policy"

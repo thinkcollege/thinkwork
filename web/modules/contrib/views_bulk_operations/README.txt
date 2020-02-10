@@ -23,7 +23,7 @@ Creating custom actions
 -----------------------
 
 Example that covers different possibilities is available in
-modules/views_bulk_operatios_example/.
+modules/views_bulk_operations_example/.
 
 In a module, create an action plugin (check the included example module,
 test actions in /tests/views_bulk_operations_test/src/Plugin/Action
