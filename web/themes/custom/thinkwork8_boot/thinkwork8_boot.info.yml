@@ -2,7 +2,7 @@ name: Thinkwork8 Boot Subtheme
 type: theme
 description: 'Basic structure for a Bootstrap Barrio SubTheme.'
 # version: VERSION
-# core: 8.x
+# core:  8.x
 base theme: bootstrap_barrio
 
 libraries:
