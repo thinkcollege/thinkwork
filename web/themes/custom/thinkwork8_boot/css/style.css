@@ -332,3 +332,4 @@ h1,h2,h3,h4,h5,h6 {
 .rightFloat {float: right;} 
 .img-responsive {max-width: 100%; height: auto; display:block; }
 .margin-ten {margin: 10px;}
+img.align-left {margin:10px;}
