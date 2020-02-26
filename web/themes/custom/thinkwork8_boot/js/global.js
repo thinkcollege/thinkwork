@@ -7,7 +7,7 @@
 
   'use strict';
 
-  Drupal.behaviors.bootstrap_barrio_subtheme = {
+  Drupal.behaviors.thinkwork8_boot = {
     attach: function (context, settings) {
 
     }
