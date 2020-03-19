@@ -85,7 +85,9 @@ class Git
             }
 
             // failed to checkout, first check git accessibility
-            $this->throwException('Failed to clone ' . $url . ' via ' . implode(', ', $protocols) . ' protocols, aborting.' . "\n\n" . implode("\n", $messages), $url);
+            if (!$this->io->hasAuthentication($match[1]) && !$this->io->isInteractive()) {
+                $this->throwException('Failed to clone ' . $url . ' via ' . implode(', ', $protocols) . ' protocols, aborting.' . "\n\n" . implode("\n", $messages), $url);
+            }
         }
 
         // if we have a private github url and the ssh protocol is disabled then we skip it and directly fallback to https
@@ -95,9 +97,10 @@ class Git
 
         $auth = null;
         if ($bypassSshForGitHub || 0 !== $this->process->execute($command, $ignoredOutput, $cwd)) {
+            $errorMsg = $this->process->getErrorOutput();
             // private github repository without ssh key access, try https with auth
             if (preg_match('{^git@' . self::getGitHubDomainsRegex($this->config) . ':(.+?)\.git$}i', $url, $match)
-                || preg_match('{^(https?)://' . self::getGitHubDomainsRegex($this->config) . '/(.*)}', $url, $match)
+                || preg_match('{^https?://' . self::getGitHubDomainsRegex($this->config) . '/(.*)}', $url, $match)
             ) {
                 if (!$this->io->hasAuthentication($match[1])) {
                     $gitHubUtil = new GitHub($this->io, $this->config, $this->process);
@@ -115,6 +118,8 @@ class Git
                     if (0 === $this->process->execute($command, $ignoredOutput, $cwd)) {
                         return;
                     }
+
+                    $errorMsg = $this->process->getErrorOutput();
                 }
             } elseif (preg_match('{^https://(bitbucket\.org)/(.*)(\.git)?$}U', $url, $match)) { //bitbucket oauth
                 $bitbucketUtil = new Bitbucket($this->io, $this->config, $this->process);
@@ -147,6 +152,8 @@ class Git
                     if (0 === $this->process->execute($command, $ignoredOutput, $cwd)) {
                         return;
                     }
+
+                    $errorMsg = $this->process->getErrorOutput();
                 } else { // Falling back to ssh
                     $sshUrl = 'git@bitbucket.org:' . $match[2] . '.git';
                     $this->io->writeError('    No bitbucket authentication configured. Falling back to ssh.');
@@ -154,6 +161,8 @@ class Git
                     if (0 === $this->process->execute($command, $ignoredOutput, $cwd)) {
                         return;
                     }
+
+                    $errorMsg = $this->process->getErrorOutput();
                 }
             } elseif (
                 preg_match('{^(git)@' . self::getGitLabDomainsRegex($this->config) . ':(.+?)\.git$}i', $url, $match)
@@ -184,6 +193,8 @@ class Git
                     if (0 === $this->process->execute($command, $ignoredOutput, $cwd)) {
                         return;
                     }
+
+                    $errorMsg = $this->process->getErrorOutput();
                 }
             } elseif ($this->isAuthenticationFailure($url, $match)) { // private non-github/gitlab/bitbucket repo that failed to authenticate
                 if (strpos($match[2], '@')) {
@@ -222,10 +233,11 @@ class Git
 
                         return;
                     }
+
+                    $errorMsg = $this->process->getErrorOutput();
                 }
             }
 
-            $errorMsg = $this->process->getErrorOutput();
             if ($initialClone) {
                 $this->filesystem->removeDirectory($origCwd);
             }
@@ -246,6 +258,8 @@ class Git
                 };
                 $this->runCommand($commandCallable, $url, $dir);
             } catch (\Exception $e) {
+                $this->io->writeError('<error>Sync mirror failed: ' . $e->getMessage() . '</error>', true, IOInterface::DEBUG);
+
                 return false;
             }
 
