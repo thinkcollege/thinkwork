@@ -29,7 +29,7 @@
         "drupal/bootstrap_paragraphs": "^2.0@beta",
         "drupal/console": "^1.0.2",
         "drupal/content_access": "^1.0@alpha",
-        "drupal/core": "^8.8.4",
+        "drupal/core": "^8.8.6",
         "drupal/core-dev": "^8.8.4",
         "drupal/csv_serialization": "^1.4",
         "drupal/ctools": "~3.0",

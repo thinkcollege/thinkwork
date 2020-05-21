@@ -3544,17 +3544,17 @@
     },
     {
         "name": "drupal/core",
-        "version": "8.8.4",
-        "version_normalized": "8.8.4.0",
+        "version": "8.8.6",
+        "version_normalized": "8.8.6.0",
         "source": {
             "type": "git",
             "url": "https://github.com/drupal/core.git",
-            "reference": "34e59fcf702c1b3c497bbd6e92e68e546c5d15b8"
+            "reference": "a5daf2aa45bbc72da72e1e64d5261f746ffb508c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/drupal/core/zipball/34e59fcf702c1b3c497bbd6e92e68e546c5d15b8",
-            "reference": "34e59fcf702c1b3c497bbd6e92e68e546c5d15b8",
+            "url": "https://api.github.com/repos/drupal/core/zipball/a5daf2aa45bbc72da72e1e64d5261f746ffb508c",
+            "reference": "a5daf2aa45bbc72da72e1e64d5261f746ffb508c",
             "shasum": ""
         },
         "require": {
@@ -3720,7 +3720,7 @@
             "drupal/workflows": "self.version",
             "drupal/workspaces": "self.version"
         },
-        "time": "2020-03-18T16:26:33+00:00",
+        "time": "2020-05-20T08:22:02+00:00",
         "type": "drupal-core",
         "extra": {
             "drupal-scaffold": {
@@ -7725,7 +7725,8 @@
                 "name": "Jakub Onderka",
                 "email": "jakub.onderka@gmail.com"
             }
-        ]
+        ],
+        "abandoned": "php-parallel-lint/php-console-color"
     },
     {
         "name": "jakub-onderka/php-console-highlighter",
@@ -7773,7 +7774,8 @@
                 "homepage": "http://www.acci.cz/"
             }
         ],
-        "description": "Highlight PHP code in terminal"
+        "description": "Highlight PHP code in terminal",
+        "abandoned": "php-parallel-lint/php-console-highlighter"
     },
     {
         "name": "jcalderonzumba/gastonjs",
