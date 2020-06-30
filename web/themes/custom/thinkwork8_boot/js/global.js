@@ -25,7 +25,7 @@
 
   'use strict';
 
-  Drupal.behaviors.my-custom-theme = {
+  Drupal.behaviors.thinkwork8_boot = {
     attach: function (context, settings) {
       $('button.navbar-toggler').click(function() {
         if (!$('#superfish-main-accordion').hasClass('sf-expanded')) {
