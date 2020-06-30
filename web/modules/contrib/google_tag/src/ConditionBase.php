@@ -2,7 +2,6 @@
 
 namespace Drupal\google_tag;
 
-use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Condition\ConditionInterface;
 use Drupal\Core\Executable\ExecutableManagerInterface;
 use Drupal\Core\Executable\ExecutablePluginBase;
@@ -64,6 +63,13 @@ abstract class ConditionBase extends ExecutablePluginBase implements ConditionIn
    * @var array
    */
   protected $options = [];
+
+  /**
+   * The selected options (for the summary message).
+   *
+   * @var array
+   */
+  protected $values = [];
 
   /**
    * {@inheritdoc}

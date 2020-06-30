@@ -2,13 +2,13 @@ name: Block Styles
 description: Alter blocks using template suggestions.
 type: module
 package: Styles
-# core: 8.x
+core: 8.x
+core_version_requirement: ^8 || ^9
 dependencies:
-  - block
-  - styles_api
+  - drupal:block
+  - styles_api:styles_api
 
-# Information added by Drupal.org packaging script on 2017-03-07
-version: '8.x-1.2'
-core: '8.x'
+# Information added by Drupal.org packaging script on 2020-05-09
+version: '8.x-1.3'
 project: 'block_styles'
-datestamp: 1488901685
+datestamp: 1589051438

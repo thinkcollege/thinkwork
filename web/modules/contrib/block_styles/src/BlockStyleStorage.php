@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\block_layout\BlockStyleStorage.
- */
-
 namespace Drupal\block_styles;
 
 use Drupal\Core\Config\Entity\ConfigEntityStorage;

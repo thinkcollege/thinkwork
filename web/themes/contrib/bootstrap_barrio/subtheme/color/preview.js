@@ -5,7 +5,7 @@
  * @preserve
  **/
 
-(function($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings) {
     Drupal.color = {
         logoChanged: false,
         callback: function callback(context, settings, $form) {
@@ -27,10 +27,10 @@
             $colorPreview.find('.color-preview-content a').css('color', $colorPalette.find('input[name="palette[link]"]').val());
             $colorPreview.find('.preview-button').css('background-color', $colorPalette.find('input[name="palette[button]"]').val());
             $colorPreview.find('.preview-button').css('border-color', $colorPalette.find('input[name="palette[button]"]').val());
-            $colorPreview.find('.preview-button').hover(function() {
+            $colorPreview.find('.preview-button').hover(function () {
                     $(this).css('background-color', $colorPalette.find('input[name="palette[buttonhover]"]').val());
                 },
-                function() {
+                function () {
                     $(this).css('background-color', $colorPalette.find('input[name="palette[button]"]').val());
                 });
 

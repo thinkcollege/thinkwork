@@ -44,7 +44,7 @@ block__bootstrap__popover:
   type: block
   category: Block
   configuration:
-    path: templates/bootstrap_card
+    path: templates/bootstrap_popover
     base hook: block
     render element: elements
   extras:

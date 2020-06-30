@@ -14,17 +14,17 @@ use Drupal\Core\Url;
  * Implements hook_requirements().
  */
 function google_tag_requirements($phase) {
-  $requirements = array();
+  $requirements = [];
   if ($phase == 'runtime') {
     $containers = \Drupal::service('entity_type.manager')->getStorage('google_tag_container')->loadMultiple();
     if (empty($containers)) {
       // Google Tag Manager container ID has not been set.
-      $requirements['google_tag'] = array(
+      $requirements['google_tag'] = [
         'title' => t('Google Tag Manager'),
-        'description' => t('Configure default settings on the <a href=":url1">module settings page</a>. Afterwards, add a container on the <a href=":url2">container management page</a>.', array(':url1' => Url::fromRoute('google_tag.settings_form')->toString(), ':url2' => Url::fromRoute('entity.google_tag_container.collection')->toString())),
+        'description' => t('Configure default settings on the <a href=":url1">module settings page</a>. Afterwards, add a container on the <a href=":url2">container management page</a>.', [':url1' => Url::fromRoute('google_tag.settings_form')->toString(), ':url2' => Url::fromRoute('entity.google_tag_container.collection')->toString()]),
         'severity' => REQUIREMENT_WARNING,
         'value' => t('Not configured'),
-      );
+      ];
     }
   }
   if ($phase == 'runtime' || $phase == 'update' || $phase == 'install') {
@@ -33,12 +33,12 @@ function google_tag_requirements($phase) {
     $directory = \Drupal::config('google_tag.settings')->get('uri');
     if (empty($directory)) {
       if ($phase == 'runtime' || $phase == 'update') {
-        $requirements['google_tag_snippet_parent_directory'] = array(
+        $requirements['google_tag_snippet_parent_directory'] = [
           'title' => t('Google Tag Manager'),
-          'description' => t('The snippet parent directory is not set. Configure default settings on the <a href=":url1">module settings page</a>.', array(':url1' => Url::fromRoute('google_tag.settings_form')->toString())),
+          'description' => t('The snippet parent directory is not set. Configure default settings on the <a href=":url1">module settings page</a>.', [':url1' => Url::fromRoute('google_tag.settings_form')->toString()]),
           'severity' => REQUIREMENT_ERROR,
           'value' => t('Not configured'),
-        );
+        ];
         return $requirements;
       }
       $directory = 'public:/';
@@ -66,40 +66,40 @@ function google_tag_requirements($phase) {
       }
 
       if (!$is_directory) {
-        $error = t('The directory %directory does not exist.', array('%directory' => $path));
+        $error = t('The directory %directory does not exist.', ['%directory' => $path]);
         $description = t('An automated attempt to create the directory failed, possibly due to a permissions problem. Create the directory and make it writable.');
         $value = t('Does not exist');
       }
       elseif (!$is_writable) {
-        $error = t('The directory %directory is not writable.', array('%directory' => $path));
+        $error = t('The directory %directory is not writable.', ['%directory' => $path]);
         $description = t('An automated attempt to make the directory writable failed, possibly due to a permissions problem. Make the directory writable.');
         $value = t('Not writable');
       }
       else {
-        $error = t('The directory %directory is not searchable.', array('%directory' => $path));
+        $error = t('The directory %directory is not searchable.', ['%directory' => $path]);
         $description = t('An automated attempt to make the directory searchable failed, possibly due to a permissions problem. Make the directory searchable.');
         $value = t('Not searchable');
       }
       $extra = '';
       if ($phase == 'install') {
-        $extra = t('For more information, see INSTALL.txt or the <a href=":handbook_url">online handbook</a>.', array(':handbook_url' => 'https://www.drupal.org/server-permissions'));
+        $extra = t('For more information, see INSTALL.txt or the <a href=":handbook_url">online handbook</a>.', [':handbook_url' => 'https://www.drupal.org/server-permissions']);
         $value = '';
       }
-      $description = array(
+      $description = [
         '#type' => 'inline_template',
         '#template' => '{{ error }} {{ description }} {{ extra }}',
-        '#context' => array(
+        '#context' => [
           'error' => $error,
           'description' => $description,
           'extra' => $extra,
-        ),
-      );
-      $requirements['google_tag_snippet_directory'] = array(
+        ],
+      ];
+      $requirements['google_tag_snippet_directory'] = [
         'title' => t('Google Tag Manager snippet directory'),
         'description' => $description,
         'severity' => REQUIREMENT_ERROR,
         'value' => $value,
-      );
+      ];
     }
   }
   return $requirements;

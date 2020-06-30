@@ -25,7 +25,7 @@ class ContainerController extends EntityController {
    */
   public function addTitle($entity_type_id) {
     $entity_type = $this->entityTypeManager->getDefinition($entity_type_id);
-    return $this->t('Add @entity-type', ['@entity-type' => $entity_type->getLowercaseLabel()]);
+    return $this->t('Add @entity-type', ['@entity-type' => $entity_type->getSingularLabel()]);
   }
 
   /**

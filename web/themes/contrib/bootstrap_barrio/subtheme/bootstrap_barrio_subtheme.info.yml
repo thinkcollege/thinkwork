@@ -1,8 +1,8 @@
 name: Bootstrap Barrio Subtheme
 type: theme
 description: 'Basic structure for a Bootstrap Barrio SubTheme.'
-# version: VERSION
-# core: 8.x
+core: 8.x
+core_version_requirement: ^8 || ^9
 base theme: bootstrap_barrio
 
 libraries:
@@ -10,10 +10,10 @@ libraries:
   - bootstrap_barrio_subtheme/global-styling
 
 regions:
-  top_header: 'Top Header'
-  top_header_form: "Top Header Form"
+  top_header: 'Top header'
+  top_header_form: 'Top header form'
   header: Header
-  header_form: "Header Form"
+  header_form: 'Header form'
   primary_menu: 'Primary menu'
   secondary_menu: 'Secondary menu'
   page_top: 'Page top'
@@ -33,8 +33,7 @@ regions:
   footer_fourth: 'Footer fourth'
   footer_fifth: 'Footer fifth'
 
-# Information added by Drupal.org packaging script on 2019-02-28
-version: '8.x-4.22'
-core: '8.x'
+# Information added by Drupal.org packaging script on 2020-06-18
+version: '8.x-4.30'
 project: 'bootstrap_barrio'
-datestamp: 1551325396
+datestamp: 1592500698

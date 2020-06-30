@@ -3,14 +3,12 @@
 namespace Drupal\google_tag\Form;
 
 use Drupal\Core\Condition\ConditionInterface;
-use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Executable\ExecutableManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\SubformState;
 use Drupal\Core\Plugin\Context\ContextRepositoryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Defines the Google tag manager container settings form.
@@ -32,13 +30,6 @@ class ContainerForm extends EntityForm {
    * @var \Drupal\Core\Plugin\Context\ContextRepositoryInterface
    */
   protected $contextRepository;
-
-  /**
-   * The container entity.
-   *
-   * @var \Drupal\google_tag\Entity\Container
-   */
-  protected $container;
 
   /**
    * {@inheritdoc}

@@ -12,6 +12,7 @@
 
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
 /**
  * Default for matching all items except listed.
@@ -38,6 +39,7 @@ function google_tag_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_rebuild().
  */
 function google_tag_rebuild() {
+  _google_tag_assets_delete();
   $rebuild_snippets = \Drupal::config('google_tag.settings')->get('rebuild_snippets');
   if ($rebuild_snippets) {
     _google_tag_assets_create();
@@ -50,6 +52,14 @@ function google_tag_rebuild() {
 function _google_tag_assets_create() {
   $manager = \Drupal::service('google_tag.container_manager');
   $manager->createAllAssets();
+}
+
+/**
+ * Deletes snippet files for enabled containers.
+ */
+function _google_tag_assets_delete() {
+  $manager = \Drupal::service('google_tag.container_manager');
+  $manager->deleteAllAssets();
 }
 
 /**
@@ -106,7 +116,7 @@ function google_tag_plugin_filter_condition_alter(array &$definitions, array $ex
  */
 function _file_prepare_directory(&$directory, $options = FileSystemInterface::MODIFY_PERMISSIONS) {
   $file_system = \Drupal::service('file_system');
-  if (!$file_system->validScheme($file_system->uriScheme($directory))) {
+  if (!\Drupal::service('stream_wrapper_manager')->isValidScheme(StreamWrapperManager::getScheme($directory))) {
     // Only trim if we're not dealing with a stream.
     $directory = rtrim($directory, '/\\');
   }

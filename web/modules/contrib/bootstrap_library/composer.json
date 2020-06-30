@@ -5,6 +5,10 @@
     "homepage": "http://drupal.org/project/bootstrap_library",
     "license": "GPL-2.0+",
     "require": {
-        "twbs/bootstrap": "4.1.0"
-    }
+        "twbs/bootstrap": "^4.4.1"
+    },
+    "authors": [{
+      "name": "Alberto Siles",
+      "email": "alberto@siles.pe"
+    }]
 }

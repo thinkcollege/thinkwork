@@ -171,6 +171,27 @@ function _bootstrap_library_data() {
   return '{
   "timestamp": "2015-11-09T18:54:50.335Z",
   "bootstrap": {
+    "4.4.1": {
+      "css": "//stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css",
+      "js": [
+        "//cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js",
+        "//stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+      ]
+    },
+    "4.3.1": {
+      "css": "//stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
+      "js": [
+        "//cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js",
+        "//stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      ]
+    },
+    "4.2.1": {
+      "css": "//stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css",
+      "js": [
+        "//cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js",
+        "//stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+      ]
+    },
     "4.1.1": {
       "css": "//stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css",
       "js": [
@@ -296,6 +317,7 @@ function _bootstrap_library_data() {
     }
   },
   "fontawesome": {
+    "5.13.0": "//cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css",
     "4.4.0": "//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css",
     "4.2.0": "//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css",
     "4.1.0": "//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css",

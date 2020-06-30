@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @Condition(
  *   id = "gtag_domain",
  *   label = @Translation("Domain"),
- *   context = {
+ *   context_definitions = {
  *     "entity:domain" = @ContextDefinition("entity:domain", label = @Translation("Domain"), required = TRUE)
  *   }
  * )
@@ -34,8 +34,8 @@ class Domain extends ConditionBase implements ContainerFactoryPluginInterface {
    *
    * @param \Drupal\domain\DomainNegotiator $domain_negotiator
    *   The domain negotiator service.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   The entity type manager.
+   * @param \Drupal\Core\Entity\EntityStorageInterface $storage_manager
+   *   The entity storage manager.
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
    * @param string $plugin_id

@@ -48,14 +48,14 @@ conditions on which the tags are inserted on a page response. Conditions exist
 for: page paths, user roles, and response statuses. See:
 
  * Administration » Configuration » System » Google Tag Manager  
- * admin/config/system/google_tag/settings
+ * admin/config/system/google-tag/settings
 
 From the container management page, manage the containers to be inserted on a
 page response. Add one or more containers with separate container IDs and the
 snippet insertion conditions. See:
 
  * Administration » Configuration » System » Google Tag Manager  
- * admin/config/system/google_tag
+ * admin/config/system/google-tag
 
 For development purposes, create a GTM environment for your website and enter
 the 'environment ID' on the 'Advanced' tab of the settings form.

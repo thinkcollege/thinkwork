@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\block_styles\Entity\BlockLayout.
- */
-
 namespace Drupal\block_styles\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;

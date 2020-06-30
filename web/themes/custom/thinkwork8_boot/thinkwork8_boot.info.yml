@@ -6,7 +6,7 @@ description: 'Basic structure for a Bootstrap Barrio SubTheme.'
 base theme: bootstrap_barrio
 
 libraries:
-  - thinkork8_boot/global-styling
+  - thinkwork8_boot/global-styling
 ckeditor_stylesheets:
   - css/style.css
 regions:

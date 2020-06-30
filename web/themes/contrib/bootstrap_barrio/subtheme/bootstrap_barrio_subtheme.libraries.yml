@@ -8,7 +8,7 @@ global-styling:
       css/colors.css: {}
 bootstrap:
   js:
-    /libraries/popper/popper.min.js: {}
+    /libraries/popper.js/dist/umd/popper.min.js: {}
     /libraries/bootstrap/dist/js/bootstrap.min.js: {}
   css:
     component:

@@ -8,7 +8,6 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheableDependencyInterface;
 // use Drupal\Core\Condition\ConditionAccessResolverTrait;
-use Drupal\Core\Condition\ConditionInterface;
 use Drupal\Core\Entity\EntityAccessControlHandler;
 use Drupal\Core\Entity\EntityHandlerInterface;
 use Drupal\Core\Entity\EntityInterface;
@@ -42,6 +41,13 @@ class ContainerAccessControlHandler extends EntityAccessControlHandler implement
    * @var \Drupal\Core\Plugin\Context\ContextRepositoryInterface
    */
   protected $contextRepository;
+
+  /**
+   * The container entity for which to check access.
+   *
+   * @var \Drupal\google_tag\Entity\Container
+   */
+  protected $entity;
 
   /**
    * Constructs a container access control handler.
@@ -82,8 +88,8 @@ class ContainerAccessControlHandler extends EntityAccessControlHandler implement
       return AccessResult::forbidden()->addCacheableDependency($entity);
     }
 
-   // @todo Why is this not default code for an entity that uses the condition
-   // plugin interface? Most of it applies generally.
+    // @todo Why is this not default code for an entity that uses the condition
+    // plugin interface? Most of it applies generally.
 
     // Store entity to have access in resolveConditions().
     /** @var \Drupal\google_tag\Entity\Container $entity */
@@ -112,12 +118,17 @@ class ContainerAccessControlHandler extends EntityAccessControlHandler implement
       // Because cacheable metadata might be missing, forbid cache write.
       $access = AccessResult::forbidden()->setCacheMaxAge(0);
     }
+/*
     elseif ($missing_value) {
-      // The contexts exist but have no value. Allow access without
-      // disabling caching. For example the node type condition will have a
-      // missing context on any non-node route like the frontpage.
+      // The context exists but has no value. For example, the node type
+      // condition will have a missing context value on any non-node route like
+      // the frontpage.
+      // @todo Checking this state here prevents the evaluation of other
+      // conditions. If this condition does not apply, then that should NOT
+      // preclude further evaluation NOR result in automatic access.
       $access = AccessResult::allowed();
     }
+*/
     elseif ($this->resolveConditions($conditions, 'and') !== FALSE) {
       $access = AccessResult::allowed();
     }
@@ -153,7 +164,9 @@ class ContainerAccessControlHandler extends EntityAccessControlHandler implement
   }
 
   /**
-   * Override the resolveConditions() routine to avoid these calls:
+   * Override the resolveConditions() routine.
+   *
+   * Avoid these calls:
    *   $condition->execute()
    *   $this->executableManager->execute($this);
    * on plugins defined by this module.

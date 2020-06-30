@@ -38,7 +38,7 @@
       const gradientStart = $colorPalette.find('input[name="palette[top]"]').val();
       const gradientEnd = $colorPalette.find('input[name="palette[bottom]"]').val();
 
-      $colorPreview.find('.color-preview-header').attr('style', `background-color: ${gradientStart}; background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(${gradientStart}), to(${gradientEnd})); background-image: -moz-linear-gradient(-90deg, ${gradientStart}, ${gradientEnd});`);
+      $colorPreview.find('.color-preview-header').attr('style', `background - color: ${gradientStart}; background - image: -webkit - gradient(linear, 0 % 0 % , 0 % 100 % , from(${gradientStart}), to(${gradientEnd})); background - image: -moz - linear - gradient(-90deg, ${gradientStart}, ${gradientEnd});`);
 
       $colorPreview.find('.color-preview-site-name').css('color', $colorPalette.find('input[name="palette[titleslogan]"]').val());
     },
