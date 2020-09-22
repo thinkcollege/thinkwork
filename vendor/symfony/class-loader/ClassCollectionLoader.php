@@ -63,7 +63,7 @@ class ClassCollectionLoader
 
         // cache the core classes
         if (!is_dir($cacheDir) && !@mkdir($cacheDir, 0777, true) && !is_dir($cacheDir)) {
-            throw new \RuntimeException(sprintf('Class Collection Loader was not able to create directory "%s"', $cacheDir));
+            throw new \RuntimeException(sprintf('Class Collection Loader was not able to create directory "%s".', $cacheDir));
         }
         $cacheDir = rtrim(realpath($cacheDir) ?: $cacheDir, '/'.\DIRECTORY_SEPARATOR);
         $cache = $cacheDir.'/'.$name.$extension;
@@ -133,7 +133,7 @@ class ClassCollectionLoader
         // cache the core classes
         $cacheDir = \dirname($cache);
         if (!is_dir($cacheDir) && !@mkdir($cacheDir, 0777, true) && !is_dir($cacheDir)) {
-            throw new \RuntimeException(sprintf('Class Collection Loader was not able to create directory "%s"', $cacheDir));
+            throw new \RuntimeException(sprintf('Class Collection Loader was not able to create directory "%s".', $cacheDir));
         }
 
         $spacesRegex = '(?:\s*+(?:(?:\#|//)[^\n]*+\n|/\*(?:(?<!\*/).)++)?+)*+';
@@ -216,6 +216,11 @@ REGEX;
         $inNamespace = false;
         $tokens = token_get_all($source);
 
+        $nsTokens = [T_WHITESPACE => true, T_NS_SEPARATOR => true, T_STRING => true];
+        if (\defined('T_NAME_QUALIFIED')) {
+            $nsTokens[T_NAME_QUALIFIED] = true;
+        }
+
         for ($i = 0; isset($tokens[$i]); ++$i) {
             $token = $tokens[$i];
             if (!isset($token[1]) || 'b"' === $token) {
@@ -230,7 +235,7 @@ REGEX;
                 $rawChunk .= $token[1];
 
                 // namespace name and whitespaces
-                while (isset($tokens[++$i][1]) && \in_array($tokens[$i][0], [T_WHITESPACE, T_NS_SEPARATOR, T_STRING])) {
+                while (isset($tokens[++$i][1], $nsTokens[$tokens[$i][0]])) {
                     $rawChunk .= $tokens[$i][1];
                 }
                 if ('{' === $tokens[$i]) {
@@ -336,7 +341,7 @@ REGEX;
             try {
                 $reflectionClass = new \ReflectionClass($class);
             } catch (\ReflectionException $e) {
-                throw new \InvalidArgumentException(sprintf('Unable to load class "%s"', $class));
+                throw new \InvalidArgumentException(sprintf('Unable to load class "%s".', $class));
             }
 
             $map = array_merge($map, self::getClassHierarchy($reflectionClass));

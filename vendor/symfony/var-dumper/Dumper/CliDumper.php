@@ -255,6 +255,10 @@ class CliDumper extends AbstractDumper
      */
     public function enterHash(Cursor $cursor, $type, $class, $hasChild)
     {
+        if (null === $this->colors) {
+            $this->colors = $this->supportsColors();
+        }
+
         $this->dumpKey($cursor);
 
         if ($this->collapseNextHash) {
