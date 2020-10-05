@@ -212,6 +212,12 @@ h1,h2,h3,h4,h5,h6 {
 	color:#468cc8;
 }
 
+/* fix image placement in text editor */
+
+img[data-align="left"] {padding:0 5px 5px 0 }
+img[data-align="right"] {padding:0 0 5px 5px }
+
+
 
 
 /* real work stories banner */
