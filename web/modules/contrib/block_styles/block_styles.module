@@ -8,7 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 function block_styles_theme_suggestions_block_alter(array &$suggestions, array $variables) {
   if (isset($variables['elements']['#id'])) {
     $style = _block_styles_get_style($variables['elements']['#id']);
-    if ($style['theme']) {
+    if (isset($style['theme'])) {
      $suggestions[] = $style['theme'];
     }
   }
@@ -20,10 +20,10 @@ function block_styles_theme_suggestions_block_alter(array &$suggestions, array $
 function block_styles_preprocess_block(&$variables) {
   if (isset($variables['elements']['#id'])) {
     $style = _block_styles_get_style($variables['elements']['#id']);
-    if ( $style['classes'] ) {
+    if ( isset($style['classes']) ) {
       $variables['attributes']['class'][] = $style['classes'];
     }
-    if ( $style['text'] ) {
+    if ( isset($style['text']) ) {
       $variables['configuration']['button_text'] = t($style['text']);
     } 
     else {

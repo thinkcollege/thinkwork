@@ -82,8 +82,8 @@ body,p,a,li {
 }
 
 h1,h2,h3,h4,h5,h6,h1 a,h2 a,h3 a {
-	font-family:'Fira Sans',sans-serif;
-	font-weight:500;
+	font-family:'Open Sans',sans-serif;
+	font-weight:600;
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -160,7 +160,7 @@ h1,h2,h3,h4,h5,h6 {
 	color:#fff;
 	background-color:#468cc8;
 
-	font-family:'Fira Sans',sans-serif;
+  font-family:'Montserrat',sans-serif;
 	font-weight:700;
 	padding-bottom: 0;
 }
@@ -173,6 +173,7 @@ h1,h2,h3,h4,h5,h6 {
 .view-display-id-block_2 {
 padding: 5px 10px;
 }
+
 
 .dropdown-item {
 	border-bottom:#ddd 1px solid;
@@ -223,6 +224,24 @@ padding: 5px 10px;
 	color:#468cc8;
 }
 
+.card-block h3.field-content {
+    padding-top:0;
+    color:#468cc8;
+    font-size: 1.25rem;
+}
+
+h3.card-title
+{ font-size: 1.25rem;}
+
+
+/*  Taxonomy teaser view */
+
+.node--view-mode-teaser h2 {
+    font-size: 1.25rem;
+}
+
+
+
 /* fix image placement in text editor */
 
 img[data-align="left"] {padding:0 5px 5px 0 }
@@ -237,7 +256,7 @@ img[data-align="right"] {padding:0 0 5px 5px }
 	background-color:#0077af;
 	color:#fff;border:#343a40 10px solid;
 	padding:5px;
-	font-family: 'Fira Sans', sans-serif;
+	font-family:'Open Sans',sans-serif;
 	text-align:center
 	}
 
@@ -352,6 +371,13 @@ img.align-right {margin:10px;}
 
 /* Superfish */
 
+
+
+ul.sf-menu span.nolink {
+    display: block;
+    padding: 1em 1em;
+    position: relative;
+}
 
 
 ul.sf-menu.sf-style-none {
@@ -567,6 +593,8 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper a.menuparent,
 ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
   font-weight: bold;
 }
+
+
 
 
 
