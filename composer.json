@@ -33,7 +33,7 @@
         "drupal/core": "^8.9.14",
         "drupal/core-dev": "^8.8.4",
         "drupal/csv_serialization": "^1.4",
-        "drupal/ctools": "~3.0",
+        "drupal/ctools": "^3.6",
         "drupal/devel": "2.0",
         "drupal/easy_breadcrumb": "^1.13",
         "drupal/editor_advanced_link": "^1.4",

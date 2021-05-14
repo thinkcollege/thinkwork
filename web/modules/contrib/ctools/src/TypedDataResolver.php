@@ -5,6 +5,7 @@ namespace Drupal\ctools;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Plugin\Context\ContextInterface;
+use Drupal\Core\Plugin\Context\EntityContextDefinition;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\Core\TypedData\ComplexDataDefinitionInterface;
 use Drupal\Core\TypedData\DataReferenceDefinitionInterface;
@@ -12,6 +13,7 @@ use Drupal\Core\TypedData\DataReferenceInterface;
 use Drupal\Core\TypedData\ListDataDefinitionInterface;
 use Drupal\Core\TypedData\ListInterface;
 use Drupal\Core\TypedData\TypedDataManagerInterface;
+
 
 class TypedDataResolver {
 
@@ -54,6 +56,7 @@ class TypedDataResolver {
    *
    * @return \Drupal\Core\Plugin\Context\Context
    *   A context object that represents the definition & value of the property.
+   *
    * @throws \Exception
    */
   public function getContextFromProperty($property_path, ContextInterface $context) {
@@ -122,7 +125,12 @@ class TypedDataResolver {
         $data_definition = $data_definition->getTargetDefinition();
       }
     }
-    $context_definition = new ContextDefinition($data_definition->getDataType(), $data_definition->getLabel(), $data_definition->isRequired(), FALSE, $data_definition->getDescription());
+    if (strpos($data_definition->getDataType(), 'entity:') === 0) {
+      $context_definition = new EntityContextDefinition($data_definition->getDataType(), $data_definition->getLabel(), $data_definition->isRequired(), FALSE, $data_definition->getDescription());
+    }
+    else {
+      $context_definition = new ContextDefinition($data_definition->getDataType(), $data_definition->getLabel(), $data_definition->isRequired(), FALSE, $data_definition->getDescription());
+    }
     return new Context($context_definition, $value);
   }
 
@@ -159,7 +167,7 @@ class TypedDataResolver {
       // A base must always be set. This method recursively calls itself
       // setting bases for this reason.
       if (!empty($contexts[$base])) {
-        return $this->getContextFromProperty($property_path,  $contexts[$base]);
+        return $this->getContextFromProperty($property_path, $contexts[$base]);
       }
       // @todo improve this exception message.
       throw new ContextNotFoundException("The requested context was not found in the supplied array of contexts.");
@@ -172,7 +180,7 @@ class TypedDataResolver {
    * @param string $token
    *   The token related to a context in the contexts array.
    * @param \Drupal\Core\Plugin\Context\ContextInterface[] $contexts
-   *  An array of contexts from which to extract our token's label.
+   *   An array of contexts from which to extract our token's label.
    *
    * @return \Drupal\Core\StringTranslation\TranslatableMarkup
    *   The administrative label of $token.

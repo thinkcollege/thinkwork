@@ -43,16 +43,20 @@ class SerializableTempstoreTest extends KernelTestBase {
     $this->container->get('request_stack')->push($request->reveal());
 
     $this->assertInstanceOf(SerializableTempstore::class, $store);
-    /** @var SerializableTempstore $store */
+    /** @var \Drupal\ctools\SerializableTempstore $store */
 
     $store = serialize($store);
-    $this->assertInternalType('string', $store);
+    $this->assertSame('string', gettype($store));
     $this->assertNotEmpty($store, 'The tempstore was serialized.');
 
     $store = unserialize($store);
     $this->assertInstanceOf(SerializableTempstore::class, $store, 'The tempstore was unserialized.');
 
-    $request_stack = $this->getObjectAttribute($store, 'requestStack');
+    $reflector = new \ReflectionClass($store);
+    $property = $reflector->getProperty('requestStack');
+    $property->setAccessible(TRUE);
+
+    $request_stack = $property->getValue($store);
     $this->assertSame(
       $this->container->get('request_stack'),
       $request_stack,
