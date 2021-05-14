@@ -5,16 +5,17 @@ namespace Drupal\ctools\Form;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Drupal\Core\Ajax\RedirectCommand;
-use Drupal\Core\Entity\Plugin\DataType\EntityAdapter;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Plugin\Context\ContextInterface;
-use Drupal\Core\Url;
+use Drupal\Core\Plugin\Context\EntityContextDefinition;
 use Drupal\Core\TempStore\SharedTempStoreFactory;
+use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
+
 
 abstract class ContextConfigure extends FormBase {
 
@@ -50,7 +51,8 @@ abstract class ContextConfigure extends FormBase {
     );
   }
 
-  function __construct(SharedTempStoreFactory $tempstore, EntityTypeManagerInterface $entity_type_manager) {
+
+  public function __construct(SharedTempStoreFactory $tempstore, EntityTypeManagerInterface $entity_type_manager) {
     $this->tempstore = $tempstore;
     $this->entityTypeManager = $entity_type_manager;
   }
@@ -77,7 +79,12 @@ abstract class ContextConfigure extends FormBase {
       $edit = TRUE;
     }
     else {
-      $context_definition = new ContextDefinition($context_id);
+      if (strpos($context_id, 'entity:') === 0) {
+        $context_definition = new EntityContextDefinition($context_id);
+      }
+      else {
+        $context_definition = new ContextDefinition($context_id);
+      }
       $context = new Context($context_definition);
       $machine_name = '';
     }
@@ -87,7 +94,7 @@ abstract class ContextConfigure extends FormBase {
     $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
     $form['context_id'] = [
       '#type' => 'value',
-      '#value' => $context_id
+      '#value' => $context_id,
     ];
     $form['label'] = [
       '#type' => 'textfield',
@@ -114,7 +121,7 @@ abstract class ContextConfigure extends FormBase {
     ];
     if (strpos($data_type, 'entity:') === 0) {
       list(, $entity_type) = explode(':', $data_type);
-      /** @var EntityAdapter $entity */
+      /** @var \Drupal\Core\Entity\Plugin\DataType\EntityAdapter $entity */
       $entity = $edit ? $context->getContextValue() : NULL;
       $form['context_value'] = [
         '#type' => 'entity_autocomplete',
@@ -138,7 +145,7 @@ abstract class ContextConfigure extends FormBase {
       '#value' => $this->t('Save'),
       '#ajax' => [
         'callback' => [$this, 'ajaxSave'],
-      ]
+      ],
     ];
     return $form;
   }
@@ -165,7 +172,12 @@ abstract class ContextConfigure extends FormBase {
     $contexts = $this->getContexts($cached_values);
     if ($form_state->getValue('machine_name') != $form_state->getValue('context_id')) {
       $data_type = $form_state->getValue('context_id');
-      $context_definition = new ContextDefinition($data_type, $form_state->getValue('label'), TRUE, FALSE, $form_state->getValue('description'));
+      if (strpos($data_type, 'entity:') === 0) {
+        $context_definition = new EntityContextDefinition($data_type, $form_state->getValue('label'), TRUE, FALSE, $form_state->getValue('description'));
+      }
+      else {
+        $context_definition = new ContextDefinition($data_type, $form_state->getValue('label'), TRUE, FALSE, $form_state->getValue('description'));
+      }
     }
     else {
       $context = $contexts[$form_state->getValue('machine_name')];
@@ -191,6 +203,7 @@ abstract class ContextConfigure extends FormBase {
     list($route_name, $route_parameters) = $this->getParentRouteInfo($cached_values);
     $form_state->setRedirect($route_name, $route_parameters);
   }
+
 
   public function ajaxSave(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
