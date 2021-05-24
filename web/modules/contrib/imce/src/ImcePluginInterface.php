@@ -43,4 +43,5 @@ interface ImcePluginInterface extends PluginInspectionInterface {
    * Builds imce page by adding required libraries and elements.
    */
   public function buildPage(array &$page, ImceFM $fm);
+
 }

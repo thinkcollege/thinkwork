@@ -35,16 +35,19 @@
   box-shadow: 1px 1px 0 #fff inset;
   margin-bottom: 4px;
 }
+
 #imce-body {
   height: 300px;
   overflow: hidden;
 }
+
 #imce-body-resizer {
   height: 5px;
   cursor: n-resize;
   overflow: hidden;
   text-align: center;
 }
+
 #imce-body-resizer:before {
   content: '\22ef';
   display: inline-block;
@@ -52,6 +55,7 @@
   line-height: 0px;
   font-size: 13px;
 }
+
 #imce-preview {
   height: 90px;
   overflow: auto;
@@ -267,7 +271,7 @@
 }
 .imce-item.selected {
   background-color: #6bb6ff;
-  background-image: linear-gradient(180deg, #65B5FF, #6FBAFF);
+  background-image: linear-gradient(180deg, #65b5ff, #6fbaff);
 }
 .imce-item.disabled {
   opacity: 0.6;
@@ -277,10 +281,10 @@
   white-space: nowrap;
   overflow: hidden;
   padding: 4px 2px;
-  height: 24px;
   float: right;
   text-align: right;
 }
+
 /* Item icon */
 .imce-item-icon {
   float: left;
@@ -304,7 +308,6 @@
 .imce-item-height {
   width: 10%;
   max-width: 4.4em;
-  text-align: left;
 }
 /* Item date */
 .imce-item-date {
@@ -315,6 +318,9 @@
 /* Specific item icons */
 .imce-item-icon:before {
   content: "\e601";
+}
+.imce-item-thumbnail:before {
+  display: none !important;
 }
 .folder > .imce-item-icon:before {
   content: "\e609";
@@ -371,19 +377,21 @@
   left: 0;
   top: 0;
 }
+
 .imce-content-header .imce-item {
   background: #f1f1f1;
   box-shadow: 1px 1px 0 #fff inset;
   border-bottom-color: #ccc;
 }
+
 .imce-content-header .sorted {
   color: #00c;
 }
 .imce-content-header .asc:after {
-  content: '\2191';
+  content: '\25b2';
 }
 .imce-content-header .desc:after {
-  content: '\2193';
+  content: '\25bc';
 }
 .imce-content-header .imce-item-icon {
   width: 20px;
@@ -610,4 +618,64 @@
 }
 .imce-uqi-percent {
   text-align: right;
+}
+
+/* Thumbnail grid style*/
+.thumbnail-grid .imce-content-header .imce-item {
+  text-align: center;
+  display: flex;
+}
+
+.thumbnail-grid .imce-content-header .imce-item > *{
+  float: none;
+  text-align: left;
+  display: inline-block;
+  width: auto;
+  order: 2;
+}
+
+.thumbnail-grid .imce-content-header .imce-item .imce-item-name {
+  order: 1;
+  top: 0;
+  margin-left: auto;
+}
+
+.thumbnail-grid .imce-content-header .imce-item .imce-item-size {
+  margin-right: auto;
+}
+
+.thumbnail-grid .imce-content-header .imce-item .imce-item-name::before{
+  content: "Sort by:   ";
+  color: black;
+  margin-right: 3px;
+}
+
+.thumbnail-grid .imce-folder-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  justify-items: center;
+}
+
+.thumbnail-grid .imce-folder-content .imce-item {
+  width: 100%;
+}
+
+.thumbnail-grid .imce-folder-content .imce-item > * {
+  float: none;
+  text-align: left;
+  width: auto;
+  padding: 1px 2px;
+}
+
+.thumbnail-grid .imce-folder-content .imce-item .imce-item-height{
+  display: inline-block;
+}
+
+.thumbnail-grid .imce-folder-content .imce-item .imce-item-width::after{
+  content: " X ";
+}
+
+.thumbnail-grid .imce-folder-content .imce-item .imce-item-width{
+  display: inline-block;
+  float: left;
 }

@@ -34,7 +34,7 @@ class Delete extends ImcePluginBase {
    * {@inheritdoc}
    */
   public function buildPage(array &$page, ImceFM $fm) {
-    // Check if delete permission exists
+    // Check if delete permission exists.
     if ($fm->hasPermission('delete_files') || $fm->hasPermission('delete_subfolders')) {
       $page['#attached']['library'][] = 'imce/drupal.imce.delete';
     }
@@ -80,20 +80,21 @@ class Delete extends ImcePluginBase {
    * Deletes a file by uri.
    */
   public static function deleteFileUri($uri, $ignore_usage = FALSE) {
-    // Managed file
+    // Managed file.
     if ($file = Imce::getFileEntity($uri)) {
       if (!$ignore_usage && $usage = \Drupal::service('file.usage')->listUsage($file)) {
         unset($usage['imce']);
         if ($usage) {
-          drupal_set_message(t('%filename is in use by another application.', ['%filename' => $file->getFilename()]), 'error');
+          \Drupal::messenger()
+            ->addMessage(t('%filename is in use by another application.', ['%filename' => $file->getFilename()]), 'error');
           return FALSE;
         }
       }
       $file->delete();
       return TRUE;
     }
-    // Unmanaged file
-    return file_unmanaged_delete($uri);
+    // Unmanaged file.
+    return \Drupal::service('file_system')->delete($uri);
   }
 
   /**
@@ -106,7 +107,8 @@ class Delete extends ImcePluginBase {
       return FALSE;
     }
     if ($check_files && !empty($content['files'])) {
-      drupal_set_message(t('%folder contains files and can not be deleted.', ['%folder' => \Drupal::service('file_system')->basename($uri)]), 'error');
+      \Drupal::messenger()
+        ->addMessage(t('%folder contains files and can not be deleted.', ['%folder' => \Drupal::service('file_system')->basename($uri)]), 'error');
       return FALSE;
     }
     // Delete subfolders first.
@@ -121,11 +123,12 @@ class Delete extends ImcePluginBase {
         return FALSE;
       }
     }
-    // Recently emptied folders need some refreshing before the removal on windows.
+    // Recently emptied folders need some refreshing
+    // before the removal on windows.
     if (strncasecmp(PHP_OS, 'WIN', 3) == 0) {
       @closedir(@opendir($uri));
     }
-    // Remove the folder
+    // Remove the folder.
     return rmdir($uri);
   }
 

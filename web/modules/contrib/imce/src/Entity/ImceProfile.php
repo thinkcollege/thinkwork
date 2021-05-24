@@ -29,6 +29,12 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *     "edit-form" = "/admin/config/media/imce/{imce_profile}",
  *     "delete-form" = "/admin/config/media/imce/{imce_profile}/delete",
  *     "duplicate-form" = "/admin/config/media/imce/{imce_profile}/duplicate"
+ *   },
+ *   config_export = {
+ *     "id",
+ *     "label",
+ *     "description",
+ *     "conf"
  *   }
  * )
  */

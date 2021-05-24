@@ -37,7 +37,8 @@ class ImceProfileDeleteForm extends EntityConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->entity->delete();
-    drupal_set_message($this->t('Profile %name has been deleted.', ['%name' => $this->entity->label()]));
+    $this->messenger()
+      ->addMessage($this->t('Profile %name has been deleted.', ['%name' => $this->entity->label()]));
     $form_state->setRedirectUrl($this->getCancelUrl());
   }
 

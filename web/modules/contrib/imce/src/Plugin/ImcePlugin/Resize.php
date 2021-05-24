@@ -32,7 +32,7 @@ class Resize extends ImcePluginBase {
    * {@inheritdoc}
    */
   public function buildPage(array &$page, ImceFM $fm) {
-    // Check if resize permission exists
+    // Check if resize permission exists.
     if ($fm->hasPermission('resize_images')) {
       $page['#attached']['library'][] = 'imce/drupal.imce.resize';
     }
@@ -68,7 +68,7 @@ class Resize extends ImcePluginBase {
     foreach ($items as $item) {
       $uri = $item->getUri();
       $image = $factory->get($uri);
-      // Check vallidity
+      // Check vallidity.
       if (!$image->isValid()) {
         continue;
       }
@@ -80,8 +80,8 @@ class Resize extends ImcePluginBase {
       if ($resize && !$image->resize($width, $height)) {
         continue;
       }
-      // Save
-      $destination = $copy ? file_create_filename($fs->basename($uri), $fs->dirname($uri)) : $uri;
+      // Save.
+      $destination = $copy ? $fs->createFilename($fs->basename($uri), $fs->dirname($uri)) : $uri;
       if (!$image->save($destination)) {
         continue;
       }
@@ -97,14 +97,14 @@ class Resize extends ImcePluginBase {
           'filemime' => $image->getMimeType(),
         ];
         $file = \Drupal::entityTypeManager()->getStorage('file')->create($values);
-        // Check quota
+        // Check quota.
         if ($errors = file_validate_size($file, 0, $fm->getConf('quota'))) {
-          file_unmanaged_delete($destination);
+          $fs->delete($destination);
           $fm->setMessage($errors[0]);
         }
         else {
           $file->save();
-          // Add imce item
+          // Add imce item.
           $item->parent->addFile($filename)->addToJs();
         }
       }
@@ -114,7 +114,7 @@ class Resize extends ImcePluginBase {
           $file->setSize($image->getFileSize());
           $file->save();
         }
-        // Add to js
+        // Add to js.
         $item->addToJs();
       }
       $success[] = $item;

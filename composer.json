@@ -48,7 +48,7 @@
         "drupal/google_analytics": "^2.3",
         "drupal/google_tag": "^1.1",
         "drupal/htmlawed": "^3.6",
-        "drupal/imce": "^1.7",
+        "drupal/imce": "^2.4",
         "drupal/mailgun": "^1.0@beta",
         "drupal/mailsystem": "^4.1",
         "drupal/markdown": "^1.2",

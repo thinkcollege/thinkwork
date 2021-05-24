@@ -5,30 +5,31 @@
    * @file
    * Defines Imce plugin for CKEditor.
    */
-
-  CKEDITOR.plugins.add('imce', {
-    // Define commands and buttons
-    init: function (editor) {
-      // Image
-      editor.addCommand('imceimage', {
-        exec: CKEDITOR.imce.imageDialog
-      });
-      editor.ui.addButton('ImceImage', {
-        label: CKEDITOR.imce.imageLabel(),
-        command: 'imceimage',
-        icon: editor.config.ImceImageIcon
-      });
-      // Link
-      editor.addCommand('imcelink', {
-        exec: CKEDITOR.imce.linkDialog
-      });
-      editor.ui.addButton('ImceLink', {
-        label: CKEDITOR.imce.linkLabel(),
-        command: 'imcelink',
-        icon: editor.config.ImceLinkIcon
-      });
-    }
-  });
+  if (!CKEDITOR.imce) {
+    CKEDITOR.plugins.add('imce', {
+      // Define commands and buttons
+      init: function (editor, context) {
+        // Image
+        editor.addCommand('imceimage', {
+          exec: CKEDITOR.imce.imageDialog
+        });
+        editor.ui.addButton('ImceImage', {
+          label: CKEDITOR.imce.imageLabel(),
+          command: 'imceimage',
+          icon: editor.config.ImceImageIcon
+        });
+        // Link
+        editor.addCommand('imcelink', {
+          exec: CKEDITOR.imce.linkDialog
+        });
+        editor.ui.addButton('ImceLink', {
+          label: CKEDITOR.imce.linkLabel(),
+          command: 'imcelink',
+          icon: editor.config.ImceLinkIcon
+        });
+      }
+    });
+  }
 
   /**
    * Global container for helper methods.
@@ -79,12 +80,16 @@
     sendto: function (File, win) {
       var imce = win.imce;
       var editor = CKEDITOR.instances[imce.getQuery('ck_id')];
-      if (editor) {
+      if (!editor) {
+        win.close();
+        return;
+      }
+      var selection = imce.getSelection();
+      var is_img = imce.getQuery('type') === 'image';
+      var process = function() {
         var i;
         var text;
         var lines = [];
-        var selection = imce.getSelection();
-        var is_img = imce.getQuery('type') === 'image';
         for (i in selection) {
           if (!imce.owns(selection, i)) {
             continue;
@@ -92,7 +97,7 @@
           File = selection[i];
           // Image
           if (is_img && File.isImageSource()) {
-            lines.push('<img src="' + File.getUrl() + '"' + (File.width ? ' width="' + File.width + '"' : '') + (File.height ? ' height="' + File.height + '"' : '') + ' alt="" />');
+            lines.push('<img src="' + File.getUrl() + '"' + (File.width ? ' width="' + File.width + '"' : '') + (File.height ? ' height="' + File.height + '"' : '') + ' data-entity-type="file" data-entity-uuid="' + (File.uuid || '') + '" alt="" />');
           }
           // Link
           else {
@@ -102,8 +107,15 @@
           }
         }
         editor.insertHtml(lines.join('<br />'));
+        win.close();
+      };
+      // Process after loading the uuids.
+      if (is_img) {
+        imce.loadItemUuids(selection, process);
       }
-      win.close();
+      else {
+        process();
+      }
     },
 
     /**
@@ -127,10 +139,10 @@
         var div = editor.document.createElement('div');
         div.append(range.cloneContents());
         html = div.getHtml();
-      } catch(err) {}
+      } catch (err) { }
       return html;
     }
- 
+
   };
 
 })(jQuery, Drupal, CKEDITOR);

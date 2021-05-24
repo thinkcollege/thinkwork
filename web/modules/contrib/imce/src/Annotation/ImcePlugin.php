@@ -7,7 +7,7 @@ use Drupal\Component\Annotation\Plugin;
 /**
  * Defines an ImcePlugin annotation object.
  *
- * Plugin Namespace: Plugin\ImcePlugin
+ * Plugin Namespace: Plugin\ImcePlugin.
  *
  * @see \Drupal\imce\ImcePluginBase
  *
@@ -25,9 +25,9 @@ class ImcePlugin extends Plugin {
   /**
    * Plugin label.
    *
-   * @ingroup plugin_translatable
-   *
    * @var \Drupal\Core\Annotation\Translation
+   *
+   * @ingroup plugin_translatable
    */
   public $label;
 

@@ -55,7 +55,7 @@ class ImcePluginManager extends DefaultPluginManager {
    */
   protected function findDefinitions() {
     $definitions = parent::findDefinitions();
-    // Sort definitions by weight
+    // Sort definitions by weight.
     uasort($definitions, ['Drupal\Component\Utility\SortArray', 'sortByWeightElement']);
     return $definitions;
   }
@@ -118,7 +118,13 @@ class ImcePluginManager extends DefaultPluginManager {
    * Returns folder permission definitions.
    */
   public function permissionInfo() {
-    return call_user_func_array('array_merge', array_filter($this->invokeAll('permissionInfo')));
+    $perms = [];
+    foreach ($this->invokeAll('permissionInfo') as $data) {
+      if ($data) {
+        $perms = array_merge($perms, $data);
+      }
+    }
+    return $perms;
   }
 
   /**
@@ -166,4 +172,5 @@ class ImcePluginManager extends DefaultPluginManager {
     // Indicate that the operation handler is not found.
     return FALSE;
   }
+
 }
