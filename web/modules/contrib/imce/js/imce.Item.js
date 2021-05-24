@@ -319,9 +319,25 @@
    */
   Item.onNameChange = function (oldname) {
     var Item = this;
-    Item.nameEl.innerHTML = Item.formatName();
+    var name = Item.formatName();
+    Item.nameEl.innerHTML = name;
+    Item.nameEl.title = name;
     if (Item.parent) {
       Item.parent.onItemNameChange(Item, oldname);
+    }
+  };
+
+  /**
+   * Thumbnail change handler.
+   */
+  Item.onThumbnailChange = function (oldval) {
+    if (this.thumbnail) {
+      this.iconEl.innerHTML = '<img src="' + this.thumbnail + '" alt="thumbnail">';
+      this.iconEl.className += ' imce-item-thumbnail';
+    }
+    else {
+      this.iconEl.innerHTML = '';
+      $(this.iconEl).removeClass('imce-item-thumbnail');
     }
   };
 
@@ -329,29 +345,36 @@
    * Size change handler.
    */
   Item.onSizeChange = function (oldval) {
-    this.sizeEl.innerHTML = this.formatSize();
+    var size = this.formatSize();
+    this.sizeEl.innerHTML = size;
+    this.sizeEl.title = size;
   };
 
   /**
    * Date change handler.
    */
   Item.onDateChange = function (oldval) {
-    this.dateEl.innerHTML = this.formatDate(true);
-    this.dateEl.title = this.formatDate();
+    var date = this.formatDate(true);
+    this.dateEl.innerHTML = date;
+    this.dateEl.title = date;
   };
 
   /**
    * Width change handler.
    */
   Item.onWidthChange = function (oldval) {
-    this.widthEl.innerHTML = this.formatWidth();
+    var width = this.formatWidth();
+    this.widthEl.innerHTML = width;
+    this.widthEl.title = width;
   };
 
   /**
    * Height change handler.
    */
   Item.onHeightChange = function (oldval) {
-    this.heightEl.innerHTML = this.formatHeight();
+    var height = this.formatHeight();
+    this.heightEl.innerHTML = height;
+    this.heightEl.title = height;
   };
 
 

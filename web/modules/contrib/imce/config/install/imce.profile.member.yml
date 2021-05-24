@@ -9,8 +9,11 @@ conf:
   maxwidth: 1024
   maxheight: 1024
   replace: 0
+  thumbnail_style: ''
+  thumbnail_grid_style: false
+  ignore_usage: false
   folders:
-    - 
+    -
       path: 'users/user[user:uid]'
       permissions:
         browse_files: true

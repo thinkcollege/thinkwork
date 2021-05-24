@@ -26,3 +26,10 @@ function imce_install() {
     $config->save(TRUE);
   }
 }
+
+/**
+ * Create image style for IMCE browser.
+ */
+function imce_update_8001() {
+  // Cancelled.
+}

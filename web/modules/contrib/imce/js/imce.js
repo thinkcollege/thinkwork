@@ -34,6 +34,7 @@
    * Initiate imce on document ready.
    */
   $(document).ready(function () {
+
     var settings = window.drupalSettings;
     var conf = settings && settings.imce;
     var body = document.body;
@@ -132,7 +133,7 @@
     el.onkeydown = imce.eFmKeydown;
     el.tabIndex = 0;
     // Toolbar
-    el.appendChild(imce.toolbarEl = createEl('<div id="imce-toolbar"></div>'));
+    el.appendChild(imce.toolbarEl = createEl('<div id="imce-toolbar" aria-label="Operations" role="toolbar"></div>'));
     // Body
     el.appendChild(imce.bodyEl = createEl('<div id="imce-body"></div>'));
     // Tree
@@ -149,6 +150,9 @@
     imce.bodyEl.appendChild(el);
     // Content
     el = imce.contentEl = createEl('<div id="imce-content"></div>');
+    if (imce.conf.thumbnail_grid_style) {
+      el.className = 'thumbnail-grid';
+    }
     el.onmousedown = imce.eContentMousedown;
     el.ontouchstart = imce.eContentTouchstart;
     el.onkeydown = imce.eContentKeydown;
@@ -358,6 +362,52 @@
     }
   };
 
+  /**
+   * Loads item uuids by ajax.
+   */
+  imce.loadItemUuids = function (items, callback) {
+    var i;
+    var Item;
+    var missing = [];
+    var loaded = [];
+    for (i in items) {
+      Item = items[i];
+      if (Item && Item.isFile) {
+        if (Item.uuid) {
+          loaded.push(Item);
+        }
+        else {
+          missing.push(Item);
+        }
+      }
+    }
+    // All loaded
+    if (!missing.length) {
+      if (callback) {
+        callback(loaded);
+      }
+      return loaded;
+    }
+    // Load missing uuids
+    return imce.ajaxItems('uuid', missing, {
+      customComplete: function(xhr, status) {
+        var path;
+        var Item;
+        var response = this.response;
+        if (response && response.uuids) {
+          for (path in response.uuids) {
+            if (Item = imce.getItem(path)) {
+              Item.uuid = response.uuids[path];
+              loaded.push(Item);
+            }
+          }
+        }
+        if (callback) {
+          callback(loaded);
+        }
+      }
+    });
+  };
 
   /**
    * Checks external application integration by URL parameters.
@@ -1297,7 +1347,9 @@
    * Default ajax error handler.
    */
   imce.ajaxError = function (xhr, status, e) {
-    imce.setMessage('<pre class="imce-ajax-error">' + Drupal.checkPlain(imce.ajaxErrorMessage(xhr, this.url)) + '</pre>');
+    if (status !== 'abort') {
+      imce.setMessage('<pre class="imce-ajax-error">' + Drupal.checkPlain(imce.ajaxErrorMessage(xhr, this.url)) + '</pre>');
+    }
   };
 
   /**

@@ -11,4 +11,5 @@ class ImceFile extends ImceItem {
    * {@inheritdoc}
    */
   public $type = 'file';
+
 }

@@ -46,4 +46,5 @@ abstract class ImcePluginBase extends PluginBase implements ImcePluginInterface 
    */
   public function buildPage(array &$page, ImceFM $fm) {
   }
+
 }

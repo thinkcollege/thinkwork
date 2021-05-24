@@ -22,7 +22,7 @@ class ImceFolder extends ImceItem {
   /**
    * Scan status.
    *
-   * @var boolean
+   * @var bool
    */
   public $scanned;
 
@@ -67,7 +67,7 @@ class ImceFolder extends ImceItem {
     if (isset($this->conf)) {
       return $this->conf;
     }
-    // Inherit parent conf
+    // Inherit parent conf.
     if ($parent = $this->parent) {
       if ($conf = $parent->getConf()) {
         if (Imce::permissionInFolderConf('browse_subfolders', $conf)) {
@@ -97,14 +97,14 @@ class ImceFolder extends ImceItem {
   public function setPath($path) {
     $oldpath = $this->path;
     if ($path !== $oldpath) {
-      // Remove oldpath references
+      // Remove oldpath references.
       if (isset($oldpath)) {
         unset($this->fm()->tree[$oldpath]);
         foreach ($this->subfolders as $name => $item) {
           $item->setPath(NULL);
         }
       }
-      // Add new path references
+      // Add new path references.
       $this->path = $path;
       if (isset($path)) {
         $this->fm()->tree[$path] = $this;
@@ -130,6 +130,7 @@ class ImceFolder extends ImceItem {
 
   /**
    * Returns an item by name.
+   *
    * Scans the folder if needed.
    */
   public function checkItem($name) {
@@ -248,7 +249,7 @@ class ImceFolder extends ImceItem {
       $subfolders = $this->subfolders;
       $this->subfolders = [];
       foreach ($content['subfolders'] as $name => $uri) {
-        // Check if previously created
+        // Check if previously created.
         if (isset($subfolders[$name]) && is_object($subfolders[$name])) {
           $this->subfolders[$name] = $this->items[$name] = $subfolders[$name];
         }
