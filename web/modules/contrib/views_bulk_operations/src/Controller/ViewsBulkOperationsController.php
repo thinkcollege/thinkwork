@@ -8,6 +8,7 @@ use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\views_bulk_operations\Form\ViewsBulkOperationsFormTrait;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Drupal\views_bulk_operations\Service\ViewsBulkOperationsActionProcessorInterface;
+use Drupal\Core\Render\RendererInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,9 +22,9 @@ class ViewsBulkOperationsController extends ControllerBase implements ContainerI
   use ViewsBulkOperationsFormTrait;
 
   /**
-   * User private temporary storage factory.
+   * The tempstore service.
    *
-   * @var \Drupal\user\PrivateTempStoreFactory
+   * @var \Drupal\Core\TempStore\PrivateTempStoreFactory
    */
   protected $tempStoreFactory;
 
@@ -35,19 +36,30 @@ class ViewsBulkOperationsController extends ControllerBase implements ContainerI
   protected $actionProcessor;
 
   /**
+   * The Renderer service object.
+   *
+   * @var \Drupal\Core\Render\RendererInterface
+   */
+  protected $renderer;
+
+  /**
    * Constructs a new controller object.
    *
    * @param \Drupal\Core\TempStore\PrivateTempStoreFactory $tempStoreFactory
    *   Private temporary storage factory.
    * @param \Drupal\views_bulk_operations\Service\ViewsBulkOperationsActionProcessorInterface $actionProcessor
    *   Views Bulk Operations action processor.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   The Renderer service object.
    */
   public function __construct(
     PrivateTempStoreFactory $tempStoreFactory,
-    ViewsBulkOperationsActionProcessorInterface $actionProcessor
+    ViewsBulkOperationsActionProcessorInterface $actionProcessor,
+    RendererInterface $renderer
   ) {
     $this->tempStoreFactory = $tempStoreFactory;
     $this->actionProcessor = $actionProcessor;
+    $this->renderer = $renderer;
   }
 
   /**
@@ -56,7 +68,8 @@ class ViewsBulkOperationsController extends ControllerBase implements ContainerI
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('tempstore.private'),
-      $container->get('views_bulk_operations.processor')
+      $container->get('views_bulk_operations.processor'),
+      $container->get('renderer')
     );
   }
 
@@ -95,36 +108,65 @@ class ViewsBulkOperationsController extends ControllerBase implements ContainerI
    *   The request object.
    */
   public function updateSelection($view_id, $display_id, Request $request) {
-    $view_data = $this->getTempstoreData($view_id, $display_id);
-    if (empty($view_data)) {
+    $response = [];
+    $tempstore_data = $this->getTempstoreData($view_id, $display_id);
+    if (empty($tempstore_data)) {
       throw new NotFoundHttpException();
     }
 
     $list = $request->request->get('list');
 
-    $op = $request->request->get('op', 'add');
-    $change = 0;
+    $op = $request->request->get('op', 'check');
+    // Reverse operation when in exclude mode.
+    if (!empty($tempstore_data['exclude_mode'])) {
+      if ($op === 'add') {
+        $op = 'remove';
+      }
+      elseif ($op === 'remove') {
+        $op = 'add';
+      }
+    }
 
-    if ($op === 'add') {
-      foreach ($list as $bulkFormKey => $label) {
-        if (!isset($view_data['list'][$bulkFormKey])) {
-          $view_data['list'][$bulkFormKey] = $this->getListItem($bulkFormKey, $label);
-          $change++;
+    switch ($op) {
+      case 'add':
+        foreach ($list as $bulkFormKey) {
+          if (!isset($tempstore_data['list'][$bulkFormKey])) {
+            $tempstore_data['list'][$bulkFormKey] = $this->getListItem($bulkFormKey);
+          }
         }
-      }
-    }
-    elseif ($op === 'remove') {
-      foreach ($list as $bulkFormKey => $label) {
-        if (isset($view_data['list'][$bulkFormKey])) {
-          unset($view_data['list'][$bulkFormKey]);
-          $change--;
+        break;
+
+      case 'remove':
+        foreach ($list as $bulkFormKey) {
+          if (isset($tempstore_data['list'][$bulkFormKey])) {
+            unset($tempstore_data['list'][$bulkFormKey]);
+          }
         }
-      }
+        break;
+
+      case 'method_include':
+        unset($tempstore_data['exclude_mode']);
+        $tempstore_data['list'] = [];
+        break;
+
+      case 'method_exclude':
+        $tempstore_data['exclude_mode'] = TRUE;
+        $tempstore_data['list'] = [];
+        break;
     }
-    $this->setTempstoreData($view_data);
+
+    $this->setTempstoreData($tempstore_data);
+
+    $count = empty($tempstore_data['exclude_mode']) ? count($tempstore_data['list']) : $tempstore_data['total_results'] - count($tempstore_data['list']);
+
+    $selection_info_renderable = $this->getMultipageList($tempstore_data);
+    $response_data = [
+      'count' => $count,
+      'selection_info' => $this->renderer->renderRoot($selection_info_renderable),
+    ];
 
     $response = new AjaxResponse();
-    $response->setData(['change' => $change]);
+    $response->setData($response_data);
     return $response;
   }
 

@@ -67,6 +67,7 @@ class ViewsBulkOperationsBatchTest extends UnitTestCase {
       'list' => [[0, 'en', 'node', 1]],
       'some_data' => [],
       'action_label' => '',
+      'finished_callback' => [TestViewsBulkOperationsBatch::class, 'finished'],
     ];
     $batch = TestViewsBulkOperationsBatch::getBatch($data);
     $this->assertArrayHasKey('title', $batch);
@@ -94,12 +95,12 @@ class ViewsBulkOperationsBatchTest extends UnitTestCase {
       ->with('test_view')
       ->will($this->returnValue($view));
 
-    $entity_manager = $this->getMock('Drupal\Core\Entity\EntityManagerInterface');
-    $entity_manager->expects($this->any())
+    $entity_type_manager = $this->createMock('Drupal\Core\Entity\EntityTypeManagerInterface');
+    $entity_type_manager->expects($this->any())
       ->method('getStorage')
       ->with('view')
       ->will($this->returnValue($view_storage));
-    $this->container->set('entity.manager', $entity_manager);
+    $this->container->set('entity_type.manager', $entity_type_manager);
 
     $executable = $this->getMockBuilder('Drupal\views\ViewExecutable')
       ->disableOriginalConstructor()
@@ -128,11 +129,14 @@ class ViewsBulkOperationsBatchTest extends UnitTestCase {
       'display_id' => 'test_display',
       'batch_size' => $batch_size,
       'list' => [],
+      'finished_callback' => [TestViewsBulkOperationsBatch::class, 'finished'],
     ];
     $context = [
       'sandbox' => [
         'processed' => 0,
         'total' => $entities_count,
+        'page' => 0,
+        'npages' => ceil($entities_count / $batch_size),
       ],
     ];
 

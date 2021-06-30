@@ -40,7 +40,7 @@ class ViewsBulkOperationExampleAction extends ViewsBulkOperationsActionBase impl
 
     // Do some processing..
     // ...
-    drupal_set_message($entity->label());
+    $this->messenger()->addMessage($entity->label() . ' - ' . $entity->language()->getId() . ' - ' . $entity->id());
     return sprintf('Example action (configuration: %s)', print_r($this->configuration, TRUE));
   }
 
@@ -83,7 +83,7 @@ class ViewsBulkOperationExampleAction extends ViewsBulkOperationsActionBase impl
    * Submit handler for the action configuration form.
    *
    * If not implemented, the cleaned form values will be
-   * passed direclty to the action $configuration parameter.
+   * passed directly to the action $configuration parameter.
    *
    * @param array $form
    *   Form array.

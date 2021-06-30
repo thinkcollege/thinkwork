@@ -2,10 +2,11 @@
 
 namespace Drupal\views_bulk_operations\Action;
 
+use Drupal\Component\Plugin\ConfigurableInterface;
 use Drupal\Core\Action\ActionBase;
-use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\views\ViewExecutable;
+use Drupal\Core\Session\AccountInterface;
 
 /**
  * Views Bulk Operations action plugin base.
@@ -13,7 +14,9 @@ use Drupal\views\ViewExecutable;
  * Provides a base implementation for a configurable
  * and preconfigurable VBO Action plugin.
  */
-abstract class ViewsBulkOperationsActionBase extends ActionBase implements ViewsBulkOperationsActionInterface, ConfigurablePluginInterface {
+abstract class ViewsBulkOperationsActionBase extends ActionBase implements ViewsBulkOperationsActionInterface, ConfigurableInterface {
+
+  use ViewsBulkOperationsActionCompletedTrait;
 
   /**
    * Action context.
@@ -124,10 +127,18 @@ abstract class ViewsBulkOperationsActionBase extends ActionBase implements Views
   }
 
   /**
-   * {@inheritdoc}
+   * Default custom access callback.
+   *
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The user the access check needs to be preformed against.
+   * @param \Drupal\views\ViewExecutable $view
+   *   The View Bulk Operations view data.
+   *
+   * @return bool
+   *   Has access.
    */
-  public function calculateDependencies() {
-    return [];
+  public static function customAccess(AccountInterface $account, ViewExecutable $view) {
+    return TRUE;
   }
 
 }

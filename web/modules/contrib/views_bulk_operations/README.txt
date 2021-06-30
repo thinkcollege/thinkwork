@@ -41,9 +41,12 @@ Available annotation parameters:
     no confirmation step (default: empty string).
   - requirements: an array of requirements an action must meet
     to be displayed on the action selection form. At the moment
-    only one possible requirement is supported: '_permission', if
-    the current user has that permission, the action execution will
-    be possible.
+    two possible requirements are supported:
+    - '_permission', if the current user has that permission, the action
+      execution will be possible.
+    - '_custom_access', checks if the output of `customAccess` method from
+      the action class is TRUE (default implementation included in
+      ViewsBulkOperationsActionBase).
 
 
 Additional notes

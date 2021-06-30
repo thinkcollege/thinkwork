@@ -18,6 +18,17 @@ interface ViewsBulkOperationsActionProcessorInterface {
   public function initialize(array $view_data, $view = NULL);
 
   /**
+   * Get the current processing entity queue.
+   *
+   * @param array $view_data
+   *   Data concerning the view that will be processed.
+   *
+   * @return array
+   *   Array of entity labels.
+   */
+  public function getLabels(array $view_data);
+
+  /**
    * Get full list of items from a specific view page.
    *
    * @param int $page
@@ -31,12 +42,12 @@ interface ViewsBulkOperationsActionProcessorInterface {
   /**
    * Populate entity queue for processing.
    *
-   * @param array $list
-   *   Array of selected view results.
+   * @param array $data
+   *   Data concerning the view that will be processed.
    * @param array $context
    *   Batch API context.
    */
-  public function populateQueue(array $list, array &$context = []);
+  public function populateQueue(array $data, array &$context = []);
 
   /**
    * Process results.

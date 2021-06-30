@@ -61,10 +61,13 @@ interface ViewsBulkOperationsViewDataInterface {
   /**
    * Get the total count of results on all pages.
    *
+   * @param bool $clear_on_exposed
+   *   Are we clearing selection on exposed filters change?
+   *
    * @return int
    *   The total number of results this view displays.
    */
-  public function getTotalResults();
+  public function getTotalResults($clear_on_exposed);
 
   /**
    * The default entity getter function.

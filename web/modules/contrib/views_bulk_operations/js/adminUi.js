@@ -22,22 +22,6 @@
   Drupal.viewsBulkOperationsUi = function () {
     var uiElement = $(this);
 
-    // Show / hide actions' preliminary configuration.
-    uiElement.find('.vbo-action-state').each(function () {
-      var matches = $(this).attr('name').match(/.*\[.*?\]\[(.*?)\]\[.*?\]/);
-      if (typeof (matches[1]) != 'undefined') {
-        var preconfigurationElement = uiElement.find('*[data-for="' + matches[1] + '"]');
-        $(this).change(function (event) {
-          if ($(this).is(':checked')) {
-            preconfigurationElement.show('fast');
-          }
-          else {
-            preconfigurationElement.hide('fast');
-          }
-        });
-      }
-    });
-
     // Select / deselect all functionality.
     var actionsElementWrapper = uiElement.find('details.vbo-actions-widget > .details-wrapper');
     if (actionsElementWrapper.length) {
