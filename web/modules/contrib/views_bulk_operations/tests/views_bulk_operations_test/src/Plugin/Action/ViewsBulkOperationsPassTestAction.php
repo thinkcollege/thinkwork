@@ -2,6 +2,7 @@
 
 namespace Drupal\views_bulk_operations_test\Plugin\Action;
 
+use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\views_bulk_operations\Action\ViewsBulkOperationsActionBase;
 use Drupal\Core\Session\AccountInterface;
 
@@ -15,13 +16,14 @@ use Drupal\Core\Session\AccountInterface;
  * )
  */
 class ViewsBulkOperationsPassTestAction extends ViewsBulkOperationsActionBase {
+  use MessengerTrait;
 
   /**
    * {@inheritdoc}
    */
   public function executeMultiple(array $nodes) {
     if (!empty($this->context['sandbox'])) {
-      drupal_set_message(sprintf(
+      $this->messenger()->addMessage(sprintf(
         'Processed %s of %s.',
         $this->context['sandbox']['processed'],
         $this->context['sandbox']['total']
@@ -49,7 +51,7 @@ class ViewsBulkOperationsPassTestAction extends ViewsBulkOperationsActionBase {
     // On last batch display message if passed rows match.
     if ($processed + $batch_size >= $total) {
       if (empty($this->context['sandbox']['result_pass_error'])) {
-        drupal_set_message('Passed view results match the entity queue.');
+        $this->messenger()->addMessage('Passed view results match the entity queue.');
       }
     }
   }

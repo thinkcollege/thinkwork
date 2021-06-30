@@ -3949,18 +3949,18 @@
     },
     {
         "name": "drupal/ctools",
-        "version": "3.6.0",
-        "version_normalized": "3.6.0.0",
+        "version": "3.7.0",
+        "version_normalized": "3.7.0.0",
         "source": {
             "type": "git",
             "url": "https://git.drupalcode.org/project/ctools.git",
-            "reference": "8.x-3.6"
+            "reference": "8.x-3.7"
         },
         "dist": {
             "type": "zip",
-            "url": "https://ftp.drupal.org/files/projects/ctools-8.x-3.6.zip",
-            "reference": "8.x-3.6",
-            "shasum": "9a849bb6ac9f4d02603d04b3265b35b7329e1ef5"
+            "url": "https://ftp.drupal.org/files/projects/ctools-8.x-3.7.zip",
+            "reference": "8.x-3.7",
+            "shasum": "b11c0981a1d2ab3cc9e8e614a337d8e2a2a70c0e"
         },
         "require": {
             "drupal/core": "^8.8 || ^9"
@@ -3968,8 +3968,8 @@
         "type": "drupal-module",
         "extra": {
             "drupal": {
-                "version": "8.x-3.6",
-                "datestamp": "1620838181",
+                "version": "8.x-3.7",
+                "datestamp": "1623860918",
                 "security-coverage": {
                     "status": "covered",
                     "message": "Covered by Drupal's security advisory policy"
@@ -6700,45 +6700,48 @@
     },
     {
         "name": "drupal/views_bulk_operations",
-        "version": "2.6.0",
-        "version_normalized": "2.6.0.0",
+        "version": "4.0.0-rc1",
+        "version_normalized": "4.0.0.0-RC1",
         "source": {
             "type": "git",
             "url": "https://git.drupalcode.org/project/views_bulk_operations.git",
-            "reference": "8.x-2.6"
+            "reference": "4.0.0-rc1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://ftp.drupal.org/files/projects/views_bulk_operations-8.x-2.6.zip",
-            "reference": "8.x-2.6",
-            "shasum": "517b671adb55c3ad023032607d360dab77db9f22"
+            "url": "https://ftp.drupal.org/files/projects/views_bulk_operations-4.0.0-rc1.zip",
+            "reference": "4.0.0-rc1",
+            "shasum": "c2fb20cf514db6605c92783df2cd1ad805790289"
         },
         "require": {
-            "drupal/core": "~8.5"
+            "drupal/core": "^8.8 || ^9"
+        },
+        "require-dev": {
+            "drush/drush": "^10"
+        },
+        "suggest": {
+            "drush/drush": "^9 || ^10"
         },
         "type": "drupal-module",
         "extra": {
-            "branch-alias": {
-                "dev-2.x": "2.x-dev"
-            },
             "drupal": {
-                "version": "8.x-2.6",
-                "datestamp": "1580924749",
+                "version": "4.0.0-rc1",
+                "datestamp": "1623752381",
                 "security-coverage": {
-                    "status": "covered",
-                    "message": "Covered by Drupal's security advisory policy"
+                    "status": "not-covered",
+                    "message": "RC releases are not covered by Drupal security advisories."
                 }
             },
             "drush": {
                 "services": {
-                    "drush.services.yml": "^9"
+                    "drush.services.yml": "^9 || ^10"
                 }
             }
         },
         "installation-source": "dist",
         "notification-url": "https://packages.drupal.org/8/downloads",
         "license": [
-            "GPL-2.0+"
+            "GPL-2.0-or-later"
         ],
         "authors": [
             {
@@ -6765,7 +6768,7 @@
         "description": "Adds an ability to perform bulk operations on selected entities from view results. Provides an API to create such operations.",
         "homepage": "https://www.drupal.org/project/views_bulk_operations",
         "support": {
-            "source": "https://git.drupalcode.org/project/views_bulk_operations",
+            "source": "https://git.drupalcode.org/project/views_bulk_operations/-/tree/8.x-3.x",
             "issues": "https://www.drupal.org/project/issues/views_bulk_operations?version=8.x",
             "docs": "https://www.drupal.org/docs/8/modules/views-bulk-operations-vbo"
         }

@@ -3,6 +3,7 @@
 namespace Drupal\views_bulk_operations\Service;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
 use Drupal\views\Views;
@@ -23,6 +24,13 @@ class ViewsBulkOperationsViewData implements ViewsBulkOperationsViewDataInterfac
   protected $eventDispatcher;
 
   /**
+   * Pager manager service.
+   *
+   * @var \Drupal\Core\Pager\PagerManagerInterface
+   */
+  protected $pagerManager;
+
+  /**
    * The current view.
    *
    * @var \Drupal\views\ViewExecutable
@@ -30,7 +38,7 @@ class ViewsBulkOperationsViewData implements ViewsBulkOperationsViewDataInterfac
   protected $view;
 
   /**
-   * The realtionship ID.
+   * The relationship ID.
    *
    * @var string
    */
@@ -62,9 +70,15 @@ class ViewsBulkOperationsViewData implements ViewsBulkOperationsViewDataInterfac
    *
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
    *   The event dispatcher service.
+   * @param \Drupal\Core\Pager\PagerManagerInterface $pagerManager
+   *   Pager manager service.
    */
-  public function __construct(EventDispatcherInterface $eventDispatcher) {
+  public function __construct(
+    EventDispatcherInterface $eventDispatcher,
+    PagerManagerInterface $pagerManager
+  ) {
     $this->eventDispatcher = $eventDispatcher;
+    $this->pagerManager = $pagerManager;
   }
 
   /**
@@ -162,16 +176,52 @@ class ViewsBulkOperationsViewData implements ViewsBulkOperationsViewDataInterfac
   /**
    * Get the total count of results on all pages.
    *
+   * @param bool $clear_on_exposed
+   *   Are we clearing selection on exposed filters change?
+   *
    * @return int
    *   The total number of results this view displays.
    */
-  public function getTotalResults() {
+  public function getTotalResults($clear_on_exposed = FALSE) {
     $total_results = NULL;
-    if (!empty($this->view->pager->total_items)) {
-      $total_results = $this->view->pager->total_items;
+
+    if (!$clear_on_exposed && !empty($this->view->getExposedInput())) {
+      if ($pager = $this->view->getPager()) {
+        $pager_options = $pager->options;
+        $pager_options['total_items'] = $pager->getTotalItems();
+      }
+
+      // Execute the view without exposed input set.
+      $view = Views::getView($this->view->id());
+      $view->setDisplay($this->view->current_display);
+      // If there are any arguments, pass them through.
+      if (!empty($this->view->args)) {
+        $view->setArguments($this->view->args);
+      }
+      $view->get_total_rows = TRUE;
+
+      // We have to set exposed input to some value here, empty
+      // value will be overwritten with query params by Views so
+      // setting an empty array wouldn't work.
+      $pager = $view->getPager();
+      $view->setExposedInput(['_views_bulk_operations_override' => TRUE]);
     }
-    elseif (!empty($this->view->total_rows)) {
-      $total_results = $this->view->total_rows;
+    else {
+      $view = $this->view;
+    }
+
+    // Execute the view if not already executed.
+    $view->execute();
+
+    if (!empty($view->pager->total_items)) {
+      $total_results = $view->pager->total_items;
+    }
+    elseif (!empty($view->total_rows)) {
+      $total_results = $view->total_rows;
+    }
+
+    if (!empty($pager_options) && !empty($pager_options['id'])) {
+      $this->pagerManager->createPager($pager_options['total_items'], $pager_options['items_per_page'], $pager_options['id']);
     }
 
     return $total_results;
@@ -191,6 +241,10 @@ class ViewsBulkOperationsViewData implements ViewsBulkOperationsViewDataInterfac
     }
     else {
       throw new \Exception('Unexpected view result row structure.');
+    }
+
+    if (empty($entity)) {
+      return;
     }
 
     if ($entity instanceof TranslatableInterface && $entity->isTranslatable()) {

@@ -2,12 +2,14 @@
 
 namespace Drupal\views_bulk_operations_test\Plugin\Action;
 
+use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\views_bulk_operations\Action\ViewsBulkOperationsActionBase;
 use Drupal\views_bulk_operations\Action\ViewsBulkOperationsPreconfigurationInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\views\ViewExecutable;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Action for test purposes only.
@@ -23,6 +25,7 @@ use Drupal\views\ViewExecutable;
  * )
  */
 class ViewsBulkOperationsAdvancedTestAction extends ViewsBulkOperationsActionBase implements ViewsBulkOperationsPreconfigurationInterface, PluginFormInterface {
+  use MessengerTrait;
 
   /**
    * {@inheritdoc}
@@ -38,7 +41,7 @@ class ViewsBulkOperationsAdvancedTestAction extends ViewsBulkOperationsActionBas
       throw new \Exception('Context array empty in action object.');
     }
 
-    drupal_set_message(sprintf('Test action (preconfig: %s, config: %s, label: %s)',
+    $this->messenger()->addMessage(sprintf('Test action (preconfig: %s, config: %s, label: %s)',
       $this->configuration['test_preconfig'],
       $this->configuration['test_config'],
       $entity->label()
@@ -49,7 +52,7 @@ class ViewsBulkOperationsAdvancedTestAction extends ViewsBulkOperationsActionBas
       if (!$entity->isDefaultTranslation()) {
         $entity = \Drupal::service('entity_type.manager')->getStorage('node')->load($entity->id());
       }
-      $entity->setPublished(FALSE);
+      $entity->setUnpublished();
       $entity->save();
     }
 
@@ -81,7 +84,7 @@ class ViewsBulkOperationsAdvancedTestAction extends ViewsBulkOperationsActionBas
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form['test_config'] = [
-      '#title' => t('Config'),
+      '#title' => $this->t('Config'),
       '#type' => 'textfield',
       '#default_value' => $form_state->getValue('config'),
     ];
@@ -93,6 +96,24 @@ class ViewsBulkOperationsAdvancedTestAction extends ViewsBulkOperationsActionBas
    */
   public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
     return $object->access('update', $account, $return_as_object);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function finished($success, array $results, array $operations): ?RedirectResponse {
+    // Let's return a bit different message. We don't except faliures
+    // in tests as well so no need to check for a success.
+    $operations = array_count_values($results['operations']);
+    $details = [];
+    foreach ($operations as $op => $count) {
+      $details[] = $op . ' (' . $count . ')';
+    }
+    $message = static::translate('Custom processing message: @operations.', [
+      '@operations' => implode(', ', $details),
+    ]);
+    static::message($message);
+    return NULL;
   }
 
 }

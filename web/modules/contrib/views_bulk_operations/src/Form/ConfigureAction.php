@@ -17,7 +17,7 @@ class ConfigureAction extends FormBase {
   use ViewsBulkOperationsFormTrait;
 
   /**
-   * User private temporary storage factory.
+   * The tempstore service.
    *
    * @var \Drupal\Core\TempStore\PrivateTempStoreFactory
    */
@@ -82,30 +82,18 @@ class ConfigureAction extends FormBase {
 
     $form_data = $this->getFormData($view_id, $display_id);
 
-    // TODO: display an error msg, redirect back.
     if (!isset($form_data['action_id'])) {
-      return;
+      return [
+        '#markup' => $this->t('No items selected. Go back and try again.'),
+      ];
     }
 
     $form['#title'] = $this->t('Configure "%action" action applied to the selection', ['%action' => $form_data['action_label']]);
 
-    $selection = [];
-    if (!empty($form_data['entity_labels'])) {
-      $form['list'] = [
-        '#theme' => 'item_list',
-        '#items' => $form_data['entity_labels'],
-      ];
-    }
-    else {
-      $form['list'] = [
-        '#type' => 'item',
-        '#markup' => $this->t('All view results'),
-      ];
-    }
-    $form['list']['#title'] = $this->t('Selected @count entities:', ['@count' => $form_data['selected_count']]);
+    $form['list'] = $this->getListRenderable($form_data);
 
     // :D Make sure the submit button is at the bottom of the form
-    // and is editale from the action buildConfigurationForm method.
+    // and is editable from the action buildConfigurationForm method.
     $form['actions']['#weight'] = 666;
     $form['actions']['submit'] = [
       '#type' => 'submit',
@@ -156,12 +144,11 @@ class ConfigureAction extends FormBase {
       $form_data['configuration'] = $form_state->getValues();
     }
 
-    $definition = $this->actionManager->getDefinition($form_data['action_id']);
-    if (!empty($definition['confirm_form_route_name'])) {
+    if (!empty($form_data['confirm_route'])) {
       // Update tempStore data.
       $this->setTempstoreData($form_data, $form_data['view_id'], $form_data['display_id']);
       // Go to the confirm route.
-      $form_state->setRedirect($definition['confirm_form_route_name'], [
+      $form_state->setRedirect($form_data['confirm_route'], [
         'view_id' => $form_data['view_id'],
         'display_id' => $form_data['display_id'],
       ]);

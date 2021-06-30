@@ -20,7 +20,7 @@ class ViewsBulkOperationsEventSubscriber implements EventSubscriberInterface {
   /**
    * Object that gets the current view data.
    *
-   * @var \Drupal\views_bulk_operations\ViewsBulkOperationsViewDataInterface
+   * @var \Drupal\views_bulk_operations\Service\ViewsbulkOperationsViewDataInterface
    */
   protected $viewData;
 

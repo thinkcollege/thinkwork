@@ -15,7 +15,7 @@ use Drupal\views\Views;
 class ViewsBulkOperationsAccess implements AccessInterface {
 
   /**
-   * Temporary user storage object.
+   * The tempstore service.
    *
    * @var \Drupal\Core\TempStore\PrivateTempStoreFactory
    */

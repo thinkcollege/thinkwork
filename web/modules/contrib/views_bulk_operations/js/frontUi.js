@@ -23,7 +23,7 @@
     view_id: '',
     display_id: '',
     list: {},
-    $placeholder: null,
+    $summary: null,
 
     /**
      * Bind event handlers to an element.
@@ -38,14 +38,14 @@
           if (event.which === 13) {
             event.preventDefault();
             event.stopPropagation();
-            selectionObject.update(this.checked, index, $(this).val());
+            selectionObject.update(!this.checked, index, $(this).val());
             $(this).trigger('click');
           }
           if (event.which === 32) {
-            selectionObject.update(this.checked, index, $(this).val());
+            selectionObject.update(!this.checked, index, $(this).val());
           }
         });
-        $element.on('mousedown', function (event) {
+        $element.on('click', function (event) {
           // Act only on left button click.
           if (event.which === 1) {
             selectionObject.update(this.checked, index, $(this).val());
@@ -58,6 +58,7 @@
      * Perform an AJAX request to update selection.
      *
      * @param {bool} state
+     * @param {mixed} index
      * @param {string} value
      */
     update: function (state, index, value) {
@@ -65,17 +66,29 @@
         value = null;
       }
       if (this.view_id.length && this.display_id.length) {
-        var list = {};
-        if (value && value != 'on') {
-          list[value] = this.list[index][value];
+        // TODO: prevent form submission when ajaxing.
+
+        var list = {}, op = '';
+        if (index === 'selection_method_change') {
+          var op = state ? 'method_exclude' : 'method_include';
+          if (state) {
+            list = this.list[index];
+          }
         }
         else {
-          list = this.list[index];
+          if (value && value != 'on') {
+            list[value] = this.list[index][value];
+          }
+          else {
+            list = this.list[index];
+          }
+          op = state ? 'add' : 'remove';
         }
-        var op = state ? 'remove' : 'add';
 
-        var $placeholder = this.$placeholder;
-        var target_uri = '/' + drupalSettings.path.pathPrefix + 'views-bulk-operations/ajax/' + this.view_id + '/' + this.display_id;
+        var $summary = this.$summary;
+        var $selectionInfo = this.$selectionInfo;
+        var target_uri = drupalSettings.path.baseUrl + drupalSettings.path.pathPrefix + 'views-bulk-operations/ajax/' + this.view_id + '/' + this.display_id;
+
         $.ajax(target_uri, {
           method: 'POST',
           data: {
@@ -83,9 +96,8 @@
             op: op
           },
           success: function (data) {
-            var count = parseInt($placeholder.text());
-            count += data.change;
-            $placeholder.text(count);
+            $selectionInfo.html(data.selection_info);
+            $summary.text(Drupal.formatPlural(data.count, 'Selected 1 item in this view', 'Selected @count items in this view'));
           }
         });
       }
@@ -109,13 +121,15 @@
       var $tableSelectAll = $(tableSelectAll);
     }
 
-    // Add AJAX functionality to table checkboxes.
+    // Add AJAX functionality to row selector checkboxes.
     var $multiSelectElement = $vboForm.find('.vbo-multipage-selector').first();
     if ($multiSelectElement.length) {
 
-      Drupal.viewsBulkOperationsSelection.$placeholder = $multiSelectElement.find('.placeholder').first();
+      Drupal.viewsBulkOperationsSelection.$selectionInfo = $multiSelectElement.find('.vbo-info-list-wrapper').first();
+      Drupal.viewsBulkOperationsSelection.$summary = $multiSelectElement.find('summary').first();
       Drupal.viewsBulkOperationsSelection.view_id = $multiSelectElement.attr('data-view-id');
       Drupal.viewsBulkOperationsSelection.display_id = $multiSelectElement.attr('data-display-id');
+      Drupal.viewsBulkOperationsSelection.vbo_form = $vboForm;
 
       // Get the list of all checkbox values and add AJAX callback.
       Drupal.viewsBulkOperationsSelection.list = [];
@@ -135,7 +149,7 @@
         $contentWrapper.find('.views-field-views-bulk-operations-bulk-form input[type="checkbox"]').each(function () {
           var value = $(this).val();
           if (value != 'on') {
-            Drupal.viewsBulkOperationsSelection.list[index][value] = $(this).parent().find('label').first().text();
+            Drupal.viewsBulkOperationsSelection.list[index][value] = value;
             Drupal.viewsBulkOperationsSelection.bindEventHandlers($(this), index);
           }
         });
@@ -149,85 +163,36 @@
 
     // Initialize all selector if the primary select all and
     // view table elements exist.
-    if ($primarySelectAll.length && $viewsTables.length) {
-      var strings = {
-        selectAll: $('label', $primarySelectAll.parent()).html(),
-        selectRegular: Drupal.t('Select only items on this page')
-      };
+    if ($primarySelectAll.length) {
+      $primarySelectAll.on('change', function (event) {
+        var value = this.checked;
 
-      $primarySelectAll.parent().hide();
-
-      if ($viewsTables.length == 1) {
-        var colspan = $('thead th', $viewsTables.first()).length;
-        var $allSelector = $('<tr class="views-table-row-vbo-select-all even" style="display: none"><td colspan="' + colspan + '"><div><input type="submit" class="form-submit" value="' + strings.selectAll + '"></div></td></tr>');
-        $('tbody', $viewsTables.first()).prepend($allSelector);
-      }
-      else {
-        var $allSelector = $('<div class="views-table-row-vbo-select-all" style="display: none"><div><input type="submit" class="form-submit" value="' + strings.selectAll + '"></div></div>');
-        $($viewsTables.first()).before($allSelector);
-      }
-
-      if ($primarySelectAll.is(':checked')) {
-        $('input', $allSelector).val(strings.selectRegular);
-        $allSelector.show();
-      }
-      else {
-        var show_all_selector = true;
-        $tableSelectAll.each(function () {
-          if (!$(this).is(':checked')) {
-            show_all_selector = false;
-          }
-        });
-        if (show_all_selector) {
-          $allSelector.show();
-        }
-      }
-
-      $('input', $allSelector).on('click', function (event) {
-        event.preventDefault();
-        if ($primarySelectAll.is(':checked')) {
-          $multiSelectElement.show('fast');
-          $primarySelectAll.prop('checked', false);
-          $allSelector.removeClass('all-selected');
-          $(this).val(strings.selectAll);
-        }
-        else {
-          $multiSelectElement.hide('fast');
-          $primarySelectAll.prop('checked', true);
-          $allSelector.addClass('all-selected');
-          $(this).val(strings.selectRegular);
-        }
-      });
-
-      $(tableSelectAll).each(function () {
-        $(this).on('change', function (event) {
-          var show_all_selector = true;
-          $tableSelectAll.each(function () {
-            if (!$(this).is(':checked')) {
-              show_all_selector = false;
+        // Select / deselect all checkboxes in the view.
+        // If there are table select all elements, use that.
+        if (tableSelectAll.length) {
+          tableSelectAll.forEach(function (element) {
+            if (element.get(0).checked != value) {
+              element.click();
             }
           });
-          if (show_all_selector) {
-            $allSelector.show();
-          }
-          else {
-            $allSelector.hide();
-            if ($primarySelectAll.is(':checked')) {
-              $('input', $allSelector).trigger('click');
-            }
+        }
+
+        // Also handle checkboxes that may still have different values.
+        $vboForm.find('.views-field-views-bulk-operations-bulk-form input[type="checkbox"]').each(function () {
+          if (this.checked != value) {
+            $(this).click();
           }
         });
+
+        // Clear the selection information if exists.
+        $vboForm.find('.vbo-info-list-wrapper').each(function () {
+          $(this).html('');
+        });
       });
-    }
-    else {
-      $primarySelectAll.first().on('change', function (event) {
-        if (this.checked) {
-          $multiSelectElement.hide('fast');
-        }
-        else {
-          $multiSelectElement.show('fast');
-        }
-      });
+
+      if ($multiSelectElement.length) {
+        Drupal.viewsBulkOperationsSelection.bindEventHandlers($primarySelectAll, 'selection_method_change');
+      }
     }
   };
 

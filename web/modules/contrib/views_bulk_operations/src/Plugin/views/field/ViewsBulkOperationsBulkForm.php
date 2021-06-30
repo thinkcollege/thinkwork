@@ -38,7 +38,7 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
   /**
    * Object that gets the current view data.
    *
-   * @var \Drupal\views_bulk_operations\ViewsbulkOperationsViewDataInterface
+   * @var \Drupal\views_bulk_operations\Service\ViewsbulkOperationsViewDataInterface
    */
   protected $viewData;
 
@@ -57,7 +57,7 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
   protected $actionProcessor;
 
   /**
-   * User private temporary storage factory.
+   * The tempstore service.
    *
    * @var \Drupal\Core\TempStore\PrivateTempStoreFactory
    */
@@ -142,6 +142,7 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
     $this->tempStoreFactory = $tempStoreFactory;
     $this->currentUser = $currentUser;
     $this->requestStack = $requestStack;
+
   }
 
   /**
@@ -201,8 +202,11 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
    * This function must be called a bit later, when the view
    * query has been built. Also, no point doing this on the view
    * admin page.
+   *
+   * @param array $bulk_form_keys
+   *   The calculated bulk form keys.
    */
-  protected function updateTempstoreData() {
+  protected function updateTempstoreData(array $bulk_form_keys = NULL) {
     // Initialize tempstore object and get data if available.
     $this->tempStoreData = $this->getTempstoreData($this->view->id(), $this->view->current_display);
 
@@ -210,11 +214,33 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
     $variable = [
       'batch' => $this->options['batch'],
       'batch_size' => $this->options['batch'] ? $this->options['batch_size'] : 0,
-      'total_results' => $this->viewData->getTotalResults(),
+      'total_results' => $this->viewData->getTotalResults($this->options['clear_on_exposed']),
+      'relationship_id' => $this->options['relationship'],
       'arguments' => $this->view->args,
-      'redirect_url' => Url::createFromRequest(clone $this->requestStack->getCurrentRequest()),
-      'exposed_input' => $this->view->getExposedInput(),
+      'exposed_input' => $this->getExposedInput(),
     ];
+
+    // Add bulk form keys when the form is displayed.
+    if (isset($bulk_form_keys)) {
+      $variable['bulk_form_keys'] = $bulk_form_keys;
+    }
+
+    // Set redirect URL taking destination into account.
+    $request = $this->requestStack->getCurrentRequest();
+    $destination = $request->query->get('destination');
+    if ($destination) {
+      $request->query->remove('destination');
+      unset($variable['exposed_input']['destination']);
+      if (strpos($destination, '/') !== 0) {
+        $destination = '/' . $destination;
+      }
+      $variable['redirect_url'] = Url::fromUserInput($destination, []);
+    }
+    else {
+      $variable['redirect_url'] = Url::createFromRequest(clone $this->requestStack->getCurrentRequest());
+    }
+
+    // Set exposed filters values to be kept after action execution.
     $query = $variable['redirect_url']->getOption('query');
     if (!$query) {
       $query = [];
@@ -226,11 +252,12 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
     if (!is_array($this->tempStoreData)) {
       $this->tempStoreData = [];
 
-      // Add constant parameters.
+      // Add initial values.
       $this->tempStoreData += [
         'view_id' => $this->view->id(),
         'display_id' => $this->view->current_display,
         'list' => [],
+        'exclude_mode' => FALSE,
       ];
 
       // Add variable parameters.
@@ -255,6 +282,7 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
         if ($variable[$trigger] !== $this->tempStoreData[$trigger]) {
           $this->tempStoreData[$trigger] = $variable[$trigger];
           $this->tempStoreData['list'] = [];
+          $this->tempStoreData['exclude_mode'] = FALSE;
         }
         unset($variable[$trigger]);
         $update = TRUE;
@@ -272,6 +300,33 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
       }
     }
 
+  }
+
+  /**
+   * Gets exposed input values from the view.
+   *
+   * @param array $exposed_input
+   *   Current values of exposed input.
+   *
+   * @return array
+   *   Exposed input sorted by filter names.
+   */
+  protected function getExposedInput(array $exposed_input = []) {
+    if (empty($exposed_input)) {
+      // To avoid unnecessary reset of selection, we apply default values. We do
+      // that, because default values can be provided or not in the request, and
+      // it doesn't change results.
+      $exposed_input = array_merge($this->view->getExposedInput(), $this->view->exposed_raw_input);
+    }
+    // Sort values to avoid problems when comparing old and current exposed
+    // input.
+    ksort($exposed_input);
+    foreach ($exposed_input as $name => $value) {
+      if (is_array($value) && !empty($value)) {
+        $exposed_input[$name] = $this->getExposedInput($value);
+      }
+    }
+    return $exposed_input;
   }
 
   /**
@@ -329,10 +384,10 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
     $options['batch_size'] = ['default' => 10];
     $options['form_step'] = ['default' => TRUE];
     $options['buttons'] = ['default' => FALSE];
-    $options['clear_on_exposed'] = ['default' => FALSE];
+    $options['clear_on_exposed'] = ['default' => TRUE];
     $options['action_title'] = ['default' => $this->t('Action')];
     $options['selected_actions'] = ['default' => []];
-    $options['preconfiguration'] = ['default' => []];
+    $options['force_selection_info'] = ['default' => FALSE];
     return $options;
   }
 
@@ -388,7 +443,15 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
     $form['clear_on_exposed'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Clear selection when exposed filters change.'),
+      '#description' => $this->t('With this enabled, selection will be cleared every time exposed filters are changed, select all will select all rows with exposed filters applied and view total count will take exposed filters into account. When disabled, select all selects all results in the view with empty exposed filters and one can change exposed filters while selecting rows without the selection being lost.'),
       '#default_value' => $this->options['clear_on_exposed'],
+    ];
+
+    $form['force_selection_info'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Always show selection info'),
+      '#default_value' => $this->options['force_selection_info'],
+      '#description' => $this->t('Should the selection info fieldset be shown above the view even if there is only one page of results and full selection can be seen in the view itself?'),
     ];
 
     $form['action_title'] = [
@@ -409,56 +472,80 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
     // Load values for display.
     $form_values = $form_state->getValue(['options', 'selected_actions']);
     if (is_null($form_values)) {
-      $selected_actions = $this->options['selected_actions'];
-      $preconfiguration = $this->options['preconfiguration'];
-    }
-    else {
-      $selected_actions = [];
-      $preconfiguration = [];
-      foreach ($form_values as $id => $value) {
-        $selected_actions[$id] = $value['state'] ? $id : 0;
-        $preconfiguration[$id] = isset($value['preconfiguration']) ? $value['preconfiguration'] : [];
+      $config_data = $this->options['selected_actions'];
+      $selected_actions_data = [];
+      foreach ($config_data as $key => $item) {
+        $selected_actions_data[$item['action_id']] = $item;
       }
     }
+    else {
+      $selected_actions_data = $form_values;
+    }
 
+    $delta = 0;
     foreach ($this->actions as $id => $action) {
-      $form['selected_actions'][$id]['state'] = [
+      $form['selected_actions'][$delta]['action_id'] = [
+        '#type' => 'value',
+        '#value' => $id,
+      ];
+      $form['selected_actions'][$delta]['state'] = [
         '#type' => 'checkbox',
         '#title' => $action['label'],
-        '#default_value' => empty($selected_actions[$id]) ? 0 : 1,
+        '#default_value' => empty($selected_actions_data[$id]) ? 0 : 1,
         '#attributes' => ['class' => ['vbo-action-state']],
       ];
 
       // There are problems with AJAX on this form when adding
       // new elements (Views issue), a workaround is to render
       // all elements and show/hide them when needed.
-      $form['selected_actions'][$id]['preconfiguration'] = [
+      $form['selected_actions'][$delta]['preconfiguration'] = [
         '#type' => 'fieldset',
         '#title' => $this->t('Preconfiguration for "@action"', [
           '@action' => $action['label'],
         ]),
-        '#attributes' => [
-          'data-for' => $id,
-          'style' => empty($selected_actions[$id]) ? 'display: none' : NULL,
+        '#states' => [
+          'visible' => [
+            sprintf('[name="options[selected_actions][%d][state]"]', $delta) => ['checked' => TRUE],
+          ],
         ],
       ];
 
       // Default label_override element.
-      $form['selected_actions'][$id]['preconfiguration']['label_override'] = [
+      $form['selected_actions'][$delta]['preconfiguration']['label_override'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Override label'),
         '#description' => $this->t('Leave empty for the default label.'),
-        '#default_value' => isset($preconfiguration[$id]['label_override']) ? $preconfiguration[$id]['label_override'] : '',
+        '#default_value' => isset($selected_actions_data[$id]['preconfiguration']['label_override']) ? $selected_actions_data[$id]['preconfiguration']['label_override'] : '',
       ];
+
+      // Also allow to force a default confirmation step for actoins that don't
+      // have it implemented.
+      if (empty($action['confirm_form_route_name'])) {
+        $form['selected_actions'][$delta]['preconfiguration']['add_confirmation'] = [
+          '#type' => 'checkbox',
+          '#title' => $this->t('Add confirmation step'),
+          '#default_value' => isset($selected_actions_data[$id]['preconfiguration']['add_confirmation']) ? $selected_actions_data[$id]['preconfiguration']['add_confirmation'] : FALSE,
+        ];
+      }
 
       // Load preconfiguration form if available.
       if (method_exists($action['class'], 'buildPreConfigurationForm')) {
-        if (!isset($preconfiguration[$id])) {
-          $preconfiguration[$id] = [];
+        if (!isset($selected_actions_data[$id]['preconfiguration'])) {
+          $selected_actions_data[$id]['preconfiguration'] = [];
         }
         $actionObject = $this->actionManager->createInstance($id);
-        $form['selected_actions'][$id]['preconfiguration'] = $actionObject->buildPreConfigurationForm($form['selected_actions'][$id]['preconfiguration'], $preconfiguration[$id], $form_state);
+
+        // Set the view so the configuration form can access to it.
+        if ($this->view instanceof ViewExecutable) {
+          if ($this->view->inited !== TRUE) {
+            $this->view->initHandlers();
+          }
+          $actionObject->setView($this->view);
+        }
+        $form['selected_actions'][$delta]['preconfiguration'] = $actionObject->buildPreConfigurationForm($form['selected_actions'][$delta]['preconfiguration'], $selected_actions_data[$id]['preconfiguration'], $form_state);
       }
+
+      $delta++;
     }
 
     parent::buildOptionsForm($form, $form_state);
@@ -468,18 +555,17 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
    * {@inheritdoc}
    */
   public function submitOptionsForm(&$form, FormStateInterface $form_state) {
-    $options = &$form_state->getValue('options');
-    foreach ($options['selected_actions'] as $id => $action) {
-      if (!empty($action['state'])) {
-        if (isset($action['preconfiguration'])) {
-          $options['preconfiguration'][$id] = $action['preconfiguration'];
-          unset($options['selected_actions'][$id]['preconfiguration']);
-        }
-        $options['selected_actions'][$id] = $id;
+    $selected_actions = &$form_state->getValue(['options', 'selected_actions']);
+    $selected_actions = array_filter($selected_actions, function ($action_data) {
+      return !empty($action_data['state']);
+    });
+    foreach ($selected_actions as $delta => &$item) {
+      unset($item['state']);
+      if (empty($item['preconfiguration']['label_override'])) {
+        unset($item['preconfiguration']['label_override']);
       }
-      else {
-        unset($options['preconfiguration'][$id]);
-        $options['selected_actions'][$id] = 0;
+      if (empty($item['preconfiguration'])) {
+        unset($item['preconfiguration']);
       }
     }
     parent::submitOptionsForm($form, $form_state);
@@ -543,8 +629,32 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
     $action_options = $this->getBulkOptions();
     if (!empty($this->view->result) && !empty($action_options)) {
 
-      // Update tempstore data.
-      $this->updateTempstoreData();
+      // Calculate bulk form keys and get labels for all rows.
+      $bulk_form_keys = [];
+      $entity_labels = [];
+      $base_field = $this->view->storage->get('base_field');
+      foreach ($this->view->result as $row_index => $row) {
+        if ($entity = $this->getEntity($row)) {
+          $bulk_form_keys[$row_index] = self::calculateEntityBulkFormKey(
+            $entity,
+            $row->{$base_field}
+          );
+          $entity_labels[$row_index] = $entity->label();
+        }
+      }
+
+      // Update and fetch tempstore data to be available from this point
+      // as it's needed for proper functioning of further logic.
+      // Update tempstore data with bulk form keys only when the form is
+      // displayed, but not when the form is being built before submission
+      // (data is subject to change - new entities added or deleted after
+      // the form display). TODO: consider using $form_state->set() instead.
+      if (empty($form_state->getUserInput()['op'])) {
+        $this->updateTempstoreData($bulk_form_keys);
+      }
+      else {
+        $this->updateTempstoreData();
+      }
 
       $form[$this->options['id']]['#tree'] = TRUE;
 
@@ -558,25 +668,31 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
 
       // Render checkboxes for all rows.
       $page_selected = [];
-      $base_field = $this->view->storage->get('base_field');
-      foreach ($this->view->result as $row_index => $row) {
-        $entity = $this->getEntity($row);
-        $bulk_form_key = self::calculateEntityBulkFormKey(
-          $entity,
-          $row->{$base_field}
-        );
-
+      foreach ($bulk_form_keys as $row_index => $bulk_form_key) {
         $checked = isset($this->tempStoreData['list'][$bulk_form_key]);
+        if (!empty($this->tempStoreData['exclude_mode'])) {
+          $checked = !$checked;
+        }
+
         if ($checked) {
           $page_selected[] = $bulk_form_key;
         }
         $form[$this->options['id']][$row_index] = [
           '#type' => 'checkbox',
-          '#title' => $entity->label(),
+          '#title' => $entity_labels[$row_index],
           '#title_display' => 'invisible',
           '#default_value' => $checked,
           '#return_value' => $bulk_form_key,
         ];
+
+        // We should use #value instead of #default_value to always apply
+        // the plugin's own saved checkbox state (data being changed after form
+        // submission results in wrong values applied by the FAPI),
+        // however - automated tests fail if it's done this way.
+        // We have to apply values conditionally for tests to pass.
+        if (isset($element['#value']) && $element['#value'] != $checked) {
+          $element['#value'] = $checked;
+        }
       }
 
       // Ensure a consistent container for filters/operations
@@ -638,58 +754,64 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
         }
       }
 
-      $display_select_all = isset($pagerData) && ($pagerData['more'] || $pagerData['current'] > 0);
       // Selection info: displayed if exposed filters are set and selection
       // is not cleared when they change or "select all" element display
-      // conditions are met.
-      if ((!$this->options['clear_on_exposed'] && !empty($this->view->getExposedInput())) || $display_select_all) {
+      // conditions are met. Also displayed by default if VBO field has such
+      // configuration set.
+      if ($this->options['force_selection_info']) {
+        $display_select_all = TRUE;
+      }
+      else {
+        $display_select_all = (
+          !$this->options['clear_on_exposed'] &&
+          !empty($this->view->getExposedInput())
+        ) ||
+        (
+          isset($pagerData) &&
+          (
+            $pagerData['more'] ||
+            $pagerData['current'] > 0
+          )
+        );
+      }
 
+      if ($display_select_all) {
+        $count = empty($this->tempStoreData['exclude_mode']) ? count($this->tempStoreData['list']) : $this->tempStoreData['total_results'] - count($this->tempStoreData['list']);
         $form['header'][$this->options['id']]['multipage'] = [
           '#type' => 'details',
           '#open' => FALSE,
-          '#title' => $this->t('Selected %count items in this view', [
-            '%count' => count($this->tempStoreData['list']),
-          ]),
+          '#title' => $this->formatPlural($count,
+            'Selected 1 item in this view',
+            'Selected @count items in this view'
+          ),
           '#attributes' => [
             // Add view_id and display_id to be available for
             // js multipage selector functionality.
             'data-view-id' => $this->tempStoreData['view_id'],
             'data-display-id' => $this->tempStoreData['display_id'],
             'class' => ['vbo-multipage-selector'],
-            'name' => 'somename',
           ],
         ];
 
-        // Display a list of items selected on other pages.
-        $form['header'][$this->options['id']]['multipage']['list'] = [
-          '#theme' => 'item_list',
-          '#title' => $this->t('Items selected on other pages:'),
-          '#items' => [],
-          '#empty' => $this->t('No selection'),
+        // Get selection info elements.
+        $form['header'][$this->options['id']]['multipage']['list'] = $this->getMultipageList($this->tempStoreData);
+        $form['header'][$this->options['id']]['multipage']['clear'] = [
+          '#type' => 'submit',
+          '#value' => $this->t('Clear'),
+          '#submit' => [[$this, 'clearSelection']],
+          '#limit_validation_errors' => [],
         ];
-        if (count($this->tempStoreData['list']) > count($page_selected)) {
-          foreach ($this->tempStoreData['list'] as $bulk_form_key => $item) {
-            if (!in_array($bulk_form_key, $page_selected)) {
-              $form['header'][$this->options['id']]['multipage']['list']['#items'][] = $item[4];
-            }
-          }
-          $form['header'][$this->options['id']]['multipage']['clear'] = [
-            '#type' => 'submit',
-            '#value' => $this->t('Clear'),
-            '#submit' => [[$this, 'clearSelection']],
-            '#limit_validation_errors' => [],
-          ];
-        }
       }
 
-      // Select all results checkbox.
-      if ($display_select_all) {
+      // Select all results checkbox. Always display on non-table displays.
+      if ($display_select_all || !($this->view->style_plugin instanceof Table)) {
         $form['header'][$this->options['id']]['select_all'] = [
           '#type' => 'checkbox',
-          '#title' => $this->t('Select all@count results in this view', [
-            '@count' => $this->tempStoreData['total_results'] ? ' ' . $this->tempStoreData['total_results'] : '',
+          '#title' => $this->t('Select / deselect all results in this view (all pages, @count total)', [
+            '@count' => $this->tempStoreData['total_results'],
           ]),
           '#attributes' => ['class' => ['vbo-select-all']],
+          '#default_value' => !empty($this->tempStoreData['exclude_mode']),
         ];
       }
 
@@ -723,23 +845,29 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
   protected function getBulkOptions() {
     if (!isset($this->bulkOptions)) {
       $this->bulkOptions = [];
-      foreach ($this->actions as $id => $definition) {
-        // Filter out actions that weren't selected.
-        if (!in_array($id, $this->options['selected_actions'], TRUE)) {
+      foreach ($this->options['selected_actions'] as $key => $selected_action_data) {
+        if (!isset($this->actions[$selected_action_data['action_id']])) {
           continue;
         }
+
+        $definition = $this->actions[$selected_action_data['action_id']];
 
         // Check access permission, if defined.
         if (!empty($definition['requirements']['_permission']) && !$this->currentUser->hasPermission($definition['requirements']['_permission'])) {
           continue;
         }
 
+        // Check custom access, if defined.
+        if (!empty($definition['requirements']['_custom_access']) && !$definition['class']::customAccess($this->currentUser, $this->view)) {
+          continue;
+        }
+
         // Override label if applicable.
-        if (!empty($this->options['preconfiguration'][$id]['label_override'])) {
-          $this->bulkOptions[$id] = $this->options['preconfiguration'][$id]['label_override'];
+        if (!empty($selected_action_data['preconfiguration']['label_override'])) {
+          $this->bulkOptions[$key] = $selected_action_data['preconfiguration']['label_override'];
         }
         else {
-          $this->bulkOptions[$id] = $definition['label'];
+          $this->bulkOptions[$key] = $definition['label'];
         }
       }
     }
@@ -758,30 +886,18 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
   public function viewsFormSubmit(array &$form, FormStateInterface $form_state) {
     if ($form_state->get('step') == 'views_form_views_form') {
 
-      $action_id = $form_state->getValue('action');
+      $action_config = $this->options['selected_actions'][$form_state->getValue('action')];
 
-      $action = $this->actions[$action_id];
+      $action = $this->actions[$action_config['action_id']];
 
-      $this->tempStoreData['action_id'] = $action_id;
-      $this->tempStoreData['action_label'] = empty($this->options['preconfiguration'][$action_id]['label_override']) ? (string) $action['label'] : $this->options['preconfiguration'][$action_id]['label_override'];
+      $this->tempStoreData['action_id'] = $action_config['action_id'];
+      $this->tempStoreData['action_label'] = empty($action_config['preconfiguration']['label_override']) ? (string) $action['label'] : $action_config['preconfiguration']['label_override'];
       $this->tempStoreData['relationship_id'] = $this->options['relationship'];
-      $this->tempStoreData['preconfiguration'] = isset($this->options['preconfiguration'][$action_id]) ? $this->options['preconfiguration'][$action_id] : [];
-
-      if (!$form_state->getValue('select_all')) {
-
-        // Update list data with the current form selection.
-        foreach ($form_state->getValue($this->options['id']) as $row_index => $bulkFormKey) {
-          if ($bulkFormKey) {
-            $this->tempStoreData['list'][$bulkFormKey] = $this->getListItem($bulkFormKey, $form[$this->options['id']][$row_index]['#title']);
-          }
-          else {
-            unset($this->tempStoreData['list'][$form[$this->options['id']][$row_index]['#return_value']]);
-          }
-        }
-      }
-      else {
-        // Unset the list completely.
-        $this->tempStoreData['list'] = [];
+      $this->tempStoreData['preconfiguration'] = isset($action_config['preconfiguration']) ? $action_config['preconfiguration'] : [];
+      $this->tempStoreData['clear_on_exposed'] = $this->options['clear_on_exposed'];
+      $this->tempStoreData['confirm_route'] = $action['confirm_form_route_name'];
+      if (empty($this->tempStoreData['confirm_route']) && !empty($action_config['preconfiguration']['add_confirmation'])) {
+        $this->tempStoreData['confirm_route'] = 'views_bulk_operations.confirm';
       }
 
       $configurable = $this->isActionConfigurable($action);
@@ -799,22 +915,40 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
         }
       }
 
-      // Routing - determine redirect route.
+      // Update list data with the current page selection.
+      $selected_keys = [];
+      $input = $form_state->getUserInput();
+      foreach ($input[$this->options['id']] as $row_index => $bulk_form_key) {
+        $selected_keys[$bulk_form_key] = $bulk_form_key;
+      }
+      $select_all = $form_state->getValue('select_all');
 
+      foreach ($this->tempStoreData['bulk_form_keys'] as $bulk_form_key) {
+        if (
+          (isset($selected_keys[$bulk_form_key]) && !$select_all) ||
+          (!isset($selected_keys[$bulk_form_key]) && $select_all)
+        ) {
+          $this->tempStoreData['list'][$bulk_form_key] = $this->getListItem($bulk_form_key);
+        }
+        else {
+          unset($this->tempStoreData['list'][$bulk_form_key]);
+        }
+      }
+
+      // Update exclude mode setting.
+      $this->tempStoreData['exclude_mode'] = !empty($select_all);
+
+      // Routing - determine redirect route.
+      //
       // Set default redirection due to issue #2952498.
-      // TODO: remove the next line when core cause is eliminated.
+      // @todo remove the next line when core cause is eliminated.
       $redirect_route = 'views_bulk_operations.execute_batch';
 
       if ($this->options['form_step'] && $configurable) {
         $redirect_route = 'views_bulk_operations.execute_configurable';
       }
-      elseif ($this->options['batch']) {
-        if (!empty($action['confirm_form_route_name'])) {
-          $redirect_route = $action['confirm_form_route_name'];
-        }
-      }
-      elseif (!empty($action['confirm_form_route_name'])) {
-        $redirect_route = $action['confirm_form_route_name'];
+      elseif (!empty($this->tempStoreData['confirm_route'])) {
+        $redirect_route = $this->tempStoreData['confirm_route'];
       }
 
       // Redirect if needed.
@@ -853,17 +987,23 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
   public function viewsFormValidate(&$form, FormStateInterface $form_state) {
     if ($this->options['buttons']) {
       $trigger = $form_state->getTriggeringElement();
-      $action_id = end($trigger['#parents']);
-      $form_state->setValue('action', $action_id);
+      $action_delta = end($trigger['#parents']);
+      $form_state->setValue('action', $action_delta);
+    }
+    else {
+      $action_delta = $form_state->getValue('action');
     }
 
-    if (empty($form_state->getValue('action'))) {
+    if ($action_delta === '') {
       $form_state->setErrorByName('action', $this->t('Please select an action to perform.'));
     }
-
-    // This happened once, can't reproduce but here's a safety switch.
-    if (!isset($this->actions[$form_state->getValue('action')])) {
-      $form_state->setErrorByName('action', $this->t('Form error occurred, please try again.'));
+    else {
+      if (!isset($this->options['selected_actions'][$action_delta])) {
+        $form_state->setErrorByName('action', $this->t('Form error occurred, please try again.'));
+      }
+      elseif (!isset($this->actions[$this->options['selected_actions'][$action_delta]['action_id']])) {
+        $form_state->setErrorByName('action', $this->t('Form error occurred, Unavailable action selected.'));
+      }
     }
 
     if (!$form_state->getValue('select_all')) {
@@ -885,6 +1025,18 @@ class ViewsBulkOperationsBulkForm extends FieldPluginBase implements CacheableDe
         $actionObject = $this->actionManager->createInstance($action_id);
         $actionObject->validateConfigurationForm($form['header'][$this->options['id']]['configuration'], $form_state);
       }
+    }
+
+    // Update bulk form key list if the form has errors, as data might have
+    // changed before validation took place.
+    if ($form_state->getErrors()) {
+      $bulk_form_keys = [];
+      foreach ($form[$this->options['id']] as $row_index => $element) {
+        if (is_numeric($row_index) && isset($element['#return_value'])) {
+          $bulk_form_keys[$row_index] = $element['#return_value'];
+        }
+      }
+      $this->updateTempstoreData($bulk_form_keys);
     }
   }
 

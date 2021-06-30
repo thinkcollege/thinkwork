@@ -92,12 +92,12 @@ class CancelUserAction extends ViewsBulkOperationsActionBase implements Containe
    */
   public function execute($account = NULL) {
     if ($account->id() === $this->currentUser->id() && (empty($this->context['list']) || count($this->context['list'] > 1))) {
-      drupal_set_message($this->t('The current user account cannot be canceled in a batch operation. Select your account only or cancel it from your account page.'), 'error');
+      $this->messenger()->addError($this->t('The current user account cannot be canceled in a batch operation. Select your account only or cancel it from your account page.'));
     }
     elseif (intval($account->id()) === 1) {
-      drupal_set_message($this->t('The user 1 account (%label) cannot be canceled.', [
+      $this->messenger()->addError($this->t('The user 1 account (%label) cannot be canceled.', [
         '%label' => $account->label(),
-      ]), 'error');
+      ]));
     }
     else {
       // Allow other modules to act.

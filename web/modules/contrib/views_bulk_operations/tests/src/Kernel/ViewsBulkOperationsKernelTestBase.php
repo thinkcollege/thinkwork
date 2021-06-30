@@ -3,7 +3,7 @@
 namespace Drupal\Tests\views_bulk_operations\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\simpletest\NodeCreationTrait;
+use Drupal\Tests\node\Traits\NodeCreationTrait;
 use Drupal\node\Entity\NodeType;
 use Drupal\user\Entity\User;
 use Drupal\views\Views;
@@ -32,6 +32,8 @@ abstract class ViewsBulkOperationsKernelTestBase extends KernelTestBase {
     'exposed_input' => [],
     'batch_size' => 10,
     'relationship_id' => 'none',
+    'exclude_mode' => FALSE,
+    'clear_on_exposed' => FALSE,
   ];
 
   /**
@@ -252,12 +254,18 @@ abstract class ViewsBulkOperationsKernelTestBase extends KernelTestBase {
 
     // Get total rows count.
     $this->vboDataService->init($view, $view->getDisplay(), $vbo_data['relationship_id']);
-    $vbo_data['total_results'] = $this->vboDataService->getTotalResults();
+    $vbo_data['total_results'] = $this->vboDataService->getTotalResults($vbo_data['clear_on_exposed']);
 
     // Get action definition and check if action ID is correct.
     $action_definition = $this->container->get('plugin.manager.views_bulk_operations_action')->getDefinition($vbo_data['action_id']);
     if (!isset($vbo_data['action_label'])) {
       $vbo_data['action_label'] = (string) $action_definition['label'];
+    }
+
+    // Account for exclude mode.
+    if ($vbo_data['exclude_mode']) {
+      $vbo_data['exclude_list'] = $vbo_data['list'];
+      $vbo_data['list'] = [];
     }
 
     // Populate entity list if empty.
