@@ -30,7 +30,7 @@
         "drupal/ckeditor_media_embed": "^1.10",
         "drupal/console": "~1.0",
         "drupal/content_access": "^1.0@alpha",
-        "drupal/core": "^8.9.18",
+        "drupal/core": "^8.9.19",
         "drupal/core-dev": "^8.8.4",
         "drupal/csv_serialization": "^1.4",
         "drupal/ctools": "^3.7",
