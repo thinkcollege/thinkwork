@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '37c330afff0f21c86e83f204c35316c90547682b',
+        'reference' => '4b8bb4181a0ce7806088c8456cbba386b371c785',
         'name' => 'drupal-composer/drupal-project',
         'dev' => true,
     ),
@@ -370,7 +370,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '37c330afff0f21c86e83f204c35316c90547682b',
+            'reference' => '4b8bb4181a0ce7806088c8456cbba386b371c785',
             'dev_requirement' => false,
         ),
         'drupal/action' => array(
@@ -455,12 +455,12 @@
             ),
         ),
         'drupal/block_styles' => array(
-            'pretty_version' => '1.4.0',
-            'version' => '1.4.0.0',
+            'pretty_version' => '2.0.2',
+            'version' => '2.0.2.0',
             'type' => 'drupal-module',
             'install_path' => __DIR__ . '/../../web/modules/contrib/block_styles',
             'aliases' => array(),
-            'reference' => '8.x-1.4',
+            'reference' => '2.0.2',
             'dev_requirement' => false,
         ),
         'drupal/book' => array(
@@ -2222,8 +2222,8 @@
         'psr/container-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0',
-                1 => '^1.0',
+                0 => '^1.0',
+                1 => '1.0',
             ),
         ),
         'psr/event-dispatcher-implementation' => array(
