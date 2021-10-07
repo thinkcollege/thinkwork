@@ -62,7 +62,7 @@ function block_styles_form_block_form_alter(&$form, \Drupal\Core\Form\FormStateI
 	  }
   }
   else {
-    if ($style && $plugin_definitions[$style['theme']]['extras']['label']) {
+    if (!empty($plugin_definitions[$style['theme']]['extras']['label'])) {
       $disabled = FALSE;
       $type = 'textfield';
 	  }
@@ -129,7 +129,7 @@ function _block_styles_form_submit(array &$form, FormStateInterface $form_state)
     $block_layout->set('text', $results['block_styles']['text']);
   }
   else {
-    $block_layout = \Drupal::entityManager()->getStorage('block_styles')->create([
+    $block_layout = \Drupal::entityTypeManager()->getStorage('block_styles')->create([
       'id' => $entity->id(), 
       'theme' => $results['block_styles']['theme'],
       'classes' => $results['block_styles']['classes'],
