@@ -14,6 +14,7 @@ namespace Composer\IO;
 
 use Composer\Question\StrictConfirmationQuestion;
 use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,9 +36,9 @@ class ConsoleIO extends BaseIO
     /** @var HelperSet */
     protected $helperSet;
     /** @var string */
-    protected $lastMessage;
+    protected $lastMessage = '';
     /** @var string */
-    protected $lastMessageErr;
+    protected $lastMessageErr = '';
 
     /** @var float */
     private $startTime;
@@ -158,13 +159,6 @@ class ConsoleIO extends BaseIO
             return;
         }
 
-        // hack to keep our usage BC with symfony<2.8 versions
-        // this removes the quiet output but there is no way around it
-        // see https://github.com/composer/composer/pull/4913
-        if (OutputInterface::VERBOSITY_QUIET === 0) {
-            $sfVerbosity = OutputInterface::OUTPUT_NORMAL;
-        }
-
         if ($raw) {
             if ($sfVerbosity === OutputInterface::OUTPUT_NORMAL) {
                 $sfVerbosity = OutputInterface::OUTPUT_RAW;
@@ -251,6 +245,15 @@ class ConsoleIO extends BaseIO
         } else {
             $this->lastMessage = $messages;
         }
+    }
+
+    /**
+     * @param  int         $max
+     * @return ProgressBar
+     */
+    public function getProgressBar($max = 0)
+    {
+        return new ProgressBar($this->getErrorOutput(), $max);
     }
 
     /**

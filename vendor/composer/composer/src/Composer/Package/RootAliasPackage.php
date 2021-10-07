@@ -15,11 +15,29 @@ namespace Composer\Package;
 /**
  * @author Jordi Boggiano <j.boggiano@seld.be>
  */
-class RootAliasPackage extends AliasPackage implements RootPackageInterface
+class RootAliasPackage extends CompleteAliasPackage implements RootPackageInterface
 {
-    public function __construct(RootPackageInterface $aliasOf, $version, $prettyVersion)
+    /** @var RootPackage */
+    protected $aliasOf;
+
+    /**
+     * All descendants' constructors should call this parent constructor
+     *
+     * @param RootPackage $aliasOf       The package this package is an alias of
+     * @param string      $version       The version the alias must report
+     * @param string      $prettyVersion The alias's non-normalized version
+     */
+    public function __construct(RootPackage $aliasOf, $version, $prettyVersion)
     {
         parent::__construct($aliasOf, $version, $prettyVersion);
+    }
+
+    /**
+     * @return RootPackage
+     */
+    public function getAliasOf()
+    {
+        return $this->aliasOf;
     }
 
     /**
@@ -75,7 +93,7 @@ class RootAliasPackage extends AliasPackage implements RootPackageInterface
      */
     public function setRequires(array $require)
     {
-        $this->requires = $this->replaceSelfVersionDependencies($require, 'requires');
+        $this->requires = $this->replaceSelfVersionDependencies($require, Link::TYPE_REQUIRE);
 
         $this->aliasOf->setRequires($require);
     }
@@ -85,7 +103,7 @@ class RootAliasPackage extends AliasPackage implements RootPackageInterface
      */
     public function setDevRequires(array $devRequire)
     {
-        $this->devRequires = $this->replaceSelfVersionDependencies($devRequire, 'devRequires');
+        $this->devRequires = $this->replaceSelfVersionDependencies($devRequire, Link::TYPE_DEV_REQUIRE);
 
         $this->aliasOf->setDevRequires($devRequire);
     }
@@ -95,7 +113,7 @@ class RootAliasPackage extends AliasPackage implements RootPackageInterface
      */
     public function setConflicts(array $conflicts)
     {
-        $this->conflicts = $this->replaceSelfVersionDependencies($conflicts, 'conflicts');
+        $this->conflicts = $this->replaceSelfVersionDependencies($conflicts, Link::TYPE_CONFLICT);
         $this->aliasOf->setConflicts($conflicts);
     }
 
@@ -104,7 +122,7 @@ class RootAliasPackage extends AliasPackage implements RootPackageInterface
      */
     public function setProvides(array $provides)
     {
-        $this->provides = $this->replaceSelfVersionDependencies($provides, 'provides');
+        $this->provides = $this->replaceSelfVersionDependencies($provides, Link::TYPE_PROVIDE);
         $this->aliasOf->setProvides($provides);
     }
 
@@ -113,16 +131,8 @@ class RootAliasPackage extends AliasPackage implements RootPackageInterface
      */
     public function setReplaces(array $replaces)
     {
-        $this->replaces = $this->replaceSelfVersionDependencies($replaces, 'replaces');
+        $this->replaces = $this->replaceSelfVersionDependencies($replaces, Link::TYPE_REPLACE);
         $this->aliasOf->setReplaces($replaces);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setRepositories($repositories)
-    {
-        $this->aliasOf->setRepositories($repositories);
     }
 
     /**
@@ -147,6 +157,46 @@ class RootAliasPackage extends AliasPackage implements RootPackageInterface
     public function setStabilityFlags(array $stabilityFlags)
     {
         $this->aliasOf->setStabilityFlags($stabilityFlags);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setMinimumStability($minimumStability)
+    {
+        $this->aliasOf->setMinimumStability($minimumStability);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPreferStable($preferStable)
+    {
+        $this->aliasOf->setPreferStable($preferStable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setConfig(array $config)
+    {
+        $this->aliasOf->setConfig($config);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setReferences(array $references)
+    {
+        $this->aliasOf->setReferences($references);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAliases(array $aliases)
+    {
+        $this->aliasOf->setAliases($aliases);
     }
 
     /**

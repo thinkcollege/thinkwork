@@ -12,25 +12,24 @@
 
 namespace Composer\DependencyResolver;
 
-use Composer\Package\PackageInterface;
+use Composer\Package\BasePackage;
 use Composer\Package\Link;
+use Composer\Semver\Constraint\ConstraintInterface;
 
 /**
  * @author Nils Adermann <naderman@naderman.de>
  */
 class GenericRule extends Rule
 {
+    /** @var int[] */
     protected $literals;
 
     /**
-     * @param array                 $literals
-     * @param int                   $reason     A RULE_* constant describing the reason for generating this rule
-     * @param Link|PackageInterface $reasonData
-     * @param array                 $job        The job this rule was created from
+     * @param int[]                           $literals
      */
-    public function __construct(array $literals, $reason, $reasonData, $job = null)
+    public function __construct(array $literals, $reason, $reasonData)
     {
-        parent::__construct($reason, $reasonData, $job);
+        parent::__construct($reason, $reasonData);
 
         // sort all packages ascending by id
         sort($literals);
@@ -65,7 +64,7 @@ class GenericRule extends Rule
 
     public function isAssertion()
     {
-        return 1 === count($this->literals);
+        return 1 === \count($this->literals);
     }
 
     /**

@@ -13,9 +13,13 @@
 namespace Composer\Repository;
 
 use Composer\Package\AliasPackage;
+use Composer\Package\BasePackage;
+use Composer\Package\CompleteAliasPackage;
+use Composer\Package\CompletePackage;
 use Composer\Package\PackageInterface;
 use Composer\Package\CompletePackageInterface;
 use Composer\Package\Version\VersionParser;
+use Composer\Package\Version\StabilityFilter;
 use Composer\Semver\Constraint\ConstraintInterface;
 use Composer\Semver\Constraint\Constraint;
 
@@ -24,21 +28,66 @@ use Composer\Semver\Constraint\Constraint;
  *
  * @author Nils Adermann <naderman@naderman.de>
  */
-class ArrayRepository extends BaseRepository
+class ArrayRepository implements RepositoryInterface
 {
-    /** @var PackageInterface[] */
-    protected $packages;
-    
-    /** 
-      * @var PackageInterface[] indexed by package unique name and used to cache hasPackage calls
-      */
-    protected $packageMap;
+    /** @var ?array<PackageInterface&BasePackage> */
+    protected $packages = null;
+
+    /**
+     * @var ?array<PackageInterface&BasePackage> indexed by package unique name and used to cache hasPackage calls
+     */
+    protected $packageMap = null;
 
     public function __construct(array $packages = array())
     {
         foreach ($packages as $package) {
             $this->addPackage($package);
         }
+    }
+
+    public function getRepoName()
+    {
+        return 'array repo (defining '.$this->count().' package'.($this->count() > 1 ? 's' : '').')';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function loadPackages(array $packageMap, array $acceptableStabilities, array $stabilityFlags, array $alreadyLoaded = array())
+    {
+        $packages = $this->getPackages();
+
+        $result = array();
+        $namesFound = array();
+        foreach ($packages as $package) {
+            if (array_key_exists($package->getName(), $packageMap)) {
+                if (
+                    (!$packageMap[$package->getName()] || $packageMap[$package->getName()]->matches(new Constraint('==', $package->getVersion())))
+                    && StabilityFilter::isPackageAcceptable($acceptableStabilities, $stabilityFlags, $package->getNames(), $package->getStability())
+                    && !isset($alreadyLoaded[$package->getName()][$package->getVersion()])
+                ) {
+                    // add selected packages which match stability requirements
+                    $result[spl_object_hash($package)] = $package;
+                    // add the aliased package for packages where the alias matches
+                    if ($package instanceof AliasPackage && !isset($result[spl_object_hash($package->getAliasOf())])) {
+                        $result[spl_object_hash($package->getAliasOf())] = $package->getAliasOf();
+                    }
+                }
+
+                $namesFound[$package->getName()] = true;
+            }
+        }
+
+        // add aliases of packages that were selected, even if the aliases did not match
+        foreach ($packages as $package) {
+            if ($package instanceof AliasPackage) {
+                if (isset($result[spl_object_hash($package->getAliasOf())])) {
+                    $result[spl_object_hash($package)] = $package;
+                }
+            }
+        }
+
+        return array('namesFound' => array_keys($namesFound), 'packages' => $result);
     }
 
     /**
@@ -81,8 +130,7 @@ class ArrayRepository extends BaseRepository
 
         foreach ($this->getPackages() as $package) {
             if ($name === $package->getName()) {
-                $pkgConstraint = new Constraint('==', $package->getVersion());
-                if (null === $constraint || $constraint->matches($pkgConstraint)) {
+                if (null === $constraint || $constraint->matches(new Constraint('==', $package->getVersion()))) {
                     $packages[] = $package;
                 }
             }
@@ -160,9 +208,47 @@ class ArrayRepository extends BaseRepository
         $this->packageMap = null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getProviders($packageName)
+    {
+        $result = array();
+
+        foreach ($this->getPackages() as $candidate) {
+            if (isset($result[$candidate->getName()])) {
+                continue;
+            }
+            foreach ($candidate->getProvides() as $link) {
+                if ($packageName === $link->getTarget()) {
+                    $result[$candidate->getName()] = array(
+                        'name' => $candidate->getName(),
+                        'description' => $candidate instanceof CompletePackageInterface ? $candidate->getDescription() : null,
+                        'type' => $candidate->getType(),
+                    );
+                    continue 2;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @phpstan-param PackageInterface&BasePackage $package
+     * @return AliasPackage|CompleteAliasPackage
+     */
     protected function createAliasPackage(PackageInterface $package, $alias, $prettyAlias)
     {
-        return new AliasPackage($package instanceof AliasPackage ? $package->getAliasOf() : $package, $alias, $prettyAlias);
+        while ($package instanceof AliasPackage) {
+            $package = $package->getAliasOf();
+        }
+
+        if ($package instanceof CompletePackage) {
+            return new CompleteAliasPackage($package, $alias, $prettyAlias);
+        }
+
+        return new AliasPackage($package, $alias, $prettyAlias);
     }
 
     /**
@@ -195,6 +281,10 @@ class ArrayRepository extends BaseRepository
             $this->initialize();
         }
 
+        if (null === $this->packages) {
+            throw new \LogicException('initialize failed to initialize the packages array');
+        }
+
         return $this->packages;
     }
 
@@ -203,8 +293,13 @@ class ArrayRepository extends BaseRepository
      *
      * @return int Number of packages
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
+        if (null === $this->packages) {
+            $this->initialize();
+        }
+
         return count($this->packages);
     }
 

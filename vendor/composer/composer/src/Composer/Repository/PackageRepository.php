@@ -22,6 +22,7 @@ use Composer\Package\Loader\ValidatingArrayLoader;
  */
 class PackageRepository extends ArrayRepository
 {
+    /** @var mixed[] */
     private $config;
 
     /**
@@ -57,5 +58,10 @@ class PackageRepository extends ArrayRepository
 
             $this->addPackage($package);
         }
+    }
+
+    public function getRepoName()
+    {
+        return preg_replace('{^array }', 'package ', parent::getRepoName());
     }
 }

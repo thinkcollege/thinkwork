@@ -9,7 +9,7 @@ for you.
 Composer is **not** a package manager in the same sense as Yum or Apt are. Yes,
 it deals with "packages" or libraries, but it manages them on a per-project
 basis, installing them in a directory (e.g. `vendor`) inside your project. By
-default it does not install anything globally. Thus, it is a dependency
+default, it does not install anything globally. Thus, it is a dependency
 manager. It does however support a "global" project for convenience via the
 [global](03-cli.md#global) command.
 
@@ -155,7 +155,7 @@ Close your current terminal. Test usage with a new terminal:
 
 ```sh
 C:\Users\username>composer -V
-Composer version 1.0.0 2016-01-10 20:34:53
+Composer version 2.0.12 2021-04-01 10:14:59
 ```
 
 ## Using Composer

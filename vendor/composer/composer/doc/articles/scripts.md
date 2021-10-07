@@ -29,6 +29,7 @@ Composer fires the following named events during its execution process:
   the `install` command is executed without a lock file present.
 - **post-update-cmd**: occurs after the `update` command has been executed, or
   after the `install` command has been executed without a lock file present.
+- **pre-status-cmd**: occurs before the `status` command is executed.
 - **post-status-cmd**: occurs after the `status` command has been executed.
 - **pre-archive-cmd**: occurs before the `archive` command is executed.
 - **post-archive-cmd**: occurs after the `archive` command has been executed.
@@ -37,14 +38,15 @@ Composer fires the following named events during its execution process:
 - **post-autoload-dump**: occurs after the autoloader has been dumped, either
   during `install`/`update`, or via the `dump-autoload` command.
 - **post-root-package-install**: occurs after the root package has been
-  installed, during the `create-project` command.
+  installed during the `create-project` command (but before its
+  dependencies are installed).
 - **post-create-project-cmd**: occurs after the `create-project` command has
   been executed.
 
 ### Installer Events
 
-- **pre-dependencies-solving**: occurs before the dependencies are resolved.
-- **post-dependencies-solving**: occurs after the dependencies have been resolved.
+- **pre-operations-exec**: occurs before the install/upgrade/.. operations
+  are executed when installing a lock file.
 
 ### Package Events
 
@@ -61,11 +63,15 @@ Composer fires the following named events during its execution process:
 - **command**: occurs before any Composer Command is executed on the CLI. It
   provides you with access to the input and output objects of the program.
 - **pre-file-download**: occurs before files are downloaded and allows
-  you to manipulate the `RemoteFilesystem` object prior to downloading files
+  you to manipulate the `HttpDownloader` object prior to downloading files
   based on the URL to be downloaded.
+- **post-file-download**: occurs after package dist files are downloaded and
+  allows you to perform additional checks on the file if required.
 - **pre-command-run**: occurs before a command is executed and allows you to
   manipulate the `InputInterface` object's options and arguments to tweak
   a command's behavior.
+- **pre-pool-create**: occurs before the Pool of packages is created, and lets
+  you filter the list of packages which is going to enter the Solver.
 
 > **Note:** Composer makes no assumptions about the state of your dependencies
 > prior to `install` or `update`. Therefore, you should not specify scripts
@@ -156,10 +162,11 @@ class MyClass
 }
 ```
 
-**Note:** During a composer install or update process, a variable named
+**Note:** During a Composer `install` or `update` command run, a variable named
 `COMPOSER_DEV_MODE` will be added to the environment. If the command was run
 with the `--no-dev` flag, this variable will be set to 0, otherwise it will be
-set to 1.
+set to 1. The variable is also available while `dump-autoload` runs, and it
+will be set to same as the last `install` or `update` was run in.
 
 ## Event classes
 
@@ -171,14 +178,15 @@ Depending on the [script types](#event-names) you will get various event
 subclasses containing various getters with relevant data and associated
 objects:
 
-- Base class: [`Composer\EventDispatcher\Event`](https://getcomposer.org/apidoc/master/Composer/EventDispatcher/Event.html)
-- Command Events: [`Composer\Script\Event`](https://getcomposer.org/apidoc/master/Composer/Script/Event.html)
-- Installer Events: [`Composer\Installer\InstallerEvent`](https://getcomposer.org/apidoc/master/Composer/Installer/InstallerEvent.html)
-- Package Events: [`Composer\Installer\PackageEvent`](https://getcomposer.org/apidoc/master/Composer/Installer/PackageEvent.html)
+- Base class: [`Composer\EventDispatcher\Event`](https://github.com/composer/composer/blob/master/src/Composer/EventDispatcher/Event.php)
+- Command Events: [`Composer\Script\Event`](https://github.com/composer/composer/blob/master/src/Composer/Script/Event.php)
+- Installer Events: [`Composer\Installer\InstallerEvent`](https://github.com/composer/composer/blob/master/src/Composer/Installer/InstallerEvent.php)
+- Package Events: [`Composer\Installer\PackageEvent`](https://github.com/composer/composer/blob/master/src/Composer/Installer/PackageEvent.php)
 - Plugin Events:
-  - init: [`Composer\EventDispatcher\Event`](https://getcomposer.org/apidoc/master/Composer/EventDispatcher/Event.html)
-  - command: [`Composer\Plugin\CommandEvent`](https://getcomposer.org/apidoc/master/Composer/Plugin/CommandEvent.html)
-  - pre-file-download: [`Composer\Plugin\PreFileDownloadEvent`](https://getcomposer.org/apidoc/master/Composer/Plugin/PreFileDownloadEvent.html)
+  - init: [`Composer\EventDispatcher\Event`](https://github.com/composer/composer/blob/master/src/Composer/EventDispatcher/Event.php)
+  - command: [`Composer\Plugin\CommandEvent`](https://github.com/composer/composer/blob/master/src/Composer/Plugin/CommandEvent.php)
+  - pre-file-download: [`Composer\Plugin\PreFileDownloadEvent`](https://github.com/composer/composer/blob/master/src/Composer/Plugin/PreFileDownloadEvent.php)
+  - post-file-download: [`Composer\Plugin\PostFileDownloadEvent`](https://github.com/composer/composer/blob/master/src/Composer/Plugin/PostFileDownloadEvent.php)
 
 ## Running scripts manually
 
@@ -368,5 +376,8 @@ You can set custom script descriptions with the following in your `composer.json
     }
 }
 ```
+
+The descriptions are used in `composer list` or `composer run -l` commands to
+describe what the scripts do when the command is run.
 
 > **Note:** You can only set custom descriptions of custom commands.

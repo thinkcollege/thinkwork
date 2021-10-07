@@ -6,7 +6,7 @@
 
 ## Synopsis
 
-At times it may be necessary for a package to require additional actions during
+At times, it may be necessary for a package to require additional actions during
 installation, such as installing packages outside of the default `vendor`
 library.
 
@@ -149,6 +149,7 @@ source for the exact signature):
   when the package needs to be removed.
 * **getInstallPath()**, this method should return the location where the
   package is to be installed, _relative from the location of composer.json._
+  The path _must not end with a slash._
 
 Example:
 

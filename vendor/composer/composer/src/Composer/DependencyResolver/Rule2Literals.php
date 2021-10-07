@@ -12,7 +12,7 @@
 
 namespace Composer\DependencyResolver;
 
-use Composer\Package\PackageInterface;
+use Composer\Package\BasePackage;
 use Composer\Package\Link;
 
 /**
@@ -20,19 +20,18 @@ use Composer\Package\Link;
  */
 class Rule2Literals extends Rule
 {
+    /** @var int */
     protected $literal1;
+    /** @var int */
     protected $literal2;
 
     /**
-     * @param int                   $literal1
-     * @param int                   $literal2
-     * @param int                   $reason     A RULE_* constant describing the reason for generating this rule
-     * @param Link|PackageInterface $reasonData
-     * @param array                 $job        The job this rule was created from
+     * @param int              $literal1
+     * @param int              $literal2
      */
-    public function __construct($literal1, $literal2, $reason, $reasonData, $job = null)
+    public function __construct($literal1, $literal2, $reason, $reasonData)
     {
-        parent::__construct($reason, $reasonData, $job);
+        parent::__construct($reason, $reasonData);
 
         if ($literal1 < $literal2) {
             $this->literal1 = $literal1;
@@ -43,11 +42,13 @@ class Rule2Literals extends Rule
         }
     }
 
+    /** @return int[] */
     public function getLiterals()
     {
         return array($this->literal1, $this->literal2);
     }
 
+    /** @return string */
     public function getHash()
     {
         return $this->literal1.','.$this->literal2;
@@ -77,7 +78,7 @@ class Rule2Literals extends Rule
         }
 
         $literals = $rule->getLiterals();
-        if (2 != count($literals)) {
+        if (2 != \count($literals)) {
             return false;
         }
 
@@ -92,6 +93,7 @@ class Rule2Literals extends Rule
         return true;
     }
 
+    /** @return false */
     public function isAssertion()
     {
         return false;

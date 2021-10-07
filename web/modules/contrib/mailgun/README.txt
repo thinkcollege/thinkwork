@@ -13,7 +13,6 @@ This module requires the following modules and libraries:
 
 * Recommended modules
 
- - Mail System (https://www.drupal.org/project/mailsystem)
  - Reroute Email (https://www.drupal.org/project/reroute_email)
 
 * Installation

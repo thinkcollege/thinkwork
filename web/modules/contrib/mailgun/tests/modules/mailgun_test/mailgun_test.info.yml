@@ -1,5 +1,5 @@
 name: Mailgun Test
 type: module
 description: Helpful module for test staff.
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^8.8 || ^9
 package: Mail

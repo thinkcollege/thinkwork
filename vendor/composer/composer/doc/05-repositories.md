@@ -6,7 +6,7 @@ of repositories are available, and how they work.
 ## Concepts
 
 Before we look at the different types of repositories that exist, we need to
-understand some of the basic concepts that Composer is built on.
+understand some basic concepts that Composer is built on.
 
 ### Package
 
@@ -41,13 +41,19 @@ be preferred.
 A repository is a package source. It's a list of packages/versions. Composer
 will look in all your repositories to find the packages your project requires.
 
-By default only the Packagist repository is registered in Composer. You can
+By default, only the Packagist.org repository is registered in Composer. You can
 add more repositories to your project by declaring them in `composer.json`.
 
 Repositories are only available to the root package and the repositories
 defined in your dependencies will not be loaded. Read the
 [FAQ entry](faqs/why-can't-composer-load-repositories-recursively.md) if you
 want to learn why.
+
+When resolving dependencies, packages are looked up from repositories from
+top to bottom, and by default, as soon as a package is found in one, Composer
+stops looking in other repositories. Read the
+[repository priorities](articles/repository-priorities.md) article for more
+details and to see how to change this behavior.
 
 ## Types
 
@@ -61,6 +67,17 @@ This is also the repository type that packagist uses. To reference a
 In the case of packagist, that file is located at `/packages.json`, so the URL of
 the repository would be `repo.packagist.org`. For `example.org/packages.json` the
 repository URL would be `example.org`.
+
+```json
+{
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://example.org"
+        }
+    ]
+}
+```
 
 #### packages
 
@@ -105,7 +122,7 @@ It may include any of the other fields specified in the [schema](04-schema.md).
 
 The `notify-batch` field allows you to specify a URL that will be called
 every time a user installs a package. The URL can be either an absolute path
-(that will use the same domain as the repository) or a fully qualified URL.
+(that will use the same domain as the repository), or a fully qualified URL.
 
 An example value:
 
@@ -132,6 +149,102 @@ number.
 
 This field is optional.
 
+### metadata-url, available-packages and available-package-patterns
+
+The `metadata-url` field allows you to provide a URL template to serve all
+packages which are in the repository. It must contain the placeholder
+`%package%`.
+
+This field is new in Composer v2, and is prioritised over the
+`provider-includes` and `providers-url` fields if both are present.
+For compatibility with both Composer v1 and v2 you ideally want
+to provide both. New repository implementations may only need to
+support v2 however.
+
+An example:
+
+```json
+{
+    "metadata-url": "/p2/%package%.json"
+}
+```
+
+Whenever Composer looks for a package, it will replace `%package%` by the
+package name, and fetch that URL. If dev stability is allowed for the package,
+it will also load the URL again with `$packageName~dev` (e.g.
+`/p2/foo/bar~dev.json` to look for `foo/bar`'s dev versions).
+
+The `foo/bar.json` and `foo/bar~dev.json` files containing package versions
+MUST contain only versions for the foo/bar package, as
+`{"packages":{"foo/bar":[ ... versions here ... ]}}`.
+
+Caching is done via the use of If-Modified-Since header, so make sure you
+return Last-Modified headers and that they are accurate.
+
+The array of versions can also optionally be minified using
+`Composer\MetadataMinifier\MetadataMinifier::minify()` from
+[composer/metadata-minifier](https://packagist.org/packages/composer/metadata-minifier).
+If you do that, you should add a `"minified": "composer/2.0"` key
+at the top level to indicate to Composer it must expand the version
+list back into the original data. See 
+https://repo.packagist.org/p2/monolog/monolog.json for an example.
+
+Any requested package which does not exist MUST return a 404 status code,
+which will indicate to Composer that this package does not exist in your
+repository. Make sure the 404 response is fast to avoid blocking Composer.
+Avoid redirects to alternative 404 pages.
+
+If your repository only has a small number of packages, and you want to avoid
+the 404-requests, you can also specify an `"available-packages"` key in
+`packages.json` which should be an array with all the package names that your
+repository contain. Alternatively you can specify an
+`"available-package-patterns"` key which is an array of package name patterns
+(with `*` matching any string, e.g. `vendor/*` would make composer look up
+every matching package name in this repository).
+
+This field is optional.
+
+### providers-api
+
+The `providers-api` field allows you to provide a URL template to serve all
+packages which provide a given package name, but not the package which has
+that name. It must contain the placeholder `%package%`.
+
+For example https://packagist.org/providers/monolog/monolog.json lists some
+package which have a "provide" rule for monolog/monolog, but it does not list
+monolog/monolog itself.
+
+```json
+{
+    "providers-api": "https://packagist.org/providers/%package%.json",
+}
+```
+
+This field is optional.
+
+### list
+
+The `list` field allows you to return the names of packages which match a
+given field (or all names if no filter is present). It should accept an
+optional `?filter=xx` query param, which can contain `*` as wildcards matching
+any substring.
+
+Replace/provide rules should not be considered here.
+
+It must return an array of package names:
+```json
+{
+    "packageNames": [
+        "a/b",
+        "c/d"
+    ]
+}
+```
+
+See <https://packagist.org/packages/list.json?filter=composer/*> for example.
+
+This field is optional.
+
 #### provider-includes and providers-url
 
 The `provider-includes` field allows you to list a set of files that list
@@ -141,6 +254,9 @@ the files in this case.
 The `providers-url` describes how provider files are found on the server. It
 is an absolute path from the repository root. It must contain the placeholders
 `%package%` and `%hash%`.
+
+These fields are used by Composer v1, or if your repository does not have the
+`metadata-url` field set.
 
 An example:
 
@@ -200,7 +316,7 @@ from these systems.
 
 There are a few use cases for this. The most common one is maintaining your
 own fork of a third party library. If you are using a certain library for your
-project and you decide to change something in the library, you will want your
+project, and you decide to change something in the library, you will want your
 project to use the patched version. If the library is on GitHub (this is the
 case most of the time), you can fork it there and push your changes to
 your fork. After that you update the project's `composer.json`. All you have
@@ -299,23 +415,10 @@ Please note:
 
 #### BitBucket Driver Configuration
 
-The BitBucket driver uses OAuth to access your private repositories via the BitBucket REST APIs and you will need to create an OAuth consumer to use the driver, please refer to [Atlassian's Documentation](https://confluence.atlassian.com/bitbucket/oauth-on-bitbucket-cloud-238027431.html). You will need to fill the callback url with something to satisfy BitBucket, but the address does not need to go anywhere and is not used by Composer.
+> **Note that the repository endpoint for BitBucket needs to be https rather than git.**
 
-After creating an OAuth consumer in the BitBucket control panel, you need to setup your auth.json file with
-the credentials like this (more info [here](https://getcomposer.org/doc/06-config.md#bitbucket-oauth)):
-```json
-{
-    "bitbucket-oauth": {
-        "bitbucket.org": {
-            "consumer-key": "myKey",
-            "consumer-secret": "mySecret"
-        }
-    }
-}
-```
-**Note that the repository endpoint needs to be https rather than git.**
-
-Alternatively if you prefer not to have your OAuth credentials on your filesystem you may export the ```bitbucket-oauth``` block above to the [COMPOSER_AUTH](https://getcomposer.org/doc/03-cli.md#composer-auth) environment variable instead.
+After setting up your bitbucket repository, you will also need to
+[set up authentication](articles/authentication-for-private-packages.md#bitbucket-oauth).
 
 #### Subversion Options
 
@@ -378,92 +481,6 @@ for this server will be overwritten. To change this behavior by setting the
 }
 ```
 
-### PEAR
-
-It is possible to install packages from any PEAR channel by using the `pear`
-repository. Composer will prefix all package names with `pear-{channelName}/`
-to avoid conflicts. All packages are also aliased with prefix
-`pear-{channelAlias}/`.
-
-Example using `pear2.php.net`:
-
-```json
-{
-    "repositories": [
-        {
-            "type": "pear",
-            "url": "https://pear2.php.net"
-        }
-    ],
-    "require": {
-        "pear-pear2.php.net/PEAR2_Text_Markdown": "*",
-        "pear-pear2/PEAR2_HTTP_Request": "*"
-    }
-}
-```
-
-In this case the short name of the channel is `pear2`, so the
-`PEAR2_HTTP_Request` package name becomes `pear-pear2/PEAR2_HTTP_Request`.
-
-> **Note:** The `pear` repository requires doing quite a few requests per
-> package, so this may considerably slow down the installation process.
-
-#### Custom vendor alias
-
-It is possible to alias PEAR channel packages with a custom vendor name.
-
-Example:
-
-Suppose you have a private PEAR repository and wish to use Composer to
-incorporate dependencies from a VCS. Your PEAR repository contains the
-following packages:
-
- * `BasePackage`
- * `IntermediatePackage`, which depends on `BasePackage`
- * `TopLevelPackage1` and `TopLevelPackage2` which both depend
-    on `IntermediatePackage`
-
-Without a vendor alias, Composer will use the PEAR channel name as the
-vendor portion of the package name:
-
- * `pear-pear.foobar.repo/BasePackage`
- * `pear-pear.foobar.repo/IntermediatePackage`
- * `pear-pear.foobar.repo/TopLevelPackage1`
- * `pear-pear.foobar.repo/TopLevelPackage2`
-
-Suppose at a later time you wish to migrate your PEAR packages to a
-Composer repository and naming scheme, and adopt the vendor name of `foobar`.
-Projects using your PEAR packages would not see the updated packages, since
-they have a different vendor name (`foobar/IntermediatePackage` vs
-`pear-pear.foobar.repo/IntermediatePackage`).
-
-By specifying `vendor-alias` for the PEAR repository from the start, you can
-avoid this scenario and future-proof your package names.
-
-To illustrate, the following example would get the `BasePackage`,
-`TopLevelPackage1`, and `TopLevelPackage2` packages from your PEAR repository
-and `IntermediatePackage` from a Github repository:
-
-```json
-{
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/foobar/intermediate.git"
-        },
-        {
-            "type": "pear",
-            "url": "http://pear.foobar.repo",
-            "vendor-alias": "foobar"
-        }
-    ],
-    "require": {
-        "foobar/TopLevelPackage1": "*",
-        "foobar/TopLevelPackage2": "*"
-    }
-}
-```
-
 ### Package
 
 If you want to use a project that does not support Composer through any of the
@@ -506,7 +523,7 @@ Here is an example for the smarty template engine:
 }
 ```
 
-Typically you would leave the source part off, as you don't really need it.
+Typically, you would leave the source part off, as you don't really need it.
 
 > **Note**: This repository type has a few limitations and should be avoided
 > whenever possible:
@@ -576,7 +593,7 @@ package repository definitions. It will fetch all the packages that are
 `require`d and dump a `packages.json` that is your `composer` repository.
 
 Check [the satis GitHub repository](https://github.com/composer/satis) and
-the [Satis article](articles/handling-private-packages-with-satis.md) for more
+the [handling private packages article](articles/handling-private-packages.md) for more
 information.
 
 ### Artifact
@@ -585,8 +602,8 @@ There are some cases, when there is no ability to have one of the previously
 mentioned repository types online, even the VCS one. A typical example could be
 cross-organisation library exchange through build artifacts. Of course, most
 of the time these are private. To use these archives as-is, one can use a
-repository of type `artifact` with a folder containing ZIP archives of those
-private packages:
+repository of type `artifact` with a folder containing ZIP or TAR archives of
+those private packages:
 
 ```json
 {
@@ -712,8 +729,8 @@ variables are parsed in both Windows and Linux/Mac notations. For example
 `/home/<username>/git/mypackage`, equivalent to `$HOME/git/mypackage` or
 `%USERPROFILE%/git/mypackage`.
 
-> **Note:** Repository paths can also contain wildcards like ``*`` and ``?``.
-> For details, see the [PHP glob function](http://php.net/glob).
+> **Note:** Repository paths can also contain wildcards like `*` and `?`.
+> For details, see the [PHP glob function](https://php.net/glob).
 
 ## Disabling Packagist.org
 

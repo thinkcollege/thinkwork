@@ -21,6 +21,7 @@ use Composer\Package\Version\VersionParser;
 use Composer\Util\Platform;
 use Composer\Util\ProcessExecutor;
 use Composer\Util\Filesystem;
+use Composer\Util\Url;
 use Composer\Util\Git as GitUtil;
 
 /**
@@ -76,7 +77,8 @@ class PathRepository extends ArrayRepository implements ConfigurableRepositoryIn
     private $url;
 
     /**
-     * @var array
+     * @var mixed[]
+     * @phpstan-var array{url: string, options?: array{symlink?: bool, relative?: bool, versions?: array<string, string>}}
      */
     private $repoConfig;
 
@@ -86,7 +88,7 @@ class PathRepository extends ArrayRepository implements ConfigurableRepositoryIn
     private $process;
 
     /**
-     * @var array
+     * @var array{symlink?: bool, relative?: bool, versions?: array<string, string>}
      */
     private $options;
 
@@ -115,6 +117,11 @@ class PathRepository extends ArrayRepository implements ConfigurableRepositoryIn
         }
 
         parent::__construct();
+    }
+
+    public function getRepoName()
+    {
+        return 'path repo ('.Url::sanitize($this->repoConfig['url']).')';
     }
 
     public function getRepoConfig()

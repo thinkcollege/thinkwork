@@ -12,21 +12,20 @@
 
 namespace Composer\Command;
 
-use Composer\DependencyResolver\Pool;
 use Composer\Package\Link;
 use Composer\Package\PackageInterface;
-use Composer\Repository\ArrayRepository;
+use Composer\Package\RootPackage;
+use Composer\Repository\InstalledArrayRepository;
 use Composer\Repository\CompositeRepository;
+use Composer\Repository\RootPackageRepository;
+use Composer\Repository\InstalledRepository;
 use Composer\Repository\PlatformRepository;
 use Composer\Repository\RepositoryFactory;
 use Composer\Plugin\CommandEvent;
 use Composer\Plugin\PluginEvents;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Composer\Package\Version\VersionParser;
-use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -37,24 +36,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 class BaseDependencyCommand extends BaseCommand
 {
     const ARGUMENT_PACKAGE = 'package';
-    const ARGUMENT_CONSTRAINT = 'constraint';
+    const ARGUMENT_CONSTRAINT = 'version';
     const OPTION_RECURSIVE = 'recursive';
     const OPTION_TREE = 'tree';
 
+    /** @var ?string[] */
     protected $colors;
-
-    /**
-     * Set common options and arguments.
-     */
-    protected function configure()
-    {
-        $this->setDefinition(array(
-            new InputArgument(self::ARGUMENT_PACKAGE, InputArgument::REQUIRED, 'Package to inspect'),
-            new InputArgument(self::ARGUMENT_CONSTRAINT, InputArgument::OPTIONAL, 'Optional version constraint', '*'),
-            new InputOption(self::OPTION_RECURSIVE, 'r', InputOption::VALUE_NONE, 'Recursively resolves up to the root package'),
-            new InputOption(self::OPTION_TREE, 't', InputOption::VALUE_NONE, 'Prints the results as a nested tree'),
-        ));
-    }
 
     /**
      * Execute the command.
@@ -71,35 +58,32 @@ class BaseDependencyCommand extends BaseCommand
         $commandEvent = new CommandEvent(PluginEvents::COMMAND, $this->getName(), $input, $output);
         $composer->getEventDispatcher()->dispatch($commandEvent->getName(), $commandEvent);
 
-        // Prepare repositories and set up a pool
         $platformOverrides = $composer->getConfig()->get('platform') ?: array();
-        $repository = new CompositeRepository(array(
-            new ArrayRepository(array($composer->getPackage())),
+        $installedRepo = new InstalledRepository(array(
+            new RootPackageRepository($composer->getPackage()),
             $composer->getRepositoryManager()->getLocalRepository(),
             new PlatformRepository(array(), $platformOverrides),
         ));
-        $pool = new Pool();
-        $pool->addRepository($repository);
 
         // Parse package name and constraint
         list($needle, $textConstraint) = array_pad(
             explode(':', $input->getArgument(self::ARGUMENT_PACKAGE)),
             2,
-            $input->getArgument(self::ARGUMENT_CONSTRAINT)
+            $input->hasArgument(self::ARGUMENT_CONSTRAINT) ? $input->getArgument(self::ARGUMENT_CONSTRAINT) : '*'
         );
 
         // Find packages that are or provide the requested package first
-        $packages = $pool->whatProvides(strtolower($needle));
+        $packages = $installedRepo->findPackagesWithReplacersAndProviders($needle);
         if (empty($packages)) {
             throw new \InvalidArgumentException(sprintf('Could not find package "%s" in your project', $needle));
         }
 
         // If the version we ask for is not installed then we need to locate it in remote repos and add it.
         // This is needed for why-not to resolve conflicts from an uninstalled version against installed packages.
-        if (!$repository->findPackage($needle, $textConstraint)) {
+        if (!$installedRepo->findPackage($needle, $textConstraint)) {
             $defaultRepos = new CompositeRepository(RepositoryFactory::defaultRepos($this->getIO()));
             if ($match = $defaultRepos->findPackage($needle, $textConstraint)) {
-                $repository->addRepository(new ArrayRepository(array(clone $match)));
+                $installedRepo->addRepository(new InstalledArrayRepository(array(clone $match)));
             }
         }
 
@@ -126,7 +110,7 @@ class BaseDependencyCommand extends BaseCommand
         $recursive = $renderTree || $input->getOption(self::OPTION_RECURSIVE);
 
         // Resolve dependencies
-        $results = $repository->getDependents($needles, $constraint, $inverted, $recursive);
+        $results = $installedRepo->getDependents($needles, $constraint, $inverted, $recursive);
         if (empty($results)) {
             $extra = (null !== $constraint) ? sprintf(' in versions %smatching %s', $inverted ? 'not ' : '', $textConstraint) : '';
             $this->getIO()->writeError(sprintf(
@@ -170,7 +154,7 @@ class BaseDependencyCommand extends BaseCommand
                     continue;
                 }
                 $doubles[$unique] = true;
-                $version = (strpos($package->getPrettyVersion(), 'No version set') === 0) ? '-' : $package->getPrettyVersion();
+                $version = $package->getPrettyVersion() === RootPackage::DEFAULT_PRETTY_VERSION ? '-' : $package->getPrettyVersion();
                 $rows[] = array($package->getPrettyName(), $version, $link->getDescription(), sprintf('%s (%s)', $link->getTarget(), $link->getPrettyConstraint()));
                 if ($children) {
                     $queue = array_merge($queue, $children);
@@ -180,17 +164,7 @@ class BaseDependencyCommand extends BaseCommand
             $table = array_merge($rows, $table);
         } while (!empty($results));
 
-        // Render table
-        $renderer = new Table($output);
-        $renderer->setStyle('compact');
-        $rendererStyle = $renderer->getStyle();
-        if (method_exists($rendererStyle, 'setVerticalBorderChars')) {
-            $rendererStyle->setVerticalBorderChars('');
-        } else {
-            $rendererStyle->setVerticalBorderChar('');
-        }
-        $rendererStyle->setCellRowContentFormat('%s  ');
-        $renderer->setRows($table)->render();
+        $this->renderTable($table, $output);
     }
 
     /**
@@ -229,14 +203,14 @@ class BaseDependencyCommand extends BaseCommand
             /**
              * @var PackageInterface $package
              * @var Link             $link
-             * @var array|bool       $children
+             * @var array|bool     $children
              */
             list($package, $link, $children) = $result;
 
             $color = $this->colors[$level % count($this->colors)];
             $prevColor = $this->colors[($level - 1) % count($this->colors)];
             $isLast = (++$idx == $count);
-            $versionText = (strpos($package->getPrettyVersion(), 'No version set') === 0) ? '' : $package->getPrettyVersion();
+            $versionText = $package->getPrettyVersion() === RootPackage::DEFAULT_PRETTY_VERSION ? '' : $package->getPrettyVersion();
             $packageText = rtrim(sprintf('<%s>%s</%1$s> %s', $color, $package->getPrettyName(), $versionText));
             $linkText = sprintf('%s <%s>%s</%2$s> %s', $link->getDescription(), $prevColor, $link->getTarget(), $link->getPrettyConstraint());
             $circularWarn = $children === false ? '(circular dependency aborted here)' : '';

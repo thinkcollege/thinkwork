@@ -20,6 +20,9 @@ use Composer\IO\IOInterface;
  */
 class Hg
 {
+    /** @var string|false|null */
+    private static $version = false;
+
     /**
      * @var \Composer\IO\IOInterface
      */
@@ -72,23 +75,29 @@ class Hg
         $this->throwException('Failed to clone ' . $url . ', ' . "\n\n" . $error, $url);
     }
 
-    public static function sanitizeUrl($message)
-    {
-        return preg_replace_callback('{://(?P<user>[^@]+?):(?P<password>.+?)@}', function ($m) {
-            if (preg_match('{^[a-f0-9]{12,}$}', $m[1])) {
-                return '://***:***@';
-            }
-
-            return '://' . $m[1] . ':***@';
-        }, $message);
-    }
-
     private function throwException($message, $url)
     {
-        if (0 !== $this->process->execute('hg --version', $ignoredOutput)) {
-            throw new \RuntimeException(self::sanitizeUrl('Failed to clone ' . $url . ', hg was not found, check that it is installed and in your PATH env.' . "\n\n" . $this->process->getErrorOutput()));
+        if (null === self::getVersion($this->process)) {
+            throw new \RuntimeException(Url::sanitize('Failed to clone ' . $url . ', hg was not found, check that it is installed and in your PATH env.' . "\n\n" . $this->process->getErrorOutput()));
         }
 
-        throw new \RuntimeException(self::sanitizeUrl($message));
+        throw new \RuntimeException(Url::sanitize($message));
+    }
+
+    /**
+     * Retrieves the current hg version.
+     *
+     * @return string|null The hg version number, if present.
+     */
+    public static function getVersion(ProcessExecutor $process)
+    {
+        if (false === self::$version) {
+            self::$version = null;
+            if (0 === $process->execute('hg --version', $output) && preg_match('/^.+? (\d+(?:\.\d+)+)\)?\r?\n/', $output, $matches)) {
+                self::$version = $matches[1];
+            }
+        }
+
+        return self::$version;
     }
 }

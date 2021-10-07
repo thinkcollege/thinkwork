@@ -15,11 +15,11 @@ namespace Composer\Command;
 use Composer\Script\Event as ScriptEvent;
 use Composer\Script\ScriptEvents;
 use Composer\Util\ProcessExecutor;
+use Composer\Util\Platform;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\Table;
 
 /**
  * @author Fabien Potencier <fabien.potencier@gmail.com>
@@ -27,7 +27,7 @@ use Symfony\Component\Console\Helper\Table;
 class RunScriptCommand extends BaseCommand
 {
     /**
-     * @var array Array with command events
+     * @var string[] Array with command events
      */
     protected $scriptEvents = array(
         ScriptEvents::PRE_INSTALL_CMD,
@@ -74,7 +74,8 @@ EOT
     {
         if ($input->getOption('list')) {
             return $this->listScripts($output);
-        } elseif (!$input->getArgument('script')) {
+        }
+        if (!$input->getArgument('script')) {
             throw new \RuntimeException('Missing required argument "script"');
         }
 
@@ -103,6 +104,8 @@ EOT
             ProcessExecutor::setTimeout((int) $timeout);
         }
 
+        Platform::putEnv('COMPOSER_DEV_MODE', $devMode ? '1' : '0');
+
         return $composer->getEventDispatcher()->dispatchScript($script, $devMode, $args);
     }
 
@@ -130,16 +133,7 @@ EOT
             $table[] = array('  '.$name, $description);
         }
 
-        $renderer = new Table($output);
-        $renderer->setStyle('compact');
-        $rendererStyle = $renderer->getStyle();
-        if (method_exists($rendererStyle, 'setVerticalBorderChars')) {
-            $rendererStyle->setVerticalBorderChars('');
-        } else {
-            $rendererStyle->setVerticalBorderChar('');
-        }
-        $rendererStyle->setCellRowContentFormat('%s  ');
-        $renderer->setRows($table)->render();
+        $this->renderTable($table, $output);
 
         return 0;
     }

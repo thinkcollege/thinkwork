@@ -17,11 +17,11 @@ class MailgunHandlerTest extends MailgunKernelTestBase {
     $mailgun = $this->container->get('mailgun.mail_handler');
 
     // By default, we should parse domain based on "From" value.
-    $this->assertEqual($mailgun->getDomain('test@domain.com'), 'domain.com');
-    $this->assertEqual($mailgun->getDomain('test@mg.domain.com'), 'mg.domain.com');
-    $this->assertEqual($mailgun->getDomain('From <test@domain.com>'), 'domain.com');
-    $this->assertEqual($mailgun->getDomain('From <test@mg.domain.com>'), 'mg.domain.com');
-    $this->assertEqual($mailgun->getDomain('From test@mg.domain.com'), 'mg.domain.com');
+    $this->assertEquals('domain.com', $mailgun->getDomain('test@domain.com'));
+    $this->assertEquals('mg.domain.com', $mailgun->getDomain('test@mg.domain.com'));
+    $this->assertEquals('domain.com', $mailgun->getDomain('From <test@domain.com>'));
+    $this->assertEquals('mg.domain.com', $mailgun->getDomain('From <test@mg.domain.com>'));
+    $this->assertEquals('mg.domain.com', $mailgun->getDomain('From test@mg.domain.com'));
 
     /** @var \Drupal\Core\Config\ConfigFactoryInterface $config_factory */
     $config_factory = $this->container->get('config.factory');
@@ -30,7 +30,7 @@ class MailgunHandlerTest extends MailgunKernelTestBase {
       ->save();
 
     // Otherwise, we should return domain according to config value.
-    $this->assertEqual($mailgun->getDomain('test@another.domain.com'), 'mg.domain.com');
+    $this->assertEquals('mg.domain.com', $mailgun->getDomain('test@another.domain.com'));
   }
 
 }

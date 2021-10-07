@@ -28,6 +28,9 @@ use Composer\Spdx\SpdxLicenses;
  */
 class ConfigValidator
 {
+    const CHECK_VERSION = 1;
+
+    /** @var IOInterface */
     private $io;
 
     public function __construct(IOInterface $io)
@@ -40,10 +43,11 @@ class ConfigValidator
      *
      * @param string $file                       The path to the file
      * @param int    $arrayLoaderValidationFlags Flags for ArrayLoader validation
+     * @param int    $flags                      Flags for validation
      *
      * @return array a triple containing the errors, publishable errors, and warnings
      */
-    public function validate($file, $arrayLoaderValidationFlags = ValidatingArrayLoader::CHECK_ALL)
+    public function validate($file, $arrayLoaderValidationFlags = ValidatingArrayLoader::CHECK_ALL, $flags = self::CHECK_VERSION)
     {
         $errors = array();
         $publishErrors = array();
@@ -109,7 +113,7 @@ class ConfigValidator
             }
         }
 
-        if (isset($manifest['version'])) {
+        if (($flags & self::CHECK_VERSION) && isset($manifest['version'])) {
             $warnings[] = 'The version field is present, it is recommended to leave it out if the package is published on Packagist.';
         }
 
@@ -129,7 +133,7 @@ class ConfigValidator
         }
 
         // check for require-dev overrides
-        if (isset($manifest['require']) && isset($manifest['require-dev'])) {
+        if (isset($manifest['require'], $manifest['require-dev'])) {
             $requireOverrides = array_intersect_key($manifest['require'], $manifest['require-dev']);
 
             if (!empty($requireOverrides)) {
@@ -137,7 +141,6 @@ class ConfigValidator
                 $warnings[] = implode(', ', array_keys($requireOverrides)). " {$plural} required both in require and require-dev, this can lead to unexpected behavior";
             }
         }
-
 
         // check for meaningless provide/replace satisfying requirements
         foreach (array('provide', 'replace') as $linkType) {
@@ -187,8 +190,8 @@ class ConfigValidator
             $warnings[] = "Defining autoload.psr-4 with an empty namespace prefix is a bad idea for performance";
         }
 
+        $loader = new ValidatingArrayLoader(new ArrayLoader(), true, null, $arrayLoaderValidationFlags);
         try {
-            $loader = new ValidatingArrayLoader(new ArrayLoader(), true, null, $arrayLoaderValidationFlags);
             if (!isset($manifest['version'])) {
                 $manifest['version'] = '1.0.0';
             }

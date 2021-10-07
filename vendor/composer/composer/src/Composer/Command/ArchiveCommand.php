@@ -16,12 +16,15 @@ use Composer\Factory;
 use Composer\IO\IOInterface;
 use Composer\Config;
 use Composer\Composer;
+use Composer\Package\CompletePackageInterface;
 use Composer\Repository\CompositeRepository;
 use Composer\Repository\RepositoryFactory;
 use Composer\Script\ScriptEvents;
 use Composer\Plugin\CommandEvent;
 use Composer\Plugin\PluginEvents;
 use Composer\Util\Filesystem;
+use Composer\Util\Loop;
+use Composer\Util\ProcessExecutor;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -46,7 +49,7 @@ class ArchiveCommand extends BaseCommand
                 new InputOption('dir', null, InputOption::VALUE_REQUIRED, 'Write the archive to this directory'),
                 new InputOption('file', null, InputOption::VALUE_REQUIRED, 'Write the archive with the given file name.'
                     .' Note that the format will be appended.'),
-                new InputOption('ignore-filters', false, InputOption::VALUE_NONE, 'Ignore filters when saving package'),
+                new InputOption('ignore-filters', null, InputOption::VALUE_NONE, 'Ignore filters when saving package'),
             ))
             ->setHelp(
                 <<<EOT
@@ -111,8 +114,10 @@ EOT
             $archiveManager = $composer->getArchiveManager();
         } else {
             $factory = new Factory;
-            $downloadManager = $factory->createDownloadManager($io, $config);
-            $archiveManager = $factory->createArchiveManager($config, $downloadManager);
+            $process = new ProcessExecutor();
+            $httpDownloader = Factory::createHttpDownloader($io, $config);
+            $downloadManager = $factory->createDownloadManager($io, $config, $httpDownloader, $process);
+            $archiveManager = $factory->createArchiveManager($config, $downloadManager, new Loop($httpDownloader, $process));
         }
 
         if ($packageName) {
@@ -136,6 +141,9 @@ EOT
         return 0;
     }
 
+    /**
+     * @return CompletePackageInterface|false
+     */
     protected function selectPackage(IOInterface $io, $packageName, $version = null)
     {
         $io->writeError('<info>Searching for the specified package.</info>');
@@ -165,6 +173,10 @@ EOT
             $io->writeError('<error>Could not find a package matching '.$packageName.'.</error>');
 
             return false;
+        }
+
+        if (!$package instanceof CompletePackageInterface) {
+            throw new \LogicException('Expected a CompletePackageInterface instance but found '.get_class($package));
         }
 
         return $package;

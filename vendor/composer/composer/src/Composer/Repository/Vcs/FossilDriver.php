@@ -23,12 +23,16 @@ use Composer\IO\IOInterface;
  */
 class FossilDriver extends VcsDriver
 {
+    /** @var array<string, string> Map of tag name to identifier */
     protected $tags;
+    /** @var array<string, string> Map of branch name to identifier */
     protected $branches;
-    protected $rootIdentifier;
-    protected $repoFile;
+    /** @var ?string */
+    protected $rootIdentifier = null;
+    /** @var ?string */
+    protected $repoFile = null;
+    /** @var string */
     protected $checkoutDir;
-    protected $infoCache = array();
 
     /**
      * {@inheritDoc}
@@ -166,7 +170,7 @@ class FossilDriver extends VcsDriver
     public function getChangeDate($identifier)
     {
         $this->process->execute('fossil finfo -b -n 1 composer.json', $output, $this->checkoutDir);
-        list($ckout, $date, $message) = explode(' ', trim($output), 3);
+        list(, $date) = explode(' ', trim($output), 3);
 
         return new \DateTime($date, new \DateTimeZone('UTC'));
     }
@@ -197,7 +201,6 @@ class FossilDriver extends VcsDriver
     {
         if (null === $this->branches) {
             $branches = array();
-            $bookmarks = array();
 
             $this->process->execute('fossil branch list', $output, $this->checkoutDir);
             foreach ($this->process->splitLines($output) as $branch) {

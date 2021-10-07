@@ -33,8 +33,8 @@ class ClassMapGenerator
     /**
      * Generate a class map file
      *
-     * @param \Traversable $dirs Directories or a single path to search in
-     * @param string       $file The name of the class map file
+     * @param \Traversable|array<string> $dirs Directories or a single path to search in
+     * @param string                     $file The name of the class map file
      */
     public static function dump($dirs, $file)
     {
@@ -50,22 +50,22 @@ class ClassMapGenerator
     /**
      * Iterate over all files in the given directory searching for classes
      *
-     * @param \Iterator|string $path         The path to search in or an iterator
-     * @param string           $excluded     Regex that matches file paths to be excluded from the classmap
-     * @param IOInterface      $io           IO object
-     * @param string           $namespace    Optional namespace prefix to filter by
-     * @param string           $autoloadType psr-0|psr-4 Optional autoload standard to use mapping rules
+     * @param \Traversable|string|array<string> $path         The path to search in or an iterator
+     * @param string                            $excluded     Regex that matches file paths to be excluded from the classmap
+     * @param ?IOInterface                      $io           IO object
+     * @param ?string                           $namespace    Optional namespace prefix to filter by
+     * @param ?string                           $autoloadType psr-0|psr-4 Optional autoload standard to use mapping rules
      *
      * @throws \RuntimeException When the path is neither an existing file nor directory
      * @return array             A class map array
      */
     public static function createMap($path, $excluded = null, IOInterface $io = null, $namespace = null, $autoloadType = null, &$scannedFiles = array())
     {
+        $basePath = $path;
         if (is_string($path)) {
-            $basePath = $path;
             if (is_file($path)) {
                 $path = array(new \SplFileInfo($path));
-            } elseif (is_dir($path)) {
+            } elseif (is_dir($path) || strpos($path, '*') !== false) {
                 $path = Finder::create()->files()->followLinks()->name('/\.(php|inc|hh)$/')->in($path);
             } else {
                 throw new \RuntimeException(
@@ -113,10 +113,10 @@ class ClassMapGenerator
 
             $classes = self::findClasses($filePath);
             if (null !== $autoloadType) {
-                list($classes, $validClasses) = self::filterByNamespace($classes, $filePath, $namespace, $autoloadType, $basePath, $io);
+                $classes = self::filterByNamespace($classes, $filePath, $namespace, $autoloadType, $basePath, $io);
 
                 // if no valid class was found in the file then we do not mark it as scanned as it might still be matched by another rule later
-                if ($validClasses) {
+                if ($classes) {
                     $scannedFiles[$realPath] = true;
                 }
             } else {
@@ -126,8 +126,7 @@ class ClassMapGenerator
 
             foreach ($classes as $class) {
                 // skip classes not within the given namespace prefix
-                // TODO enable in Composer v1.11 or 2.0 whichever comes first
-                if (/* null === $autoloadType && */ null !== $namespace && '' !== $namespace && 0 !== strpos($class, $namespace)) {
+                if (null === $autoloadType && null !== $namespace && '' !== $namespace && 0 !== strpos($class, $namespace)) {
                     continue;
                 }
 
@@ -148,13 +147,13 @@ class ClassMapGenerator
     /**
      * Remove classes which could not have been loaded by namespace autoloaders
      *
-     * @param array       $classes       found classes in given file
-     * @param string      $filePath      current file
-     * @param string      $baseNamespace prefix of given autoload mapping
-     * @param string      $namespaceType psr-0|psr-4
-     * @param string      $basePath      root directory of given autoload mapping
-     * @param IOInterface $io            IO object
-     * @return array      valid classes
+     * @param  array        $classes       found classes in given file
+     * @param  string       $filePath      current file
+     * @param  string       $baseNamespace prefix of given autoload mapping
+     * @param  string       $namespaceType psr-0|psr-4
+     * @param  string       $basePath      root directory of given autoload mapping
+     * @param  ?IOInterface $io            IO object
+     * @return array        valid classes
      */
     private static function filterByNamespace($classes, $filePath, $baseNamespace, $namespaceType, $basePath, $io)
     {
@@ -177,8 +176,7 @@ class ClassMapGenerator
                     $className = substr($class, $namespaceLength + 1);
                     $subPath = str_replace('\\', DIRECTORY_SEPARATOR, $namespace)
                         . str_replace('_', DIRECTORY_SEPARATOR, $className);
-                }
-                else {
+                } else {
                     $subPath = str_replace('_', DIRECTORY_SEPARATOR, $class);
                 }
             } elseif ('psr-4' === $namespaceType) {
@@ -196,19 +194,15 @@ class ClassMapGenerator
         // warn only if no valid classes, else silently skip invalid
         if (empty($validClasses)) {
             foreach ($rejectedClasses as $class) {
-                trigger_error(
-                    "Class $class located in ".preg_replace('{^'.preg_quote(getcwd()).'}', '.', $filePath, 1)." does not comply with $namespaceType autoloading standard. It will not autoload anymore in Composer v2.0.",
-                    E_USER_DEPRECATED
-                );
+                if ($io) {
+                    $io->writeError("<warning>Class $class located in ".preg_replace('{^'.preg_quote(getcwd()).'}', '.', $filePath, 1)." does not comply with $namespaceType autoloading standard. Skipping.</warning>");
+                }
             }
 
-            // TODO enable in Composer 2.0
-            //return array();
+            return array();
         }
 
-        // TODO enable in Composer 2.0 & unskip test in AutoloadGeneratorTest::testPSRToClassMapIgnoresNonPSRClasses
-        //return $validClasses;
-        return array($classes, $validClasses);
+        return $validClasses;
     }
 
     /**
@@ -220,10 +214,7 @@ class ClassMapGenerator
      */
     private static function findClasses($path)
     {
-        $extraTypes = PHP_VERSION_ID < 50400 ? '' : '|trait';
-        if (defined('HHVM_VERSION') && version_compare(HHVM_VERSION, '3.3', '>=')) {
-            $extraTypes .= '|enum';
-        }
+        $extraTypes = self::getExtraTypes();
 
         // Use @ here instead of Silencer to actively suppress 'unhelpful' output
         // @link https://github.com/composer/composer/pull/4886
@@ -231,7 +222,7 @@ class ClassMapGenerator
         if (!$contents) {
             if (!file_exists($path)) {
                 $message = 'File at "%s" does not exist, check your classmap definitions';
-            } elseif (!is_readable($path)) {
+            } elseif (!Filesystem::isReadable($path)) {
                 $message = 'File at "%s" is not readable, check its permissions';
             } elseif ('' === trim(file_get_contents($path))) {
                 // The input file was really empty and thus contains no classes
@@ -247,32 +238,14 @@ class ClassMapGenerator
         }
 
         // return early if there is no chance of matching anything in this file
-        if (!preg_match('{\b(?:class|interface'.$extraTypes.')\s}i', $contents)) {
+        preg_match_all('{\b(?:class|interface'.$extraTypes.')\s}i', $contents, $matches);
+        if (!$matches) {
             return array();
         }
 
-        // strip heredocs/nowdocs
-        $contents = preg_replace('{<<<[ \t]*([\'"]?)(\w+)\\1(?:\r\n|\n|\r)(?:.*?)(?:\r\n|\n|\r)(?:\s*)\\2(?=\s+|[;,.)])}s', 'null', $contents);
-        // strip strings
-        $contents = preg_replace('{"[^"\\\\]*+(\\\\.[^"\\\\]*+)*+"|\'[^\'\\\\]*+(\\\\.[^\'\\\\]*+)*+\'}s', 'null', $contents);
-        // strip leading non-php code if needed
-        if (substr($contents, 0, 2) !== '<?') {
-            $contents = preg_replace('{^.+?<\?}s', '<?', $contents, 1, $replacements);
-            if ($replacements === 0) {
-                return array();
-            }
-        }
-        // strip non-php blocks in the file
-        $contents = preg_replace('{\?>(?:[^<]++|<(?!\?))*+<\?}s', '?><?', $contents);
-        // strip trailing non-php code if needed
-        $pos = strrpos($contents, '?>');
-        if (false !== $pos && false === strpos(substr($contents, $pos), '<?')) {
-            $contents = substr($contents, 0, $pos);
-        }
-        // strip comments if short open tags are in the file
-        if (preg_match('{(<\?)(?!(php|hh))}i', $contents)) {
-            $contents = preg_replace('{//.* | /\*(?:[^*]++|\*(?!/))*\*/}x', '', $contents);
-        }
+        $p = new PhpFileCleaner($contents, count($matches[0]));
+        $contents = $p->clean();
+        unset($p);
 
         preg_match_all('{
             (?:
@@ -308,5 +281,19 @@ class ClassMapGenerator
         }
 
         return $classes;
+    }
+
+    private static function getExtraTypes()
+    {
+        static $extraTypes = null;
+        if (null === $extraTypes) {
+            $extraTypes = PHP_VERSION_ID < 50400 ? '' : '|trait';
+            if (PHP_VERSION_ID >= 80100 || (defined('HHVM_VERSION') && version_compare(HHVM_VERSION, '3.3', '>='))) {
+                $extraTypes .= '|enum';
+            }
+            PhpFileCleaner::setTypeConfig(array_merge(array('class', 'interface'), array_filter(explode('|', $extraTypes))));
+        }
+
+        return $extraTypes;
     }
 }

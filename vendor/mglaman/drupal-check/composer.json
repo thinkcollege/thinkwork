@@ -1,0 +1,47 @@
+{
+    "name": "mglaman/drupal-check",
+    "description": "CLI tool for running checks on a Drupal code base",
+    "type": "project",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Matt Glaman",
+            "email": "nmd.matt@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2.5|^8.0",
+        "composer/xdebug-handler": "^1.1 | ^2.0.1",
+        "jean85/pretty-package-versions": "^1.5.0 || ^2.0.1",
+        "mglaman/phpstan-drupal": "^0.12.12",
+        "nette/neon": "^3.1",
+        "phpstan/phpstan-deprecation-rules": "^0.12.6",
+        "symfony/console": "~3.2 || ~4.0",
+        "symfony/process": "~3.2 || ~4.0",
+        "webflo/drupal-finder": "^1.1"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^0.12.81",
+        "phpstan/phpstan-strict-rules": "^0.12.9",
+        "squizlabs/php_codesniffer": "^3.4"
+    },
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "7.2.5"
+        }
+    },
+    "bin": [
+        "drupal-check"
+    ],
+    "autoload": {
+        "psr-4": {
+            "DrupalCheck\\": "src"
+        }
+    },
+    "extra": {
+        "violinist": {
+            "one_pull_request_per_package": 1
+        }
+    }
+}

@@ -30,7 +30,11 @@ class GitBitbucketDriver extends BitbucketDriver
         }
 
         if (null === $this->rootIdentifier) {
-            if (! $this->getRepoData()) {
+            if (!$this->getRepoData()) {
+                if (!$this->fallbackDriver) {
+                    throw new \LogicException('A fallback driver should be setup if getRepoData returns false');
+                }
+
                 return $this->fallbackDriver->getRootIdentifier();
             }
 
@@ -75,8 +79,8 @@ class GitBitbucketDriver extends BitbucketDriver
             array('url' => $url),
             $this->io,
             $this->config,
-            $this->process,
-            $this->remoteFilesystem
+            $this->httpDownloader,
+            $this->process
         );
         $this->fallbackDriver->initialize();
     }
