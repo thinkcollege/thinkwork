@@ -14,6 +14,11 @@ class PanelizerUserFunctionalTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
   public static $modules = [
     // Modules for core functionality.
     'field',
@@ -94,7 +99,7 @@ class PanelizerUserFunctionalTest extends BrowserTestBase {
     $this->assertResponse(200);
     $this->verbose($out);
 
-    // Verify that 
+    // Verify that
     $elements = $this->xpath('//*[@id="panels-ipe-content"]');
     if (is_array($elements)) {
       $this->assertIdentical(count($elements), 1);

@@ -3,6 +3,7 @@
 namespace Drupal\webform\Form\AdminConfig;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
@@ -13,6 +14,7 @@ use Drupal\webform\Entity\Webform;
 use Drupal\webform\Utility\WebformArrayHelper;
 use Drupal\webform\WebformAddonsManagerInterface;
 use Drupal\webform\WebformInterface;
+use Drupal\webform\WebformThemeManagerInterface;
 use Drupal\webform\WebformTokenManagerInterface;
 use Drupal\webform\WebformThirdPartySettingsManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -37,6 +39,13 @@ class WebformAdminConfigFormsForm extends WebformAdminConfigBaseForm {
   protected $tokenManager;
 
   /**
+   * The webform storage.
+   *
+   * @var \Drupal\webform\WebformEntityStorageInterface
+   */
+  protected $webformStorage;
+
+  /**
    * The webform third party settings manager.
    *
    * @var \Drupal\webform\WebformThirdPartySettingsManagerInterface
@@ -49,6 +58,13 @@ class WebformAdminConfigFormsForm extends WebformAdminConfigBaseForm {
    * @var \Drupal\webform\WebformAddonsManagerInterface
    */
   protected $addonsManager;
+
+  /**
+   * The webform theme manager.
+   *
+   * @var \Drupal\webform\WebformThemeManagerInterface
+   */
+  protected $themeManager;
 
   /**
    * {@inheritdoc}
@@ -64,19 +80,25 @@ class WebformAdminConfigFormsForm extends WebformAdminConfigBaseForm {
    *   The factory for configuration objects.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    * @param \Drupal\webform\WebformTokenManagerInterface $token_manager
    *   The webform token manager.
    * @param \Drupal\webform\WebformThirdPartySettingsManagerInterface $third_party_settings_manager
    *   The webform third party settings manager.
    * @param \Drupal\webform\WebformAddonsManagerInterface $addons_manager
    *   The webform add-ons manager.
+   * @param \Drupal\webform\WebformThemeManagerInterface $theme_manager
+   *   The webform theme manager.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, ModuleHandlerInterface $module_handler, WebformTokenManagerInterface $token_manager, WebformThirdPartySettingsManagerInterface $third_party_settings_manager, WebformAddonsManagerInterface $addons_manager) {
+  public function __construct(ConfigFactoryInterface $config_factory, ModuleHandlerInterface $module_handler, EntityTypeManagerInterface $entity_type_manager, WebformTokenManagerInterface $token_manager, WebformThirdPartySettingsManagerInterface $third_party_settings_manager, WebformAddonsManagerInterface $addons_manager, WebformThemeManagerInterface $theme_manager) {
     parent::__construct($config_factory);
+    $this->webformStorage = $entity_type_manager->getStorage('webform');
     $this->moduleHandler = $module_handler;
     $this->tokenManager = $token_manager;
     $this->thirdPartySettingsManager = $third_party_settings_manager;
     $this->addonsManager = $addons_manager;
+    $this->themeManager = $theme_manager;
   }
 
   /**
@@ -86,9 +108,11 @@ class WebformAdminConfigFormsForm extends WebformAdminConfigBaseForm {
     return new static(
       $container->get('config.factory'),
       $container->get('module_handler'),
+      $container->get('entity_type.manager'),
       $container->get('webform.token_manager'),
       $container->get('webform.third_party_settings_manager'),
-      $container->get('webform.addons_manager')
+      $container->get('webform.addons_manager'),
+      $container->get('webform.theme_manager')
     );
   }
 
@@ -99,10 +123,44 @@ class WebformAdminConfigFormsForm extends WebformAdminConfigBaseForm {
     $config = $this->config('webform.settings');
     $settings = $config->get('settings');
 
+    // Forms overview settings.
+    $t_args = [
+      ':href' => Url::fromRoute('entity.webform.collection')->toString(),
+    ];
+    $form['filter_settings'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Form overview settings'),
+      '#open' => TRUE,
+      '#tree' => TRUE,
+    ];
+    $form['filter_settings']['filter_category'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Filter webforms default category'),
+      '#description' => $this->t('Select the filter webforms default category selected on the <a href=":href">webform overview page</a>.', $t_args),
+      '#options' => $this->webformStorage->getCategories(FALSE),
+      '#empty_option' => $this->t('Show all webforms'),
+      '#parents' => ['form', 'filter_category'],
+      '#default_value' => $config->get('form.filter_category'),
+    ];
+    $form['filter_settings']['filter_state'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Filter webforms default state'),
+      '#description' => $this->t('Select the filter webforms default state selected on the <a href=":href">webform overview page</a>.', $t_args),
+      '#options' => [
+        WebformInterface::STATUS_OPEN => $this->t('Open'),
+        WebformInterface::STATUS_CLOSED => $this->t('Closed'),
+        WebformInterface::STATUS_SCHEDULED => $this->t('Scheduled'),
+        WebformInterface::STATUS_ARCHIVED => $this->t('Archived'),
+      ],
+      '#empty_option' => $this->t('All'),
+      '#parents' => ['form', 'filter_state'],
+      '#default_value' => $config->get('form.filter_state'),
+    ];
+
     // Page settings.
     $form['page_settings'] = [
       '#type' => 'details',
-      '#title' => $this->t('URL path settings'),
+      '#title' => $this->t('Form URL path settings'),
       '#open' => TRUE,
       '#tree' => TRUE,
     ];
@@ -189,6 +247,13 @@ class WebformAdminConfigFormsForm extends WebformAdminConfigBaseForm {
       '#size' => 20,
       '#default_value' => $settings['default_reset_button_label'],
     ];
+    $form['form_settings']['default_delete_button_label'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Default delete button label'),
+      '#required' => TRUE,
+      '#size' => 20,
+      '#default_value' => $settings['default_delete_button_label'],
+    ];
     $form['form_settings']['form_classes'] = [
       '#type' => 'webform_codemirror',
       '#title' => $this->t('Form CSS classes'),
@@ -237,7 +302,7 @@ class WebformAdminConfigFormsForm extends WebformAdminConfigBaseForm {
       'default_form_novalidate' => [
         'group' => $this->t('Validation'),
         'title' => $this->t('Disable client-side validation for all webforms'),
-        'description' => $this->t('If checked, the <a href=":href">novalidate</a> attribute, which disables client-side validation, will be added to all webforms.', [':href' => 'http://www.w3schools.com/tags/att_form_novalidate.asp']),
+        'description' => $this->t('If checked, the <a href=":href">novalidate</a> attribute, which disables client-side validation, will be added to all webforms.', [':href' => 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form']),
       ],
       'default_form_disable_inline_errors' => [
         'group' => $this->t('Validation'),
@@ -316,6 +381,20 @@ class WebformAdminConfigFormsForm extends WebformAdminConfigBaseForm {
       '#required' => TRUE,
       '#size' => 20,
       '#default_value' => $settings['default_wizard_confirmation_label'],
+    ];
+    $form['wizard_settings']['default_wizard_toggle_show_label'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Default wizard show all elements label'),
+      '#required' => TRUE,
+      '#size' => 20,
+      '#default_value' => $settings['default_wizard_toggle_show_label'],
+    ];
+    $form['wizard_settings']['default_wizard_toggle_hide_label'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Default wizard hide all elements label'),
+      '#required' => TRUE,
+      '#size' => 20,
+      '#default_value' => $settings['default_wizard_toggle_hide_label'],
     ];
 
     // Preview settings.
@@ -400,7 +479,7 @@ class WebformAdminConfigFormsForm extends WebformAdminConfigBaseForm {
     // Ajax settings.
     $form['ajax_settings'] = [
       '#type' => 'details',
-      '#title' => $this->t('Ajax settings'),
+      '#title' => $this->t('Form Ajax settings'),
       '#open' => TRUE,
       '#tree' => TRUE,
     ];
@@ -453,6 +532,40 @@ class WebformAdminConfigFormsForm extends WebformAdminConfigBaseForm {
       ],
       '#default_value' => $settings['default_ajax_speed'],
     ];
+
+    // Share settings.
+    $form['share_settings'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Form share settings'),
+      '#open' => TRUE,
+      '#tree' => TRUE,
+      '#access' => $this->moduleHandler->moduleExists('webform_share'),
+    ];
+    $form['share_settings']['default_share'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable form sharing'),
+      '#description' => $this->t('If checking, form sharing will be enabled for all webforms.'),
+      '#return_value' => TRUE,
+      '#default_value' => $settings['default_share'],
+    ];
+    $form['share_settings']['default_share_node'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable form sharing for webform nodes'),
+      '#description' => $this->t('If checking, form sharing will be enabled for all webform nodes.'),
+      '#return_value' => TRUE,
+      '#default_value' => $settings['default_share_node'],
+      '#access' => $this->moduleHandler->moduleExists('webform_node'),
+    ];
+    $form['share_settings']['default_share_theme_name'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Default shared form theme'),
+      '#description' => $this->t('Select the theme that will be used to render all shared webforms.'),
+      '#options' => $this->themeManager->getThemeNames(),
+      '#default_value' => $settings['default_share_theme_name'],
+    ];
+
+    // Bulk operation settings.
+    $form['bulk_form_settings'] = $this->buildBulkOperations($settings, 'webform');
 
     // Dialog settings.
     $form['dialog_settings'] = [
@@ -620,12 +733,14 @@ class WebformAdminConfigFormsForm extends WebformAdminConfigBaseForm {
       + $form_state->getValue('wizard_settings')
       + $form_state->getValue('preview_settings')
       + $form_state->getValue('confirmation_settings')
+      + $form_state->getValue('share_settings')
       + $form_state->getValue('ajax_settings')
+      + $form_state->getValue('bulk_form_settings')
       + $form_state->getValue('dialog_settings');
 
     // Track if we need to trigger an update of all webform paths
     // because the 'default_page_base_path' changed.
-    $update_paths = ($settings['default_page_base_path'] != $this->config('webform.settings')->get('settings.default_page_base_path')) ? TRUE : FALSE;
+    $update_paths = ($settings['default_page_base_path'] !== $this->config('webform.settings')->get('settings.default_page_base_path')) ? TRUE : FALSE;
 
     // Filter empty dialog options.
     foreach ($settings['dialog_options'] as $dialog_name => $dialog_options) {
@@ -635,6 +750,7 @@ class WebformAdminConfigFormsForm extends WebformAdminConfigBaseForm {
     // Update config and submit form.
     $config = $this->config('webform.settings');
     $config->set('settings', $settings + $config->get('settings'));
+    $config->set('form', $form_state->getValue('form') ?: []);
     $config->set('third_party_settings', $form_state->getValue('third_party_settings') ?: []);
     parent::submitForm($form, $form_state);
 

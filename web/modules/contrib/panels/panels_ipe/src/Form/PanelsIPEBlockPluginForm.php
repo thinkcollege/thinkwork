@@ -146,21 +146,21 @@ class PanelsIPEBlockPluginForm extends FormBase {
     $form['flipper'] = [
       '#type' => 'container',
       '#attributes' => [
-        'class' => 'flipper',
+        'class' => ['flipper'],
       ],
     ];
 
     $form['flipper']['front'] = [
       '#type' => 'container',
       '#attributes' => [
-        'class' => 'front',
+        'class' => ['front'],
       ],
     ];
 
     $form['flipper']['back'] = [
       '#type' => 'container',
       '#attributes' => [
-        'class' => 'back',
+        'class' => ['back'],
       ],
     ];
 

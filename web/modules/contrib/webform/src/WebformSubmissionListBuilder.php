@@ -14,6 +14,7 @@ use Drupal\Core\Link;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
+use Drupal\Core\Utility\TableSort;
 use Drupal\views\Views;
 use Drupal\webform\Controller\WebformSubmissionController;
 use Drupal\webform\Plugin\WebformElementManagerInterface;
@@ -373,13 +374,16 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
       // @see /node/{node}/webform/results/submissions
       case "$base_route_name.webform.results_submissions":
         $this->columns = $webform_submission_storage->getCustomColumns($this->webform, $this->sourceEntity, $this->account, TRUE);
-        $this->sort = $webform_submission_storage->getCustomSetting('sort', 'created', $this->webform, $this->sourceEntity);
-        $this->direction = $webform_submission_storage->getCustomSetting('direction', 'desc', $this->webform, $this->sourceEntity);
-        $this->limit = $webform_submission_storage->getCustomSetting('limit', 20, $this->webform, $this->sourceEntity);
-        $this->format = $webform_submission_storage->getCustomSetting('format', $this->format, $this->webform, $this->sourceEntity);
-        $this->linkType = $webform_submission_storage->getCustomSetting('link_type', $this->linkType, $this->webform, $this->sourceEntity);
-        $this->customize = $this->webform->access('update');
-        if ($this->format['element_format'] == 'raw') {
+        $this->sort = $this->getCustomSetting('sort', 'created');
+        $this->direction = $this->getCustomSetting('direction', 'desc');
+        $this->limit = $this->getCustomSetting('limit', 20);
+        $this->format = $this->getCustomSetting('format', $this->format);
+        $this->linkType = $this->getCustomSetting('link_type', $this->linkType);
+
+        $this->customize = $this->webform->access('update')
+          || $this->webform->getSetting('results_customize', TRUE);
+
+        if ($this->format['element_format'] === 'raw') {
           foreach ($this->columns as &$column) {
             $column['format'] = 'raw';
             if (isset($column['element'])) {
@@ -428,7 +432,7 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
         '%webform' => $this->webform->label(),
         '%user' => $this->account->getDisplayName(),
       ];
-      if ($this->state == self::STATE_DRAFT) {
+      if ($this->draft) {
         $build['#title'] = $this->t('Drafts for %webform for %user', $t_args);
       }
       else {
@@ -492,10 +496,7 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
     // Populate the views arguments.
     $arguments = [];
     foreach ($display_arguments as $argument_name => $display_argument) {
-      if ($display_argument['table'] !== 'webform_submission') {
-        $arguments[] = 'all';
-      }
-      else {
+      if ($display_argument['table'] === 'webform_submission') {
         switch ($argument_name) {
           case 'webform_id':
             $arguments[] = (isset($this->webform)) ? $this->webform->id() : 'all';
@@ -550,7 +551,7 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
 
     // Customize buttons.
     if ($this->customize) {
-      $build['custom_top'] = $this->buildCustomizeButton();
+      $build['customize'] = $this->buildCustomizeButton();
     }
 
     // Display info.
@@ -563,15 +564,16 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
     $build['table']['#sticky'] = TRUE;
     $build['table']['#attributes']['class'][] = 'webform-results-table';
 
-    // Customize.
-    // Only displayed when more than 20 submissions are being displayed.
-    if ($this->customize && isset($build['table']['#rows']) && count($build['table']['#rows']) >= 20) {
-      $build['custom_bottom'] = $this->buildCustomizeButton();
-      if (isset($build['pager'])) {
-        $build['pager']['#weight'] = 10;
-      }
+    // Bulk operations only visible on webform submissions pages.
+    $webform_submission_bulk_form = $this->configFactory->get('webform.settings')->get('settings.webform_submission_bulk_form');
+    if ($webform_submission_bulk_form
+      && !$this->account
+      && $this->webform
+      && $this->webform->access('submission_update_any')) {
+        $build['table'] = \Drupal::formBuilder()->getForm('\Drupal\webform\Form\WebformSubmissionBulkForm', $build['table'], $this->webform->access('submission_delete_any'));
     }
 
+    // Must preload libraries required by (modal) dialogs.
     // Must preload libraries required by (modal) dialogs.
     WebformDialogHelper::attachLibraries($build);
 
@@ -637,16 +639,16 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
     // State options.
     $state_options = [
       '' => $this->t('All [@total]', ['@total' => $this->getTotal(NULL, NULL, $this->sourceEntityTypeId)]),
-      self::STATE_STARRED => $this->t('Starred [@total]', ['@total' => $this->getTotal(NULL, self::STATE_STARRED, $this->sourceEntityTypeId)]),
-      self::STATE_UNSTARRED => $this->t('Unstarred [@total]', ['@total' => $this->getTotal(NULL, self::STATE_UNSTARRED, $this->sourceEntityTypeId)]),
-      self::STATE_LOCKED => $this->t('Locked [@total]', ['@total' => $this->getTotal(NULL, self::STATE_LOCKED, $this->sourceEntityTypeId)]),
-      self::STATE_UNLOCKED => $this->t('Unlocked [@total]', ['@total' => $this->getTotal(NULL, self::STATE_UNLOCKED, $this->sourceEntityTypeId)]),
+      static::STATE_STARRED => $this->t('Starred [@total]', ['@total' => $this->getTotal(NULL, static::STATE_STARRED, $this->sourceEntityTypeId)]),
+      static::STATE_UNSTARRED => $this->t('Unstarred [@total]', ['@total' => $this->getTotal(NULL, static::STATE_UNSTARRED, $this->sourceEntityTypeId)]),
+      static::STATE_LOCKED => $this->t('Locked [@total]', ['@total' => $this->getTotal(NULL, static::STATE_LOCKED, $this->sourceEntityTypeId)]),
+      static::STATE_UNLOCKED => $this->t('Unlocked [@total]', ['@total' => $this->getTotal(NULL, static::STATE_UNLOCKED, $this->sourceEntityTypeId)]),
     ];
     // Add draft to state options.
-    if (!$this->webform || $this->webform->getSetting('draft') != WebformInterface::DRAFT_NONE) {
+    if (!$this->webform || $this->webform->getSetting('draft') !== WebformInterface::DRAFT_NONE) {
       $state_options += [
-        self::STATE_COMPLETED => $this->t('Completed [@total]', ['@total' => $this->getTotal(NULL, self::STATE_COMPLETED, $this->sourceEntityTypeId)]),
-        self::STATE_DRAFT => $this->t('Draft [@total]', ['@total' => $this->getTotal(NULL, self::STATE_DRAFT, $this->sourceEntityTypeId)]),
+        static::STATE_COMPLETED => $this->t('Completed [@total]', ['@total' => $this->getTotal(NULL, static::STATE_COMPLETED, $this->sourceEntityTypeId)]),
+        static::STATE_DRAFT => $this->t('Draft [@total]', ['@total' => $this->getTotal(NULL, static::STATE_DRAFT, $this->sourceEntityTypeId)]),
       ];
     }
 
@@ -690,11 +692,26 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
    *   A render array representing the customize button.
    */
   protected function buildCustomizeButton() {
-    $route_name = $this->requestHandler->getRouteName($this->webform, $this->sourceEntity, 'webform.results_submissions.custom');
-    $route_parameters = $this->requestHandler->getRouteParameters($this->webform, $this->sourceEntity, $route_name) + ['webform' => $this->webform->id()];
+    $results_customize = $this->webform->getSetting('results_customize', TRUE);
+
+    $title = ($results_customize)
+      ? $this->t('Customize my table')
+      : $this->t('Customize');
+
+    $route_name = $this->requestHandler->getRouteName(
+      $this->webform,
+      $this->sourceEntity,
+      'webform.results_submissions.custom' . ($results_customize ? '.user' : '')
+    );
+
+    $route_parameters = $this->requestHandler->getRouteParameters(
+      $this->webform,
+      $this->sourceEntity
+    );
+
     return [
       '#type' => 'link',
-      '#title' => $this->t('Customize'),
+      '#title' => $title,
       '#url' => $this->ensureDestination(Url::fromRoute($route_name, $route_parameters)),
       '#attributes' => WebformDialogHelper::getModalDialogAttributes(WebformDialogHelper::DIALOG_NORMAL, ['button', 'button-action', 'button--small', 'button-webform-table-setting']),
     ];
@@ -707,7 +724,7 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
    *   A render array representing the information summary.
    */
   protected function buildInfo() {
-    if ($this->account && $this->state == self::STATE_DRAFT) {
+    if ($this->draft) {
       $info = $this->formatPlural($this->total, '@total draft', '@total drafts', ['@total' => $this->total]);
     }
     else {
@@ -772,7 +789,7 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
    */
   protected function buildHeaderColumn(array $column) {
     $name = $column['name'];
-    if ($this->format['header_format'] == 'key') {
+    if ($this->format['header_format'] === 'key') {
       $title = isset($column['key']) ? $column['key'] : $column['name'];
     }
     else {
@@ -839,9 +856,9 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
    *   Throw exception if table row column is not found.
    */
   public function buildRowColumn(array $column, EntityInterface $entity) {
-    /** @var $entity \Drupal\webform\WebformSubmissionInterface */
+    /** @var \Drupal\webform\WebformSubmissionInterface $entity */
 
-    $is_raw = ($column['format'] == 'raw');
+    $is_raw = ($column['format'] === 'raw');
     $name = $column['name'];
 
     switch ($name) {
@@ -855,14 +872,14 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
         );
 
       case 'entity':
-        $source_entity = $entity->getSourceEntity();
+        $source_entity = $entity->getSourceEntity(TRUE);
         if (!$source_entity) {
           return '';
         }
         return ($is_raw) ? $source_entity->getEntityTypeId . ':' . $source_entity->id() : ($source_entity->hasLinkTemplate('canonical') ? $source_entity->toLink() : $source_entity->label());
 
       case 'langcode':
-        $langcode = $entity->langcode->value;
+        $langcode = $entity->getLangcode();
         if (!$langcode) {
           return '';
         }
@@ -875,7 +892,7 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
         }
 
       case 'notes':
-        $notes_url = $this->ensureDestination($this->requestHandler->getUrl($entity, $entity->getSourceEntity(), 'webform_submission.notes_form'));
+        $notes_url = $this->ensureDestination($this->requestHandler->getUrl($entity, $entity->getSourceEntity(TRUE), 'webform_submission.notes_form'));
         $state = $entity->get('notes')->value ? 'on' : 'off';
         $t_args = ['@label' => $entity->label()];
         $label = $entity->get('notes')->value ? $this->t('Edit @label notes', $t_args) : $this->t('Add notes to @label', $t_args);
@@ -907,16 +924,16 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
           $link_url = $entity->getTokenUrl();
         }
         else {
-          $link_url = $this->requestHandler->getUrl($entity, $entity->getSourceEntity(), $this->getSubmissionRouteName());
+          $link_url = $this->requestHandler->getUrl($entity, $entity->getSourceEntity(TRUE), $this->getSubmissionRouteName());
         }
-        if ($name == 'serial') {
+        if ($name === 'serial') {
           $link_text = $entity->serial();
         }
         else {
           $link_text = $entity->label();
         }
         $link = Link::fromTextAndUrl($link_text, $link_url)->toRenderable();
-        if ($name == 'serial') {
+        if ($name === 'serial') {
           $link['#attributes']['title'] = $entity->label();
           $link['#attributes']['aria-label'] = $entity->label();
         }
@@ -1273,8 +1290,8 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
     $query->pager($this->limit);
 
     $header = $this->buildHeader();
-    $order = tablesort_get_order($header);
-    $direction = tablesort_get_sort($header);
+    $order = TableSort::getOrder($header, $this->request);
+    $direction = TableSort::getSort($header, $this->request);
 
     // If query is order(ed) by 'element__*' we need to build a custom table
     // sort using hook_query_TAG_alter().
@@ -1290,7 +1307,7 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
       // Must manually initialize the pager because the DISTINCT clause in the
       // query is breaking the row counting.
       // @see webform_query_alter()
-      pager_default_initialize($this->total, $this->limit);
+      \Drupal::service('pager.manager')->createPager($this->total, $this->limit);
       return $result;
     }
     else {
@@ -1377,27 +1394,27 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
 
     // Filter by (submission) state.
     switch ($state) {
-      case self::STATE_STARRED:
+      case static::STATE_STARRED:
         $query->condition('sticky', 1);
         break;
 
-      case self::STATE_UNSTARRED:
+      case static::STATE_UNSTARRED:
         $query->condition('sticky', 0);
         break;
 
-      case self::STATE_LOCKED:
+      case static::STATE_LOCKED:
         $query->condition('locked', 1);
         break;
 
-      case self::STATE_UNLOCKED:
+      case static::STATE_UNLOCKED:
         $query->condition('locked', 0);
         break;
 
-      case self::STATE_DRAFT:
+      case static::STATE_DRAFT:
         $query->condition('in_draft', 1);
         break;
 
-      case self::STATE_COMPLETED:
+      case static::STATE_COMPLETED:
         $query->condition('in_draft', 0);
         break;
     }
@@ -1416,6 +1433,23 @@ class WebformSubmissionListBuilder extends EntityListBuilder {
     }
 
     return $query;
+  }
+
+  /**
+   * Get custom setting.
+   *
+   * @param string $name
+   *   The custom setting name.
+   * @param mixed $default
+   *   Default custom setting value.
+   *
+   * @return mixed
+   *   The custom setting value.
+   */
+  protected function getCustomSetting($name, $default = NULL) {
+    /** @var WebformSubmissionStorageInterface $webform_submission_storage */
+    $webform_submission_storage = $this->getStorage();
+    return $webform_submission_storage->getCustomSetting($name, $default, $this->webform, $this->sourceEntity);
   }
 
 }

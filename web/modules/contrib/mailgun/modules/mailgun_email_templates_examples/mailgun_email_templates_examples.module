@@ -31,6 +31,9 @@ function mailgun_email_templates_examples_theme($existing, $type, $theme, $path)
     'mailgun__test_form_email' => [
       'base hook' => 'mailgun',
     ],
+    'mailgun__password_reset' => [
+      'base hook' => 'mailgun',
+    ],
     'mailgun__user' => [
       'base hook' => 'mailgun',
     ],

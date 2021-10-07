@@ -10,11 +10,15 @@ use Drupal\Core\Mail\MailInterface;
 class Adapter implements MailInterface {
 
   /**
+   * The mail plugin.
+   *
    * @var \Drupal\Core\Mail\MailInterface
    */
   protected $instanceFormatter;
 
   /**
+   * The mail plugin.
+   *
    * @var \Drupal\Core\Mail\MailInterface
    */
   protected $instanceSender;

@@ -16,7 +16,7 @@ use Drupal\fontyourface\Entity\Font;
  */
 function fontyourface_install() {
   module_set_weight('fontyourface', 1);
-  drupal_set_message(t('If you have not yet enabled any @font-your-face provider modules, please do so. If you have already enabled @font-your-face provider modules, please use the font settings page in the appearance section to import fonts from them.'));
+  Drupal::messenger()->addMessage(t('If you have not yet enabled any @font-your-face provider modules, please do so. If you have already enabled @font-your-face provider modules, please use the font settings page in the appearance section to import fonts from them.'));
 }
 
 /**
@@ -208,10 +208,11 @@ function fontyourface_update_8002() {
 }
 
 /**
- * Updates fontyourface and submodule weights since there are issues around ordering.
+ * Updates fontyourface weights since there are issues around ordering.
  */
 function fontyourface_update_8003() {
-  // Set the module weight. There is some general Drupal funk around module weights during install.
+  // Set the module weight. There is some general Drupal funk around module
+  // weights during install.
   module_set_weight('fontyourface', 1);
   foreach (\Drupal::moduleHandler()->getImplementations('fontyourface_api') as $module_name) {
     module_set_weight($module_name, 10);
@@ -224,7 +225,7 @@ function fontyourface_update_8003() {
 function fontyourface_update_8004() {
   $pager = 0;
   while (TRUE) {
-    $storage_handler = \Drupal::entityManager()->getStorage('font_display');
+    $storage_handler = \Drupal::entityTypeManager()->getStorage('font_display');
     $fdids = \Drupal::entityQuery('font_display')
       ->range($pager, 50)
       ->execute();

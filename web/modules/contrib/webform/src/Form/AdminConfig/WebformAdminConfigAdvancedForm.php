@@ -110,6 +110,14 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
       ],
       '#default_value' => $config->get('ui.video_display'),
     ];
+    $form['ui']['toolbar_item'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Display Webforms as a top-level administration menu item in the toolbar'),
+      '#description' => $this->t('If checked, the Webforms section will be displayed as a top-level administration menu item in the toolbar.'),
+      '#return_value' => TRUE,
+      '#default_value' => $config->get('ui.toolbar_item'),
+      '#access' => $this->moduleHandler->moduleExists('toolbar'),
+    ];
     $form['ui']['description_help'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Display element description as help text (tooltip)'),
@@ -121,8 +129,8 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
       '#type' => 'checkbox',
       '#title' => $this->t('Save details open/close state'),
       '#description' => $this->t('If checked, all <a href=":details_href">Details</a> element\'s open/close state will be saved using <a href=":local_storage_href">Local Storage</a>.', [
-        ':details_href' => 'http://www.w3schools.com/tags/tag_details.asp',
-        ':local_storage_href' => 'http://www.w3schools.com/html/html5_webstorage.asp',
+        ':details_href' => 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details',
+        ':local_storage_href' => 'https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API',
       ]),
       '#return_value' => TRUE,
       '#default_value' => $config->get('ui.details_save'),
@@ -164,6 +172,13 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
       '#return_value' => TRUE,
       '#default_value' => $config->get('ui.promotions_disabled'),
     ];
+    $form['ui']['support_disabled'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Disable support options'),
+      '#description' => $this->t('If checked, support option, displayed on the <a href=":href_addons">Add-ons</a> and <a href=":help_href">Help</a> pages will be disabled.', [':href_addons' => Url::fromRoute('webform.addons')->toString(), ':href_help' => Url::fromRoute('webform.help')->toString()]),
+      '#return_value' => TRUE,
+      '#default_value' => $config->get('ui.support_disabled'),
+    ];
 
     // Requirements.
     $form['requirements'] = [
@@ -181,6 +196,15 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
       '#return_value' => TRUE,
       '#default_value' => $config->get('requirements.cdn'),
     ];
+
+    $form['requirements']['clientside_validation'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Check if Webform Clientside Validation module is installed when using the Clientside Validation module'),
+      '#description' => $this->t('If unchecked, all warnings about the Webform Clientside Validation will be disabled.'),
+      '#return_value' => TRUE,
+      '#default_value' => $config->get('requirements.clientside_validation'),
+    ];
+
     $form['requirements']['bootstrap'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Check if the Webform Bootstrap Integration module is installed when using the Bootstrap theme'),
@@ -302,7 +326,9 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
       '#type' => 'submit',
       '#value' => $this->t('Repair configuration'),
       '#attributes' => [
-        'onclick' => 'return confirm("' . $this->t('Are you sure you want to repair and remove older webform configuration?') . '\n' . $this->t('This cannot be undone!!!') . '");',
+        'onclick' => 'return confirm("' . $this->t('Are you sure you want to repair and remove older webform configuration?')
+          . PHP_EOL
+          . $this->t('This cannot be undone!!!') . '");',
       ],
     ];
 
@@ -360,12 +386,13 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
 
       // Track if help is disabled.
       // @todo Figure out how to clear cached help block.
-      $is_help_disabled = ($config->getOriginal('ui.help_disabled') != $config->get('ui.help_disabled'));
+      $is_help_disabled = ($config->getOriginal('ui.help_disabled') !== $config->get('ui.help_disabled'));
+      $is_toolbar_item = ($config->getOriginal('ui.toolbar_item') !== $config->get('ui.toolbar_item'));
 
       parent::submitForm($form, $form_state);
 
       // Clear cached data.
-      if ($is_help_disabled) {
+      if ($is_help_disabled || $is_toolbar_item) {
         // Flush cache when help is being enabled.
         // @see webform_help()
         drupal_flush_all_caches();
@@ -376,6 +403,14 @@ class WebformAdminConfigAdvancedForm extends WebformAdminConfigBaseForm {
         // @see webform_local_tasks_alter()
         $this->renderCache->deleteAll();
         $this->routerBuilder->rebuild();
+      }
+
+      // Redirect to the update advanced admin configuration form.
+      if ($is_toolbar_item) {
+        $path = $config->get('ui.toolbar_item')
+          ? '/admin/webform/config/advanced'
+          : '/admin/structure/webform/config/advanced';
+        $form_state->setRedirectUrl(Url::fromUserInput($path));
       }
     }
   }

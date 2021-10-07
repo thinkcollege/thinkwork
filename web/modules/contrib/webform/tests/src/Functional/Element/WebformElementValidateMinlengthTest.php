@@ -7,7 +7,7 @@ use Drupal\webform\Entity\Webform;
 /**
  * Tests for webform validate minlength.
  *
- * @group Webform
+ * @group webform
  */
 class WebformElementValidateMinlengthTest extends WebformElementBrowserTestBase {
 
@@ -22,7 +22,18 @@ class WebformElementValidateMinlengthTest extends WebformElementBrowserTestBase 
    * Tests element validate minlength.
    */
   public function testValidateMinlength() {
+
     $webform = Webform::load('test_element_validate_minlength');
+
+    /* Render */
+
+    $this->drupalGet('/webform/test_element_validate_minlength');
+
+    // Check minlength attribute.
+    $this->assertCssSelect('#edit-minlength-textfield[minlength="5"]');
+    $this->assertCssSelect('#edit-minlength-textfield-required[minlength="5"]');
+
+    /* Validate */
 
     // Check minlength validation.
     $this->postSubmission($webform, ['minlength_textfield' => 'X']);

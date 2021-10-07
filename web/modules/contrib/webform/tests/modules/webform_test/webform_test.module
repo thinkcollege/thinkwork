@@ -9,6 +9,28 @@ use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\Url;
 use Drupal\webform\Utility\WebformElementHelper;
 
+/**
+ * Test element callback that should be ignored.
+ *
+ * @param array $element
+ *   An element.
+ *
+ * @return array
+ *   An element.
+ */
+function webform_test_ignored_element_callback($element = NULL) {
+  // Display error message when this callback is executed.
+  if (is_array($element) && isset($element['#title'])) {
+    $message = t('Callback not ignored for @title', ['@title' => $element['#title']]);
+    \Drupal::messenger()->addError($message);
+    return $element;
+  }
+  else {
+    $message = t('Callback not ignored');
+    \Drupal::messenger()->addError($message);
+  }
+}
+
 /******************************************************************************/
 // Generate elements.
 /******************************************************************************/
@@ -27,6 +49,34 @@ function webform_test_preprocess_page(&$variables) {
 }
 
 /**
+ * Implements hook_preprocess_webform_confirmation().
+ */
+function webform_test_preprocess_webform_confirmation(array &$variables) {
+  /** @var \Drupal\webform\WebformInterface $webform */
+  $webform = $variables['webform'];
+  switch ($webform->id()) {
+    case 'test_states_to_text':
+      /** @var \Drupal\webform\WebformEntityConditionsManagerInterface $conditions_manager */
+      $conditions_manager = \Drupal::service('webform.conditions_manager');
+
+      $build = [];
+      $elements = $webform->getElementsInitializedAndFlattened();
+      foreach ($elements as $element_key => $element) {
+        if (isset($element['#states'])) {
+          $build[$element_key] = [
+            '#type' => 'item',
+            '#title' => $element['#admin_title'],
+            'text' => $conditions_manager->toText($webform, $element['#states']),
+          ];
+        }
+      }
+      $variables['message'] = $build;
+      return;
+
+  }
+}
+
+/**
  * Implements hook_webform_load().
  */
 function webform_test_webform_load(array $entities) {
@@ -38,7 +88,7 @@ function webform_test_webform_load(array $entities) {
 
   foreach ($entities as $id => $entity) {
     $name = _webform_test_load_include($id);
-    if ($name) {
+    if ($name && function_exists('webform_test_' . $name)) {
       $function = 'webform_test_' . $name;
       $elements = $function($entity);
       $entity->setElements($elements);
@@ -67,7 +117,7 @@ function webform_test_webform_load(array $entities) {
  *   include file.
  */
 function _webform_test_load_include($id) {
-  if (preg_match('/^(test_form_(?:wizard_)?long)_\d+$/', $id, $match)) {
+  if (preg_match('/^(test_form_(?:wizard_)?long|test_cards_long)_\d+$/', $id, $match)) {
     $id = $match[1];
   }
 
@@ -96,6 +146,7 @@ function _webform_test_get_element_preview($type, array $options = []) {
   static $skipped = [
     'webform_example_element',
     'webform_example_composite',
+    'webform_test_offcanvas_width_element',
   ];
 
   // Skip certain elements that should never be included in test forms.
@@ -113,6 +164,12 @@ function _webform_test_get_element_preview($type, array $options = []) {
 
   $element = $webform_element->preview();
   if (empty($element)) {
+    return FALSE;
+  }
+
+  // Skip custom options.
+  // @see \Drupal\webform_options_custom\Entity\WebformOptionsCustom::getPreview
+  if (isset($element['#type']) && $element['#type'] === 'webform_options_custom') {
     return FALSE;
   }
 

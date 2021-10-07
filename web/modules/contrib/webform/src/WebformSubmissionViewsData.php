@@ -15,7 +15,9 @@ class WebformSubmissionViewsData extends EntityViewsData {
   public function getViewsData() {
     $data = parent::getViewsData();
 
-    $data['webform_submission']['table']['base']['access query tag'] = 'webform_submission_access';
+    // Disable hook_webform_submission_query_access_alter() to remove
+    // performance issues related to loading all webforms.
+    // $data['webform_submission']['table']['base']['access query tag'] = 'webform_submission_access';
 
     $data['webform_submission']['webform_submission_bulk_form'] = [
       'title' => $this->t('Webform submission operations bulk form'),

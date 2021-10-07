@@ -9,13 +9,14 @@
  * Implements hook_enable().
  */
 function superfish_install() {
+  $messenger = \Drupal::messenger();
   if (superfish_library_check()) {
-    drupal_set_message(t('In order to use Superfish, go to the <a href="@block">Block layout</a> page and use any of the "Place block" buttons to create a Superfish block.', ['@block' => 'structure/block']));
+    $messenger->addMessage(t('In order to use Superfish, go to the <a href="@block">Block layout</a> page and use any of the "Place block" buttons to create a Superfish block.', ['@block' => 'structure/block']));
   }
   else {
-    drupal_set_message(t('Superfish library is missing. Please refer to the <a href="@documentation">plugin documentation</a> for how you can fix this issue; Once done, go to the <a href="@block">Block layout</a> page and use any of the "Place block" buttons to create a Superfish block.', ['@documentation' => 'https://www.drupal.org/node/1125896', '@block' => 'structure/block']), 'warning');
+    $messenger->addWarning(t('Superfish library is missing. Please refer to the <a href="@documentation">plugin documentation</a> for how you can fix this issue; Once done, go to the <a href="@block">Block layout</a> page and use any of the "Place block" buttons to create a Superfish block.', ['@documentation' => 'https://www.drupal.org/node/1125896', '@block' => 'structure/block']));
   }
-  drupal_set_message(t('If there was no Superfish block in the "Place block" form, go to the <a href="@performance">Performance</a> page and clear the cache once.', ['@performance' => 'config/development/performance']));
+  $messenger->addMessage(t('If there was no Superfish block in the "Place block" form, go to the <a href="@performance">Performance</a> page and clear the cache once.', ['@performance' => 'config/development/performance']));
 }
 
 /**
@@ -36,7 +37,7 @@ function superfish_requirements($phase) {
       }
       else {
         $version = (integer) $version;
-        if (!$version || ! is_numeric($version)) {
+        if (!$version || !is_numeric($version)) {
           $requirements['superfish']['value'] = t('Unknown version');
           $requirements['superfish']['severity'] = REQUIREMENT_ERROR;
           $requirements['superfish']['description'] = t('Cannot determine the version of your Superfish library.');

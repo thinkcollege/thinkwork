@@ -18,16 +18,22 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class AdminForm extends ConfigFormBase {
 
   /**
+   * The mail manager.
+   *
    * @var \Drupal\Core\Mail\MailManagerInterface
    */
   protected $mailManager;
 
   /**
+   * The module handler.
+   *
    * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
   protected $moduleHandler;
 
   /**
+   * The theme handler.
+   *
    * @var \Drupal\Core\Extension\ThemeHandlerInterface
    */
   protected $themeHandler;
@@ -66,7 +72,7 @@ class AdminForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function getFormID() {
+  public function getFormId() {
     return 'mailsystem_admin_form';
   }
 
@@ -259,8 +265,11 @@ class AdminForm extends ConfigFormBase {
     // formatting.
     //
     // The configuration entries can be:
-    // modules.module.key.type -> Plugin for a special mail and send/format plugin
-    // modules.module.none.type     -> Global plugin for the send/format plugin
+    // * modules.module.key.type
+    // plugin for a special mail and send/format plugin.
+    //
+    // * modules.module.none.type
+    // global plugin for the send/format plugin.
     $prefix = $this->getModuleKeyConfigPrefix($module, $key);
 
     $config = $this->config('mailsystem.settings');
@@ -338,7 +347,7 @@ class AdminForm extends ConfigFormBase {
   protected function getThemesList() {
     $theme_options = [
       'current' => $this->t('Current'),
-      'default' => $this->t('Default')
+      'default' => $this->t('Default'),
     ];
     if ($this->moduleHandler->moduleExists('domain_theme')) {
       $theme_options['domain'] = $this->t('Domain Theme');
@@ -358,7 +367,6 @@ class AdminForm extends ConfigFormBase {
    *
    * @return string[]
    *   List of modules, keyed by the machine name.
-   *
    */
   protected function getModulesList() {
     $list = [];

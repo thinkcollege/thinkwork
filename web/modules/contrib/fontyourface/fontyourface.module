@@ -5,10 +5,12 @@
  * Contains fontyourface.module..
  */
 
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Link;
 use Drupal\taxonomy\Entity\Term;
 
 use Drupal\fontyourface\FontInterface;
@@ -21,7 +23,7 @@ use Drupal\fontyourface\Entity\FontDisplay;
  */
 function fontyourface_module_implements_alter(&$implementations, $hook) {
   if ($hook == 'page_attachments') {
-    // Move the fontyourface and submodules to be among the last to build on page.
+    // Move the fontyourface and submodules to be last to build on page.
     $list = ['fontyourface'];
     foreach (\Drupal::moduleHandler()->getImplementations('fontyourface_api') as $module_name) {
       if (isset($implementations[$module_name])) {
@@ -95,15 +97,18 @@ function fontyourface_theme() {
 function fontyourface_page_attachments(&$page) {
   $config = \Drupal::config('fontyourface.settings');
   $fonts = &drupal_static('fontyourface_fonts', []);
-  // Load all enabled fonts regardless of theme if setting allows it.
+  // Load all enabled fonts for theme if setting allows it.
   if ($config->get('load_all_enabled_fonts')) {
-    foreach (Font::loadActivatedFonts() as $font) {
-      $fonts[$font->url->value] = $font;
+    if (empty($config->get('load_on_themes')) || in_array(\Drupal::theme()->getActiveTheme()->getName(), $config->get('load_on_themes'))) {
+      foreach (Font::loadActivatedFonts() as $font) {
+        $fonts[$font->url->value] = $font;
+      }
     }
   }
 
   $font_preview = &drupal_static('fontyourface_font_preview');
-  // On a font preview page, ONLY show the preview font and other base theme font.
+  // On a font preview page, ONLY show the preview font and other base theme
+  // font.
   if (empty($font_preview)) {
     // We are dealing with a regular page.
     $theme = \Drupal::theme()->getActiveTheme()->getName();
@@ -166,7 +171,7 @@ function fontyourface_preprocess_font(array &$variables) {
 
   $variables['font_style'] = fontyourface_font_css($font, NULL, "\n");
   $variables['font_style_inline'] = fontyourface_font_css($font);
-  $variables['font_title'] = \Drupal::l($title, $font->urlInfo());
+  $variables['font_title'] = Link::fromTextAndUrl($title, $font->toUrl())->toString();
 
   // Helpful $content variable for templates.
   foreach (Element::children($variables['elements']) as $key) {
@@ -210,7 +215,7 @@ function fontyourface_preprocess_font(array &$variables) {
   }
 
   $url->setOption('destination', Drupal::destination());
-  $variables['operation_links'] = Drupal::l($text, $url);
+  $variables['operation_links'] = Link::fromTextAndUrl($text, $url)->toString();
 }
 
 /**
@@ -359,7 +364,7 @@ function fontyourface_delete($provider) {
   // Delete fonts, 50 at a time.
   @set_time_limit(3600);
   while (TRUE) {
-    $storage_handler = \Drupal::entityManager()->getStorage('font');
+    $storage_handler = \Drupal::entityTypeManager()->getStorage('font');
     $fids = \Drupal::entityQuery('font')
       ->condition('pid', $provider)
       ->range(0, 50)
@@ -401,12 +406,12 @@ function fontyourface_log($message, array $arguments) {
  */
 function fontyourface_save_and_generate_font_display_css(FontDisplayInterface $style) {
   $directory = file_build_uri('fontyourface/font_display');
-  file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+  \Drupal::service('file_system')->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
 
   $font = $style->getFont();
   $css_file = $directory . '/' . $style->id() . '.css';
   $css_file_data = $style->getSelectors() . ' { ' . fontyourface_font_css($font, $style) . ' }';
-  file_unmanaged_save_data($css_file_data, $css_file, FILE_EXISTS_REPLACE);
+  \Drupal::service('file_system')->saveData($css_file_data, $css_file, FileSystemInterface::EXISTS_REPLACE);
 
   return TRUE;
 }

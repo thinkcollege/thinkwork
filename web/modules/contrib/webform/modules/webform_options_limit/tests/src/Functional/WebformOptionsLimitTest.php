@@ -8,7 +8,7 @@ use Drupal\Tests\webform\Functional\WebformBrowserTestBase;
 /**
  * Webform options limit test.
  *
- * @group webform_browser
+ * @group webform_options_limit
  */
 class WebformOptionsLimitTest extends WebformBrowserTestBase {
 
@@ -29,9 +29,17 @@ class WebformOptionsLimitTest extends WebformBrowserTestBase {
 
     $this->drupalGet('/webform/test_handler_options_limit');
 
+    // Check that option None is not available.
+    $this->assertRaw('<input data-drupal-selector="edit-options-limit-default-none" disabled="disabled" type="checkbox" id="edit-options-limit-default-none" name="options_limit_default[none]" value="none" class="form-checkbox" />');
+    $this->assertRaw('None [0 remaining]');
+
     // Check that option A is available.
     $this->assertRaw('<input data-drupal-selector="edit-options-limit-default-a" type="checkbox" id="edit-options-limit-default-a" name="options_limit_default[A]" value="A" checked="checked" class="form-checkbox" />');
     $this->assertRaw('A [1 remaining]');
+
+    // Check that option None is not available.
+    $this->assertRaw('<input data-drupal-selector="edit-options-limit-messages-none" aria-describedby="edit-options-limit-messages-none--description" disabled="disabled" type="checkbox" id="edit-options-limit-messages-none" name="options_limit_messages[none]" value="none" class="form-checkbox" />');
+    $this->assertRaw('No options remaining / 0 limit / 0 total');
 
     // Check that option D is available.
     $this->assertRaw('<input data-drupal-selector="edit-options-limit-messages-d" aria-describedby="edit-options-limit-messages-d--description" type="checkbox" id="edit-options-limit-messages-d" name="options_limit_messages[D]" value="D" checked="checked" class="form-checkbox" />');
@@ -45,6 +53,18 @@ class WebformOptionsLimitTest extends WebformBrowserTestBase {
 
     // Check that option O is available.
     $this->assertRaw('<option value="O" selected="selected">O [1 remaining]</option>');
+
+    // Check that table select multiple is available.
+    $this->assertFieldById('edit-options-limit-tableselect-multiple-u', 'U');
+    $this->assertRaw('<input class="tableselect form-checkbox" data-drupal-selector="edit-options-limit-tableselect-multiple-u" type="checkbox" id="edit-options-limit-tableselect-multiple-u" name="options_limit_tableselect_multiple[U]" value="U" checked="checked" />');
+    $this->assertRaw('<td>U [1 remaining]</td>');
+
+    // Check that table select single is available.
+    $this->assertFieldById('edit-options-limit-tableselect-single-x', 'X');
+    $this->assertRaw('<input class="tableselect form-radio" data-drupal-selector="edit-options-limit-tableselect-single-x" type="radio" id="edit-options-limit-tableselect-single-x" name="options_limit_tableselect_single" value="X" checked="checked" />');
+    $this->assertPattern('#<th>options_limit_tableselect_single</th>\s+<th>Limits</th>#');
+    $this->assertRaw('<td>X</td>');
+    $this->assertRaw('<td> [1 remaining]</td>');
 
     // Post first submission.
     $sid_1 = $this->postSubmission($webform);
@@ -66,6 +86,15 @@ class WebformOptionsLimitTest extends WebformBrowserTestBase {
 
     // Check that option O was not changed but is not selected.
     $this->assertRaw('<option value="O">O [0 remaining]</option>');
+
+    // Check that table select multiple is NOT available.
+    $this->assertNoFieldById('edit-options-limit-tableselect-multiple-u', 'U');
+    $this->assertRaw('<td>U [0 remaining]</td>');
+
+    // Check that table select single is available.
+    $this->assertNoFieldById('edit-options-limit-tableselect-multiple-x', 'X');
+    $this->assertRaw('<td>X</td>');
+    $this->assertRaw('<td> [0 remaining]</td>');
 
     // Check that option O being selected triggers validation error.
     $this->postSubmission($webform, ['options_limit_select_none[]' => 'O']);

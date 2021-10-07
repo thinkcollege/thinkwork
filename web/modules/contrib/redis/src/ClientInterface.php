@@ -3,7 +3,7 @@
 namespace Drupal\redis;
 
 /**
- * Client proxy, client handling class tied to the bare mininum.
+ * Client proxy, client handling class tied to the bare minimum.
  */
 interface ClientInterface {
   /**
@@ -12,10 +12,10 @@ interface ClientInterface {
    * @return mixed
    *   Real client depends from the library behind.
    */
-  public function getClient($host = NULL, $port = NULL, $base = NULL);
+  public function getClient($host = NULL, $port = NULL, $base = NULL, $password = NULL, $replicationHosts = [], $persistent = FALSE);
 
   /**
-   * Get underlaying library name used.
+   * Get underlying library name used.
    *
    * This can be useful for contribution code that may work with only some of
    * the provided clients.

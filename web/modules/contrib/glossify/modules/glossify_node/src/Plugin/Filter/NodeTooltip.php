@@ -99,10 +99,11 @@ class NodeTooltip extends GlossifyBase {
    */
   public static function validateNodeBundles(array &$element, FormStateInterface $form_state, array &$complete_form) {
     $values = $form_state->getValues();
-    // Make taxonomy_vocabs required if the filter is enabled.
+    // Make node_bundles required if the filter is enabled.
     if (!empty($values['filters']['glossify_node']['status'])) {
       $field_values = array_filter($values['filters']['glossify_node']['settings']['glossify_node_bundles']);
       if (empty($field_values)) {
+        $element['#required'] = TRUE;
         $form_state->setError($element, t('%field is required.', ['%field' => $element['#title']]));
       }
     }
@@ -128,6 +129,7 @@ class NodeTooltip extends GlossifyBase {
       $query->join('node__body', 'nb', 'nb.entity_id = nfd.nid');
       $query->condition('nfd.type', $node_types, 'IN');
       $query->condition('nfd.status', 1);
+      $query->condition('nfd.langcode', $langcode);
       $query->orderBy('name_norm', 'DESC');
       $results = $query->execute()->fetchAllAssoc('name_norm');
 
@@ -169,7 +171,7 @@ class NodeTooltip extends GlossifyBase {
       // Workaround for not accepting arrays in config schema.
       if (is_array($configuration['settings']['glossify_node_bundles'])) {
         $glossify_node_bundles = array_filter($configuration['settings']['glossify_node_bundles']);
-        $configuration['settings']['glossify_node_bundles'] = implode($glossify_node_bundles, ';');
+        $configuration['settings']['glossify_node_bundles'] = implode(';', $glossify_node_bundles);
       }
       $this->settings = (array) $configuration['settings'];
     }

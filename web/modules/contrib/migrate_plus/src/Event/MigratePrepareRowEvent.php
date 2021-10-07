@@ -2,8 +2,8 @@
 
 namespace Drupal\migrate_plus\Event;
 
-use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrateSourceInterface;
+use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Row;
 use Symfony\Component\EventDispatcher\Event;
 

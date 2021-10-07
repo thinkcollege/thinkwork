@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\exclude_node_title\Plugin\Node\DsField\NodeTitle.
- */
-
 namespace Drupal\exclude_node_title\Plugin\DsField\Node;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -74,9 +69,9 @@ class NodeTitle extends DsNodeTitle {
     if ($config['exclude_node_title']) {
       $exclude_manager = \Drupal::service('exclude_node_title.manager');
       if ($exclude_manager->isTitleExcluded($this->entity(), $this->viewMode())) {
-        return array(
+        return [
           '#markup' => '',
-        );
+        ];
       }
     }
 

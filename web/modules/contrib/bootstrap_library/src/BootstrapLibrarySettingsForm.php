@@ -171,6 +171,34 @@ function _bootstrap_library_data() {
   return '{
   "timestamp": "2015-11-09T18:54:50.335Z",
   "bootstrap": {
+    "5.1.1": {
+      "css": "//cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css",
+      "js": [
+        "//cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js",
+        "//cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"
+      ]
+    },
+    "5.0.2": {
+      "css": "//cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css",
+      "js": [
+        "//cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js",
+        "//cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"
+      ]
+    },
+    "4.6.0": {
+      "css": "//stackpath.bootstrapcdn.com/bootstrap/4.6.0/css/bootstrap.min.css",
+      "js": [
+        "//cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js",
+        "//stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"
+      ]
+    },
+    "4.5.2": {
+      "css": "//stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css",
+      "js": [
+        "//cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js",
+        "//stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+      ]
+    },
     "4.4.1": {
       "css": "//stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css",
       "js": [

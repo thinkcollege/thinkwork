@@ -42,7 +42,7 @@ function email_registration_user_insert(UserInterface $account) {
   }
 
   // Ensure whatever name we have is unique.
-  $new_name = email_registration_unique_username($new_name, $account->id());
+  $new_name = email_registration_unique_username($new_name, (int) $account->id());
 
   $account->setUsername($new_name);
   if ($account->isValidationRequired() && !$account->validate()) {
@@ -122,10 +122,18 @@ function email_registration_cleanup_username($name) {
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function email_registration_form_user_form_alter(&$form, FormStateInterface $form_state) {
-  $form['account']['name']['#type'] = 'value';
+  $account = \Drupal::currentUser();
+  // Allow users to edit their own username or admins to do it if appropriate.
+  if (!$account->hasPermission('change own username') &&
+    !$account->hasPermission('administer users')) {
+    $form['account']['name']['#type'] = 'value';
+  }
+
   // Provide a random user name only if we are creating a new user, i.e. this
   // is a registration.
-  if ($form_state->getFormObject()->getEntity()->isNew()) {
+  /** @var \Drupal\Core\Entity\EntityFormInterface $form_object */
+  $form_object = $form_state->getFormObject();
+  if ($form_object->getEntity()->isNew()) {
     $form['account']['name']['#value'] = 'email_registration_' . user_password();
   }
   $form['account']['mail']['#title'] = t('Email');
@@ -138,7 +146,7 @@ function email_registration_form_user_pass_alter(&$form, FormStateInterface $for
   $form['name']['#title'] = t('Email');
   // Only convert textfields to email fields. This field is a hidden value when
   // you are already logged in.
-  if ($form['name']['#type'] == 'textfield') {
+  if ($form['name']['#type'] === 'textfield') {
     // Allow client side validation of input format.
     $form['name']['#type'] = 'email';
     $form['name']['#maxlength'] = Email::EMAIL_MAX_LENGTH;
@@ -177,7 +185,9 @@ function email_registration_user_login_validate($form, FormStateInterface $form_
     elseif (!$config->get('login_with_username')) {
       $user_input = $form_state->getUserInput();
       $query = isset($user_input['name']) ? ['name' => $user_input['name']] : [];
-      $form_state->setErrorByName('name', t('Unrecognized email address or password. <a href=":password">Forgot your password?</a>', [':password' => Url::fromRoute('user.pass', [], ['query' => $query])->toString()]));
+      $form_state->setErrorByName('name', t('Unrecognized email address or password. <a href=":password">Forgot your password?</a>', [
+        ':password' => Url::fromRoute('user.pass', [], ['query' => $query])->toString(),
+      ]));
     }
   }
 }
@@ -199,7 +209,7 @@ function email_registration_form_user_admin_settings_alter(&$form, FormStateInte
 /**
  * Submit function for user_admin_settings to save our variable.
  *
- * @see email_registration_form_user_admin_settings_alter().
+ * @see email_registration_form_user_admin_settings_alter()
  */
 function email_registration_form_user_admin_settings_submit(array &$form, FormStateInterface $form_state) {
   $config = \Drupal::configFactory()->getEditable('email_registration.settings');

@@ -291,6 +291,32 @@ elements: |
       '#help_display': element_after
     webform_email_multiple_hr:
       '#type': webform_horizontal_rule
+    webform_height_help:
+      '#markup': 'Height (feet/inches) (webform_height)'
+      '#prefix': '<h3>'
+      '#suffix': '</h3>'
+    webform_height_title_before:
+      '#type': webform_height
+      '#title': 'Height (feet/inches) (title_before)'
+      '#help': 'This is help.'
+      '#help_display': title_before
+    webform_height_title_after:
+      '#type': webform_height
+      '#title': 'Height (feet/inches) (title_after)'
+      '#help': 'This is help.'
+      '#help_display': title_after
+    webform_height_element_before:
+      '#type': webform_height
+      '#title': 'Height (feet/inches) (element_before)'
+      '#help': 'This is help.'
+      '#help_display': element_before
+    webform_height_element_after:
+      '#type': webform_height
+      '#title': 'Height (feet/inches) (element_after)'
+      '#help': 'This is help.'
+      '#help_display': element_after
+    webform_height_hr:
+      '#type': webform_horizontal_rule
     webform_mapping_help:
       '#markup': 'Mapping (webform_mapping)'
       '#prefix': '<h3>'
@@ -493,6 +519,66 @@ elements: |
       '#help_display': element_after
     webform_rating_hr:
       '#type': webform_horizontal_rule
+    webform_same_help:
+      '#markup': 'Billing address is the same as the shipping address (webform_same)'
+      '#prefix': '<h3>'
+      '#suffix': '</h3>'
+    webform_same_title_before:
+      '#type': webform_same
+      '#title': 'Billing address is the same as the shipping address (title_before)'
+      '#help': 'This is help.'
+      '#help_display': title_before
+    webform_same_title_after:
+      '#type': webform_same
+      '#title': 'Billing address is the same as the shipping address (title_after)'
+      '#help': 'This is help.'
+      '#help_display': title_after
+    webform_same_element_before:
+      '#type': webform_same
+      '#title': 'Billing address is the same as the shipping address (element_before)'
+      '#help': 'This is help.'
+      '#help_display': element_before
+    webform_same_element_after:
+      '#type': webform_same
+      '#title': 'Billing address is the same as the shipping address (element_after)'
+      '#help': 'This is help.'
+      '#help_display': element_after
+    webform_same_hr:
+      '#type': webform_horizontal_rule
+    webform_scale_help:
+      '#markup': 'Scale (webform_scale)'
+      '#prefix': '<h3>'
+      '#suffix': '</h3>'
+    webform_scale_title_before:
+      '#type': webform_scale
+      '#title': 'Scale (title_before)'
+      '#min': 1
+      '#max': 5
+      '#help': 'This is help.'
+      '#help_display': title_before
+    webform_scale_title_after:
+      '#type': webform_scale
+      '#title': 'Scale (title_after)'
+      '#min': 1
+      '#max': 5
+      '#help': 'This is help.'
+      '#help_display': title_after
+    webform_scale_element_before:
+      '#type': webform_scale
+      '#title': 'Scale (element_before)'
+      '#min': 1
+      '#max': 5
+      '#help': 'This is help.'
+      '#help_display': element_before
+    webform_scale_element_after:
+      '#type': webform_scale
+      '#title': 'Scale (element_after)'
+      '#min': 1
+      '#max': 5
+      '#help': 'This is help.'
+      '#help_display': element_after
+    webform_scale_hr:
+      '#type': webform_horizontal_rule
     search_help:
       '#markup': 'Search (search)'
       '#prefix': '<h3>'
@@ -642,32 +728,6 @@ elements: |
       '#help': 'This is help.'
       '#help_display': element_after
     text_format_hr:
-      '#type': webform_horizontal_rule
-    webform_toggle_help:
-      '#markup': 'Toggle (webform_toggle)'
-      '#prefix': '<h3>'
-      '#suffix': '</h3>'
-    webform_toggle_title_before:
-      '#type': webform_toggle
-      '#title': 'Toggle (title_before)'
-      '#help': 'This is help.'
-      '#help_display': title_before
-    webform_toggle_title_after:
-      '#type': webform_toggle
-      '#title': 'Toggle (title_after)'
-      '#help': 'This is help.'
-      '#help_display': title_after
-    webform_toggle_element_before:
-      '#type': webform_toggle
-      '#title': 'Toggle (element_before)'
-      '#help': 'This is help.'
-      '#help_display': element_before
-    webform_toggle_element_after:
-      '#type': webform_toggle
-      '#title': 'Toggle (element_after)'
-      '#help': 'This is help.'
-      '#help_display': element_after
-    webform_toggle_hr:
       '#type': webform_horizontal_rule
     url_help:
       '#markup': 'URL (url)'
@@ -837,90 +897,6 @@ elements: |
     '#type': details
     '#title': 'Options elements'
     '#open': true
-    webform_buttons_help:
-      '#markup': 'Buttons (webform_buttons)'
-      '#prefix': '<h3>'
-      '#suffix': '</h3>'
-    webform_buttons_title_before:
-      '#type': webform_buttons
-      '#title': 'Buttons (title_before)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#help': 'This is help.'
-      '#help_display': title_before
-    webform_buttons_title_after:
-      '#type': webform_buttons
-      '#title': 'Buttons (title_after)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#help': 'This is help.'
-      '#help_display': title_after
-    webform_buttons_element_before:
-      '#type': webform_buttons
-      '#title': 'Buttons (element_before)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#help': 'This is help.'
-      '#help_display': element_before
-    webform_buttons_element_after:
-      '#type': webform_buttons
-      '#title': 'Buttons (element_after)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#help': 'This is help.'
-      '#help_display': element_after
-    webform_buttons_hr:
-      '#type': webform_horizontal_rule
-    webform_buttons_other_help:
-      '#markup': 'Buttons other (webform_buttons_other)'
-      '#prefix': '<h3>'
-      '#suffix': '</h3>'
-    webform_buttons_other_title_before:
-      '#type': webform_buttons_other
-      '#title': 'Buttons other (title_before)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#help': 'This is help.'
-      '#help_display': title_before
-    webform_buttons_other_title_after:
-      '#type': webform_buttons_other
-      '#title': 'Buttons other (title_after)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#help': 'This is help.'
-      '#help_display': title_after
-    webform_buttons_other_element_before:
-      '#type': webform_buttons_other
-      '#title': 'Buttons other (element_before)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#help': 'This is help.'
-      '#help_display': element_before
-    webform_buttons_other_element_after:
-      '#type': webform_buttons_other
-      '#title': 'Buttons other (element_after)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#help': 'This is help.'
-      '#help_display': element_after
-    webform_buttons_other_hr:
-      '#type': webform_horizontal_rule
     checkboxes_help:
       '#markup': 'Checkboxes (checkboxes)'
       '#prefix': '<h3>'
@@ -1026,15 +1002,15 @@ elements: |
       '#title': 'Image select (title_before)'
       '#show_label': true
       '#images':
-        bear_1:
-          text: 'Bear 1'
-          src: 'https://www.placebear.com/80/100'
-        bear_2:
-          text: 'Bear 2'
-          src: 'https://www.placebear.com/100/100'
-        bear_3:
-          text: 'Bear 3'
-          src: 'https://www.placebear.com/120/100'
+        dog_1:
+          text: 'Dog 1'
+          src: 'https://www.placedog.net/80/100'
+        dog_2:
+          text: 'Dog 2'
+          src: 'https://www.placedog.net/100/100'
+        dog_3:
+          text: 'Dog 3'
+          src: 'https://www.placedog.net/120/100'
       '#help': 'This is help.'
       '#help_display': title_before
     webform_image_select_title_after:
@@ -1042,15 +1018,15 @@ elements: |
       '#title': 'Image select (title_after)'
       '#show_label': true
       '#images':
-        bear_1:
-          text: 'Bear 1'
-          src: 'https://www.placebear.com/80/100'
-        bear_2:
-          text: 'Bear 2'
-          src: 'https://www.placebear.com/100/100'
-        bear_3:
-          text: 'Bear 3'
-          src: 'https://www.placebear.com/120/100'
+        dog_1:
+          text: 'Dog 1'
+          src: 'https://www.placedog.net/80/100'
+        dog_2:
+          text: 'Dog 2'
+          src: 'https://www.placedog.net/100/100'
+        dog_3:
+          text: 'Dog 3'
+          src: 'https://www.placedog.net/120/100'
       '#help': 'This is help.'
       '#help_display': title_after
     webform_image_select_element_before:
@@ -1058,15 +1034,15 @@ elements: |
       '#title': 'Image select (element_before)'
       '#show_label': true
       '#images':
-        bear_1:
-          text: 'Bear 1'
-          src: 'https://www.placebear.com/80/100'
-        bear_2:
-          text: 'Bear 2'
-          src: 'https://www.placebear.com/100/100'
-        bear_3:
-          text: 'Bear 3'
-          src: 'https://www.placebear.com/120/100'
+        dog_1:
+          text: 'Dog 1'
+          src: 'https://www.placedog.net/80/100'
+        dog_2:
+          text: 'Dog 2'
+          src: 'https://www.placedog.net/100/100'
+        dog_3:
+          text: 'Dog 3'
+          src: 'https://www.placedog.net/120/100'
       '#help': 'This is help.'
       '#help_display': element_before
     webform_image_select_element_after:
@@ -1074,15 +1050,15 @@ elements: |
       '#title': 'Image select (element_after)'
       '#show_label': true
       '#images':
-        bear_1:
-          text: 'Bear 1'
-          src: 'https://www.placebear.com/80/100'
-        bear_2:
-          text: 'Bear 2'
-          src: 'https://www.placebear.com/100/100'
-        bear_3:
-          text: 'Bear 3'
-          src: 'https://www.placebear.com/120/100'
+        dog_1:
+          text: 'Dog 1'
+          src: 'https://www.placedog.net/80/100'
+        dog_2:
+          text: 'Dog 2'
+          src: 'https://www.placedog.net/100/100'
+        dog_3:
+          text: 'Dog 3'
+          src: 'https://www.placedog.net/120/100'
       '#help': 'This is help.'
       '#help_display': element_after
     webform_image_select_hr:
@@ -1329,47 +1305,131 @@ elements: |
       '#help_display': element_after
     webform_select_other_hr:
       '#type': webform_horizontal_rule
-    webform_toggles_help:
-      '#markup': 'Toggles (webform_toggles)'
+    tableselect_help:
+      '#markup': 'Table select (tableselect)'
       '#prefix': '<h3>'
       '#suffix': '</h3>'
-    webform_toggles_title_before:
-      '#type': webform_toggles
-      '#title': 'Toggles (title_before)'
+    tableselect_title_before:
+      '#type': tableselect
+      '#title': 'Table select (title_before)'
       '#options':
         one: One
         two: Two
         three: Three
       '#help': 'This is help.'
       '#help_display': title_before
-    webform_toggles_title_after:
-      '#type': webform_toggles
-      '#title': 'Toggles (title_after)'
+    tableselect_title_after:
+      '#type': tableselect
+      '#title': 'Table select (title_after)'
       '#options':
         one: One
         two: Two
         three: Three
       '#help': 'This is help.'
       '#help_display': title_after
-    webform_toggles_element_before:
-      '#type': webform_toggles
-      '#title': 'Toggles (element_before)'
+    tableselect_element_before:
+      '#type': tableselect
+      '#title': 'Table select (element_before)'
       '#options':
         one: One
         two: Two
         three: Three
       '#help': 'This is help.'
       '#help_display': element_before
-    webform_toggles_element_after:
-      '#type': webform_toggles
-      '#title': 'Toggles (element_after)'
+    tableselect_element_after:
+      '#type': tableselect
+      '#title': 'Table select (element_after)'
       '#options':
         one: One
         two: Two
         three: Three
       '#help': 'This is help.'
       '#help_display': element_after
-    webform_toggles_hr:
+    tableselect_hr:
+      '#type': webform_horizontal_rule
+    webform_tableselect_sort_help:
+      '#markup': 'Tableselect sort (webform_tableselect_sort)'
+      '#prefix': '<h3>'
+      '#suffix': '</h3>'
+    webform_tableselect_sort_title_before:
+      '#type': webform_tableselect_sort
+      '#title': 'Tableselect sort (title_before)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#help': 'This is help.'
+      '#help_display': title_before
+    webform_tableselect_sort_title_after:
+      '#type': webform_tableselect_sort
+      '#title': 'Tableselect sort (title_after)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#help': 'This is help.'
+      '#help_display': title_after
+    webform_tableselect_sort_element_before:
+      '#type': webform_tableselect_sort
+      '#title': 'Tableselect sort (element_before)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#help': 'This is help.'
+      '#help_display': element_before
+    webform_tableselect_sort_element_after:
+      '#type': webform_tableselect_sort
+      '#title': 'Tableselect sort (element_after)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#help': 'This is help.'
+      '#help_display': element_after
+    webform_tableselect_sort_hr:
+      '#type': webform_horizontal_rule
+    webform_table_sort_help:
+      '#markup': 'Table sort (webform_table_sort)'
+      '#prefix': '<h3>'
+      '#suffix': '</h3>'
+    webform_table_sort_title_before:
+      '#type': webform_table_sort
+      '#title': 'Table sort (title_before)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#help': 'This is help.'
+      '#help_display': title_before
+    webform_table_sort_title_after:
+      '#type': webform_table_sort
+      '#title': 'Table sort (title_after)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#help': 'This is help.'
+      '#help_display': title_after
+    webform_table_sort_element_before:
+      '#type': webform_table_sort
+      '#title': 'Table sort (element_before)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#help': 'This is help.'
+      '#help_display': element_before
+    webform_table_sort_element_after:
+      '#type': webform_table_sort
+      '#title': 'Table sort (element_after)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#help': 'This is help.'
+      '#help_display': element_after
+    webform_table_sort_hr:
       '#type': webform_horizontal_rule
   date_time_elements:
     '#type': details
@@ -1614,6 +1674,80 @@ elements: |
       '#help': 'This is help.'
       '#help_display': element_after
     webform_section_hr:
+      '#type': webform_horizontal_rule
+    webform_table_help:
+      '#markup': webform_table
+      '#prefix': '<h3>'
+      '#suffix': '</h3>'
+    webform_table_title_before:
+      '#type': table
+      '#header':
+        - 'Header 1'
+        - 'Header 2'
+      '#rows':
+        -
+          - 'Row 1 - Col 1'
+          - 'Row 1 - Col 2'
+        -
+          - 'Row 2 - Col 1'
+          - 'Row 2 - Col 2'
+        -
+          - 'Row 3 - Col 1'
+          - 'Row 3 - Col 2'
+      '#help': 'This is help. (title_before)'
+      '#help_display': title_before
+    webform_table_title_after:
+      '#type': table
+      '#header':
+        - 'Header 1'
+        - 'Header 2'
+      '#rows':
+        -
+          - 'Row 1 - Col 1'
+          - 'Row 1 - Col 2'
+        -
+          - 'Row 2 - Col 1'
+          - 'Row 2 - Col 2'
+        -
+          - 'Row 3 - Col 1'
+          - 'Row 3 - Col 2'
+      '#help': 'This is help. (title_after)'
+      '#help_display': title_after
+    webform_table_element_before:
+      '#type': table
+      '#header':
+        - 'Header 1'
+        - 'Header 2'
+      '#rows':
+        -
+          - 'Row 1 - Col 1'
+          - 'Row 1 - Col 2'
+        -
+          - 'Row 2 - Col 1'
+          - 'Row 2 - Col 2'
+        -
+          - 'Row 3 - Col 1'
+          - 'Row 3 - Col 2'
+      '#help': 'This is help. (element_before)'
+      '#help_display': element_before
+    webform_table_element_after:
+      '#type': table
+      '#header':
+        - 'Header 1'
+        - 'Header 2'
+      '#rows':
+        -
+          - 'Row 1 - Col 1'
+          - 'Row 1 - Col 2'
+        -
+          - 'Row 2 - Col 1'
+          - 'Row 2 - Col 2'
+        -
+          - 'Row 3 - Col 1'
+          - 'Row 3 - Col 2'
+      '#help': 'This is help. (element_after)'
+      '#help_display': element_after
+    webform_table_hr:
       '#type': webform_horizontal_rule
   entity_reference_elements:
     '#type': details
@@ -1951,7 +2085,6 @@ elements: |
       '#help_display': element_after
     machine_name_hr:
       '#type': webform_horizontal_rule
-  
 css: ''
 javascript: ''
 settings:
@@ -1963,7 +2096,7 @@ settings:
   page: true
   page_submit_path: ''
   page_confirm_path: ''
-  page_admin_theme: false
+  page_theme_name: ''
   form_title: source_entity_webform
   form_submit_once: false
   form_exception_message: ''
@@ -1993,6 +2126,11 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
   submission_label: ''
   submission_log: false
   submission_views: {  }
@@ -2018,11 +2156,19 @@ settings:
   wizard_progress_percentage: false
   wizard_progress_link: false
   wizard_progress_states: false
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
   wizard_start_label: ''
   wizard_preview_link: false
   wizard_confirmation: true
   wizard_confirmation_label: ''
   wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
   preview: 1
   preview_label: ''
   preview_title: ''
@@ -2065,8 +2211,11 @@ settings:
   purge_days: null
   results_disabled: false
   results_disabled_ignore: false
+  results_customize: false
   token_view: false
   token_update: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -2115,6 +2264,4 @@ access:
     users: {  }
     permissions: {  }
 handlers: {  }
-uuid: 28d4e7be-efdb-4a88-bc0d-16ed5e8a1767
-_core:
-  default_config_hash: n-o0dubYyFAYHV9OGOrntyVrFt0L6owQM3jhd_cjuIc
+variants: {  }

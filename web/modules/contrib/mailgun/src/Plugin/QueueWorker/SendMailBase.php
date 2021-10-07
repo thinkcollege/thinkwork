@@ -5,7 +5,6 @@ namespace Drupal\mailgun\Plugin\QueueWorker;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\Core\Queue\RequeueException;
 use Drupal\mailgun\MailgunHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -16,21 +15,21 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class SendMailBase extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
   /**
-   * MailGun config.
+   * Mailgun config.
    *
    * @var \Drupal\Core\Config\ImmutableConfig
    */
   protected $mailgunConfig;
 
   /**
-   * MailGun Logger instance.
+   * Mailgun Logger instance.
    *
    * @var \Psr\Log\LoggerInterface
    */
   protected $logger;
 
   /**
-   * MailGun mail handler.
+   * Mailgun mail handler.
    *
    * @var \Drupal\mailgun\MailgunHandlerInterface
    */
@@ -39,11 +38,11 @@ class SendMailBase extends QueueWorkerBase implements ContainerFactoryPluginInte
   /**
    * SendMailBase constructor.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ImmutableConfig $settings, LoggerInterface $logger, MailgunHandlerInterface $mailgunHandler) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ImmutableConfig $settings, LoggerInterface $logger, MailgunHandlerInterface $mailgun_handler) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->mailgunConfig = $settings;
     $this->logger = $logger;
-    $this->mailgunHandler = $mailgunHandler;
+    $this->mailgunHandler = $mailgun_handler;
   }
 
   /**
@@ -54,7 +53,7 @@ class SendMailBase extends QueueWorkerBase implements ContainerFactoryPluginInte
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('config.factory')->get(MAILGUN_CONFIG_NAME),
+      $container->get('config.factory')->get(MailgunHandlerInterface::CONFIG_NAME),
       $container->get('logger.factory')->get('mailgun'),
       $container->get('mailgun.mail_handler')
     );
@@ -76,7 +75,7 @@ class SendMailBase extends QueueWorkerBase implements ContainerFactoryPluginInte
     }
 
     if (!$result) {
-      throw new RequeueException('Mailgun: email did not pass through API.');
+      throw new \Exception('Mailgun: email did not pass through API.');
     }
   }
 

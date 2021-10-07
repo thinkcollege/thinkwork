@@ -16,6 +16,11 @@ class PanelizerDefaultsTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'bartik';
+
+  /**
+   * {@inheritdoc}
+   */
   public static $modules = [
     // Modules for core functionality.
     'field',
@@ -42,17 +47,9 @@ class PanelizerDefaultsTest extends BrowserTestBase {
   protected function setUp() {
     parent::setUp();
 
-    // Enable the Bartik theme and make it the default.
-    $theme = 'bartik';
-    \Drupal::service('theme_installer')->install([$theme]);
-    \Drupal::service('theme_handler')->setDefault($theme);
-
     // Place the local actions block in the theme so that we can assert the
     // presence of local actions and such.
-    $this->drupalPlaceBlock('local_actions_block', [
-      'region' => 'content',
-      'theme' => $theme,
-    ]);
+    $this->drupalPlaceBlock('local_actions_block');
   }
 
   public function test() {

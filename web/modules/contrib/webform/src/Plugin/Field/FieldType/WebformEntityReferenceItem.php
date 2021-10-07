@@ -112,6 +112,7 @@ class WebformEntityReferenceItem extends EntityReferenceItem {
    * {@inheritdoc}
    */
   public function getSettableOptions(AccountInterface $account = NULL) {
+    // Get webform options grouped by category.
     /** @var \Drupal\webform\WebformEntityStorageInterface $webform_storage */
     $webform_storage = \Drupal::service('entity_type.manager')->getStorage('webform');
     return $webform_storage->getOptions(FALSE);

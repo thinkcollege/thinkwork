@@ -5,7 +5,7 @@ namespace Drupal\Tests\webform\Functional\Element;
 /**
  * Tests for element section.
  *
- * @group Webform
+ * @group webform
  */
 class WebformElementSectionTest extends WebformElementBrowserTestBase {
 
@@ -24,7 +24,7 @@ class WebformElementSectionTest extends WebformElementBrowserTestBase {
 
     // Check section element.
     $this->assertRaw('<section data-drupal-selector="edit-webform-section" aria-describedby="edit-webform-section--description" id="edit-webform-section" class="required webform-element-help-container--title webform-element-help-container--title-after js-form-item form-item js-form-wrapper form-wrapper webform-section" required="required" aria-required="true">');
-    $this->assertRaw('<h2 class="webform-section-title js-form-required form-required">webform_section<span class="webform-element-help" role="tooltip" tabindex="0" data-webform-help="&lt;div class=&quot;webform-element-help--title&quot;&gt;webform_section&lt;/div&gt;&lt;div class=&quot;webform-element-help--content&quot;&gt;This is help text.&lt;/div&gt;"><span aria-hidden="true">?</span></span>');
+    $this->assertRaw('<h2 class="webform-section-title js-form-required form-required">webform_section<span class="webform-element-help js-webform-element-help" role="tooltip" tabindex="0" aria-label="webform_section" data-webform-help="&lt;div class=&quot;webform-element-help--title&quot;&gt;webform_section&lt;/div&gt;&lt;div class=&quot;webform-element-help--content&quot;&gt;This is help text.&lt;/div&gt;"><span aria-hidden="true">?</span></span>');
     $this->assertRaw('<div class="description"><div id="edit-webform-section--description" class="webform-element-description">This is a description.</div>');
     $this->assertRaw('<div id="edit-webform-section--more" class="js-webform-element-more webform-element-more">');
 
@@ -34,6 +34,18 @@ class WebformElementSectionTest extends WebformElementBrowserTestBase {
 
     // Check section title_display: invisible.
     $this->assertRaw('<h2 class="visually-hidden webform-section-title">webform_section_title_invisible</h2>');
+
+    // Check section description_display: default.
+    $this->assertPattern('/Display default description.+name="webform_section_description_display_default_textfield"/ms');
+
+    // Check section description_display: before.
+    $this->assertPattern('/Display before description.+name="webform_section_description_display_before_textfield"/ms');
+
+    // Check section description_display: after.
+    $this->assertPattern('/name="webform_section_description_display_after_textfield".+Display after description/ms');
+
+    // Check section description_display: invisible.
+    $this->assertRaw('<div class="description"><div id="edit-webform-section-description-display-invisible--description" class="webform-element-description visually-hidden">Display invisible description.</div>');
 
     // Check change default title tag.
     \Drupal::configFactory()->getEditable('webform.settings')

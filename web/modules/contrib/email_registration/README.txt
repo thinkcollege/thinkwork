@@ -38,6 +38,9 @@ $settings['locale_custom_strings_en'][''] = [
   'Unrecognized username or password. <a href=":password">Forgot your password?</a>' => 'Unrecognized e-mail address or password. <a href=":password">Forgot your password?</a>',
 ];
 
+* If you use Drupal Commerce, adjust your checkout flow to use the alternative 
+  login pane provided by this module.
+
 BUGS, FEATURES, QUESTIONS
 -------------------------
 Post any bugs, features or questions to the issue queue:

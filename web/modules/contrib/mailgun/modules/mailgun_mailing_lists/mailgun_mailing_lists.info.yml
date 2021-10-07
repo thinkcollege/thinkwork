@@ -1,0 +1,9 @@
+name: 'Mailgun Mailing Lists'
+type: module
+description: 'Support for the Mailgun Mailing lists.'
+core: 8.x
+core_version_requirement: ^8 || ^9
+package: Mail
+configure: mailgun_mailing_lists.admin_settings_form
+dependencies:
+  - mailgun:mailgun

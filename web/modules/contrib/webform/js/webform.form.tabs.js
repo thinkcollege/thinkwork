@@ -33,7 +33,7 @@
 
         // Set active tab and clear the location hash once it is set.
         if (location.hash) {
-          var active = $('a[href="' + location.hash + '"]').data('tab-index');
+          var active = $('a[href="' + Drupal.checkPlain(location.hash) + '"]').data('tab-index');
           if (typeof active !== 'undefined') {
             options.active = active;
             location.hash = '';

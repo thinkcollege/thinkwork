@@ -11,6 +11,7 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -33,6 +34,13 @@ class WebformEntityStorage extends ConfigEntityStorage implements WebformEntityS
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
+
+  /**
+   * The helpers to operate on files.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
 
   /**
    * Associative array container total results for all webforms.
@@ -58,13 +66,16 @@ class WebformEntityStorage extends ConfigEntityStorage implements WebformEntityS
    *   The entity type manager service.
    * @param \Drupal\Core\Cache\MemoryCache\MemoryCacheInterface $memory_cache
    *   The memory cache.
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   The helpers to operate on files.
    *
    * @todo Webform 8.x-6.x: Move $memory_cache right after $language_manager.
    */
-  public function __construct(EntityTypeInterface $entity_type, ConfigFactoryInterface $config_factory, UuidInterface $uuid_service, LanguageManagerInterface $language_manager, Connection $database, EntityTypeManagerInterface $entity_type_manager, MemoryCacheInterface $memory_cache = NULL) {
+  public function __construct(EntityTypeInterface $entity_type, ConfigFactoryInterface $config_factory, UuidInterface $uuid_service, LanguageManagerInterface $language_manager, Connection $database, EntityTypeManagerInterface $entity_type_manager, MemoryCacheInterface $memory_cache = NULL, FileSystemInterface $file_system) {
     parent::__construct($entity_type, $config_factory, $uuid_service, $language_manager, $memory_cache);
     $this->database = $database;
     $this->entityTypeManager = $entity_type_manager;
+    $this->fileSystem = $file_system;
   }
 
   /**
@@ -78,7 +89,8 @@ class WebformEntityStorage extends ConfigEntityStorage implements WebformEntityS
       $container->get('language_manager'),
       $container->get('database'),
       $container->get('entity_type.manager'),
-      $container->get('entity.memory_cache')
+      $container->get('entity.memory_cache'),
+      $container->get('file_system')
     );
   }
 
@@ -103,7 +115,7 @@ class WebformEntityStorage extends ConfigEntityStorage implements WebformEntityS
    * {@inheritdoc}
    */
   protected function doPostSave(EntityInterface $entity, $update) {
-    if ($update && $entity->getAccessRules() != $entity->original->getAccessRules()) {
+    if ($update && $entity->getAccessRules() !== $entity->original->getAccessRules()) {
       // Invalidate webform_submission listing cache tags because due to the
       // change in access rules of this webform, some listings might have
       // changed for users.
@@ -161,16 +173,18 @@ class WebformEntityStorage extends ConfigEntityStorage implements WebformEntityS
       foreach ($stream_wrappers as $stream_wrapper) {
         $file_directory = $stream_wrapper . '://webform/' . $entity->id();
 
-        // Clear all signature files.
-        // @see \Drupal\webform\Plugin\WebformElement\WebformSignature::getImageUrl
-        $files = file_scan_directory($file_directory, '/^signature-.*/');
-        foreach (array_keys($files) as $uri) {
-          file_unmanaged_delete($uri);
-        }
+        if (file_exists($file_directory)) {
+          // Clear all signature files.
+          // @see \Drupal\webform\Plugin\WebformElement\WebformSignature::getImageUrl
+          $files = $this->fileSystem->scanDirectory($file_directory, '/^signature-.*/');
+          foreach (array_keys($files) as $uri) {
+            $this->fileSystem->delete($uri);
+          }
 
-        // Clear empty webform directory.
-        if (file_exists($file_directory) && empty(file_scan_directory($file_directory, '/.*/'))) {
-          file_unmanaged_delete_recursive($file_directory);
+          // Clear empty webform directory.
+          if (empty($this->fileSystem->scanDirectory($file_directory, '/.*/'))) {
+            $this->fileSystem->deleteRecursive($file_directory);
+          }
         }
       }
     }
@@ -183,7 +197,7 @@ class WebformEntityStorage extends ConfigEntityStorage implements WebformEntityS
     $webforms = $this->loadMultiple();
     $categories = [];
     foreach ($webforms as $webform) {
-      if ($template !== NULL && $webform->get('template') != $template) {
+      if ($template !== NULL && $webform->get('template') !== $template) {
         continue;
       }
       if ($category = $webform->get('category')) {
@@ -206,7 +220,7 @@ class WebformEntityStorage extends ConfigEntityStorage implements WebformEntityS
     $categorized_options = [];
     foreach ($webforms as $id => $webform) {
       // Skip templates.
-      if ($template !== NULL && $webform->get('template') != $template) {
+      if ($template !== NULL && $webform->get('template') !== $template) {
         continue;
       }
       // Skip archived.

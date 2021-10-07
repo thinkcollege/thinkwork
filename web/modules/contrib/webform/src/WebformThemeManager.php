@@ -110,13 +110,14 @@ class WebformThemeManager implements WebformThemeManagerInterface {
    *   An associative array containing theme name.
    */
   public function getThemeNames() {
-    $themes = ['' => $this->t('Default')];
+    $themes = [];
     foreach ($this->themeHandler->listInfo() as $name => $theme) {
       if ($theme->status === 1) {
         $themes[$name] = $theme->info['name'];
       }
     }
-    return $themes;
+    asort($themes);
+    return ['' => $this->t('Default')] + $themes;
   }
 
   /**
@@ -125,7 +126,7 @@ class WebformThemeManager implements WebformThemeManagerInterface {
   public function getActiveThemeNames() {
     $active_theme = $this->themeManager->getActiveTheme();
     // Note: Reversing the order so that base themes are first.
-    return array_reverse(array_merge([$active_theme->getName()], array_keys($active_theme->getBaseThemes())));
+    return array_reverse(array_merge([$active_theme->getName()], array_keys($active_theme->getBaseThemeExtensions())));
   }
 
   /**

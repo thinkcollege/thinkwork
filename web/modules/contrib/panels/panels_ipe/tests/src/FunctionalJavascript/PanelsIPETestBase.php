@@ -2,12 +2,12 @@
 
 namespace Drupal\Tests\panels_ipe\FunctionalJavascript;
 
-use Drupal\FunctionalJavascriptTests\JavascriptTestBase;
+use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 
 /**
  * Base class which runs through standard Panels IPE test routines.
  */
-abstract class PanelsIPETestBase extends JavascriptTestBase {
+abstract class PanelsIPETestBase extends WebDriverTestBase {
 
   use PanelsIPETestTrait;
 

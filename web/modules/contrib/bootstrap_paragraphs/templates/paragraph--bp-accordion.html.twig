@@ -62,7 +62,7 @@
     'paragraph--color paragraph--color--rgba-black-slight' == layout_background ? 'paragraph--color paragraph--color--rgba-black-slight',
     'paragraph--color paragraph--color--rgba-black-light' == layout_background ? 'paragraph--color paragraph--color--rgba-black-light',
     'paragraph--color paragraph--color--rgba-black-strong' == layout_background ? 'paragraph--color paragraph--color--rgba-black-strong',
-    'paragraph--color paragraph--color--rgba-blue-slight' == layout_background ? 'paragraph--color paragraph--color--rgba-black-strong',
+    'paragraph--color paragraph--color--rgba-blue-slight' == layout_background ? 'paragraph--color paragraph--color--rgba-blue-slight',
     'paragraph--color paragraph--color--rgba-blue-light' == layout_background ? 'paragraph--color paragraph--color--rgba-blue-light',
     'paragraph--color paragraph--color--rgba-blue-strong' == layout_background ? 'paragraph--color paragraph--color--rgba-blue-strong',
     'paragraph--color paragraph--color--rgba-bluegrey-slight' == layout_background ? 'paragraph--color paragraph--color--rgba-bluegrey-slight',
@@ -155,8 +155,11 @@ accordion_active ? 'paragraph--accordion_active--',
       {{ 'Expand All'|trans }}
     </button>
   {% endif %}
-  <div{{ attributes.addClass(classes).setAttribute('id', paragraph_id) }} role="tablist" aria-multiselectable="true">
-    <div class="paragraph__column">
+  <div{{ attributes.addClass(classes) }}>
+    <div class="paragraph__column" id="{{ paragraph_id }}" role="tablist" aria-multiselectable="true">
+      {% if content.bp_header|render %}
+        <h2>{{ content.bp_header }}</h2>
+      {% endif %}
       <div class="card panel panel-default">
         {% if content.bp_show_indicators['#items'].getString() %}
           {% set indicator_class = 'display' %}
@@ -175,7 +178,7 @@ accordion_active ? 'paragraph--accordion_active--',
           {% endif %}
           <div class="card-header panel-heading" role="tab" id="heading-{{ paragraph_id }}-{{ key + 1 }}">
             <div class="panel-title">
-              <a class="{{ (indicator_class) }}" role="button" data-toggle="collapse" data-parent="{{ paragraph_id }}" href="#collapse-{{ paragraph_id }}-{{ key + 1 }}" aria-expanded="{{ aria }}" aria-controls="collapse-{{ paragraph_id }}-{{ key + 1 }}">
+              <a class="{{ (indicator_class) }}" role="button" data-toggle="collapse" data-parent="#{{ paragraph_id }}" href="#collapse-{{ paragraph_id }}-{{ key + 1 }}" aria-expanded="{{ aria }}" aria-controls="collapse-{{ paragraph_id }}-{{ key + 1 }}">
                 {# Print the accordion section title. #}
                 {{ item['#paragraph'].bp_accordion_section_title.value }}
               </a>

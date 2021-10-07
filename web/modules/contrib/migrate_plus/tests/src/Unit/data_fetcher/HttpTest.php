@@ -87,7 +87,7 @@ class HttpTest extends MigrateTestCase {
   /**
    * Set up test environment.
    */
-  public function setUp() {
+  public function setUp(): void {
     // Mock up a Basic authentication plugin that will be used in requests.
     $basic_authenticator = $this->getMockBuilder(Basic::class)
       ->disableOriginalConstructor()
@@ -107,7 +107,7 @@ class HttpTest extends MigrateTestCase {
   /**
    * Test 'http' data fetcher (with auth) returns an expected response.
    */
-  public function testFetchHttpWithAuth() {
+  public function testFetchHttpWithAuth(): void {
     $migration_config = $this->migrationConfiguration + $this->specificMigrationConfig;
 
     $plugin = new TestHttp($migration_config, $this->dataFetcherPluginId, $this->pluginDefinition);
@@ -127,7 +127,7 @@ class HttpTest extends MigrateTestCase {
   /**
    * Test 'http' data fetcher (without auth) returns an expected response.
    */
-  public function testFetchHttpNoAuth() {
+  public function testFetchHttpNoAuth(): void {
     $migration_config = $this->migrationConfiguration + $this->specificMigrationConfig;
     unset($migration_config['authentication']);
 
@@ -145,26 +145,28 @@ class HttpTest extends MigrateTestCase {
   /**
    * Test 'http' data fetcher (with auth) dies as expected when auth fails.
    */
-  public function testFetchHttpAuthFailure() {
+  public function testFetchHttpAuthFailure(): void {
     $migration_config = $this->migrationConfiguration + $this->specificMigrationConfig;
 
     $plugin = new TestHttp($migration_config, $this->dataFetcherPluginId, $this->pluginDefinition);
     $plugin->mockHttpClient([[403, 'text/html', 'Forbidden']], $this->basicAuthenticator);
 
-    $this->setExpectedException(MigrateException::class, 'Error message: Client error: `GET http://example.org/http_fetcher_test` resulted in a `403 Forbidden');
+    $this->expectException(MigrateException::class);
+    $this->expectExceptionMessage('Error message: Client error: `GET http://example.org/http_fetcher_test` resulted in a `403 Forbidden');
     $plugin->getResponseContent($migration_config['urls'][0]);
   }
 
   /**
    * Test 'http' data fetcher (with auth) dies as expected when server down.
    */
-  public function testFetchHttp500Error() {
+  public function testFetchHttp500Error(): void {
     $migration_config = $this->migrationConfiguration + $this->specificMigrationConfig;
 
     $plugin = new TestHttp($migration_config, $this->dataFetcherPluginId, $this->pluginDefinition);
     $plugin->mockHttpClient([[500, 'text/html', 'Internal Server Error']], $this->basicAuthenticator);
 
-    $this->setExpectedException(MigrateException::class, 'GET http://example.org/http_fetcher_test` resulted in a `500 Internal Server Error');
+    $this->expectException(MigrateException::class);
+    $this->expectExceptionMessage('GET http://example.org/http_fetcher_test` resulted in a `500 Internal Server Error');
     $plugin->getResponseContent($migration_config['urls'][0]);
   }
 
@@ -188,10 +190,10 @@ class TestHttp extends Http {
    * @param array $responses
    *   An array of responses (arrays), with each consisting of properties,
    *   ordered: response code, content-type and  response body.
-   * @param \PHPUnit_Framework_MockObject_MockObject $authenticator
+   * @param object $authenticator
    *   Mocked authenticator plugin.
    */
-  public function mockHttpClient(array $responses, \PHPUnit_Framework_MockObject_MockObject $authenticator = NULL) {
+  public function mockHttpClient(array $responses, object $authenticator = NULL) {
     // Set mocked authentication plugin to be used for the request auth plugin.
     $this->authenticator = $authenticator;
 

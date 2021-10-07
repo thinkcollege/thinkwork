@@ -4,6 +4,7 @@ namespace Drupal\Tests\migrate_upgrade\Unit;
 
 use Drupal\migrate_upgrade\MigrateUpgradeDrushRunner;
 use Drupal\Tests\migrate\Unit\MigrateTestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * Tests for the  MigrateUpgradeDrushRunner class.
@@ -26,8 +27,9 @@ class MigrateUpgradeDrushRunnerTest extends MigrateTestCase {
    *
    * @dataProvider getData
    */
-  public function testIdSubstitution(array $source, array $expected) {
-    $runner = new TestMigrateUpgradeDrushRunner();
+  public function testIdSubstitution(array $source, array $expected): void {
+    $loggerProphet = $this->prophesize(LoggerInterface::class);
+    $runner = new TestMigrateUpgradeDrushRunner($loggerProphet->reveal());
     $results = $runner->substituteIds($source);
     $this->assertArrayEquals($expected, $results);
   }
@@ -38,7 +40,7 @@ class MigrateUpgradeDrushRunnerTest extends MigrateTestCase {
    * @return array
    *   The test data.
    */
-  public function getData() {
+  public function getData(): array {
     return [
       'Single Migration Lookup' => [
         'source_data' => [
@@ -186,8 +188,8 @@ class TestMigrateUpgradeDrushRunner extends MigrateUpgradeDrushRunner {
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $options = []) {
-    parent::__construct($options);
+  public function __construct(LoggerInterface $logger, array $options = []) {
+    parent::__construct($logger, $options);
     $this->migrationList = [
       'my_previous_migration' => [],
       'my_previous_migration_1' => [],

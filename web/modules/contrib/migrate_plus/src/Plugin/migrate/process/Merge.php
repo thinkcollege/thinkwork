@@ -2,9 +2,9 @@
 
 namespace Drupal\migrate_plus\Plugin\migrate\process;
 
-use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\MigrateException;
 use Drupal\migrate\MigrateExecutableInterface;
+use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\Row;
 
 /**
@@ -33,7 +33,7 @@ use Drupal\migrate\Row;
  *    temp_images:
  *      plugin: iterator
  *      source: field_image
- *      process
+ *      process:
  *        target_id:
  *          plugin: migration_lookup
  *          migration: image_entities_to_paragraph
@@ -60,9 +60,10 @@ class Merge extends ProcessPluginBase {
       if (!is_array($item)) {
         throw new MigrateException(sprintf('Merge process failed for destination property (%s): index (%s) in the source value is not an array that can be merged.', $destination_property, $i));
       }
-      $new_value = array_merge($new_value, $item);
+      $new_value[] = $item;
     }
-    return $new_value;
+
+    return array_merge(...$new_value);
   }
 
 }

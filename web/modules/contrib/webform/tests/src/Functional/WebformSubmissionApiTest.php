@@ -10,7 +10,7 @@ use Drupal\webform\WebformSubmissionInterface;
 /**
  * Tests for webform submission API.
  *
- * @group Webform
+ * @group webform
  */
 class WebformSubmissionApiTest extends WebformBrowserTestBase {
 
@@ -87,7 +87,7 @@ class WebformSubmissionApiTest extends WebformBrowserTestBase {
       'data' => [],
     ];
     $webform_submission = WebformSubmissionForm::submitFormValues($values);
-    $this->assert($webform_submission instanceof WebformSubmissionInterface);
+    $this->assertInstanceOf(WebformSubmissionInterface::class, $webform_submission);
 
     /**************************************************************************/
     // Multistep form.

@@ -549,57 +549,6 @@ elements: |
             suburb: ''
             postcode: '20020'
         '#format_items': table
-    webform_location_geocomplete:
-      '#type': details
-      '#title': 'Location (Geocomplete)'
-      webform_location_geocomplete_ol:
-        '#type': webform_location_geocomplete
-        '#title': 'Location (Geocomplete) (Ordered list)'
-        '#map': true
-        '#geolocation': true
-        '#format': map
-        '#multiple': true
-        '#default_value':
-          - value: 'The White House, 1600 Pennsylvania Ave NW, Washington, DC 20500, USA'
-          - value: 'London SW1A 1AA, United Kingdom'
-          - value: 'Moscow, Russia, 10307'
-        '#format_items': ol
-      webform_location_geocomplete_ul:
-        '#type': webform_location_geocomplete
-        '#title': 'Location (Geocomplete) (Unordered list)'
-        '#map': true
-        '#geolocation': true
-        '#format': map
-        '#multiple': true
-        '#default_value':
-          - value: 'The White House, 1600 Pennsylvania Ave NW, Washington, DC 20500, USA'
-          - value: 'London SW1A 1AA, United Kingdom'
-          - value: 'Moscow, Russia, 10307'
-        '#format_items': ul
-      webform_location_geocomplete_hr:
-        '#type': webform_location_geocomplete
-        '#title': 'Location (Geocomplete) (Horizontal rule)'
-        '#map': true
-        '#geolocation': true
-        '#format': map
-        '#multiple': true
-        '#default_value':
-          - value: 'The White House, 1600 Pennsylvania Ave NW, Washington, DC 20500, USA'
-          - value: 'London SW1A 1AA, United Kingdom'
-          - value: 'Moscow, Russia, 10307'
-        '#format_items': hr
-      webform_location_geocomplete_table:
-        '#type': webform_location_geocomplete
-        '#title': 'Location (Geocomplete) (Table)'
-        '#map': true
-        '#geolocation': true
-        '#format': map
-        '#multiple': true
-        '#default_value':
-          - value: 'The White House, 1600 Pennsylvania Ave NW, Washington, DC 20500, USA'
-          - value: 'London SW1A 1AA, United Kingdom'
-          - value: 'Moscow, Russia, 10307'
-        '#format_items': table
     webform_name:
       '#type': details
       '#title': Name
@@ -762,7 +711,6 @@ elements: |
             phone: '+1 212-333-4444'
             ext: 0
         '#format_items': table
-  
 css: ''
 javascript: ''
 settings:
@@ -774,7 +722,7 @@ settings:
   page: true
   page_submit_path: ''
   page_confirm_path: ''
-  page_admin_theme: false
+  page_theme_name: ''
   form_title: source_entity_webform
   form_submit_once: false
   form_exception_message: ''
@@ -804,6 +752,11 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
   submission_label: ''
   submission_log: false
   submission_views: {  }
@@ -829,11 +782,19 @@ settings:
   wizard_progress_percentage: false
   wizard_progress_link: false
   wizard_progress_states: false
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
   wizard_start_label: ''
   wizard_preview_link: false
   wizard_confirmation: true
   wizard_confirmation_label: ''
   wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
   preview: 1
   preview_label: ''
   preview_title: ''
@@ -876,8 +837,11 @@ settings:
   purge_days: null
   results_disabled: false
   results_disabled_ignore: false
+  results_customize: false
   token_view: false
   token_update: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -929,6 +893,7 @@ handlers:
   email_text:
     id: email
     label: 'Email (Text)'
+    notes: ''
     handler_id: email_text
     status: true
     conditions: {  }
@@ -951,6 +916,7 @@ handlers:
       ignore_access: false
       exclude_empty: true
       exclude_empty_checkbox: false
+      exclude_attachments: false
       html: false
       attachments: false
       twig: false
@@ -964,6 +930,7 @@ handlers:
   email_html:
     id: email
     label: 'Email (HTML)'
+    notes: ''
     handler_id: email_html
     status: true
     conditions: {  }
@@ -986,6 +953,7 @@ handlers:
       ignore_access: false
       exclude_empty: true
       exclude_empty_checkbox: false
+      exclude_attachments: false
       html: true
       attachments: false
       twig: false
@@ -996,3 +964,4 @@ handlers:
       return_path: ''
       sender_mail: ''
       sender_name: ''
+variants: {  }

@@ -2,6 +2,7 @@
 
 namespace Drupal\local_fonts\Form;
 
+use Drupal\Component\Utility\Environment;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\file\Entity\File;
@@ -62,15 +63,15 @@ class LocalFontConfigEntityForm extends EntityForm {
       '#type' => 'select',
       '#title' => $this->t('Font Weight'),
       '#options' => [
-        '100' => '100',
-        '200' => '200',
-        '300' => '300',
-        '400' => $this->t('400 (normal)'),
-        '500' => '500',
-        '600' => '600',
-        '700' => $this->t('700 (bold)'),
-        '800' => '800',
-        '900' => '900',
+        '100' => $this->t('100 (Thin)'),
+        '200' => $this->t('200 (Extra Light, Ultra Light)'),
+        '300' => $this->t('300 (Light)'),
+        'normal' => $this->t('400 (Normal, Book, Regular)'),
+        '500' => $this->t('500 (Medium)'),
+        '600' => $this->t('600 (Semi Bold, Demi Bold)'),
+        '700' => $this->t('700 (Bold)'),
+        '800' => $this->t('800 (Extra Bold, Ultra Bold)'),
+        '900' => $this->t('900 (Black, Heavy)'),
       ],
       '#default_value' => (isset($local_font_config_entity->font_weight)) ? $local_font_config_entity->font_weight : '400',
     ];
@@ -97,7 +98,7 @@ class LocalFontConfigEntityForm extends EntityForm {
       '#size' => 50,
       '#upload_validators' => [
         'file_validate_extensions' => ['woff'],
-        'file_validate_size' => [file_upload_max_size()],
+        'file_validate_size' => [Environment::getUploadMaxSize()],
         'file_validate_name_length' => [],
       ],
     ];
@@ -135,17 +136,17 @@ class LocalFontConfigEntityForm extends EntityForm {
 
     switch ($status) {
       case SAVED_NEW:
-        drupal_set_message($this->t('Created the %label Custom Font.', [
+        \Drupal::messenger()->addMessage($this->t('Created the %label Custom Font.', [
           '%label' => $local_font_config_entity->label(),
         ]));
         break;
 
       default:
-        drupal_set_message($this->t('Saved the %label Custom Font.', [
+        \Drupal::messenger()->addMessage($this->t('Saved the %label Custom Font.', [
           '%label' => $local_font_config_entity->label(),
         ]));
     }
-    $form_state->setRedirectUrl($local_font_config_entity->urlInfo('collection'));
+    $form_state->setRedirectUrl($local_font_config_entity->toUrl('collection'));
   }
 
 }

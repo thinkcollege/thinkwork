@@ -210,8 +210,20 @@ function superfish_library_path($library = 'superfish') {
     }
   }
   // Otherwise use the default directory.
-  if (file_exists('profiles/' . drupal_get_profile() . '/libraries/' . $library)) {
-    $directory = 'profiles/' . drupal_get_profile() . '/libraries/' . $library;
+  if (\Drupal::hasContainer()) {
+    $profile = \Drupal::installProfile();
+  }
+  else {
+    $profile = BootstrapConfigStorageFactory::getDatabaseStorage()->read('core.extension')['profile'];
+  }
+  if (file_exists('profiles/' . $profile . '/libraries/' . $library)) {
+    $directory = 'profiles/' . $profile . '/libraries/' . $library;
+  }
+  elseif (file_exists('profiles/contrib/' . $profile . '/libraries/' . $library)) {
+    $directory = 'profiles/contrib/' . $profile . '/libraries/' . $library;
+  }
+  elseif (file_exists('profiles/custom/' . $profile . '/libraries/' . $library)) {
+    $directory = 'profiles/custom/' . $profile . '/libraries/' . $library;
   }
   elseif (file_exists('libraries/' . $library)) {
     $directory = 'libraries/' . $library;
@@ -319,10 +331,10 @@ function superfish_effects() {
 /**
  * Helper function to clean up arrays.
  */
-function sf_array_filter($haystack) {
+function superfish_array_filter($haystack) {
   foreach ($haystack as $key => $value) {
     if (is_array($value)) {
-      $haystack[$key] = sf_array_filter($haystack[$key]);
+      $haystack[$key] = superfish_array_filter($haystack[$key]);
     }
     elseif (empty($value) && is_bool($value) !== TRUE) {
       if ($haystack[$key] != '0') {

@@ -5,7 +5,7 @@ namespace Drupal\Tests\subpathauto\Kernel;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
-use Drupal\simpletest\UserCreationTrait;
+use Drupal\Tests\user\Traits\UserCreationTrait;
 use Drupal\user\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -20,12 +20,12 @@ class SubPathautoKernelTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['system', 'subpathauto', 'node', 'user'];
-
-  /**
-   * @var \Drupal\Core\Path\AliasStorage
-   */
-  protected $aliasStorage;
+  public static $modules = [
+    'system',
+    'subpathauto',
+    'node',
+    'user',
+  ];
 
   /**
    * @var \Drupal\Core\Path\AliasWhitelistInterface
@@ -61,12 +61,20 @@ class SubPathautoKernelTest extends KernelTestBase {
     ]);
     $type->save();
 
-    $this->aliasStorage = $this->container->get('path.alias_storage');
     $this->sut = $this->container->get('path_processor_subpathauto');
     $this->aliasWhiteList = $this->container->get('path.alias_whitelist');
 
     Node::create(['type' => 'page', 'title' => 'test'])->save();
-    $this->aliasStorage->save('/node/1', '/kittens');
+
+    $aliasStorage = \Drupal::entityTypeManager()
+      ->getStorage('path_alias');
+
+    $path_alias = $aliasStorage->create([
+      'path' => '/node/1',
+      'alias' => '/kittens',
+    ]);
+    $path_alias->save();
+
     $this->aliasWhiteList->set('node', TRUE);
 
     User::create(['uid' => 0, 'name' => 'anonymous user'])->save();

@@ -25,7 +25,7 @@ function adobe_edge_fonts_fontyourface_api() {
  */
 function adobe_edge_fonts_modules_installed($modules) {
   if (in_array('adobe_edge_fonts', $modules)) {
-    drupal_set_message(t('Due to the number of fonts, automated import from install for Adobe Edge Fonts is disabled. Please use @link to import Adobe Edge Fonts.', ['@link' => Link::createFromRoute('@font-your-face settings', 'font.settings')->toString()]));
+    Drupal::messenger()->addMessage(t('Due to the number of fonts, automated import from install for Adobe Edge Fonts is disabled. Please use @link to import Adobe Edge Fonts.', ['@link' => Link::createFromRoute('@font-your-face settings', 'font.settings')->toString()]));
   }
 }
 
@@ -72,7 +72,7 @@ function adobe_edge_fonts_fontyourface_import($font_context = []) {
     $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
   }
   else {
-    drupal_set_message(t('Imported @count fonts from Adobe Edge', ['@count' => $context['sandbox']['progress']]));
+    Drupal::messenger()->addMessage(t('Imported @count fonts from Adobe Edge', ['@count' => $context['sandbox']['progress']]));
   }
   return $context;
 }
@@ -105,7 +105,7 @@ function adobe_edge_fonts_generate_font_family_css(array $fonts) {
 /**
  * Retrieves fonts from api and parses them for consumption.
  *
- * @return array
+ * @return array|bool
  *   List of fonts ready for ingesting as FontInterface objects.
  */
 function _adobe_edge_fonts_get_fonts_from_api() {
@@ -115,7 +115,7 @@ function _adobe_edge_fonts_get_fonts_from_api() {
     $data = (string) $response->getBody();
   }
   catch (RequestException $e) {
-    drupal_set_message(t('The list of Adobe Edge Fonts could not be fetched. Verify that your server can connect the Adobe Edge Servers (https://edgewebfonts.adobe.com). Error: %error', ['%error' => $e->error]), 'error');
+    Drupal::messenger()->addMessage(t('The list of Adobe Edge Fonts could not be fetched. Verify that your server can connect the Adobe Edge Servers (https://edgewebfonts.adobe.com). Error: %error', ['%error' => $e->error]), 'error');
     return FALSE;
   }
 

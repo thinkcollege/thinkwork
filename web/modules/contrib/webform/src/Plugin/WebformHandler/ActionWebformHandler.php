@@ -65,8 +65,7 @@ class ActionWebformHandler extends WebformHandlerBase {
    * {@inheritdoc}
    */
   public function getSummary() {
-    $configuration = $this->getConfiguration();
-    $settings = $configuration['settings'];
+    $settings = $this->getSettings();
 
     // Get state labels.
     $states = [
@@ -81,10 +80,10 @@ class ActionWebformHandler extends WebformHandlerBase {
 
     // Get message type.
     $message_types = [
-      'status' => t('Status'),
-      'error' => t('Error'),
-      'warning' => t('Warning'),
-      'info' => t('Info'),
+      'status' => $this->t('Status'),
+      'error' => $this->t('Error'),
+      'warning' => $this->t('Warning'),
+      'info' => $this->t('Info'),
     ];
     $settings['message'] = $settings['message'] ? WebformHtmlEditor::checkMarkup($settings['message']) : NULL;
     $settings['message_type'] = $message_types[$settings['message_type']];
@@ -180,10 +179,10 @@ class ActionWebformHandler extends WebformHandlerBase {
       '#type' => 'select',
       '#title' => $this->t('Display message type'),
       '#options' => [
-        'status' => t('Status'),
-        'error' => t('Error'),
-        'warning' => t('Warning'),
-        'info' => t('Info'),
+        'status' => $this->t('Status'),
+        'error' => $this->t('Error'),
+        'warning' => $this->t('Warning'),
+        'info' => $this->t('Info'),
       ],
       '#default_value' => $this->configuration['message_type'],
     ];

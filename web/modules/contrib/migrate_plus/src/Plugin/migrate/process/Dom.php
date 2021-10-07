@@ -150,7 +150,7 @@ class Dom extends ProcessPluginBase {
     }
 
     if ($this->logMessages) {
-      set_error_handler(function ($errno, $errstr) use ($migrate_executable) {
+      set_error_handler(static function ($errno, $errstr) use ($migrate_executable) {
         $migrate_executable->saveMessage($errstr, MigrationInterface::MESSAGE_WARNING);
       });
     }

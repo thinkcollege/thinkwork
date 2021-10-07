@@ -242,6 +242,28 @@ elements: |
       '#title_display': none
     webform_email_multiple_hr:
       '#type': webform_horizontal_rule
+    webform_height_title:
+      '#markup': 'Height (feet/inches) (webform_height)'
+      '#prefix': '<h3>'
+      '#suffix': '</h3>'
+    webform_height_before:
+      '#type': webform_height
+      '#title': 'Height (feet/inches) (before)'
+      '#title_display': before
+    webform_height_after:
+      '#type': webform_height
+      '#title': 'Height (feet/inches) (after)'
+      '#title_display': after
+    webform_height_inline:
+      '#type': webform_height
+      '#title': 'Height (feet/inches) (inline)'
+      '#title_display': inline
+    webform_height_none:
+      '#type': webform_height
+      '#title': 'Height (feet/inches) (none)'
+      '#title_display': none
+    webform_height_hr:
+      '#type': webform_horizontal_rule
     webform_mapping_title:
       '#markup': 'Mapping (webform_mapping)'
       '#prefix': '<h3>'
@@ -434,6 +456,36 @@ elements: |
       '#title_display': none
     webform_same_hr:
       '#type': webform_horizontal_rule
+    webform_scale_title:
+      '#markup': 'Scale (webform_scale)'
+      '#prefix': '<h3>'
+      '#suffix': '</h3>'
+    webform_scale_before:
+      '#type': webform_scale
+      '#title': 'Scale (before)'
+      '#min': 1
+      '#max': 5
+      '#title_display': before
+    webform_scale_after:
+      '#type': webform_scale
+      '#title': 'Scale (after)'
+      '#min': 1
+      '#max': 5
+      '#title_display': after
+    webform_scale_inline:
+      '#type': webform_scale
+      '#title': 'Scale (inline)'
+      '#min': 1
+      '#max': 5
+      '#title_display': inline
+    webform_scale_none:
+      '#type': webform_scale
+      '#title': 'Scale (none)'
+      '#min': 1
+      '#max': 5
+      '#title_display': none
+    webform_scale_hr:
+      '#type': webform_horizontal_rule
     search_title:
       '#markup': 'Search (search)'
       '#prefix': '<h3>'
@@ -499,28 +551,6 @@ elements: |
       '#international': true
       '#title_display': none
     tel_hr:
-      '#type': webform_horizontal_rule
-    webform_toggle_title:
-      '#markup': 'Toggle (webform_toggle)'
-      '#prefix': '<h3>'
-      '#suffix': '</h3>'
-    webform_toggle_before:
-      '#type': webform_toggle
-      '#title': 'Toggle (before)'
-      '#title_display': before
-    webform_toggle_after:
-      '#type': webform_toggle
-      '#title': 'Toggle (after)'
-      '#title_display': after
-    webform_toggle_inline:
-      '#type': webform_toggle
-      '#title': 'Toggle (inline)'
-      '#title_display': inline
-    webform_toggle_none:
-      '#type': webform_toggle
-      '#title': 'Toggle (none)'
-      '#title_display': none
-    webform_toggle_hr:
       '#type': webform_horizontal_rule
     url_title:
       '#markup': 'URL (url)'
@@ -645,82 +675,6 @@ elements: |
     '#type': details
     '#title': 'Options elements'
     '#open': true
-    webform_buttons_title:
-      '#markup': 'Buttons (webform_buttons)'
-      '#prefix': '<h3>'
-      '#suffix': '</h3>'
-    webform_buttons_before:
-      '#type': webform_buttons
-      '#title': 'Buttons (before)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#title_display': before
-    webform_buttons_after:
-      '#type': webform_buttons
-      '#title': 'Buttons (after)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#title_display': after
-    webform_buttons_inline:
-      '#type': webform_buttons
-      '#title': 'Buttons (inline)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#title_display': inline
-    webform_buttons_none:
-      '#type': webform_buttons
-      '#title': 'Buttons (none)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#title_display': none
-    webform_buttons_hr:
-      '#type': webform_horizontal_rule
-    webform_buttons_other_title:
-      '#markup': 'Buttons other (webform_buttons_other)'
-      '#prefix': '<h3>'
-      '#suffix': '</h3>'
-    webform_buttons_other_before:
-      '#type': webform_buttons_other
-      '#title': 'Buttons other (before)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#title_display': before
-    webform_buttons_other_after:
-      '#type': webform_buttons_other
-      '#title': 'Buttons other (after)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#title_display': after
-    webform_buttons_other_inline:
-      '#type': webform_buttons_other
-      '#title': 'Buttons other (inline)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#title_display': inline
-    webform_buttons_other_none:
-      '#type': webform_buttons_other
-      '#title': 'Buttons other (none)'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-      '#title_display': none
-    webform_buttons_other_hr:
-      '#type': webform_horizontal_rule
     checkboxes_title:
       '#markup': 'Checkboxes (checkboxes)'
       '#prefix': '<h3>'
@@ -818,45 +772,45 @@ elements: |
       '#title': 'Image select (before)'
       '#show_label': true
       '#images':
-        bear_1:
-          text: 'Bear 1'
-          src: 'https://www.placebear.com/80/100'
-        bear_2:
-          text: 'Bear 2'
-          src: 'https://www.placebear.com/100/100'
-        bear_3:
-          text: 'Bear 3'
-          src: 'https://www.placebear.com/120/100'
+        dog_1:
+          text: 'Dog 1'
+          src: 'https://www.placedog.net/80/100'
+        dog_2:
+          text: 'Dog 2'
+          src: 'https://www.placedog.net/100/100'
+        dog_3:
+          text: 'Dog 3'
+          src: 'https://www.placedog.net/120/100'
       '#title_display': before
     webform_image_select_after:
       '#type': webform_image_select
       '#title': 'Image select (after)'
       '#show_label': true
       '#images':
-        bear_1:
-          text: 'Bear 1'
-          src: 'https://www.placebear.com/80/100'
-        bear_2:
-          text: 'Bear 2'
-          src: 'https://www.placebear.com/100/100'
-        bear_3:
-          text: 'Bear 3'
-          src: 'https://www.placebear.com/120/100'
+        dog_1:
+          text: 'Dog 1'
+          src: 'https://www.placedog.net/80/100'
+        dog_2:
+          text: 'Dog 2'
+          src: 'https://www.placedog.net/100/100'
+        dog_3:
+          text: 'Dog 3'
+          src: 'https://www.placedog.net/120/100'
       '#title_display': after
     webform_image_select_none:
       '#type': webform_image_select
       '#title': 'Image select (none)'
       '#show_label': true
       '#images':
-        bear_1:
-          text: 'Bear 1'
-          src: 'https://www.placebear.com/80/100'
-        bear_2:
-          text: 'Bear 2'
-          src: 'https://www.placebear.com/100/100'
-        bear_3:
-          text: 'Bear 3'
-          src: 'https://www.placebear.com/120/100'
+        dog_1:
+          text: 'Dog 1'
+          src: 'https://www.placedog.net/80/100'
+        dog_2:
+          text: 'Dog 2'
+          src: 'https://www.placedog.net/100/100'
+        dog_3:
+          text: 'Dog 3'
+          src: 'https://www.placedog.net/120/100'
       '#title_display': none
     webform_image_select_hr:
       '#type': webform_horizontal_rule
@@ -1070,43 +1024,119 @@ elements: |
       '#title_display': none
     webform_select_other_hr:
       '#type': webform_horizontal_rule
-    webform_toggles_title:
-      '#markup': 'Toggles (webform_toggles)'
+    tableselect_title:
+      '#markup': 'Table select (tableselect)'
       '#prefix': '<h3>'
       '#suffix': '</h3>'
-    webform_toggles_before:
-      '#type': webform_toggles
-      '#title': 'Toggles (before)'
+    tableselect_before:
+      '#type': tableselect
+      '#title': 'Table select (before)'
       '#options':
         one: One
         two: Two
         three: Three
       '#title_display': before
-    webform_toggles_after:
-      '#type': webform_toggles
-      '#title': 'Toggles (after)'
+    tableselect_after:
+      '#type': tableselect
+      '#title': 'Table select (after)'
       '#options':
         one: One
         two: Two
         three: Three
       '#title_display': after
-    webform_toggles_inline:
-      '#type': webform_toggles
-      '#title': 'Toggles (inline)'
+    tableselect_inline:
+      '#type': tableselect
+      '#title': 'Table select (inline)'
       '#options':
         one: One
         two: Two
         three: Three
       '#title_display': inline
-    webform_toggles_none:
-      '#type': webform_toggles
-      '#title': 'Toggles (none)'
+    tableselect_none:
+      '#type': tableselect
+      '#title': 'Table select (none)'
       '#options':
         one: One
         two: Two
         three: Three
       '#title_display': none
-    webform_toggles_hr:
+    tableselect_hr:
+      '#type': webform_horizontal_rule
+    webform_tableselect_sort_title:
+      '#markup': 'Tableselect sort (webform_tableselect_sort)'
+      '#prefix': '<h3>'
+      '#suffix': '</h3>'
+    webform_tableselect_sort_before:
+      '#type': webform_tableselect_sort
+      '#title': 'Tableselect sort (before)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#title_display': before
+    webform_tableselect_sort_after:
+      '#type': webform_tableselect_sort
+      '#title': 'Tableselect sort (after)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#title_display': after
+    webform_tableselect_sort_inline:
+      '#type': webform_tableselect_sort
+      '#title': 'Tableselect sort (inline)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#title_display': inline
+    webform_tableselect_sort_none:
+      '#type': webform_tableselect_sort
+      '#title': 'Tableselect sort (none)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#title_display': none
+    webform_tableselect_sort_hr:
+      '#type': webform_horizontal_rule
+    webform_table_sort_title:
+      '#markup': 'Table sort (webform_table_sort)'
+      '#prefix': '<h3>'
+      '#suffix': '</h3>'
+    webform_table_sort_before:
+      '#type': webform_table_sort
+      '#title': 'Table sort (before)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#title_display': before
+    webform_table_sort_after:
+      '#type': webform_table_sort
+      '#title': 'Table sort (after)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#title_display': after
+    webform_table_sort_inline:
+      '#type': webform_table_sort
+      '#title': 'Table sort (inline)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#title_display': inline
+    webform_table_sort_none:
+      '#type': webform_table_sort
+      '#title': 'Table sort (none)'
+      '#options':
+        one: One
+        two: Two
+        three: Three
+      '#title_display': none
+    webform_table_sort_hr:
       '#type': webform_horizontal_rule
   computed_elements:
     '#type': details
@@ -1627,7 +1657,6 @@ elements: |
       '#title_display': none
     machine_name_hr:
       '#type': webform_horizontal_rule
-  
 css: ''
 javascript: ''
 settings:
@@ -1639,7 +1668,7 @@ settings:
   page: true
   page_submit_path: ''
   page_confirm_path: ''
-  page_admin_theme: false
+  page_theme_name: ''
   form_title: source_entity_webform
   form_submit_once: false
   form_exception_message: ''
@@ -1669,6 +1698,11 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
   submission_label: ''
   submission_log: false
   submission_views: {  }
@@ -1694,11 +1728,19 @@ settings:
   wizard_progress_percentage: false
   wizard_progress_link: false
   wizard_progress_states: false
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
   wizard_start_label: ''
   wizard_preview_link: false
   wizard_confirmation: true
   wizard_confirmation_label: ''
   wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
   preview: 1
   preview_label: ''
   preview_title: ''
@@ -1741,8 +1783,11 @@ settings:
   purge_days: null
   results_disabled: false
   results_disabled_ignore: false
+  results_customize: false
   token_view: false
   token_update: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -1794,8 +1839,12 @@ handlers:
   debug:
     id: debug
     label: Debug
+    notes: ''
     handler_id: debug
     status: true
     conditions: {  }
     weight: 1
-    settings: {  }
+    settings:
+      format: yaml
+      submission: false
+variants: {  }

@@ -1,3 +1,4 @@
+api_endpoint: 'https://api.mailgun.net'
 api_key: ''
 working_domain: '_sender'
 debug_mode: false
@@ -8,4 +9,4 @@ tracking_exception: 'user:password_reset'
 format_filter: 'plain_text'
 use_queue: false
 use_theme: false
-tagging_mailkey: true
+tagging_mailkey: false

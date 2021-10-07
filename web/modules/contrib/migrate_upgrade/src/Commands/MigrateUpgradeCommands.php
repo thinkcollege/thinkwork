@@ -4,11 +4,14 @@ namespace Drupal\migrate_upgrade\Commands;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\migrate_upgrade\MigrateUpgradeDrushRunner;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 use Drupal\Core\State\StateInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -24,13 +27,24 @@ class MigrateUpgradeCommands extends DrushCommands {
   protected $state;
 
   /**
+   * The logger.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
+
+  /**
    * MigrateUpgradeCommands constructor.
    *
    * @param \Drupal\Core\State\StateInterface $state
    *   State service.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
+   *   The logger.factory service.
    */
-  public function __construct(StateInterface $state) {
+  public function __construct(StateInterface $state, LoggerChannelFactoryInterface $logger_factory) {
+    parent::__construct();
     $this->state = $state;
+    $this->logger = $logger_factory->get('drush');
   }
 
   /**
@@ -48,24 +62,34 @@ class MigrateUpgradeCommands extends DrushCommands {
    *
    * @validate-module-enabled migrate_upgrade
    *
+   * @field-labels
+   *   original: Original migrations
+   *   generated: Generated migrations
+   *
    * @aliases migrate-upgrade, mup
+   *
+   * @default-fields generated
+   *
+   * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+   *   The formatted results of the command.
    *
    * @throws \Exception
    *   When an error occurs.
    */
   public function upgrade(array $options = []) {
-    $runner = new MigrateUpgradeDrushRunner($options);
+    $runner = new MigrateUpgradeDrushRunner($this->logger, $options);
 
     $runner->configure();
     if ($options['configure-only']) {
-      $runner->export();
+      $result = new RowsOfFields($runner->export());
     }
     else {
-      $runner->import();
+      $result = new RowsOfFields($runner->import());
       $this->state->set('migrate_drupal_ui.performed', \Drupal::time()->getRequestTime());
     }
     // Remove the global database state.
     $this->state->delete('migrate.fallback_state_key');
+    return $result;
   }
 
   /**
@@ -169,6 +193,19 @@ class MigrateUpgradeCommands extends DrushCommands {
   }
 
   /**
+   * Alter field labels for non configure-only.
+   *
+   * @hook init migrate:upgrade
+   */
+  public function initUpgrade(InputInterface $input, AnnotationData $annotationData) {
+    // If configure option isn't specified, then rename the field label more
+    // appropriately.
+    if (!$input->getOption('configure-only')) {
+      $annotationData->set('field-labels', 'original: Original migrations' . PHP_EOL . 'generated: Executed migrations');
+    }
+  }
+
+  /**
    * Rolls back and removes upgrade migrations.
    *
    * @throws \Drush\Exceptions\UserAbortException
@@ -184,7 +221,7 @@ class MigrateUpgradeCommands extends DrushCommands {
   public function upgradeRollback() {
     if ($date_performed = $this->state->get('migrate_drupal_ui.performed')) {
       if ($this->io()->confirm(dt('All migrations will be rolled back. Are you sure?'))) {
-        $runner = new MigrateUpgradeDrushRunner();
+        $runner = new MigrateUpgradeDrushRunner($this->logger);
 
         $this->logger()->notice(dt('Rolling back the upgrades performed @date',
           ['@date' => \Drupal::service('date.formatter')->format($date_performed)]));

@@ -36,14 +36,14 @@ class WebformEntityAccessControlHandler extends EntityAccessControlHandler imple
   protected $entityTypeManager;
 
   /**
-   * Webform source entity plugin manager.
+   * The webform source entity plugin manager.
    *
    * @var \Drupal\webform\Plugin\WebformSourceEntityManagerInterface
    */
   protected $webformSourceEntityManager;
 
   /**
-   * Webform access rules manager service.
+   * The webform access rules manager service.
    *
    * @var \Drupal\webform\WebformAccessRulesManagerInterface
    */
@@ -120,7 +120,7 @@ class WebformEntityAccessControlHandler extends EntityAccessControlHandler imple
       }
     }
 
-    $is_owner = ($account->id() == $entity->getOwnerId());
+    $is_owner = ((int) $account->id() === (int) $entity->getOwnerId());
 
     // Check 'view' operation use 'submission_create' when viewing rendered
     // HTML webform or use access 'configuration' when requesting a
@@ -196,6 +196,16 @@ class WebformEntityAccessControlHandler extends EntityAccessControlHandler imple
 
       // Allow users with 'view own webform submission' to view own submissions.
       if ($operation === 'submission_view_own' && $account->hasPermission('view own webform submission')) {
+        return WebformAccessResult::allowed();
+      }
+
+      // Allow users with 'edit any webform submission' to update any submissions.
+      if ($operation === 'submission_update_any' && $account->hasPermission('edit any webform submission')) {
+        return WebformAccessResult::allowed();
+      }
+
+      // Allow users with 'edit own webform submission' to update own submissions.
+      if ($operation === 'submission_update_own' && $account->hasPermission('edit own webform submission')) {
         return WebformAccessResult::allowed();
       }
 

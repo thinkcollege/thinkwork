@@ -7,6 +7,7 @@
 
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Url;
+use Drupal\Core\Installer\InstallerKernel;
 
 define('BOOTSTRAP_MIN_PLUGIN_VERSION', '2.0.0');
 
@@ -17,7 +18,7 @@ define('BOOTSTRAP_MIN_PLUGIN_VERSION', '2.0.0');
  */
 function bootstrap_library_page_attachments(array &$page) {
   // Don't add the JavaScript and CSS during installation.
-  if (drupal_installation_attempted()) {
+  if (InstallerKernel::installationAttempted()) {
     return;
   }
   // Don't add the JavaScript and CSS on specified paths or themes.
@@ -111,11 +112,12 @@ function _bootstrap_library_check_url() {
   // Convert path to lowercase. This allows comparison of the same path
   // with different case. Ex: /Page, /page, /PAGE.
   $config = \Drupal::config('bootstrap_library.settings');
-  $pages = Unicode::strtolower(_bootstrap_library_array_to_string($config->get('url.pages')));
+  $pages = mb_strtolower(_bootstrap_library_array_to_string($config->get('url.pages')));
 
   // Compare the lowercase path alias (if any) and internal path.
   $path = Url::fromRoute('<current>')->toString();
-  $path_alias = Unicode::strtolower(\Drupal::service('path.alias_storage')->lookupPathAlias($path, 'en'));
+  $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+  $path_alias = mb_strtolower(\Drupal::service('path_alias.manager')->getAliasByPath($path, $langcode));
   $page_match = \Drupal::service('path.matcher')->matchPath($path_alias, $pages);
   if ($path_alias != $path) {
     $page_match = $page_match || \Drupal::service('path.matcher')->matchPath($path, $pages);

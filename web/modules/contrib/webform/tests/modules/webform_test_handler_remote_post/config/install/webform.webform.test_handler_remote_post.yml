@@ -1,3 +1,4 @@
+uuid: null
 langcode: en
 status: open
 dependencies:
@@ -20,8 +21,10 @@ elements: |
     '#type': select
     '#options':
       200: '200 OK'
+      201: '201 Completed'
       401: '401 Unauthorized'
       404: '404 Not Found'
+      405: '405 Method Not Allowed'
       500: '500 Internal Server Error'
     '#default_value': 200
   first_name:
@@ -50,7 +53,7 @@ settings:
   page: true
   page_submit_path: ''
   page_confirm_path: ''
-  page_admin_theme: false
+  page_theme_name: ''
   form_title: source_entity_webform
   form_submit_once: false
   form_exception_message: ''
@@ -80,6 +83,11 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
   submission_label: ''
   submission_log: false
   submission_views: {  }
@@ -105,11 +113,19 @@ settings:
   wizard_progress_percentage: false
   wizard_progress_link: false
   wizard_progress_states: false
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
   wizard_start_label: ''
   wizard_preview_link: false
   wizard_confirmation: true
   wizard_confirmation_label: ''
   wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
   preview: 0
   preview_label: ''
   preview_title: ''
@@ -154,8 +170,11 @@ settings:
   purge_days: null
   results_disabled: false
   results_disabled_ignore: false
+  results_customize: false
   token_view: false
   token_update: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -207,6 +226,7 @@ handlers:
   remote_post:
     id: remote_post
     label: 'Remote post'
+    notes: ''
     handler_id: remote_post
     status: true
     conditions: {  }
@@ -243,6 +263,7 @@ handlers:
           'Accept-Language': '[webform_submission:langcode]'
           custom_header: 'true'
         
+      cast: false
       debug: true
       completed_url: 'http://webform-test-handler-remote-post/completed'
       completed_custom_data: |
@@ -274,4 +295,9 @@ handlers:
           message: 'This is a message token <strong>[webform:handler:remote_post:message]</strong>'
         - code: 404
           message: 'This is a custom 404 not found message.'
+        - code: 405
+          message: 'This is a array token <strong>[webform:handler:remote_post:options][webform:handler:remote_post:options:clear]</strong>'
+        - code: 200
+          message: 'This is a custom 200 success message.'
       error_url: ''
+variants: {  }

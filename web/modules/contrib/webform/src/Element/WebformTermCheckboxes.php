@@ -24,6 +24,7 @@ class WebformTermCheckboxes extends Checkboxes {
       '#breadcrumb' => FALSE,
       '#breadcrumb_delimiter' => ' › ',
       '#scroll' => TRUE,
+      '#depth' => NULL,
     ] + parent::getInfo();
   }
 
@@ -76,6 +77,15 @@ class WebformTermCheckboxes extends Checkboxes {
     foreach ($tree as $item) {
       // Set the item in the correct language for display.
       $item = $entity_repository->getTranslationFromContext($item);
+      if (!$item->access('view')) {
+        continue;
+      }
+
+      // Check depth.
+      if (!empty($element['#depth']) && $item->depth >= $element['#depth']) {
+        continue;
+      }
+
       $options[$item->id()] = $item->getName();
     }
     return $options;

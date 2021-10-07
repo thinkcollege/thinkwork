@@ -89,12 +89,6 @@ elements: |
     text_format:
       '#type': details
       '#title': 'Text format'
-      text_format_plain_text:
-        '#type': text_format
-        '#title': 'Text format (Plain text)'
-        '#default_value':
-          value: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Negat esse eam, inquit, propter se expetendam. Primum Theophrasti, Strato, physicum se voluit; Id mihi magnum videtur. Itaque mihi non satis videmini considerare quod iter sit naturae quaeque progressio. Quare hoc videndum est, possitne nobis hoc ratio philosophorum dare. Est enim tanti philosophi tamque nobilis audacter sua decreta defendere.</p>'
-        '#format': plain_text
       text_format_basic_html:
         '#type': text_format
         '#title': 'Text format (Basic HTML)'
@@ -107,6 +101,12 @@ elements: |
         '#default_value':
           value: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Negat esse eam, inquit, propter se expetendam. Primum Theophrasti, Strato, physicum se voluit; Id mihi magnum videtur. Itaque mihi non satis videmini considerare quod iter sit naturae quaeque progressio. Quare hoc videndum est, possitne nobis hoc ratio philosophorum dare. Est enim tanti philosophi tamque nobilis audacter sua decreta defendere.</p>'
         '#format': full_html
+      text_format_plain_text:
+        '#type': text_format
+        '#title': 'Text format (Plain text)'
+        '#default_value':
+          value: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Negat esse eam, inquit, propter se expetendam. Primum Theophrasti, Strato, physicum se voluit; Id mihi magnum videtur. Itaque mihi non satis videmini considerare quod iter sit naturae quaeque progressio. Quare hoc videndum est, possitne nobis hoc ratio philosophorum dare. Est enim tanti philosophi tamque nobilis audacter sua decreta defendere.</p>'
+        '#format': plain_text
       text_format_restricted_html:
         '#type': text_format
         '#title': 'Text format (Restricted HTML)'
@@ -321,41 +321,6 @@ elements: |
           suburb: ''
           postcode: '20020'
         '#format': list
-    webform_location_geocomplete:
-      '#type': details
-      '#title': 'Location (Geocomplete)'
-      webform_location_geocomplete_value:
-        '#type': webform_location_geocomplete
-        '#title': 'Location (Geocomplete) (Value)'
-        '#map': true
-        '#geolocation': true
-        '#format': value
-        '#default_value':
-          value: 'The White House, 1600 Pennsylvania Ave NW, Washington, DC 20500, USA'
-      webform_location_geocomplete_raw:
-        '#type': webform_location_geocomplete
-        '#title': 'Location (Geocomplete) (Raw value)'
-        '#map': true
-        '#geolocation': true
-        '#format': raw
-        '#default_value':
-          value: 'The White House, 1600 Pennsylvania Ave NW, Washington, DC 20500, USA'
-      webform_location_geocomplete_list:
-        '#type': webform_location_geocomplete
-        '#title': 'Location (Geocomplete) (List)'
-        '#map': true
-        '#geolocation': true
-        '#format': list
-        '#default_value':
-          value: 'The White House, 1600 Pennsylvania Ave NW, Washington, DC 20500, USA'
-      webform_location_geocomplete_map:
-        '#type': webform_location_geocomplete
-        '#title': 'Location (Geocomplete) (Map)'
-        '#map': true
-        '#geolocation': true
-        '#format': map
-        '#default_value':
-          value: 'The White House, 1600 Pennsylvania Ave NW, Washington, DC 20500, USA'
     webform_name:
       '#type': details
       '#title': Name
@@ -490,7 +455,6 @@ elements: |
           q2: 1
           q3: 1
         '#format': table
-  
 css: ''
 javascript: ''
 settings:
@@ -502,7 +466,7 @@ settings:
   page: true
   page_submit_path: ''
   page_confirm_path: ''
-  page_admin_theme: false
+  page_theme_name: ''
   form_title: source_entity_webform
   form_submit_once: false
   form_exception_message: ''
@@ -532,6 +496,11 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
   submission_label: ''
   submission_log: false
   submission_views: {  }
@@ -557,11 +526,19 @@ settings:
   wizard_progress_percentage: false
   wizard_progress_link: false
   wizard_progress_states: false
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
   wizard_start_label: ''
   wizard_preview_link: false
   wizard_confirmation: true
   wizard_confirmation_label: ''
   wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
   preview: 1
   preview_label: ''
   preview_title: ''
@@ -604,8 +581,11 @@ settings:
   purge_days: null
   results_disabled: false
   results_disabled_ignore: false
+  results_customize: false
   token_view: false
   token_update: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -657,6 +637,7 @@ handlers:
   email_text:
     id: email
     label: 'Email (Text)'
+    notes: ''
     handler_id: email_text
     status: true
     conditions: {  }
@@ -679,6 +660,7 @@ handlers:
       ignore_access: false
       exclude_empty: true
       exclude_empty_checkbox: false
+      exclude_attachments: false
       html: false
       attachments: false
       twig: false
@@ -692,6 +674,7 @@ handlers:
   email_html:
     id: email
     label: 'Email (HTML)'
+    notes: ''
     handler_id: email_html
     status: true
     conditions: {  }
@@ -714,6 +697,7 @@ handlers:
       ignore_access: false
       exclude_empty: true
       exclude_empty_checkbox: false
+      exclude_attachments: false
       html: true
       attachments: false
       twig: false
@@ -724,3 +708,4 @@ handlers:
       return_path: ''
       sender_mail: ''
       sender_name: ''
+variants: {  }

@@ -3,6 +3,7 @@
 namespace Drupal\Tests\mailgun\Functional;
 
 use Drupal\Core\Url;
+use Drupal\mailgun\MailgunHandlerInterface;
 
 /**
  * Tests that all provided admin pages are reachable.
@@ -27,17 +28,25 @@ class MailgunAdminSettingsFormTest extends MailgunFunctionalTestBase {
 
     $this->drupalGet(Url::fromRoute('mailgun.admin_settings_form'));
 
+    // Make sure that "API Key" field is visible and required.
+    $api_key_field = $this->assertSession()->elementExists('css', 'input[name="api_key"]');
+    $this->assertTrue($api_key_field->hasAttribute('required'));
+
+    // Other fields (i.e. "Mailgun Region") should be hidden.
+    $this->assertSession()->elementNotExists('css', 'input[name="api_endpoint"]');
+
     // Test invalid value for API key.
-    $this->submitSettingsForm(['api_key' => 'invalid_value'], $this->t("Couldn't connect to the Mailgun API. Please check your API settings."));
+    $this->submitSettingsForm(['api_key' => 'invalid_value'], "Couldn't connect to the Mailgun API. Please check your API settings.");
 
     // Test valid but not working API key.
-    $this->submitSettingsForm(['api_key' => 'key-1234567890notworkingabcdefghijkl'], $this->t("Couldn't connect to the Mailgun API. Please check your API settings."));
+    $this->submitSettingsForm(['api_key' => 'key-1234567890notworkingabcdefghijkl'], "Couldn't connect to the Mailgun API. Please check your API settings.");
 
     // Test valid and working API key.
-    $this->submitSettingsForm(['api_key' => 'key-1234567890workingabcdefghijklmno'], $this->t('The configuration options have been saved.'));
+    $this->submitSettingsForm(['api_key' => 'key-1234567890workingabcdefghijklmno'], 'The configuration options have been saved.');
 
     // Save additional parameters. Check that all fields available on the form.
     $field_values = [
+      'api_endpoint' => 'https://api.eu.mailgun.net',
       'debug_mode' => TRUE,
       'test_mode' => TRUE,
       'use_theme' => FALSE,
@@ -46,10 +55,10 @@ class MailgunAdminSettingsFormTest extends MailgunFunctionalTestBase {
       'tracking_opens' => 'no',
       'tracking_clicks' => 'yes',
     ];
-    $this->submitSettingsForm($field_values, $this->t('The configuration options have been saved.'));
+    $this->submitSettingsForm($field_values, 'The configuration options have been saved.');
 
     // Rebuild config values after form submit.
-    $this->mailgunConfig = $this->config(MAILGUN_CONFIG_NAME);
+    $this->mailgunConfig = $this->config(MailgunHandlerInterface::CONFIG_NAME);
 
     // Test that all field values are stored in configuration.
     foreach ($field_values as $field_name => $field_value) {
@@ -64,7 +73,7 @@ class MailgunAdminSettingsFormTest extends MailgunFunctionalTestBase {
     foreach ($values as $field_name => $field_value) {
       $this->getSession()->getPage()->fillField($field_name, $field_value);
     }
-    $this->getSession()->getPage()->pressButton($this->t('Save configuration'));
+    $this->getSession()->getPage()->pressButton('Save configuration');
     $this->assertSession()->pageTextContains($result_message);
   }
 

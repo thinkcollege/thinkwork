@@ -4,6 +4,7 @@ dependencies:
   config:
     - field.field.paragraph.bp_block.bp_background
     - field.field.paragraph.bp_block.bp_block
+    - field.field.paragraph.bp_block.bp_header
     - field.field.paragraph.bp_block.bp_width
     - paragraphs.paragraphs_type.bp_block
   module:
@@ -19,20 +20,31 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: list_key
+    region: content
   bp_block:
-    weight: 2
+    weight: 3
     label: hidden
     settings:
       link: true
       view_mode: default
     third_party_settings: {  }
     type: entity_reference_entity_view
+    region: content
+  bp_header:
+    type: string
+    weight: 2
+    region: content
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
   bp_width:
     weight: 1
     label: hidden
     settings: {  }
     third_party_settings: {  }
     type: list_key
+    region: content
 hidden:
   created: true
   uid: true

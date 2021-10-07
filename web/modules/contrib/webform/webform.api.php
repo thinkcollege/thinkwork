@@ -14,7 +14,7 @@
  * Alter the information provided in \Drupal\webform\Annotation\WebformElement.
  *
  * @param array $definitions
- *   The array of webform handlers, keyed on the machine-readable element name.
+ *   The array of webform elements, keyed on the machine-readable element name.
  */
 function hook_webform_element_info_alter(array &$definitions) {
 
@@ -31,6 +31,16 @@ function hook_webform_handler_info_alter(array &$handlers) {
 }
 
 /**
+ * Alter the information provided in \Drupal\webform\Annotation\WebformVariant.
+ *
+ * @param array $variants
+ *   The array of webform variants, keyed on the machine-readable handler name.
+ */
+function hook_webform_variant_info_alter(array &$variants) {
+
+}
+
+/**
  * Alter definition of WebformSourceEntity plugins.
  *
  * @param array $definitions
@@ -40,6 +50,77 @@ function hook_webform_source_entity_info_alter(array &$definitions) {
   if (isset($definitions['some_plugin_whose_weight_i_wanna_change'])) {
     $definitions['some_plugin_whose_weight_i_wanna_change']['weight'] = -1000;
   }
+}
+
+/**
+ * Alter a webform element's default properties.
+ *
+ * @param array &$properties
+ *   An associative array containing an element's default properties.
+ * @param array $definition
+ *   The webform element's definition.
+ *
+ * @see webform_example_element_properties.module
+ */
+function hook_webform_element_default_properties_alter(array &$properties, array &$definition) {
+  // Add custom data property to all webform elements.
+  // Setting the custom property to an empty string makes the corresponding
+  // element defined via hook_webform_element_configuration_form_alter()
+  // automatically visible.
+  $properties['custom_data'] = '';
+}
+
+/**
+ * Alter a webform element's translatable properties.
+ *
+ * @param array &$properties
+ *   An indexed array containing an element's translatable properties.
+ * @param array $definition
+ *   The webform element's definition.
+ *
+ * @see webform_example_element_properties.module
+ */
+function hook_webform_element_translatable_properties_alter(array &$properties, array &$definition) {
+  // Make the custom data property translatable.
+  $properties[] = 'custom_data';
+}
+
+/**
+ * Perform alterations before a webform element configuration form is populated.
+ *
+ * @param array $form
+ *   Nested array of form elements that comprise the webform element properties.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The current state of the form.
+ *
+ * @see webform_example_element_properties.module
+ * @ingroup form_api
+ */
+function hook_webform_element_configuration_form_alter(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  /** @var Drupal\webform_ui\Form\WebformUiElementEditForm $form_object */
+  $form_object = $form_state->getFormObject();
+  $element_plugin = $form_object->getWebformElementPlugin();
+
+  // Make sure the element has the 'custom_data' property.
+  if (!$element_plugin->hasProperty('custom_data')) {
+    return;
+  }
+
+  $form['custom_properties'] = [
+    '#type' => 'details',
+    '#title' => t('Custom properties'),
+    '#description' => t('The below custom properties are provided and managed by the webform_test_custom_properties.module.'),
+    '#open' => TRUE,
+    // Add custom properties after all fieldset elements, which have a
+    // weight of -20.
+    // @see \Drupal\webform\Plugin\WebformElementBase::buildConfigurationForm
+    '#weight' => -10,
+  ];
+  $form['custom_properties']['custom_data'] = [
+    '#type' => 'textfield',
+    '#title' => t('Custom data'),
+    '#description' => t("The custom data value will be added to the \$element's render array attributes."),
+  ];
 }
 
 /**
@@ -251,6 +332,26 @@ function hook_webform_options_WEBFORM_OPTIONS_ID_alter(array &$options, array &$
 }
 
 /**
+ * Respond before webform submissions are purged (before they are deleted).
+ *
+ * @param \Drupal\webform\WebformSubmissionInterface[] $webform_submissions
+ *   The webform submissions being purged.
+ */
+function hook_webform_submissions_pre_purge(array $webform_submissions) {
+
+}
+
+/**
+ * Respond to webform submissions being purged (after they are deleted).
+ *
+ * @param \Drupal\webform\WebformSubmissionInterface[] $webform_submissions
+ *   The webform submissions that were purged.
+ */
+function hook_webform_submissions_post_purge(array $webform_submissions) {
+
+}
+
+/**
  * Perform alterations before a webform submission form is rendered.
  *
  * This hook is identical to hook_form_alter() but allows the
@@ -428,7 +529,7 @@ function hook_webform_libraries_info_alter(&$libraries) {
  *   - message_id: (string) Optional message ID that will be supplied into
  *     'webform_message' element. You are free to use 'message_*' keys if you
  *     want to additionally display a message when your help is displayed. These
- *     keyes will be supplied into 'webform_message' element. Refer to the docs
+ *     keys will be supplied into 'webform_message' element. Refer to the docs
  *     of this element for their meaning.
  *   - message_type: (string) Will be supplied into 'webform_message' element.
  *   - message_close: (bool) Will be supplied into 'webform_message' element.
@@ -524,8 +625,8 @@ function hook_webform_access_rules() {
     // The below 2 operations can be queried together as following:
     //
     // \Drupal::entityTypeManager()
-    //  ->getAccessControlHandler('webform_submission')
-    //  ->access($webform_submission, 'some_operation', $account);
+    //   ->getAccessControlHandler('webform_submission')
+    //   ->access($webform_submission, 'some_operation', $account);
     //
     // This will return TRUE as long as the $account is has either
     // 'some_operation_any' or has 'some_operation_own' and is author of

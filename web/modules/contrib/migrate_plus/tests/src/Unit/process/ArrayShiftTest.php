@@ -2,9 +2,9 @@
 
 namespace Drupal\Tests\migrate_plus\Unit\process;
 
-use Drupal\Tests\migrate\Unit\process\MigrateProcessTestCase;
-use Drupal\migrate_plus\Plugin\migrate\process\ArrayShift;
 use Drupal\migrate\MigrateException;
+use Drupal\migrate_plus\Plugin\migrate\process\ArrayShift;
+use Drupal\Tests\migrate\Unit\process\MigrateProcessTestCase;
 
 /**
  * Tests the array shift process plugin.
@@ -17,7 +17,7 @@ class ArrayShiftTest extends MigrateProcessTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     $this->plugin = new ArrayShift([], 'array_shift', []);
     parent::setUp();
   }
@@ -28,7 +28,7 @@ class ArrayShiftTest extends MigrateProcessTestCase {
    * @return array
    *   An array containing input values and expected output values.
    */
-  public function arrayShiftDataProvider() {
+  public function arrayShiftDataProvider(): array {
     return [
       'indexed array' => [
         'input' => ['v1', 'v2', 'v3'],
@@ -55,7 +55,7 @@ class ArrayShiftTest extends MigrateProcessTestCase {
    *
    * @dataProvider arrayShiftDataProvider
    */
-  public function testArrayShift(array $input, $expected_output) {
+  public function testArrayShift(array $input, $expected_output): void {
     $output = $this->plugin->transform($input, $this->migrateExecutable, $this->row, 'destinationproperty');
     $this->assertSame($output, $expected_output);
   }
@@ -63,8 +63,9 @@ class ArrayShiftTest extends MigrateProcessTestCase {
   /**
    * Test invalid input.
    */
-  public function testArrayShiftFromString() {
-    $this->setExpectedException(MigrateException::class, 'Input should be an array.');
+  public function testArrayShiftFromString(): void {
+    $this->expectException(MigrateException::class);
+    $this->expectExceptionMessage('Input should be an array.');
     $this->plugin->transform('foo', $this->migrateExecutable, $this->row, 'destinationproperty');
   }
 

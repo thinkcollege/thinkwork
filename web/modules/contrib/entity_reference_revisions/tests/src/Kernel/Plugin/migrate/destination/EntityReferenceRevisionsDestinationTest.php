@@ -44,7 +44,7 @@ class EntityReferenceRevisionsDestinationTest extends KernelTestBase implements 
     parent::setUp();
     $this->installEntitySchema('entity_test_composite');
     $this->installSchema('system', ['sequences']);
-    $this->installConfig($this->modules);
+    $this->installConfig(static::$modules);
 
     $this->migrationPluginManager = \Drupal::service('plugin.manager.migration');
   }
@@ -231,6 +231,116 @@ class EntityReferenceRevisionsDestinationTest extends KernelTestBase implements 
           ['id' => 1, 'revision_id' => 1, 'label' => 'content item 1'],
           ['id' => 2, 'revision_id' => 2, 'label' => 'content item 2'],
           ['id' => 3, 'revision_id' => 3, 'label' => 'content item 3'],
+        ],
+      ],
+    ];
+  }
+
+  /**
+   * Tests get entity.
+   *
+   * @dataProvider getEntityDataProviderForceRevision
+   *
+   * @covers ::getEntity
+   * @covers ::rollback
+   * @covers ::rollbackNonTranslation
+   */
+  public function testGetEntityForceRevision(array $definition, array $expected) {
+    /** @var \Drupal\migrate\Plugin\Migration $migration */
+    $migration = $this->migrationPluginManager->createStubMigration($definition);
+    $migrationExecutable = (new MigrateExecutable($migration, $this));
+    /** @var \Drupal\Core\Entity\EntityStorageBase $storage */
+    $storage = $this->readAttribute($migration->getDestinationPlugin(), 'storage');
+    // Test inserting and updating by looping twice.
+    for ($i = 0; $i < 2; $i++) {
+      $migrationExecutable->import();
+      $migration->getIdMap()->prepareUpdate();
+      foreach ($expected[$i] as $data) {
+        $entity = $storage->loadRevision($data['revision_id']);
+        $this->assertEquals($data['label'], $entity->label());
+        $this->assertEquals($data['id'], $entity->id());
+      }
+    }
+    $migrationExecutable->rollback();
+    for ($i = 0; $i < 2; $i++) {
+      foreach ($expected[$i] as $data) {
+        $entity = $storage->loadRevision($data['id']);
+        $this->assertEmpty($entity);
+      }
+    }
+  }
+
+  /**
+   * Provides multiple migration definitions for "getEntity" test.
+   */
+  public function getEntityDataProviderForceRevision() {
+    return [
+      'with ids, new revisions and no force revision' => [
+        'definition' => [
+          'source' => [
+            'plugin' => 'embedded_data',
+            'data_rows' => [
+              ['id' => 1, 'name' => 'content item 1a'],
+              ['id' => 2, 'name' => 'content item 2'],
+            ],
+            'ids' => [
+              'id' => ['type' => 'integer'],
+              'name' => ['type' => 'text'],
+            ],
+          ],
+          'process' => [
+            'name' => 'name',
+            'id' => 'id',
+          ],
+          'destination' => [
+            'plugin' => 'entity_reference_revisions:entity_test_composite',
+            'new_revisions' => TRUE,
+            'force_revision' => FALSE,
+          ],
+        ],
+        'expected' => [
+          [
+            ['id' => 1, 'revision_id' => 1, 'label' => 'content item 1a'],
+            ['id' => 2, 'revision_id' => 2, 'label' => 'content item 2'],
+          ],
+          [
+            ['id' => 1, 'revision_id' => 1, 'label' => 'content item 1a'],
+            ['id' => 2, 'revision_id' => 2, 'label' => 'content item 2'],
+          ]
+        ],
+      ],
+      'with ids, new revisions and force revision' => [
+        'definition' => [
+          'source' => [
+            'plugin' => 'embedded_data',
+            'data_rows' => [
+              ['id' => 1, 'name' => 'content item 1a'],
+              ['id' => 2, 'name' => 'content item 2'],
+            ],
+            'ids' => [
+              'id' => ['type' => 'integer'],
+              'name' => ['type' => 'text'],
+            ],
+          ],
+          'process' => [
+            'name' => 'name',
+            'id' => 'id',
+          ],
+          'destination' => [
+            'plugin' => 'entity_reference_revisions:entity_test_composite',
+            'new_revisions' => TRUE,
+            'force_revision' => TRUE,
+          ],
+        ],
+        'expected' => [
+          [
+            ['id' => 1, 'revision_id' => 1, 'label' => 'content item 1a'],
+            ['id' => 2, 'revision_id' => 2, 'label' => 'content item 2'],
+          ],
+          [
+            ['id' => 1, 'revision_id' => 3, 'label' => 'content item 1a'],
+            ['id' => 2, 'revision_id' => 4, 'label' => 'content item 2'],
+          ]
         ],
       ],
     ];
@@ -461,7 +571,7 @@ class EntityReferenceRevisionsDestinationTest extends KernelTestBase implements 
                 ],
                 'field_err_single/target_id' => [
                   [
-                    'plugin' => 'migration',
+                    'plugin' => 'migration_lookup',
                     'migration' => ['single_err'],
                     'no_stub' => TRUE,
                     'source' => 'id',
@@ -475,7 +585,7 @@ class EntityReferenceRevisionsDestinationTest extends KernelTestBase implements 
                 ],
                 'field_err_single/target_revision_id' => [
                   [
-                    'plugin' => 'migration',
+                    'plugin' => 'migration_lookup',
                     'migration' => ['single_err'],
                     'no_stub' => TRUE,
                     'source' => 'id',
@@ -489,7 +599,7 @@ class EntityReferenceRevisionsDestinationTest extends KernelTestBase implements 
                 ],
                 'field_err_multiple' => [
                   [
-                    'plugin' => 'migration',
+                    'plugin' => 'migration_lookup',
                     'migration' => [
                       'multiple_err_author1',
                       'multiple_err_author2',

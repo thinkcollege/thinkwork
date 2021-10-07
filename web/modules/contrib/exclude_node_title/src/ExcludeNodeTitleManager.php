@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\exclude_node_title\ExcludeNodeTitleManager.
- */
-
 namespace Drupal\exclude_node_title;
 
 use Drupal\Component\Render\HtmlEscapedText;
@@ -13,6 +8,7 @@ use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\node\NodeInterface;
+use Drupal\node\NodeTypeInterface;
 
 /**
  * Service class for Exclude Node Title module settings management.
@@ -52,7 +48,7 @@ class ExcludeNodeTitleManager implements ExcludeNodeTitleManagerInterface {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $bundle_info
    *   The bundle info manager.
@@ -67,16 +63,26 @@ class ExcludeNodeTitleManager implements ExcludeNodeTitleManagerInterface {
   /**
    * {@inheritdoc}
    */
-  public function getBundleExcludeMode($node_type) {
-    $mode = $this->settingsConfig->get('content_types.' . $node_type);
+  public function getBundleExcludeMode($param) {
+    if (is_object($param) && $param instanceof NodeTypeInterface) {
+      $param = $param->id();
+    }
+
+    $mode = $this->settingsConfig->get('content_types.' . $param);
+
     return !empty($mode) ? $mode : 'none';
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getExcludedViewModes($node_type) {
-    $modes = $this->settingsConfig->get('content_type_modes.' . $node_type);
+  public function getExcludedViewModes($param) {
+    if (is_object($param) && $param instanceof NodeTypeInterface) {
+      $param = $param->id();
+    }
+
+    $modes = $this->settingsConfig->get('content_type_modes.' . $param);
+
     return !empty($modes) ? $modes : [];
   }
 
@@ -115,6 +121,27 @@ class ExcludeNodeTitleManager implements ExcludeNodeTitleManagerInterface {
     }
 
     return ['nid' => $node->id(), 'node_type' => $node_type];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getRenderType() {
+    return $this->settingsConfig->get('type');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isRenderHidden() {
+    return $this->getRenderType() === 'hidden';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isRenderRemove() {
+    return $this->getRenderType() === 'remove';
   }
 
   /**
@@ -172,7 +199,7 @@ class ExcludeNodeTitleManager implements ExcludeNodeTitleManagerInterface {
    * {@inheritdoc}
    */
   public function isNodeExcluded($param) {
-    if ($param instanceof NodeInterface) {
+    if (is_object($param) && $param instanceof NodeInterface) {
       $param = $param->id();
     }
 
@@ -204,18 +231,38 @@ class ExcludeNodeTitleManager implements ExcludeNodeTitleManagerInterface {
 
         default:
           if (!empty($vars['title'])) {
-            $vars['title'] = new HtmlEscapedText('');
+            if ($this->isRenderHidden()) {
+              $vars['title_attributes']['class'][] = 'hidden';
+            }
+            elseif ($this->isRenderRemove()) {
+              $vars['title'] = new HtmlEscapedText('');
+            }
           }
           if (!empty($vars['page']) && is_array($vars['page'])) {
-            $vars['page']['#title'] = new HtmlEscapedText('');
+            if ($this->isRenderHidden()) {
+              $vars['page']['#attributes']['class'][] = 'hidden';
+            }
+            elseif ($this->isRenderRemove()) {
+              $vars['page']['#title'] = new HtmlEscapedText('');
+            }
           }
           if (!empty($vars['elements']) && is_array($vars['elements'])) {
-            $vars['elements']['#title'] = new HtmlEscapedText('');
+            if ($this->isRenderHidden()) {
+              $vars['elements']['#attributes']['class'][] = 'hidden';
+            }
+            elseif ($this->isRenderRemove()) {
+              $vars['elements']['#title'] = new HtmlEscapedText('');
+            }
           }
           if (!empty($vars['label']) && is_array($vars['elements'])) {
-            $vars['label']['#title'] = new HtmlEscapedText('');
-            $vars['label']['#markup'] = new HtmlEscapedText('');
-            $vars['label'][0]['#context']['value'] = '';
+            if ($this->isRenderHidden()) {
+              $vars['label']['#attributes']['class'][] = 'hidden';
+            }
+            elseif ($this->isRenderRemove()) {
+              $vars['label']['#title'] = new HtmlEscapedText('');
+              $vars['label']['#markup'] = new HtmlEscapedText('');
+              $vars['label'][0]['#context']['value'] = '';
+            }
           }
           break;
 

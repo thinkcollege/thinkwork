@@ -1,10 +1,5 @@
 name: Mailgun Test
 type: module
 description: Helpful module for test staff.
-core: 8.x
+core_version_requirement: ^8 || ^9
 package: Mail
-
-# Information added by Drupal.org packaging script on 2019-11-01
-version: '8.x-1.0-rc2'
-project: 'mailgun'
-datestamp: 1572602900

@@ -41,15 +41,15 @@ class FontYourFaceWeightFilter extends StringFilter {
   protected function valueForm(&$form, FormStateInterface $form_state) {
     $options = [
       'All' => '- Any -',
-      '100' => $this->t('100'),
-      '200' => $this->t('200'),
-      '300' => $this->t('300'),
-      '400' => $this->t('400 (Normal)'),
-      '500' => $this->t('500'),
-      '600' => $this->t('600'),
+      '100' => $this->t('100 (Thin)'),
+      '200' => $this->t('200 (Extra Light, Ultra Light)'),
+      '300' => $this->t('300 (Light)'),
+      'normal' => $this->t('400 (Normal, Book, Regular)'),
+      '500' => $this->t('500 (Medium)'),
+      '600' => $this->t('600 (Semi Bold, Demi Bold)'),
       '700' => $this->t('700 (Bold)'),
-      '800' => $this->t('800'),
-      '900' => $this->t('900'),
+      '800' => $this->t('800 (Extra Bold, Ultra Bold)'),
+      '900' => $this->t('900 (Black, Heavy)'),
     ];
 
     $form['value'] = [

@@ -5,8 +5,10 @@
  * Provides a webform content type which allows webforms to be integrated into a website as nodes.
  */
 
+use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Database\Query\AlterableInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
@@ -14,6 +16,7 @@ use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Drupal\webform\Element\WebformMessage;
 use Drupal\webform\Entity\Webform;
+use Drupal\webform\WebformInterface;
 
 /**
  * Implements hook_entity_type_alter().
@@ -24,6 +27,22 @@ function webform_node_entity_type_alter(array &$entity_types) {
     $webform_entity_type = $entity_types['webform'];
     $webform_entity_type->setLinkTemplate('references', '/admin/structure/webform/manage/{webform}/references');
   }
+}
+
+/**
+ * Implements hook_entity_operation().
+ */
+function webform_node_entity_operation(EntityInterface $entity) {
+  $operations = [];
+  if ($entity instanceof WebformInterface
+    && $entity->access('update')) {
+    $operations['references'] = [
+      'title' => t('References'),
+      'url' => $entity->toUrl('references'),
+      'weight' => 40,
+    ];
+  }
+  return $operations;
 }
 
 /**
@@ -61,7 +80,7 @@ function webform_node_node_access(NodeInterface $node, $operation, AccountInterf
       return AccessResult::allowed();
     }
 
-    return AccessResult::forbidden();
+    return AccessResult::neutral();
   }
 }
 
@@ -117,10 +136,12 @@ function webform_node_node_prepare_form(NodeInterface $node, $operation, FormSta
   // Populate the node's title, webform field id and default data.
   $webform_id = \Drupal::request()->query->get('webform_id');
   if ($webform_id && ($webform = Webform::load($webform_id))) {
-    $node->title->value = $webform->label();
     $node->$field_name->target_id = $webform_id;
+    $node->title->value = \Drupal::request()->query->get('webform_title') ?: $webform->label();
     if ($webform_default_data = \Drupal::request()->query->get('webform_default_data')) {
-      $node->$field_name->default_data = $webform_default_data;
+      $node->$field_name->default_data = (is_array($webform_default_data))
+        ? Yaml::encode($webform_default_data)
+        : $webform_default_data;
     }
   }
 }

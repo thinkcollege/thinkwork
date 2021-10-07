@@ -25,9 +25,9 @@ panels_ipe:
   dependencies:
     - core/jquery
     - core/jquery.once
-    - core/jquery.ui
-    - core/jquery.ui.draggable
-    - core/jquery.ui.droppable
+    - jquery_ui/core
+    - jquery_ui_draggable/draggable
+    - jquery_ui_droppable/droppable
     - core/underscore
     - core/backbone
     - core/drupal

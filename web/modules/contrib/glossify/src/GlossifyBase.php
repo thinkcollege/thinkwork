@@ -44,8 +44,7 @@ abstract class GlossifyBase extends FilterBase {
     // Create dom document.
     $html_dom = Html::load($text);
     $xpath = new DOMXPath($html_dom);
-    $pattern_parts = [];
-    $matched = [];
+    $pattern_parts = $replaced = [];
 
     // Transform terms into normalized search pattern.
     foreach ($terms as $term) {
@@ -53,29 +52,38 @@ abstract class GlossifyBase extends FilterBase {
       $term_norm = preg_replace('#/#', '\/', $term_norm);
       $pattern_parts[] = preg_replace('/ /', '\\s+', $term_norm);
     }
-    $pattern = '/\b(' . implode('|', $pattern_parts) . ')\b/';
-    if (!$case_sensitivity) {
-      $pattern .= 'i';
-    }
 
     // Process HTML.
-    $text_nodes = $xpath->query('//text()[not(ancestor::a)]');
+    $text_nodes = $xpath->query('//text()[not(ancestor::a) and not(ancestor::span[@class="glossify-exclude"])]');
     foreach ($text_nodes as $original_node) {
       $text = $original_node->nodeValue;
-      $hitcount = preg_match_all($pattern, $text, $matches, PREG_OFFSET_CAPTURE);
+      $matches = [];
+      foreach ($pattern_parts as $pattern_part) {
+        $pattern = '/\b(' . $pattern_part . ')\b/';
+        if (!$case_sensitivity) {
+          $pattern .= 'i';
+        }
+        preg_match_all($pattern, $text, $matches_part, PREG_OFFSET_CAPTURE);
+        if (count($matches_part[0])) {
+          foreach ($matches_part[0] as $match_part) {
+            $matches[$match_part[1]] = $match_part[0];
+          }
+        }
+      }
+      // Sort by position in text.
+      ksort($matches);
 
-      if ($hitcount > 0) {
+      if (count($matches) > 0) {
 
-        $offset = 0;
+        $offset = $loop_count = 0;
         $parent = $original_node->parentNode;
         $refnode = $original_node->nextSibling;
 
         $current_path = $this->currentPath();
         $parent->removeChild($original_node);
-        foreach ($matches[0] as $i => $match) {
-          $term_txt = $match[0];
-          $term_pos = $match[1];
-          $term_norm = preg_replace('/\s+/', ' ', $term_txt);
+        foreach ($matches as $term_pos => $term_txt) {
+          $loop_count += 1;
+          $term_txt = preg_replace('/\s+/', ' ', $term_txt);
           $terms_key = $case_sensitivity ? $term_txt : strtolower($term_txt);
 
           // Insert any text before the term instance.
@@ -89,7 +97,7 @@ abstract class GlossifyBase extends FilterBase {
             // this match points to.
             $dom_fragment->appendXML($term_txt);
           }
-          elseif ($first_only && in_array($case_sensitivity ? $term_txt : $term_txt, $matched)) {
+          elseif ($first_only && in_array($term_txt, $replaced)) {
             // Reinsert the found match if only first match must be parsed.
             $dom_fragment->appendXML($term_txt);
           }
@@ -115,7 +123,8 @@ abstract class GlossifyBase extends FilterBase {
               ];
               $word = $this->renderLink($word_link);
             }
-            elseif ($displaytype == 'tooltips') {
+            else {
+              // Has to be 'tooltips'.
 
               // Insert the matched term instance as tooltip.
               $tip = $this->sanitizeTip($terms[$terms_key]->tip);
@@ -127,43 +136,36 @@ abstract class GlossifyBase extends FilterBase {
               ];
               $word = $this->renderTip($word_tip);
             }
-            if (!$word) {
-              // Dont let $word be empty, else appendXML method fails
-              // with warning.
-              $word = $term_txt;
-            }
             $dom_fragment->appendXML($word);
-            $matched[] = ($case_sensitivity ? $term_txt : $term_txt);
+            $replaced[] = $term_txt;
           }
           $parent->insertBefore($dom_fragment, $refnode);
 
           $offset = $term_pos + strlen($term_txt);
 
           // Last match, append remaining text.
-          if ($i == $hitcount - 1) {
+          if ($loop_count == count($matches)) {
             $suffix = substr($text, $offset);
             $parent->insertBefore($html_dom->createTextNode($suffix), $refnode);
           }
         }
       }
     }
-    $text = Html::serialize($html_dom);
-
-    return $text;
+    return Html::serialize($html_dom);
   }
 
   /**
    * Render tip for found match.
    */
   protected function renderTip($word_tip) {
-    return render($word_tip);
+    return trim(render($word_tip));
   }
 
   /**
    * Render link for found match.
    */
   protected function renderLink($word_link) {
-    return render($word_link);
+    return trim(render($word_link));
   }
 
   /**

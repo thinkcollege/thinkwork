@@ -11,6 +11,9 @@ use Drupal\KernelTests\KernelTestBase;
  */
 class JsonTest extends KernelTestBase {
 
+  /**
+   * {@inheritdoc}
+   */
   public static $modules = ['migrate', 'migrate_plus'];
 
   /**
@@ -30,7 +33,7 @@ class JsonTest extends KernelTestBase {
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    * @throws \Exception
    */
-  public function testMissingProperties($file, array $ids, array $fields, array $expected) {
+  public function testMissingProperties($file, array $ids, array $fields, array $expected): void {
     $path = $this->container
       ->get('module_handler')
       ->getModule('migrate_plus')
@@ -66,7 +69,7 @@ class JsonTest extends KernelTestBase {
    * @return array
    *   The test cases.
    */
-  public function jsonBaseDataProvider() {
+  public function jsonBaseDataProvider(): array {
     return [
       'missing properties' => [
         'file' => 'missing_properties.json',

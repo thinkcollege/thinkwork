@@ -1,3 +1,121 @@
+### [1.10.23] 2021-10-05
+
+  * Security: Fixed command injection vulnerability on Windows (GHSA-frqg-7g38-6gcf / CVE-2021-41116)
+
+### [1.10.22] 2021-04-27
+
+  * Security: Fixed command injection vulnerability in HgDriver/HgDownloader and hardened other VCS drivers and downloaders (GHSA-h5h8-pc6h-jvvx / CVE-2021-29472)
+
+### [1.10.21] 2021-04-01
+
+  * Fixed support for new GitHub OAuth token format
+  * Fixed processes silently ignoring the CWD when it does not exist
+
+### [1.10.20] 2021-01-27
+
+  * Fixed exclude-from-classmap causing regex issues when having too many paths
+  * Fixed compatibility issue with Symfony 4/5
+
+### [1.10.19] 2020-12-04
+
+  * Fixed regression on PHP 8.0
+
+### [1.10.18] 2020-12-03
+
+  * Allow installation on PHP 8.0
+
+### [1.10.17] 2020-10-30
+
+  * Fixed Bitbucket API authentication issue
+  * Fixed parsing of Composer 2 lock files breaking in some rare conditions
+
+### [1.10.16] 2020-10-24
+
+  * Added warning to `validate` command for cases where packages provide/replace a package that they also require
+  * Fixed JSON schema validation issue with PHPStorm
+  * Fixed symlink handling in `archive` command
+
+### [1.10.15] 2020-10-13
+
+  * Fixed path repo version guessing issue
+
+### [1.10.14] 2020-10-13
+
+  * Fixed version guesser to look at remote branches as well as local ones
+  * Fixed path repositories version guessing to handle edge cases where version is different from the VCS-guessed version
+  * Fixed COMPOSER env var causing issues when combined with the `global ` command
+  * Fixed a few issues dealing with PHP without openssl extension (not recommended at all but sometimes needed for testing)
+
+### [1.10.13] 2020-09-09
+
+  * Fixed regressions with old version validation
+  * Fixed invalid root aliases not being reported
+
+### [1.10.12] 2020-09-08
+
+  * Fixed regressions with old version validation
+
+### [1.10.11] 2020-09-08
+
+  * Fixed more PHP 8 compatibility issues
+  * Fixed regression in handling of CTRL-C when xdebug is loaded
+  * Fixed `status` handling of broken symlinks
+
+### [1.10.10] 2020-08-03
+
+  * Fixed `create-project` not triggering events while installing the root package
+  * Fixed PHP 8 compatibility issue
+  * Fixed `self-update` to avoid automatically upgrading to the next major version once it becomes stable
+
+### [1.10.9] 2020-07-16
+
+  * Fixed Bitbucket redirect loop when credentials are outdated
+  * Fixed GitLab auth prompt wording
+  * Fixed `self-update` handling of files requiring admin permissions to write to on Windows (it now does a UAC prompt)
+  * Fixed parsing issues in funding.yml files
+
+### [1.10.8] 2020-06-24
+
+  * Fixed compatibility issue with git being configured to show signatures by default
+  * Fixed discarding of local changes when updating packages to include untracked files
+  * Several minor fixes
+
+### [1.10.7] 2020-06-03
+
+  * Fixed PHP 8 deprecations
+  * Fixed detection of pcntl_signal being in disabled_functions when pcntl_async_signal is allowed
+
+### [1.10.6] 2020-05-06
+
+  * Fixed version guessing to take composer-runtime-api and composer-plugin-api requirements into account to avoid selecting packages which require Composer 2
+  * Fixed package name validation to allow several dashes following each other
+  * Fixed post-status-cmd script not firing when there were no changes to be displayed
+  * Fixed composer-runtime-api support on Composer 1.x, the package is now present as 1.0.0
+  * Fixed support for composer show --name-only --self
+  * Fixed detection of GitLab URLs when handling authentication in some cases
+
+### [1.10.5] 2020-04-10
+
+  * Fixed self-update on PHP <5.6, seriously please upgrade people, it's time
+  * Fixed 1.10.2 regression with PATH resolution in scripts
+
+### [1.10.4] 2020-04-09
+
+  * Fixed 1.10.2 regression in path symlinking with absolute path repos
+
+### [1.10.3] 2020-04-09
+
+  * Fixed invalid --2 flag warning in `self-update` when no channel is requested
+
+### [1.10.2] 2020-04-09
+
+  * Added --1 flag to `self-update` command which can be added to automated self-update runs to make sure it won't automatically jump to 2.0 once that is released
+  * Fixed path repository symlinks being made relative when the repo url is defined as absolute paths
+  * Fixed potential issues when using "composer ..." in scripts and composer/composer was also required in the project
+  * Fixed 1.10.0 regression when downloading GitHub archives from non-API URLs
+  * Fixed handling of malformed info in fund command
+  * Fixed Symfony5 compatibility issues in a few commands
+
 ### [1.10.1] 2020-03-13
 
   * Fixed path repository warning on empty path when using wildcards
@@ -824,6 +942,29 @@
 
   * Initial release
 
+[1.10.23]: https://github.com/composer/composer/compare/1.10.22...1.10.23
+[1.10.22]: https://github.com/composer/composer/compare/1.10.21...1.10.22
+[1.10.21]: https://github.com/composer/composer/compare/1.10.20...1.10.21
+[1.10.20]: https://github.com/composer/composer/compare/1.10.19...1.10.20
+[1.10.19]: https://github.com/composer/composer/compare/1.10.18...1.10.19
+[1.10.18]: https://github.com/composer/composer/compare/1.10.17...1.10.18
+[1.10.17]: https://github.com/composer/composer/compare/1.10.16...1.10.17
+[1.10.16]: https://github.com/composer/composer/compare/1.10.15...1.10.16
+[1.10.15]: https://github.com/composer/composer/compare/1.10.14...1.10.15
+[1.10.14]: https://github.com/composer/composer/compare/1.10.13...1.10.14
+[1.10.13]: https://github.com/composer/composer/compare/1.10.12...1.10.13
+[1.10.12]: https://github.com/composer/composer/compare/1.10.11...1.10.12
+[1.10.11]: https://github.com/composer/composer/compare/1.10.10...1.10.11
+[1.10.10]: https://github.com/composer/composer/compare/1.10.9...1.10.10
+[1.10.9]: https://github.com/composer/composer/compare/1.10.8...1.10.9
+[1.10.8]: https://github.com/composer/composer/compare/1.10.7...1.10.8
+[1.10.7]: https://github.com/composer/composer/compare/1.10.6...1.10.7
+[1.10.6]: https://github.com/composer/composer/compare/1.10.5...1.10.6
+[1.10.5]: https://github.com/composer/composer/compare/1.10.4...1.10.5
+[1.10.4]: https://github.com/composer/composer/compare/1.10.3...1.10.4
+[1.10.3]: https://github.com/composer/composer/compare/1.10.2...1.10.3
+[1.10.2]: https://github.com/composer/composer/compare/1.10.1...1.10.2
+[1.10.1]: https://github.com/composer/composer/compare/1.10.0...1.10.1
 [1.10.0]: https://github.com/composer/composer/compare/1.10.0-RC...1.10.0
 [1.10.0-RC]: https://github.com/composer/composer/compare/1.9.3...1.10.0-RC
 [1.9.3]: https://github.com/composer/composer/compare/1.9.2...1.9.3

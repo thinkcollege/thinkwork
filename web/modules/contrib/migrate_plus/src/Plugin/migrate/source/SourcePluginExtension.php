@@ -2,8 +2,8 @@
 
 namespace Drupal\migrate_plus\Plugin\migrate\source;
 
-use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\migrate\source\SourcePluginBase;
+use Drupal\migrate\Plugin\MigrationInterface;
 
 /**
  * Generally-useful extensions to the core SourcePluginBase.

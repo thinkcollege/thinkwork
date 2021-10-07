@@ -80,7 +80,7 @@ class ScheduleEmailWebformHandler extends EmailWebformHandler {
         '#message_type' => $status_messages[$type]['type'],
       ];
 
-      if ($status_messages[$type]['type'] == 'warning') {
+      if ($status_messages[$type]['type'] === 'warning') {
         $cron_link = TRUE;
       }
     }
@@ -203,7 +203,7 @@ class ScheduleEmailWebformHandler extends EmailWebformHandler {
     // Ignore past.
     $form['scheduled']['ignore_past'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Do not schedule email if the action should be triggered in the past.'),
+      '#title' => $this->t('Do not schedule email if the action should be triggered in the past'),
       '#description' => $this->t('You can use this setting to prevent an action to be scheduled if it should have been triggered in the past.'),
       '#default_value' => $this->configuration['ignore_past'],
       '#return_value' => TRUE,
@@ -225,6 +225,10 @@ class ScheduleEmailWebformHandler extends EmailWebformHandler {
         '#title' => $this->t('Schedule emails for all existing submissions'),
         '#description' => $this->t('Check schedule emails after submissions have been processed.'),
         '#return_value' => TRUE,
+        // Must specify #parents because 'queue' is not a configuration setting.
+        // @see \Drupal\webform_scheduled_email\Plugin\WebformHandler\ScheduleEmailWebformHandler::defaultConfiguration
+        // @see \Drupal\webform\Plugin\WebformHandlerBase::setSettingsParentsRecursively
+        '#parents' => ['settings', 'queue'],
       ];
       $form['scheduled']['queue_message'] = [
         '#type' => 'webform_message',
@@ -266,7 +270,7 @@ class ScheduleEmailWebformHandler extends EmailWebformHandler {
     // Development.
     $form['development']['test_send'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Immediately send email when testing a webform.'),
+      '#title' => $this->t('Immediately send email when testing a webform'),
       '#return_value' => TRUE,
       '#default_value' => $this->configuration['test_send'],
     ];
@@ -371,7 +375,7 @@ class ScheduleEmailWebformHandler extends EmailWebformHandler {
   public function deleteHandler() {
     /** @var \Drupal\webform_scheduled_email\WebformScheduledEmailManagerInterface $webform_scheduled_email_manager */
     $webform_scheduled_email_manager = \Drupal::service('webform_scheduled_email.manager');
-    $webform_scheduled_email_manager->unschedule($this->webform, $this->getHandlerId());
+    $webform_scheduled_email_manager->delete($this->webform, $this->getHandlerId());
   }
 
   /**

@@ -7,7 +7,7 @@
 
 use Drupal\Core\Link;
 use Drupal\Core\Url;
-use Drupal\mailgun\MailgunHandler;
+use Drupal\mailgun\MailgunHandlerInterface;
 
 /**
  * Implements hook_install().
@@ -53,12 +53,14 @@ function mailgun_requirements($phase) {
     ],
   ];
 
-  if (MailgunHandler::checkLibrary() === FALSE) {
+  /** @var \Drupal\mailgun\MailgunHandlerInterface $mailgun */
+  $mailgun_handler = \Drupal::service('mailgun.mail_handler');
+  if ($mailgun_handler->validateMailgunLibrary() === FALSE) {
     $requirements['mailgun']['value'] = t('The Mailgun library has not been installed correctly.');
     $requirements['mailgun']['severity'] = REQUIREMENT_ERROR;
   }
   else {
-    if (MailgunHandler::checkApiSettings() === FALSE) {
+    if ($mailgun_handler->validateMailgunApiSettings() === FALSE) {
       $requirements['mailgun']['value'] = t('The Mailgun library is installed but API settings are not configured. Please check your @link.', [
         '@link' => Link::createFromRoute(t('settings'), 'mailgun.admin_settings_form')->toString(),
       ]);
@@ -79,7 +81,7 @@ function mailgun_requirements($phase) {
  * Rename Mailgun config object name.
  */
 function mailgun_update_8001() {
-  \Drupal::configFactory()->rename('mailgun.adminsettings', MAILGUN_CONFIG_NAME);
+  \Drupal::configFactory()->rename('mailgun.adminsettings', MailgunHandlerInterface::CONFIG_NAME);
   return t('Mailgun config object was renamed. Please visit configuration page to make sure that your configuration options are correct.');
 }
 
@@ -90,7 +92,7 @@ function mailgun_update_8001() {
  */
 function mailgun_update_8002() {
   \Drupal::configFactory()
-    ->getEditable(MAILGUN_CONFIG_NAME)
+    ->getEditable(MailgunHandlerInterface::CONFIG_NAME)
     ->set('tagging_mailkey', TRUE)
     ->save();
 
@@ -101,4 +103,18 @@ function mailgun_update_8002() {
       ],
     ]))->toString(),
   ]);
+}
+
+/**
+ * Implements hook_update_N().
+ *
+ * Set default API endpoint (US).
+ */
+function mailgun_update_8003() {
+  $mailgun_config = \Drupal::configFactory()->getEditable(MailgunHandlerInterface::CONFIG_NAME);
+  $existing_endpoint = $mailgun_config->get('api_endpoint');
+  if (empty($existing_endpoint)) {
+    $mailgun_config->set('api_endpoint', 'https://api.mailgun.net')->save();
+    return t('Mailgun API endpoint was set to the default (US). Please visit the configuration page if you would like to switch to the European API endpoint.');
+  }
 }

@@ -22,5 +22,3 @@ function mailsystem_test_mail($key, &$message, $params) {
       break;
   }
 }
-
-

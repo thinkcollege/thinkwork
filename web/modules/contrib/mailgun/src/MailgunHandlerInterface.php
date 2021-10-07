@@ -7,49 +7,7 @@ namespace Drupal\mailgun;
  */
 interface MailgunHandlerInterface {
 
-  /**
-   * Validates Mailgun library and API settings.
-   *
-   * @param bool $showMessage
-   *   Whether error messages should be shown.
-   *
-   * @return bool
-   *   Whether the library installed and API settings are ok.
-   */
-  public static function status($showMessage = FALSE);
-
-  /**
-   * Validates Mailgun API key.
-   *
-   * @param string $key
-   *   The API key.
-   *
-   * @return bool
-   *   Whether the API key is valid.
-   */
-  public static function validateKey($key);
-
-  /**
-   * Checks if API settings are correct and not empty.
-   *
-   * @param bool $showMessage
-   *   Whether error messages should be shown.
-   *
-   * @return bool
-   *   Whether API settings are valid.
-   */
-  public static function checkApiSettings($showMessage = FALSE);
-
-  /**
-   * Checks if Mailgun PHP SDK is installed correctly.
-   *
-   * @param bool $showMessage
-   *   Whether error messages should be shown.
-   *
-   * @return bool
-   *   Whether the Mailgun PHP SDK is installed correctly.
-   */
-  public static function checkLibrary($showMessage = FALSE);
+  const CONFIG_NAME = 'mailgun.settings';
 
   /**
    * Connects to Mailgun API and sends out the email.
@@ -76,6 +34,17 @@ interface MailgunHandlerInterface {
    *   ]
    */
   public function getDomains();
+
+  /**
+   * Parses and returns domain based on the email "From" value.
+   *
+   * @param string $from
+   *   "From" parameter of the mail message.
+   *
+   * @return string|bool
+   *   Returns domain name or FALSE if we couldn't parse it.
+   */
+  public function getDomain($from);
 
   /**
    * Validates Mailgun library and API settings.

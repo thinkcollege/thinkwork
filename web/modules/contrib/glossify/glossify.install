@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Install and uninstall functions for the glossify module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ *
+ * This removes the filters when the module is uninstalled.
+ */
+function glossify_uninstall() {
+  /* @var $ConfigManager  Drupal\Core\Config\ConfigManager */
+  $filters = filter_formats();
+  foreach ($filters as $name => $filter) {
+
+    /* @var $filter Drupal\filter\Entity\FilterFormat */
+    $filter->removeFilter('glossify_node');
+    $filter->removeFilter('glossify_taxonomy');
+    $filter->save();
+  }
+}

@@ -114,9 +114,6 @@ class PanelsStorageTest extends UnitTestCase {
 
   /**
    * @covers ::save
-   *
-   * @expectedException \Exception
-   * @expectedExceptionMessage Couldn't find page variant to store Panels display
    */
   public function testSaveDoesntExist() {
     $this->panelsDisplay->setConfiguration()->shouldNotBeCalled();
@@ -129,14 +126,13 @@ class PanelsStorageTest extends UnitTestCase {
     $panels_display->getConfiguration()->shouldNotBeCalled();
 
     $panels_storage = new PageManagerPanelsStorage([], '', [], $this->entityTypeManager->reveal());
+    $this->expectException('Exception');
+    $this->expectExceptionMessage("Couldn't find page variant to store Panels display");
     $panels_storage->save($panels_display->reveal());
   }
 
   /**
    * @covers ::save
-   *
-   * @expectedException \Exception
-   * @expectedExceptionMessage Page variant doesn't use a Panels display variant
    */
   public function testSaveNotPanels() {
     $this->storage->load('not_a_panel')->willReturn($this->pageVariantNotPanels->reveal());
@@ -149,6 +145,8 @@ class PanelsStorageTest extends UnitTestCase {
     $panels_display->getConfiguration()->shouldNotBeCalled();
 
     $panels_storage = new PageManagerPanelsStorage([], '', [], $this->entityTypeManager->reveal());
+    $this->expectException('Exception');
+    $this->expectExceptionMessage("Page variant doesn't use a Panels display variant");
     $panels_storage->save($panels_display->reveal());
   }
 

@@ -318,8 +318,9 @@ class Panelizer implements PanelizerInterface {
       }
 
       // Updates the changed time of the entity, if necessary.
-      if ($entity->getEntityType()->isSubclassOf(EntityChangedInterface::class)) {
-        $entity->setChangedTime(REQUEST_TIME);
+      if ($entity->getEntityType()->entityClassImplements(EntityChangedInterface::class)) {
+        $request_time = \Drupal::time()->getRequestTime();
+        $entity->setChangedTime($request_time);
       }
 
       $entity->panelizer[$panelizer_item->getName()] = $panelizer_item;

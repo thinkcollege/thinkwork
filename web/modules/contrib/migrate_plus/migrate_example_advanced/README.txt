@@ -1,6 +1,6 @@
 INTRODUCTION
 ------------
-The migrate_example_advanced module demonstrates some techniques for Drupal 8
+The migrate_example_advanced module demonstrates some techniques for Drupal 8+
 migrations beyond the basics in migrate_example. It includes a group of
 migrations with a wine theme.
 
@@ -42,7 +42,7 @@ example:
 UNDERSTANDING THE MIGRATIONS
 ----------------------------
 Basic techniques demonstrated in the migrate_example module are not rehashed
-here - it is expected that if you are learning Drupal 8 migration, you will
+here - it is expected that if you are learning Drupal 8+ migration, you will
 study and understand those examples first, and use migrate_example_advanced to
 learn about specific techniques beyond those basics. This example doesn't have
 the narrative form of migrate_example - it's more of a grab-bag demonstrating

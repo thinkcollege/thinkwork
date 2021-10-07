@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\mailsystem_test\Controller;
+
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -12,6 +13,7 @@ class MailsystemTestController {
    * Composes and optionally sends an email message.
    *
    * @return \Symfony\Component\HttpFoundation\RedirectResponse
+   *   The redirect response object.
    */
   public function sendMail() {
 
@@ -27,4 +29,5 @@ class MailsystemTestController {
     \Drupal::service('plugin.manager.mail')->mail($module, $key, $to, $langcode);
     return new Response('', 204);
   }
+
 }

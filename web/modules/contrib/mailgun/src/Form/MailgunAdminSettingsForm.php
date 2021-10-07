@@ -7,14 +7,11 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
-use Drupal\mailgun\MailgunHandler;
 use Drupal\mailgun\MailgunHandlerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class MailgunAdminSettingsForm.
- *
- * @package Drupal\mailgun\Form
+ * Provides Mailgun configuration form.
  */
 class MailgunAdminSettingsForm extends ConfigFormBase {
 
@@ -38,10 +35,9 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $config_factory, MailgunHandlerInterface $mailgunHandler) {
+  public function __construct(ConfigFactoryInterface $config_factory, MailgunHandlerInterface $mailgun_handler) {
     parent::__construct($config_factory);
-
-    $this->mailgunHandler = $mailgunHandler;
+    $this->mailgunHandler = $mailgun_handler;
   }
 
   /**
@@ -49,7 +45,7 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      MAILGUN_CONFIG_NAME,
+      MailgunHandlerInterface::CONFIG_NAME,
     ];
   }
 
@@ -66,7 +62,8 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
 
-    if (MailgunHandler::validateKey($form_state->getValue('api_key')) === FALSE) {
+    $entered_api_key = $form_state->getValue('api_key');
+    if (!empty($entered_api_key) && $this->mailgunHandler->validateMailgunApiKey($entered_api_key) === FALSE) {
       $form_state->setErrorByName('api_key', $this->t("Couldn't connect to the Mailgun API. Please check your API settings."));
     }
   }
@@ -75,12 +72,12 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    MailgunHandler::checkLibrary(TRUE);
-    $config = $this->config(MAILGUN_CONFIG_NAME);
+    $this->mailgunHandler->validateMailgunLibrary(TRUE);
+    $config = $this->config(MailgunHandlerInterface::CONFIG_NAME);
 
     $form['description'] = [
       '#markup' => $this->t('Please refer to @link for your settings.', [
-        '@link' => Link::fromTextAndUrl($this->t('dashboard'), Url::fromUri('https://mailgun.com/app/domains', [
+        '@link' => Link::fromTextAndUrl($this->t('dashboard'), Url::fromUri('https://app.mailgun.com/app/dashboard', [
           'attributes' => [
             'onclick' => "target='_blank'",
           ],
@@ -88,18 +85,27 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
       ]),
     ];
 
-    $api_key = $config->get('api_key');
     $form['api_key'] = [
       '#title' => $this->t('Mailgun API Key'),
       '#type' => 'textfield',
       '#required' => TRUE,
       '#description' => $this->t('Enter your API key. It should be similar to: @key', ['@key' => 'key-1234567890abcdefghijklmnopqrstu']),
-      '#default_value' => $api_key,
+      '#default_value' => $config->get('api_key'),
     ];
 
+    // Load not-editable configuration object to check actual api key value
+    // including overrides.
+    $not_editable_config = $this->configFactory()->get(MailgunHandlerInterface::CONFIG_NAME);
+
     // Don't show other settings until we don't set API key.
-    if (empty($api_key)) {
+    if (empty($not_editable_config->get('api_key'))) {
       return parent::buildForm($form, $form_state);
+    }
+
+    // If "API Key" is overridden in settings.php it won't be visible in form.
+    // We have to make the field optional and allow configure other settings.
+    if (empty($config->get('api_key')) && !empty($not_editable_config->get('api_key'))) {
+      $form['api_key']['#required'] = FALSE;
     }
 
     $form['working_domain'] = [
@@ -109,6 +115,18 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
         '_sender' => $this->t('Get domain from sender address'),
       ] + $this->mailgunHandler->getDomains(),
       '#default_value' => $config->get('working_domain'),
+    ];
+
+    $form['api_endpoint'] = [
+      '#title' => $this->t('Mailgun Region'),
+      '#type' => 'select',
+      '#required' => TRUE,
+      '#description' => $this->t('Select which Mailgun region to use.'),
+      '#options' => [
+        'https://api.mailgun.net' => $this->t('Default (US)'),
+        'https://api.eu.mailgun.net' => $this->t('Europe'),
+      ],
+      '#default_value' => $config->get('api_endpoint'),
     ];
 
     $form['debug_mode'] = [
@@ -210,15 +228,17 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Enable Queue'),
       '#type' => 'checkbox',
       '#default_value' => $config->get('use_queue'),
-      '#description' => $this->t('Enable to queue emails and send them out during cron run.'),
+      '#description' => $this->t('Enable to queue emails and send them out during cron run. You can also enable queue for specific email keys by selecting Mailgun mailer (queued) plugin in @link.', [
+        '@link' => Link::fromTextAndUrl($this->t('mail system configuration'), Url::fromRoute('mailsystem.settings'))->toString(),
+      ]),
     ];
 
     $form['advanced_settings']['tagging_mailkey'] = [
       '#title' => $this->t('Enable tags by mail key'),
       '#type' => 'checkbox',
       '#default_value' => $config->get('tagging_mailkey'),
-      '#description' => $this->t('Add tag by mail key. See @link for details.', [
-        '@link' => Link::fromTextAndUrl($this->t("Mailgun's tagging documentation"), Url::fromUri('https://documentation.mailgun.com/user_manual.html#tagging', [
+      '#description' => $this->t('Add tag by mail key. See @link for details. Warning: adding tags will automatically add the "List-Unsubscribe" header to e-emails.', [
+        '@link' => Link::fromTextAndUrl($this->t("Mailgun's tagging documentation"), Url::fromUri('https://documentation.mailgun.com/en/latest/user_manual.html#tagging', [
           'attributes' => [
             'onclick' => "target='_blank'",
           ],
@@ -233,21 +253,19 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // Set default value for domain when we submit form for the first time.
-    $domain = $form_state->getValue('working_domain');
-    $this->config(MAILGUN_CONFIG_NAME)
-      ->set('api_key', $form_state->getValue('api_key'))
-      ->set('working_domain', empty($domain) ? '_sender' : $domain)
-      ->set('debug_mode', $form_state->getValue('debug_mode'))
-      ->set('test_mode', $form_state->getValue('test_mode'))
-      ->set('tracking_opens', $form_state->getValue('tracking_opens'))
-      ->set('tracking_clicks', $form_state->getValue('tracking_clicks'))
-      ->set('tracking_exception', $form_state->getValue('tracking_exception'))
-      ->set('format_filter', $form_state->getValue('format_filter'))
-      ->set('use_queue', $form_state->getValue('use_queue'))
-      ->set('use_theme', $form_state->getValue('use_theme'))
-      ->set('tagging_mailkey', $form_state->getValue('tagging_mailkey'))
-      ->save();
+    $config_keys = [
+      'working_domain', 'api_key', 'debug_mode', 'test_mode', 'tracking_opens',
+      'tracking_clicks', 'tracking_exception', 'format_filter', 'use_queue',
+      'use_theme', 'tagging_mailkey', 'api_endpoint',
+    ];
+
+    $mailgun_config = $this->config(MailgunHandlerInterface::CONFIG_NAME);
+    foreach ($config_keys as $config_key) {
+      if ($form_state->hasValue($config_key)) {
+        $mailgun_config->set($config_key, $form_state->getValue($config_key));
+      }
+    }
+    $mailgun_config->save();
 
     $this->messenger()->addMessage($this->t('The configuration options have been saved.'));
   }

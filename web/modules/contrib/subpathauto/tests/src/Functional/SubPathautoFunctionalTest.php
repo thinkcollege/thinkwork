@@ -3,12 +3,11 @@
 namespace Drupal\Tests\subpathauto\Functional;
 
 use Drupal\language\Entity\ConfigurableLanguage;
-use Drupal\node\Entity\Node;
-use Drupal\node\Entity\NodeType;
 use Drupal\Tests\BrowserTestBase;
 
 /**
- * Class SubPathautoFunctionalTest
+ * Class SubPathautoFunctionalTest.
+ *
  * @group subpathauto
  */
 class SubPathautoFunctionalTest extends BrowserTestBase {
@@ -16,7 +15,19 @@ class SubPathautoFunctionalTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['subpathauto', 'node', 'user', 'block', 'text', 'language'];
+  public static $modules = [
+    'subpathauto',
+    'node',
+    'user',
+    'block',
+    'text',
+    'language',
+  ];
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
 
   /**
    * {@inheritdoc}
@@ -35,8 +46,15 @@ class SubPathautoFunctionalTest extends BrowserTestBase {
     // we have to rebuild it.
     $this->rebuildContainer();
 
-    $alias_storage = $this->container->get('path.alias_storage');
-    $alias_storage->save('/node/1', '/kittens');
+    $aliasStorage = \Drupal::entityTypeManager()
+      ->getStorage('path_alias');
+
+    $path_alias = $aliasStorage->create([
+      'path' => '/node/1',
+      'alias' => '/kittens',
+    ]);
+    $path_alias->save();
+
     $alias_white_list = $this->container->get('path.alias_whitelist');
     $alias_white_list->set('node', TRUE);
 

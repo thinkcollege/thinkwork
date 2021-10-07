@@ -4,19 +4,24 @@ namespace Drupal\Tests\panelizer_quickedit\FunctionalJavascript;
 
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\FunctionalJavascriptTests\JavascriptTestBase;
+use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 
 /**
  * Tests that a Panelized Node can be Quick-Edited.
  *
  * @group panelizer
  */
-class PanelizerQuickEditTest extends JavascriptTestBase {
+class PanelizerQuickEditTest extends WebDriverTestBase {
 
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['contextual', 'quickedit', 'field_ui', 'node', 'panelizer_quickedit'];
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
+  public static $modules = ['contextual', 'field_ui', 'node', 'panelizer_quickedit'];
 
   /**
    * {@inheritdoc}
@@ -69,12 +74,13 @@ class PanelizerQuickEditTest extends JavascriptTestBase {
 
     // Enable Panelizer for Articles.
     $this->drupalGet('admin/structure/types/manage/page/display');
-    $this->assertResponse(200);
-    $edit = [
-      'panelizer[enable]' => TRUE,
-    ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
-    $this->assertResponse(200);
+    $this->container->get('panelizer')
+      ->setPanelizerSettings('node', 'page', 'default', [
+        'enable' => TRUE,
+        'allow' => FALSE,
+        'custom' => FALSE,
+        'default' => 'default',
+      ]);
   }
 
   /**
@@ -106,8 +112,7 @@ class PanelizerQuickEditTest extends JavascriptTestBase {
     ]);
 
     // Visit the new node.
-    $this->drupalGet('node/' . $node->id());
-    $this->assertResponse(200);
+    $this->drupalGet($node->toUrl());
 
     // This is the unique ID we append to normal Quick Edit field IDs.
     $panelizer_id = 'panelizer-full-block-id-' . $block_id;
@@ -137,8 +142,7 @@ class PanelizerQuickEditTest extends JavascriptTestBase {
     $this->assertSession()->assertWaitOnAjaxRequest();
 
     // Re-visit the node to make sure the edit worked.
-    $this->drupalGet('node/' . $node->id());
-    $this->assertResponse(200);
+    $this->drupalGet($node->toUrl());
     $this->assertSession()->pageTextContains('Hello world');
   }
 

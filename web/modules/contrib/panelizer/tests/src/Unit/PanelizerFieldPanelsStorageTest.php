@@ -162,9 +162,6 @@ class PanelizerFieldPanelsStorageTest extends UnitTestCase {
 
   /**
    * @covers ::save
-   *
-   * @expectedException \Exception
-   * @expectedExceptionMessage Couldn't find entity to store Panels display on
    */
   public function testSaveNoEntity() {
     $panels_display = $this->prophesize(PanelsDisplayVariant::class);
@@ -174,14 +171,13 @@ class PanelizerFieldPanelsStorageTest extends UnitTestCase {
 
     $this->storage->load('123')->willReturn(NULL)->shouldBeCalled();
 
+    $this->expectException('Exception');
+    $this->expectExceptionMessage("Couldn't find entity to store Panels display on");
     $this->panelsStorage->save($panels_display->reveal());
   }
 
   /**
    * @covers ::save
-   *
-   * @expectedException \Exception
-   * @expectedExceptionMessage Save failed
    */
   public function testSaveFailed() {
     $panels_display = $this->prophesize(PanelsDisplayVariant::class);
@@ -194,6 +190,8 @@ class PanelizerFieldPanelsStorageTest extends UnitTestCase {
 
     $this->storage->load('123')->willReturn($entity->reveal())->shouldBeCalled();
 
+    $this->expectException('Exception');
+    $this->expectExceptionMessage('Save failed');
     $this->panelsStorage->save($panels_display->reveal());
   }
 

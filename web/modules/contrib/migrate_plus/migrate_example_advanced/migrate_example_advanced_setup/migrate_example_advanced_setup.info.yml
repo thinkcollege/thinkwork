@@ -2,8 +2,8 @@ type: module
 name: Migrate Advanced Example Setup
 description: 'Separate site configuration for the example from the actual migration.'
 package: Migration
-# core: 8.x
-hidden: 1
+core_version_requirement: ^8.8 || ^9
+hidden: true
 dependencies:
   - drupal:comment
   - drupal:image
@@ -11,8 +11,7 @@ dependencies:
   - drupal:taxonomy
   - drupal:rest
 
-# Information added by Drupal.org packaging script on 2019-04-19
-version: '8.x-4.2'
-core: '8.x'
+# Information added by Drupal.org packaging script on 2020-04-30
+version: '8.x-5.1'
 project: 'migrate_plus'
-datestamp: 1555683500
+datestamp: 1588261062

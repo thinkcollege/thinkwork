@@ -30,6 +30,9 @@ webform.settings:
         default_reset_button_label:
           type: label
           label: 'Default reset button label'
+        default_delete_button_label:
+          type: label
+          label: 'Default delete button label'
         default_form_submit_once:
           type: boolean
           label: 'Prevent duplicate submissions'
@@ -87,6 +90,12 @@ webform.settings:
         default_wizard_confirmation_label:
           type: label
           label: 'Default wizard confirmation label'
+        default_wizard_toggle_show_label:
+          type: label
+          label: 'Default wizard show all elements label'
+        default_wizard_toggle_hide_label:
+          type: label
+          label: 'Default wizard hide all elements label'
         default_preview_next_button_label:
           type: label
           label: 'Default preview button label'
@@ -188,6 +197,9 @@ webform.settings:
               sequence:
                 type: string
                 label: Route
+        default_results_customize:
+          type: boolean
+          label: 'Allow users to customize the results table'
         default_submission_access_denied_message:
           type: text
           label: 'Default submission access denied message'
@@ -221,6 +233,33 @@ webform.settings:
         confirmation_back_classes:
           type: string
           label: 'Confirmation back link CSS classes'
+        default_share:
+          type: boolean
+          label: 'Enable form sharing'
+        default_share_node:
+          type: boolean
+          label: 'Enable form sharing for webform nodes'
+        default_share_theme_name:
+          type: string
+          label: 'Default shared form theme'
+        webform_bulk_form:
+          type: boolean
+          label: 'Enable webform operations bulk form'
+        webform_bulk_form_actions:
+          type: sequence
+          label: 'Webform operations bulk form actions'
+          sequence:
+            type: string
+            label: Action
+        webform_submission_bulk_form:
+          type: boolean
+          label: 'Enable submission operations bulk form'
+        webform_submission_bulk_form_actions:
+          type: sequence
+          label: 'Webform submission operations bulk form actions'
+          sequence:
+            type: string
+            label: Action
         dialog:
           type: boolean
           label: 'Enable webform dialog support'
@@ -253,6 +292,16 @@ webform.settings:
         javascript:
           type: string
           label: JavaScript
+    form:
+      type: mapping
+      label: 'Form default settings'
+      mapping:
+        filter_category:
+          type: label
+          label: 'Filter category'
+        filter_state:
+          type: string
+          label: 'Filter state'
     element:
       type: mapping
       label: 'Element default settings'
@@ -275,9 +324,6 @@ webform.settings:
         horizontal_rule_classes:
           type: string
           label: 'Horizontal rule CSS classes'
-        default_icheck:
-          type: string
-          label: 'Default iCheck style'
         default_description_display:
           type: string
           label: 'Default title display'
@@ -296,9 +342,6 @@ webform.settings:
         default_empty_option_optional:
           type: label
           label: 'Default empty option optional label'
-        default_google_maps_api_key:
-          type: string
-          label: 'Default Google Maps API key'
         default_algolia_places_app_id:
           type: string
           label: 'Default Algolia application id'
@@ -426,6 +469,9 @@ webform.settings:
         excel:
           type: boolean
           label: 'Open HTML table in Excel'
+        archive_type:
+          type: string
+          label: 'Type of downloadable archive'
         file_name:
           type: string
           label: 'File name'
@@ -475,6 +521,13 @@ webform.settings:
         excluded_handlers:
           type: ignore
           label: 'Excluded submission handlers'
+    variant:
+      type: mapping
+      label: 'Variant settings'
+      mapping:
+        excluded_variants:
+          type: ignore
+          label: 'Excluded webform variants'
     batch:
       type: mapping
       label: 'Batch settings'
@@ -530,12 +583,18 @@ webform.settings:
         promotions_disabled:
           type: boolean
           label: 'Disable promotions'
+        support_disabled:
+          type: boolean
+          label: 'Disable support options'
         details_save:
           type: boolean
           label: 'Save details open/close state'
         description_help:
           type: boolean
           label: 'Display element description as help text (tooltip)'
+        toolbar_item:
+          type: boolean
+          label: 'Display webforms as a top-level item in toolbar'
     libraries:
       type: mapping
       label: 'Library settings'
@@ -553,6 +612,9 @@ webform.settings:
         cdn:
           type: boolean
           label: 'Check if CDN is being used for external libraries'
+        clientside_validation:
+          type: boolean
+          label: 'Check if Webform Clientside Validation module is installed when using the Clientside Validation module'
         bootstrap:
           type: boolean
           label: 'Check if Webform Bootstrap Integration module is installed when using the Bootstrap theme'

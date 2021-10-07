@@ -16,11 +16,6 @@
 /**
  * Help page.
  */
-.webform-help h4 {
-  font-size: 1em;
-  text-transform: uppercase;
-}
-
 .webform-help .button.button--primary {
   width: 100%;
   max-width: 600px;
@@ -40,24 +35,24 @@
  * Help play button.
  */
 .button.button-webform-play:before {
-  content: '► ';
-  font-size: .8em;
+  content: "► ";
+  font-size: 0.8em;
 }
 /**
  * Help video.
  */
 .webform-help-video-youtube {
-  margin: 1em 0 .2em 0;
   max-width: 1024px;
+  margin: 1em 0 0.2em 0;
   border: 1px solid #000;
 }
 
 .webform-help-video-youtube--container {
   position: relative;
-  padding-bottom: 56.25%;
-  padding-top: 30px;
-  height: 0;
   overflow: hidden;
+  height: 0;
+  padding-top: 30px;
+  padding-bottom: 56.25%;
 }
 
 .webform-help-video-youtube iframe {

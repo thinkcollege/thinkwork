@@ -11,7 +11,7 @@
   overflow: hidden;
 }
 
-form.content-access-page fieldset:not(.fieldgroup) legend,
-form.content-access-admin-settings fieldset:not(.fieldgroup) legend {
-    position: static;
+form.content-access-page,
+form.content-access-admin-settings {
+  position: static;
 }

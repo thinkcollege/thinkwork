@@ -20,7 +20,7 @@ class WebformSection extends ContainerBase {
   /**
    * {@inheritdoc}
    */
-  public function getDefaultProperties() {
+  protected function defineDefaultProperties() {
     return [
       // Description/Help.
       'help' => '',
@@ -31,9 +31,13 @@ class WebformSection extends ContainerBase {
       // Title.
       'title_tag' => \Drupal::config('webform.settings')->get('element.default_section_title_tag'),
       'title_display' => '',
+      'title_attributes' => [],
+      'description_display' => '',
       'help_display' => '',
-    ] + parent::getDefaultProperties();
+    ] + parent::defineDefaultProperties();
   }
+
+  /****************************************************************************/
 
   /**
    * {@inheritdoc}
@@ -73,6 +77,9 @@ class WebformSection extends ContainerBase {
         'label' => $this->t('Label (label)'),
       ],
     ];
+
+    // Remove unsupported description display.
+    unset($form['form']['display_container']['description_display']['#options']['tooltip']);
 
     return $form;
   }

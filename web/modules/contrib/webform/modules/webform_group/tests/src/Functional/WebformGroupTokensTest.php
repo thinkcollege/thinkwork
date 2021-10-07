@@ -7,7 +7,7 @@ use Drupal\webform\Entity\WebformSubmission;
 /**
  * Tests for webform tokens access.
  *
- * @group WebformAccess
+ * @group webform_group
  */
 class WebformGroupTokensTest extends WebformGroupBrowserTestBase {
 
@@ -25,8 +25,6 @@ class WebformGroupTokensTest extends WebformGroupBrowserTestBase {
     $group->addContent($node, 'group_node:webform');
 
     // Users.
-    $outsider_user = $this->createUser([], 'outsider', FALSE, ['mail' => 'outsider@example.com']);
-
     $member_user = $this->createUser([], 'member', FALSE, ['mail' => 'member@example.com']);
     $group->addMember($member_user);
 

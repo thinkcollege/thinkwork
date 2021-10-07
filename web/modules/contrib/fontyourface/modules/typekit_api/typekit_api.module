@@ -8,7 +8,6 @@
 define('TYPEKIT_API_BASE_URL', 'https://typekit.com/api/v1/json/');
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Link;
 
 /**
@@ -29,7 +28,7 @@ function typekit_api_fontyourface_api() {
  */
 function typekit_api_modules_installed($modules) {
   if (in_array('typekit_api', $modules)) {
-    drupal_set_message(t('Typekit needs to be set up in order for fonts to be imported. Please use @link to import Typekit fonts.', ['@link' => Link::createFromRoute('@font-your-face settings', 'font.settings')->toString()]));
+    Drupal::messenger()->addMessage(t('Typekit needs to be set up in order for fonts to be imported. Please use @link to import Typekit fonts.', ['@link' => Link::createFromRoute('@font-your-face settings', 'font.settings')->toString()]));
   }
 }
 
@@ -58,7 +57,7 @@ function typekit_api_form_font_settings_submit(&$form, FormStateInterface $form_
   $values = $form_state->getValues();
   $config = \Drupal::configFactory()->getEditable('typekit_api.settings');
   $config->set('token', $values['typekit_token'])->save();
-  drupal_set_message(t('Saved Typekit API token'));
+  Drupal::messenger()->addMessage(t('Saved Typekit API token'));
 }
 
 /**
@@ -99,7 +98,7 @@ function typekit_api_page_attachments(&$page) {
 function typekit_api_fontyourface_import($font_context = []) {
   $config = \Drupal::config('typekit_api.settings');
   if (empty($config->get('token'))) {
-    drupal_set_message(t('Typekit token not set. Cannot import typekit kits.'));
+    Drupal::messenger()->addMessage(t('Typekit token not set. Cannot import typekit kits.'));
     return $font_context;
   }
 
@@ -130,10 +129,10 @@ function typekit_api_fontyourface_import($font_context = []) {
       }
     }
     else {
-      drupal_set_message(t('Typekit kit did not match current domain, @domain', ['@domain' => $_SERVER['HTTP_HOST']]));
+      Drupal::messenger()->addMessage(t('Typekit kit did not match current domain, @domain', ['@domain' => $_SERVER['HTTP_HOST']]));
     }
   }
-  drupal_set_message(t('Imported Typekit kits: @kits', ['@kits' => print_r($kits, TRUE)]));
+  Drupal::messenger()->addMessage(t('Imported Typekit kits: @kits', ['@kits' => print_r($kits, TRUE)]));
   return $font_context;
 }
 
@@ -153,7 +152,7 @@ function typekit_api_get_kits($token = NULL) {
     $data = json_decode((string) $response->getBody());
   }
   catch (RequestException $e) {
-    drupal_set_message(t('There was an error importing kit list from Typekit. Error: %error', ['%error' => $e->getMessage()]), 'error');
+    Drupal::messenger()->addMessage(t('There was an error importing kit list from Typekit. Error: %error', ['%error' => $e->getMessage()]), 'error');
     return FALSE;
   }
   return $data->kits;
@@ -177,7 +176,7 @@ function typekit_api_get_kit($kit_id, $token = NULL) {
     $data = json_decode((string) $response->getBody());
   }
   catch (RequestException $e) {
-    drupal_set_message(t('There was an error importing kit list from Typekit. Error: %error', ['%error' => $e->getMessage()]), 'error');
+    Drupal::messenger()->addMessage(t('There was an error importing kit list from Typekit. Error: %error', ['%error' => $e->getMessage()]), 'error');
     return FALSE;
   }
   return $data->kit;
@@ -203,7 +202,7 @@ function typekit_api_get_variant($family_id, $variant_id, $token = NULL) {
     $data = json_decode((string) $response->getBody());
   }
   catch (RequestException $e) {
-    drupal_set_message(t('There was an error importing a variant (@kit, @variant) from Typekit: %error',
+    Drupal::messenger()->addMessage(t('There was an error importing a variant (@kit, @variant) from Typekit: %error',
       [
         '@kit' => $family_id,
         '@variant' => $variant_id,
@@ -246,7 +245,7 @@ function typekit_api_token_headers($token = NULL) {
  *   TRUE if kit is valid against domain. FALSE otherwise.
  */
 function typekit_api_kit_matches_domain($kit, $domain) {
-  $domain = Unicode::strtolower($domain);
+  $domain = mb_strtolower($domain);
   $domains = array_filter($kit->domains, function ($kit_domain) use ($domain) {
     if ($kit_domain == $domain) {
       return TRUE;

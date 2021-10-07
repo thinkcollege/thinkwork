@@ -124,7 +124,7 @@ class PanelsDeleteBlockForm extends ConfirmFormBase {
       $cached_values['page_variant']->getVariantPlugin()->setConfiguration($cached_values['plugin']->getConfiguration());
     }
     $this->tempstore->get($this->getTempstoreId())->set($cached_values['id'], $cached_values);
-    drupal_set_message($this->t('The block %label has been removed.', ['%label' => $this->block->label()]));
+    $this->messenger()->addMessage($this->t('The block %label has been removed.', ['%label' => $this->block->label()]));
   }
 
 }

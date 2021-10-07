@@ -13,12 +13,15 @@ use Drupal\migrate_plus\Entity\MigrationGroup;
  */
 class MigrationGroupTest extends KernelTestBase {
 
-  public static $modules = ['migrate', 'migrate_plus'];
+  /**
+   * {@inheritdoc}
+   */
+  public static $modules = ['migrate', 'migrate_plus', 'migrate_plus_test'];
 
   /**
    * Test that group configuration is properly merged into specific migrations.
    */
-  public function testConfigurationMerge() {
+  public function testConfigurationMerge(): void {
     $group_id = 'test_group';
 
     /** @var \Drupal\migrate_plus\Entity\MigrationGroupInterface $migration_group */
@@ -85,7 +88,7 @@ class MigrationGroupTest extends KernelTestBase {
     $loaded_migration = $this->container->get('plugin.manager.migration')
       ->createInstance('specific_migration');
     foreach ($expected_config as $method => $expected_value) {
-      $actual_value = call_user_func([$loaded_migration, $method]);
+      $actual_value = $loaded_migration->$method();
       $this->assertEquals($expected_value, $actual_value);
     }
   }
@@ -93,7 +96,7 @@ class MigrationGroupTest extends KernelTestBase {
   /**
    * Test that deleting a group deletes its migrations.
    */
-  public function testDelete() {
+  public function testDelete(): void {
     /** @var \Drupal\migrate_plus\Entity\MigrationGroupInterface $migration_group */
     $group_configuration = [
       'id' => 'test_group',
@@ -122,6 +125,18 @@ class MigrationGroupTest extends KernelTestBase {
     /** @var \Drupal\migrate_plus\Entity\MigrationInterface $loaded_migration */
     $loaded_migration = Migration::load('specific_migration');
     $this->assertNull($loaded_migration);
+  }
+
+  /**
+   * Test that migrations without a group are assigned to the default group.
+   */
+  public function testDefaultGroup(): void {
+    $this->installConfig('migrate_plus_test');
+
+    /** @var \Drupal\migrate\Plugin\MigrationPluginManagerInterface $pluginManager */
+    $pluginManager = \Drupal::service('plugin.manager.migration');
+    $migration = $pluginManager->getDefinition('dummy');
+    $this->assertEqual($migration['migration_group'], 'default', 'Migrations without an explicit group are assigned the default group.');
   }
 
 }

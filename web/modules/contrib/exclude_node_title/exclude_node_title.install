@@ -11,12 +11,24 @@ use Drupal\user\Entity\Role;
  * Implements hook_install().
  */
 function exclude_node_title_install() {
-  // attach default permission to use exclude node title
+  // Attaches default permission to use exclude node title.
   $roles = Role::loadMultiple();
   foreach ($roles as $role) {
     $role->grantPermission('use exclude node title');
     $role->save();
   }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function exclude_node_title_uninstall() {
+  // Uninstall old configuration.
+  \Drupal::configFactory()->getEditable('exclude_node_title.settings')->delete();
+
+  // Uninstall state configuration.
+  \Drupal::state()->delete('exclude_node_title_nid_list');
+
 }
 
 /**
@@ -44,5 +56,15 @@ function exclude_node_title_update_8001() {
     ->clear('exclude_node_title_search')
     ->clear('exclude_node_title_content_type_value')
     ->clear('exclude_node_title_content_type_modes')
+    ->save();
+}
+
+/**
+ * Defaults render type to 'remove' for retroactivity.
+ */
+function exclude_node_title_update_8002() {
+  \Drupal::configFactory()
+    ->getEditable('exclude_node_title.settings')
+    ->set('type', 'remove')
     ->save();
 }

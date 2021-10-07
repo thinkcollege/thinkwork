@@ -3,9 +3,7 @@
 namespace Drupal\panelizer\Form;
 
 use Drupal\Core\Plugin\Context\ContextInterface;
-use Drupal\ctools\ContextMapperInterface;
 use Drupal\ctools\Form\ContextConfigure;
-use Drupal\user\SharedTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -21,26 +19,13 @@ class PanelizerWizardContextConfigure extends ContextConfigure {
   protected $contextMapper;
 
   /**
-   * PanelizerWizardContextConfigure constructor.
-   *
-   * @param \Drupal\user\SharedTempStoreFactory $tempstore
-   *   The shared tempstore factory.
-   * @param \Drupal\ctools\ContextMapperInterface $context_mapper
-   *   The context mapper.
-   */
-  public function __construct(SharedTempStoreFactory $tempstore, ContextMapperInterface $context_mapper) {
-    parent::__construct($tempstore);
-    $this->contextMapper = $context_mapper;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('user.shared_tempstore'),
-      $container->get('ctools.context_mapper')
-    );
+    $instance = parent::create($container);
+    $instance->contextMapper = $container->get('ctools.context_mapper');
+
+    return $instance;
   }
 
   /**

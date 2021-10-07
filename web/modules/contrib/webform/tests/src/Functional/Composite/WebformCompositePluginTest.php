@@ -7,7 +7,7 @@ use Drupal\Tests\webform\Functional\WebformBrowserTestBase;
 /**
  * Tests for composite plugin.
  *
- * @group Webform
+ * @group webform
  */
 class WebformCompositePluginTest extends WebformBrowserTestBase {
 
@@ -63,7 +63,7 @@ class WebformCompositePluginTest extends WebformBrowserTestBase {
       'webform_test_composite[nested_select]' => 'Monday',
       'webform_test_composite[nested_radios]' => 'Monday',
     ];
-    $this->drupalPostForm('/webform/test_element_composite_plugin', $edit, t('Submit'));
+    $this->drupalPostForm('/webform/test_element_composite_plugin', $edit, 'Submit');
     $this->assertRaw("webform_test_composite:
   textfield: '{textfield}'
   email: email@email.com
@@ -78,8 +78,7 @@ class WebformCompositePluginTest extends WebformBrowserTestBase {
   datetime: '2018-03-21T23:19:25+1100'
   nested_tel: 123-456-7890
   nested_select: Monday
-  nested_radios: Monday
-  webform_toggle: ''");
+  nested_radios: Monday");
   }
 
 }

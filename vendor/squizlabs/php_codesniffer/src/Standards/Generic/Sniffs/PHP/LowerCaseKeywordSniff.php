@@ -25,7 +25,6 @@ class LowerCaseKeywordSniff implements Sniff
     public function register()
     {
         return [
-            T_HALT_COMPILER,
             T_ABSTRACT,
             T_ARRAY,
             T_AS,
@@ -74,6 +73,8 @@ class LowerCaseKeywordSniff implements Sniff
             T_LOGICAL_AND,
             T_LOGICAL_OR,
             T_LOGICAL_XOR,
+            T_MATCH,
+            T_MATCH_DEFAULT,
             T_NAMESPACE,
             T_NEW,
             T_PARENT,

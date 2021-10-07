@@ -79,6 +79,7 @@ class AdapterTest extends UnitTestCase {
     $message['subject'] = Test::SEND_SUCCESS_SUBJECT;
     $this->assertTrue($this->adapter->mail($message), 'Sending message successful as expected');
   }
+
 }
 
 /**

@@ -19,11 +19,9 @@ namespace Drupal\Tests\migrate_upgrade\Kernel {
    * @requires module migrate_plus
    */
   class DrushTest extends MigrateDrupalTestBase {
-
     use CreateMigrationsTrait;
     use FileSystemModuleDiscoveryDataProviderTrait;
     use MigrationConfigurationTrait;
-    use DeprecatedModulesTestTrait;
 
     /**
      * The migration plugin manager.
@@ -40,22 +38,15 @@ namespace Drupal\Tests\migrate_upgrade\Kernel {
     protected $commands;
 
     /**
-     * The state service.
-     *
-     * @var \Drupal\Core\State\StateInterface
-     */
-    protected $state;
-
-    /**
      * {@inheritdoc}
      */
-    protected function setUp() {
+    protected function setUp(): void {
       // Enable all modules.
       self::$modules = array_merge(array_keys($this->coreModuleListDataProvider()), [
         'migrate_plus',
         'migrate_upgrade',
       ]);
-      self::$modules = $this->removeDeprecatedModules(self::$modules);
+      self::$modules = array_diff(self::$modules, ['block_place']);
       parent::setUp();
       $this->installSchema('system', ['key_value', 'key_value_expire']);
       $this->installConfig(self::$modules);
@@ -63,13 +54,21 @@ namespace Drupal\Tests\migrate_upgrade\Kernel {
       $this->installEntitySchema('migration');
       $this->migrationManager = \Drupal::service('plugin.manager.migration');
       $this->state = $this->container->get('state');
-      $this->commands = new MigrateUpgradeCommands($this->state);
+
+      // Mocks the logger channel and factory because drush is not available
+      // to use directly, and the Drupal loggers do not implement the "ok"
+      // level.
+      $loggerProphet = $this->prophesize('\Drush\Log\Logger');
+      $loggerFactoryProphet = $this->prophesize('\Drupal\Core\Logger\LoggerChannelFactoryInterface');
+      $loggerFactoryProphet->get('drush')->willReturn($loggerProphet->reveal());
+
+      $this->commands = new MigrateUpgradeCommands($this->state, $loggerFactoryProphet->reveal());
     }
 
     /**
      * Tests that all D6 migrations are generated as migrate plus entities.
      */
-    public function testD6Migrations() {
+    public function testD6Migrations(): void {
       $this->drupal6Migrations();
       $options = [
         'configure-only' => TRUE,
@@ -81,13 +80,14 @@ namespace Drupal\Tests\migrate_upgrade\Kernel {
       $migrations = $this->getMigrations($this->sourceDatabase->getKey(), 6);
       $this->assertMigrations($migrations, $migrate_plus_migrations);
       $optional = array_flip($migrate_plus_migrations['upgrade_d6_url_alias']->toArray()['migration_dependencies']['optional']);
-      $this->assertArrayHasKey('upgrade_d6_node_translation_page', $optional);
+      $node_migrations = array_intersect_key(['upgrade_d6_node_translation_page' => TRUE, 'upgrade_d6_node_complete_page' => TRUE], $optional);
+      $this->assertNotEmpty($node_migrations);
     }
 
     /**
      * Tests that all D7 migrations are generated as migrate plus entities.
      */
-    public function testD7Migrations() {
+    public function testD7Migrations(): void {
       $this->drupal7Migrations();
       $this->sourceDatabase->update('system')
         ->fields(['status' => 1])
@@ -103,7 +103,8 @@ namespace Drupal\Tests\migrate_upgrade\Kernel {
       $migrations = $this->getMigrations($this->sourceDatabase->getKey(), 7);
       $this->assertMigrations($migrations, $migrate_plus_migrations);
       $optional = array_flip($migrate_plus_migrations['upgrade_d7_url_alias']->toArray()['migration_dependencies']['optional']);
-      $this->assertArrayHasKey('upgrade_d7_node_translation_page', $optional);
+      $node_migrations = array_intersect_key(['upgrade_d7_node_translation_page' => TRUE, 'upgrade_d7_node_complete_page' => TRUE], $optional);
+      $this->assertNotEmpty($node_migrations);
     }
 
     /**
@@ -114,12 +115,12 @@ namespace Drupal\Tests\migrate_upgrade\Kernel {
      * @param \Drupal\migrate_plus\Entity\MigrationInterface[] $migrate_plus_migrations
      *   The migrate plus config entities.
      */
-    protected function assertMigrations(array $migrations, array $migrate_plus_migrations) {
+    protected function assertMigrations(array $migrations, array $migrate_plus_migrations): void {
       foreach ($migrations as $id => $migration) {
         $migration_id = 'upgrade_' . str_replace(PluginBase::DERIVATIVE_SEPARATOR, '_', $migration->id());
         $this->assertArrayHasKey($migration_id, $migrate_plus_migrations);
       }
-      $this->assertEquals(count($migrations), count($migrate_plus_migrations));
+      $this->assertCount(count($migrations), $migrate_plus_migrations);
     }
 
   }
@@ -127,29 +128,6 @@ namespace Drupal\Tests\migrate_upgrade\Kernel {
 }
 
 namespace {
-
-  if (!function_exists('drush_print')) {
-
-    /**
-     * Stub for drush_print.
-     *
-     * @param string $message
-     *   The message to print.
-     * @param int $indent
-     *   The indentation (space chars)
-     * @param resource $handle
-     *   File handle to write to.  NULL will write to standard output, STDERR
-     *   will write to the standard error. See
-     *   http://php.net/manual/en/features.commandline.io-streams.php.
-     * @param bool $newline
-     *   Add a "\n" to the end of the output.  Defaults to TRUE.
-     */
-    function drush_print($message = '', $indent = 0, $handle = NULL, $newline = TRUE) {
-      // Do nothing.
-    }
-
-  }
-
   if (!function_exists('dt')) {
 
     /**

@@ -23,7 +23,7 @@ class ProcessedText extends WebformMarkupBase {
   /**
    * {@inheritdoc}
    */
-  public function getDefaultProperties() {
+  protected function defineDefaultProperties() {
     if (function_exists('filter_formats')) {
       // Works around filter_default_format() throwing fatal error when
       // user is not allowed to use any filter formats.
@@ -42,15 +42,17 @@ class ProcessedText extends WebformMarkupBase {
       // Markup settings.
       'text' => '',
       'format' => $default_format ,
-    ] + parent::getDefaultProperties();
+    ] + parent::defineDefaultProperties();
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getTranslatableProperties() {
-    return array_merge(parent::getTranslatableProperties(), ['text']);
+  protected function defineTranslatableProperties() {
+    return array_merge(parent::defineTranslatableProperties(), ['text']);
   }
+
+  /****************************************************************************/
 
   /**
    * {@inheritdoc}
@@ -105,7 +107,7 @@ class ProcessedText extends WebformMarkupBase {
    */
   protected function setConfigurationFormDefaultValue(array &$form, array &$element_properties, array &$property_element, $property_name) {
     // Apply element.format to the text (text_format) element and unset it.
-    if ($property_name == 'text') {
+    if ($property_name === 'text') {
       $property_element['#format'] = $element_properties['format'];
       unset($element_properties['format']);
     }
@@ -117,7 +119,7 @@ class ProcessedText extends WebformMarkupBase {
    * {@inheritdoc}
    */
   protected function getConfigurationFormProperty(array &$properties, $property_name, $property_value, array $element) {
-    if ($property_name == 'text') {
+    if ($property_name === 'text') {
       $properties['text'] = $property_value['value'];
       $properties['format'] = $property_value['format'];
     }

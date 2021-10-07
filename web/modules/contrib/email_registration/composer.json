@@ -2,7 +2,7 @@
     "name": "drupal/email_registration",
     "type": "drupal-module",
     "description": "Allows users to register with an email address as their username.",
-    "license": "GPL-2.0+",
+    "license": "GPL-2.0-or-later",
     "homepage": "https://www.drupal.org/project/email_registration",
     "minimum-stability": "dev",
     "authors": [
@@ -29,6 +29,15 @@
     ],
     "support": {
         "issues": "http://drupal.org/project/issues/email_registration",
-        "source": "http://cgit.drupalcode.org/email_registration"
+        "source": "https://git.drupalcode.org/project/email_registration"
+    },
+    "require": {
+        "drupal/core": "^8.7.7 || ^9"
+    },
+    "conflict": {
+        "drupal/commerce": "<2.12"
+    },
+    "require-dev": {
+        "drupal/commerce": "^2.0"
     }
 }

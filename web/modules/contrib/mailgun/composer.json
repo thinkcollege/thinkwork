@@ -1,11 +1,48 @@
 {
-  "name": "drupal/mailgun",
-  "type": "drupal-module",
-  "require": {
-    "mailgun/mailgun-php": ">=2.3 <3.0",
-    "php-http/curl-client": "^1.0",
-    "guzzlehttp/psr7": "^1.0",
-    "drupal/mailsystem": "*",
-    "html2text/html2text": "~4.0.1"
+    "name": "drupal/mailgun",
+    "description": "Mailgun is email automation created for developers, provides integration with the Mailgun email service.",
+    "type": "drupal-module",
+    "homepage": "https://www.drupal.org/project/mailgun",
+    "authors": [
+        {
+            "name": "Jeffrey C.",
+            "homepage": "https://www.drupal.org/u/jeffrey-c.",
+            "role": "Author"
+        },
+        {
+            "name": "Ivan Doroshenko (Matroskeen)",
+            "homepage": "https://www.drupal.org/u/matroskeen",
+            "role": "Maintainer"
+        },
+        {
+            "name": "Dan Reinders (SpartyDan)",
+            "homepage": "https://www.drupal.org/u/spartydan",
+            "role": "Maintainer"
+        },
+        {
+            "name": "Bohdan Artemchuk (bohart)",
+            "homepage": "https://www.drupal.org/u/bohart",
+            "role": "Maintainer"
+        }
+    ],
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/mailgun",
+        "source": "https://git.drupalcode.org/project/mailgun.git"
+    },
+    "license": "GPL-2.0-or-later",
+    "minimum-stability": "dev",
+    "require": {
+        "mailgun/mailgun-php": "~3.0",
+        "php-http/guzzle6-adapter": "~2.0",
+        "nyholm/psr7": "~1.2",
+        "drupal/mailsystem": "*",
+        "html2text/html2text": "~4.0.1"
+    },
+   "extra": {
+     "drush": {
+      "services": {
+        "drush.services.yml": "^9 || ^10"
+      }
+    }
   }
 }

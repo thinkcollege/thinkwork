@@ -1,6 +1,7 @@
 * Introduction
 
-Mailgun module provides Mailgun Mail System by integration with Mailgun's Official SDK for PHP - https://github.com/mailgun/mailgun-php.
+Mailgun module provides Mailgun Mail System by integration with
+Mailgun's Official SDK for PHP - https://github.com/mailgun/mailgun-php.
 
 * Requirements
 
@@ -22,8 +23,10 @@ Install this module as usual by Composer: composer require drupal/mailgun
 * Configuration
 
 1. Go to https://www.mailgun.com and sign up for a Mailgun account.
-2. Configure API settings on the Mailgun settings page (admin/config/services/mailgun/settings).
-3. Enable Mailgun as Default (or Module-specific) Mail System on the Mail System admin page (admin/config/system/mailsystem).
+2. Configure API settings on the Mailgun settings page:
+  admin/config/services/mailgun/settings.
+3. Enable Mailgun as Default (or Module-specific) Mail System on the
+  Mail System admin page (admin/config/system/mailsystem).
 
 * Maintainers
 

@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\migrate_plus\Unit\process;
 
-use Drupal\Tests\migrate\Unit\process\MigrateProcessTestCase;
 use Drupal\migrate_plus\Plugin\migrate\process\MultipleValues;
+use Drupal\Tests\migrate\Unit\process\MigrateProcessTestCase;
 
 /**
  * @coversDefaultClass \Drupal\migrate_plus\Plugin\migrate\process\MultipleValues
@@ -14,7 +14,7 @@ class MultipleValuesTest extends MigrateProcessTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     $this->plugin = new MultipleValues([], 'multiple_values', []);
     parent::setUp();
   }
@@ -22,7 +22,7 @@ class MultipleValuesTest extends MigrateProcessTestCase {
   /**
    * Test input treated as multiple value output.
    */
-  public function testTreatAsMultiple() {
+  public function testTreatAsMultiple(): void {
     $value = ['v1', 'v2', 'v3'];
     $output = $this->plugin->transform($value, $this->migrateExecutable, $this->row, 'destinationproperty');
     $this->assertSame($output, $value);

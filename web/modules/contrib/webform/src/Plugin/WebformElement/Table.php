@@ -3,8 +3,8 @@
 namespace Drupal\webform\Plugin\WebformElement;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element;
 use Drupal\webform\Plugin\WebformElementBase;
+use Drupal\webform\Utility\WebformElementHelper;
 use Drupal\webform\WebformInterface;
 use Drupal\webform\WebformSubmissionInterface;
 
@@ -24,7 +24,7 @@ class Table extends WebformElementBase {
   /**
    * {@inheritdoc}
    */
-  public function getDefaultProperties() {
+  protected function defineDefaultProperties() {
     return [
       // Table settings.
       'header' => [],
@@ -35,9 +35,11 @@ class Table extends WebformElementBase {
   /**
    * {@inheritdoc}
    */
-  public function getTranslatableProperties() {
-    return array_merge(parent::getTranslatableProperties(), ['header']);
+  protected function defineTranslatableProperties() {
+    return array_merge(parent::defineTranslatableProperties(), ['header']);
   }
+
+  /****************************************************************************/
 
   /**
    * {@inheritdoc}
@@ -104,13 +106,13 @@ class Table extends WebformElementBase {
   protected function formatHtmlItem(array $element, WebformSubmissionInterface $webform_submission, array $options = []) {
     $rows = [];
     foreach ($element as $row_key => $row_element) {
-      if (Element::property($row_key)) {
+      if (WebformElementHelper::property($row_key)) {
         continue;
       }
 
       $element[$row_key] = [];
       foreach ($row_element as $column_key => $column_element) {
-        if (Element::property($column_key)) {
+        if (WebformElementHelper::property($column_key)) {
           continue;
         }
 
@@ -183,6 +185,10 @@ class Table extends WebformElementBase {
       '#title' => $this->t('Empty text'),
       '#description' => $this->t('Text to display when no rows are present.'),
     ];
+
+    // Unset textarea rows to prevent any conflicts.
+    unset($form['form']['size_container']['rows']);
+
     return $form;
   }
 

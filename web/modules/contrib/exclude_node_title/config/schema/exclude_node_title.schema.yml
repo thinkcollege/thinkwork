@@ -14,6 +14,9 @@ exclude_node_title.settings:
     search:
       type: boolean
       label: 'Exclude title from search results'
+    type:
+      type: string
+      label: 'Type of rendering to conduct on hide'
     content_types:
       type: sequence
       label: 'Exclude type'
@@ -27,8 +30,5 @@ exclude_node_title.settings:
         type: sequence
         label: 'Node type'
         sequence:
-          type: sequence
-          label: 'View mode key'
-          sequence:
-            type: string
-            label: 'View mode name'
+          type: string
+          label: 'View mode name'

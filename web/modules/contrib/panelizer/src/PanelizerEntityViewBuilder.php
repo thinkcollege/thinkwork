@@ -13,8 +13,7 @@ use Drupal\Core\Entity\EntityViewBuilderInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Plugin\Context\Context;
-use Drupal\Core\Plugin\Context\ContextDefinition;
+use Drupal\Core\Plugin\Context\EntityContextDefinition;
 use Drupal\ctools\Context\AutomaticContext;
 use Drupal\panelizer\Plugin\PanelizerEntityManagerInterface;
 use Drupal\Panels\PanelsDisplayManagerInterface;
@@ -211,7 +210,7 @@ class PanelizerEntityViewBuilder implements EntityViewBuilderInterface, EntityHa
    *   The context.
    */
   protected function getEntityContext(EntityInterface $entity) {
-    return new AutomaticContext(new ContextDefinition('entity:' . $this->entityTypeId, NULL, TRUE), $entity);
+    return new AutomaticContext(EntityContextDefinition::fromEntityTypeId($this->entityTypeId), $entity);
   }
 
   /*

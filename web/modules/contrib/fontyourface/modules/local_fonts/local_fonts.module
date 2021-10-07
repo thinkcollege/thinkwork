@@ -5,6 +5,7 @@
  * Local Fonts module file.
  */
 
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\local_fonts\Entity\LocalFontConfigEntity;
 
@@ -81,7 +82,7 @@ function local_fonts_entity_delete(EntityInterface $entity) {
       ->range(0, 50)
       ->execute();
     if (!empty($fids)) {
-      $storage_handler = \Drupal::entityManager()->getStorage('font');
+      $storage_handler = \Drupal::entityTypeManager()->getStorage('font');
       $fonts = $storage_handler->loadMultiple(array_keys($fids));
       $storage_handler->delete($fonts);
     }
@@ -101,17 +102,18 @@ function local_fonts_save_and_generate_css(LocalFontConfigEntity $font_entity) {
   $directory = file_build_uri('fontyourface/local_fonts/' . $font_entity->id());
   $css_file = $directory . '/font.css';
   $font_file = $directory . '/font.woff';
-  file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+  \Drupal::service('file_system')->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
 
   $css_file_data = "@font-face {\n";
   $css_file_data .= "font-family: '" . $font_entity->font_family . "';\n";
   $css_file_data .= "font-weight: " . $font_entity->font_weight . ";\n";
   $css_file_data .= "font-style: " . $font_entity->font_style . ";\n";
   $css_file_data .= "src: url('font.woff') format('woff');\n";
+  $css_file_data .= "font-display: auto;\n";
   $css_file_data .= "}\n";
 
-  file_unmanaged_save_data(base64_decode($font_entity->getFontWoffData()), $font_file, FILE_EXISTS_REPLACE);
-  file_unmanaged_save_data($css_file_data, $css_file, FILE_EXISTS_REPLACE);
+  \Drupal::service('file_system')->saveData(base64_decode($font_entity->getFontWoffData()), $font_file, FileSystemInterface::EXISTS_REPLACE);
+  \Drupal::service('file_system')->saveData($css_file_data, $css_file, FileSystemInterface::EXISTS_REPLACE);
 
   return TRUE;
 }

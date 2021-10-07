@@ -7,7 +7,7 @@ use Drupal\Tests\webform\Functional\WebformBrowserTestBase;
 /**
  * Tests for webform token suffixes.
  *
- * @group Webform
+ * @group webform
  */
 class WebformTokenSuffixesTest extends WebformBrowserTestBase {
 
@@ -62,6 +62,22 @@ class WebformTokenSuffixesTest extends WebformBrowserTestBase {
         'text' => '[site:name:htmldecode:striptags]',
         'expected' => 'Testing',
         'message' => 'Basic token with decoded HTML markup',
+        'options' => [],
+      ],
+      // :urlencode.
+      [
+        'site_name' => 'Two words',
+        'text' => '[site:name:urlencode]',
+        'expected' => 'Two+words',
+        'message' => 'Basic token with url encode',
+        'options' => [],
+      ],
+      // :rawurlencode.
+      [
+        'site_name' => 'Two words',
+        'text' => '[site:name:rawurlencode]',
+        'expected' => 'Two%20words',
+        'message' => 'Basic token with raw url encode',
         'options' => [],
       ],
       // :xmlencode.

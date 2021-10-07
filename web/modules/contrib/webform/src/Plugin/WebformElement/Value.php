@@ -2,6 +2,7 @@
 
 namespace Drupal\webform\Plugin\WebformElement;
 
+use Drupal\webform\Plugin\WebformElementBase;
 use Drupal\webform\WebformInterface;
 
 /**
@@ -15,18 +16,20 @@ use Drupal\webform\WebformInterface;
  *   category = @Translation("Advanced elements"),
  * )
  */
-class Value extends TextBase {
+class Value extends WebformElementBase {
 
   /**
    * {@inheritdoc}
    */
-  public function getDefaultProperties() {
+  protected function defineDefaultProperties() {
     return [
       // Element settings.
       'title' => '',
       'value' => '',
     ];
   }
+
+  /****************************************************************************/
 
   /**
    * {@inheritdoc}

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\exclude_node_title\ExcludeNodeTitleManagerInterface.
- */
-
 namespace Drupal\exclude_node_title;
 
 /**
@@ -15,27 +10,27 @@ interface ExcludeNodeTitleManagerInterface {
   /**
    * Loads exclude mode for node type.
    *
-   * @param string $node_type
-   *   Bundle name.
+   * @param mixed $param
+   *   Can be NodeTypeInterface object or machine name.
    *
    * @return string
    *   Exclude mode.
    */
-  public function getBundleExcludeMode($node_type);
+  public function getBundleExcludeMode($param);
 
   /**
    * Loads excluded view modes for node type.
    *
-   * @param string $node_type
-   *   Bundle name.
+   * @param mixed $param
+   *   Can be NodeTypeInterface object or machine name.
    *
    * @return array
    *   View modes.
    */
-  public function getExcludedViewModes($node_type);
+  public function getExcludedViewModes($param);
 
   /**
-   * Loads excluded node ids list
+   * Loads excluded node ids list.
    *
    * @return array
    *   Nodes identifiers list.
@@ -46,7 +41,7 @@ interface ExcludeNodeTitleManagerInterface {
    * Helper function to that extracts node information from $param.
    *
    * @param mixed $param
-   *   Can be a node object or integer value (nid).
+   *   Can be a NodeInterface object or integer value (nid).
    *
    * @return mixed
    *   Returns an array with node id and node type, or FALSE if errors exist.
@@ -56,7 +51,7 @@ interface ExcludeNodeTitleManagerInterface {
   /**
    * Checks if exclude from Search elements is enabled.
    *
-   * @return boolean
+   * @return bool
    *   Enabled status.
    */
   public function isSearchExcluded();
@@ -69,7 +64,7 @@ interface ExcludeNodeTitleManagerInterface {
    * @param string $view_mode
    *   Node view mode to check.
    *
-   * @return boolean
+   * @return bool
    *   Returns boolean TRUE if should be hidden, FALSE when not.
    */
   public function isTitleExcluded($param, $view_mode = 'full');
@@ -85,12 +80,12 @@ interface ExcludeNodeTitleManagerInterface {
   /**
    * Remove the title from the variables array.
    *
-   * @param array $vars
+   * @param mixed $vars
    *   Theme function variables.
    * @param mixed $node
-   *   Can be NodeInterface object or integer id
+   *   Can be NodeInterface object or integer id.
    * @param string $view_mode
-   *   View mode name
+   *   View mode name.
    */
   public function preprocessTitle(&$vars, $node, $view_mode);
 

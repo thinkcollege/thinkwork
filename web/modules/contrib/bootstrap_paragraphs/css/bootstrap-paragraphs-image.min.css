@@ -4,4 +4,4 @@
  *
  * Compiled from bootstrap-paragraphs-image.less.
  */
-.paragraph--type--bp-image.paragraph--width--full .paragraph__column{padding-left:0;padding-right:0}
+.paragraph.paragraph--type--bp-image.paragraph--width--full>.paragraph__column{padding-right:0;padding-left:0}

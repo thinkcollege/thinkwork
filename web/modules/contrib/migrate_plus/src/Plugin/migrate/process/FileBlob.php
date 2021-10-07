@@ -122,7 +122,7 @@ class FileBlob extends ProcessPluginBase implements ContainerFactoryPluginInterf
     if ($row->isStub()) {
       return NULL;
     }
-    list($destination, $blob) = $value;
+    [$destination, $blob] = $value;
 
     // Determine if we going to overwrite existing files or not touch them.
     $replace = $this->getOverwriteMode();
@@ -133,17 +133,11 @@ class FileBlob extends ProcessPluginBase implements ContainerFactoryPluginInterf
       return $destination;
     }
     $dir = $this->getDirectory($destination);
-    // TODO: remove after 8.6 is no longer supported in
-    // https://www.drupal.org/project/migrate_plus/issues/3035587
-    if (version_compare(\Drupal::VERSION, '8.7', '>=')) {
-      $success = $this->fileSystem->prepareDirectory($dir, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
-      if (!$success) {
-        throw new MigrateSkipProcessException("Could not create directory '$dir'");
-      }
-    }
-    elseif (file_prepare_directory($dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
+    $success = $this->fileSystem->prepareDirectory($dir, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
+    if (!$success) {
       throw new MigrateSkipProcessException("Could not create directory '$dir'");
     }
+
     if ($this->putFile($destination, $blob, $replace)) {
       return $destination;
     }
@@ -165,18 +159,7 @@ class FileBlob extends ProcessPluginBase implements ContainerFactoryPluginInterf
    *   File path on success, FALSE on failure.
    */
   protected function putFile($destination, $blob, $replace = FileSystemInterface::EXISTS_REPLACE) {
-    // TODO: remove after 8.6 is no longer supported in
-    // https://www.drupal.org/project/migrate_plus/issues/3035587
-    if (!isset($replace)) {
-      $replace = FILE_EXISTS_REPLACE;
-    }
-    if (version_compare(\Drupal::VERSION, '8.7', '>=')) {
-      $path = $this->fileSystem->getDestinationFilename($destination, $replace);
-    }
-    else {
-      $path = file_destination($destination, $replace);
-    }
-
+    $path = $this->fileSystem->getDestinationFilename($destination, $replace);
     if ($path) {
       if (file_put_contents($path, $blob)) {
         return $path;
@@ -198,24 +181,10 @@ class FileBlob extends ProcessPluginBase implements ContainerFactoryPluginInterf
    *   FileSystemInterface::EXISTS_ERROR, depending on the configuration.
    */
   protected function getOverwriteMode() {
-    // TODO: remove after 8.6 is no longer supported in
-    // https://www.drupal.org/project/migrate_plus/issues/3035587
     if (isset($this->configuration['reuse']) && !empty($this->configuration['reuse'])) {
-      if (version_compare(\Drupal::VERSION, '8.7', '>=')) {
-        return FileSystemInterface::EXISTS_ERROR;
-      }
-      else {
-        return FILE_EXISTS_ERROR;
-      }
-
+      return FileSystemInterface::EXISTS_ERROR;
     }
-
-    if (version_compare(\Drupal::VERSION, '8.7', '>=')) {
-      return FileSystemInterface::EXISTS_REPLACE;
-    }
-    else {
-      return FILE_EXISTS_REPLACE;
-    }
+    return FileSystemInterface::EXISTS_REPLACE;
   }
 
   /**

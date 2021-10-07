@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\migrate_plus\Unit\process;
 
+use Drupal\migrate\MigrateException;
 use Drupal\migrate_plus\Plugin\migrate\process\StrReplace;
 use Drupal\Tests\migrate\Unit\process\MigrateProcessTestCase;
 
@@ -16,7 +17,7 @@ class StrReplaceTest extends MigrateProcessTestCase {
   /**
    * Test for a simple str_replace string.
    */
-  public function testStrReplace() {
+  public function testStrReplace(): void {
     $value = 'vero eos et accusam et justo vero';
     $configuration['search'] = 'et';
     $configuration['replace'] = 'that';
@@ -29,7 +30,7 @@ class StrReplaceTest extends MigrateProcessTestCase {
   /**
    * Test for case insensitive searches.
    */
-  public function testStrIreplace() {
+  public function testStrIreplace(): void {
     $value = 'VERO eos et accusam et justo vero';
     $configuration['search'] = 'vero';
     $configuration['replace'] = 'that';
@@ -43,7 +44,7 @@ class StrReplaceTest extends MigrateProcessTestCase {
   /**
    * Test for regular expressions.
    */
-  public function testPregReplace() {
+  public function testPregReplace(): void {
     $value = 'vero eos et 123 accusam et justo 123 duo';
     $configuration['search'] = '/[0-9]{3}/';
     $configuration['replace'] = 'the';
@@ -56,29 +57,31 @@ class StrReplaceTest extends MigrateProcessTestCase {
   /**
    * Test for MigrateException for "search" configuration.
    */
-  public function testSearchMigrateException() {
+  public function testSearchMigrateException(): void {
     $value = 'vero eos et accusam et justo vero';
     $configuration['replace'] = 'that';
     $plugin = new StrReplace($configuration, 'str_replace', []);
-    $this->setExpectedException('\Drupal\migrate\MigrateException', '"search" must be configured.');
+    $this->expectException(MigrateException::class);
+    $this->expectExceptionMessage('"search" must be configured.');
     $plugin->transform($value, $this->migrateExecutable, $this->row, 'destinationproperty');
   }
 
   /**
    * Test for MigrateException for "replace" configuration.
    */
-  public function testReplaceMigrateException() {
+  public function testReplaceMigrateException(): void {
     $value = 'vero eos et accusam et justo vero';
     $configuration['search'] = 'et';
     $plugin = new StrReplace($configuration, 'str_replace', []);
-    $this->setExpectedException('\Drupal\migrate\MigrateException', '"replace" must be configured.');
+    $this->expectException(MigrateException::class);
+    $this->expectExceptionMessage('"replace" must be configured.');
     $plugin->transform($value, $this->migrateExecutable, $this->row, 'destinationproperty');
   }
 
   /**
    * Test for multiple.
    */
-  public function testIsMultiple() {
+  public function testIsMultiple(): void {
     $value = [
       'vero eos et accusam et justo vero',
       'et eos vero accusam vero justo et',

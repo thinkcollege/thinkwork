@@ -41,11 +41,13 @@ function field_group_field_ui_form_params($form, EntityDisplayBase $display) {
   // Gather parenting data.
   $params->parents = [];
   foreach ($params->groups as $name => $group) {
-    foreach ($group->children as $child) {
-      // Field UI js sometimes can trigger an endless loop. Check if the parent
-      // of this field is not a child.
-      if ($child !== $group->parent_name) {
-        $params->parents[$child] = $name;
+    if (!empty($group->children)) {
+      foreach ($group->children as $child) {
+        // Field UI js sometimes can trigger an endless loop. Check if the parent
+        // of this field is not a child.
+        if ($child !== $group->parent_name) {
+          $params->parents[$child] = $name;
+        }
       }
     }
   }
@@ -167,7 +169,6 @@ function field_group_field_ui_display_form_alter(&$form, FormStateInterface $for
     $settings = field_group_format_settings_form($group, $form, $form_state);
 
     $id = strtr($name, '_', '-');
-    $js_rows_data[$id] = ['type' => 'group', 'name' => $name];
     // A group cannot be selected as its own parent.
     $parent_options = $table['#parent_options'];
     $region = isset($group->region) && in_array($group->region, $params->available_regions) ? $group->region : $params->default_region;

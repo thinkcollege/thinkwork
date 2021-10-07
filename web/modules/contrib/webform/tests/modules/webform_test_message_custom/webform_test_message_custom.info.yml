@@ -1,12 +1,12 @@
-name: 'Webform module custom message tests'
+name: 'Webform Custom Messag test'
 type: module
-description: 'Support module for Webform module custom message testing.'
-package: Testing
-core: 8.x
+description: 'Support module for webform custom message testing.'
+package: 'Webform Testing'
+core_version_requirement: ^8.8
 dependencies:
   - 'webform:webform'
 
-# Information added by Drupal.org packaging script on 2019-12-02
-version: '8.x-5.6'
+# Information added by Drupal.org packaging script on 2021-08-25
+version: '8.x-5.28'
 project: 'webform'
-datestamp: 1575331093
+datestamp: 1629903880

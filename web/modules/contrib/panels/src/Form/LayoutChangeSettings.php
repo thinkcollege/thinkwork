@@ -2,7 +2,7 @@
 
 namespace Drupal\panels\Form;
 
-use Drupal\Component\Plugin\ConfigurablePluginInterface;
+use Drupal\Component\Plugin\PluginHelper;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
@@ -97,7 +97,7 @@ class LayoutChangeSettings extends FormBase {
     ];
 
     $layout_settings = !empty($cached_values['layout_change']['layout_settings']) ? $cached_values['layout_change']['layout_settings'] : [];
-    if (!$layout_settings && $variant_plugin->getLayout() instanceof ConfigurablePluginInterface) {
+    if (!$layout_settings && PluginHelper::isConfigurable($variant_plugin->getLayout())) {
       $layout_settings = $variant_plugin->getLayout()->getConfiguration();
     }
     $layout_id = !empty($cached_values['layout_change']['new_layout']) ? $cached_values['layout_change']['new_layout'] : $variant_plugin->getConfiguration()['layout'];
@@ -132,7 +132,7 @@ class LayoutChangeSettings extends FormBase {
         $layout->submitConfigurationForm($form, $sub_form_state);
         // If this plugin is configurable, get that configuration and set it in
         // cached values.
-        if ($layout instanceof ConfigurablePluginInterface) {
+        if (PluginHelper::isConfigurable($layout)) {
           $cached_values = $this->setCachedValues($next_params['step'], $plugin, $layout, $cached_values, $layout->getConfiguration());
         }
       }

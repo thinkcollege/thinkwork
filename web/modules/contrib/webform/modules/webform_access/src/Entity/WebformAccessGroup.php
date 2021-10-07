@@ -37,7 +37,7 @@ use Drupal\webform_access\WebformAccessGroupInterface;
  *     "label" = "label",
  *   },
  *   links = {
- *     "add-form" = "/admin/structure/webform/config/access/group/add",
+ *     "add-form" = "/admin/structure/webform/config/access/group/manage/add",
  *     "edit-form" = "/admin/structure/webform/config/access/group/manage/{webform_access_group}",
  *     "duplicate-form" = "/admin/structure/webform/config/access/group/manage/{webform_access_group}/duplicate",
  *     "delete-form" = "/admin/structure/webform/config/access/group/manage/{webform_access_group}/delete",
@@ -226,7 +226,7 @@ class WebformAccessGroup extends ConfigEntityBase implements WebformAccessGroupI
    */
   public function removeAdminId($uid) {
     foreach ($this->adminIds as $index => $adminId) {
-      if ($adminId == $uid) {
+      if ($adminId === $uid) {
         unset($this->adminIds[$index]);
       }
     }
@@ -249,7 +249,7 @@ class WebformAccessGroup extends ConfigEntityBase implements WebformAccessGroupI
    */
   public function removeUserId($uid) {
     foreach ($this->userIds as $index => $userId) {
-      if ($userId == $uid) {
+      if ($userId === $uid) {
         unset($this->userIds[$index]);
       }
     }
@@ -274,7 +274,7 @@ class WebformAccessGroup extends ConfigEntityBase implements WebformAccessGroupI
   public function removeEntityId($entity_type, $entity_id, $field_name, $webform_id) {
     $entity = "$entity_type:$entity_id:$field_name:$webform_id";
     foreach ($this->entityIds as $index => $entityId) {
-      if ($entity == $entityId) {
+      if ($entity === $entityId) {
         unset($this->entityIds[$index]);
       }
     }
@@ -297,7 +297,7 @@ class WebformAccessGroup extends ConfigEntityBase implements WebformAccessGroupI
    */
   public function removeEmail($email) {
     foreach ($this->emails as $index => $email_address) {
-      if ($email_address == $email) {
+      if ($email_address === $email) {
         unset($this->emails[$index]);
       }
     }

@@ -21,11 +21,20 @@ trait WebformTableTrait {
     // Add missing element class.
     $element['#attributes']['class'][] = str_replace('_', '-', $element['#type']);
 
-    // Add one column header is not #header is specified.
+    // If the #header is not specified, use the element's title as
+    // the column header.
     if (!isset($element['#header'])) {
-      $element['#header'] = [
-        (isset($element['#title']) ? $element['#title'] : ''),
-      ];
+      if (empty($element['#title_display']) || $element['#title_display'] === 'header') {
+        $element['#header'] = [['data' => static::buildElementTitle($element)]];
+      }
+      else {
+        $element['#header'] = [''];
+      }
+    }
+
+    // By default do not display the table element's title.
+    if (empty($element['#title_display']) || $element['#title_display'] === 'header') {
+      $element['#title_display'] = 'none';
     }
 
     // Convert associative array of options into one column row.
@@ -42,10 +51,14 @@ trait WebformTableTrait {
     $element['#attached']['library'][] = 'webform/webform.element.' . $element['#type'];
 
     // Set table select element's #process callback so that fix UX
-    // and accessiblity issues.
+    // and accessibility issues.
     if ($this->getPluginId() === 'tableselect') {
       static::setProcessTableSelectCallback($element);
     }
+
+    // Add form element theme wrapper.
+    $element['#theme_wrappers'][] = 'form_element';
+    $element['#label_attributes']['webform-remove-for-attribute'] = TRUE;
   }
 
   /**
@@ -69,6 +82,10 @@ trait WebformTableTrait {
       '#description' => $this->t('If checked, a select all checkbox will be added to the header.'),
       '#return_value' => TRUE,
     ];
+
+    $form['form']['display_container']['title_display']['#options'] = [
+        'header' => $this->t('Header'),
+      ] + $form['form']['display_container']['title_display']['#options'];
 
     return $form;
   }
@@ -123,11 +140,15 @@ trait WebformTableTrait {
     $element['#attributes']['class'][] = 'webform-tableselect';
     $element['#attributes']['class'][] = 'js-webform-tableselect';
     $element['#attached']['library'][] = 'webform/webform.element.tableselect';
+    if (!empty($element['#required'])) {
+      $element['#attributes']['class'][] = 'required';
+    }
+    $element['#attributes']['multiple'] = !empty($element['#multiple']);
     return $element;
   }
 
   /**
-   * Process table selected options and add #title to the table's options.
+   * Process table selected options.
    *
    * @param array $element
    *   An associative array containing the properties and children of
@@ -140,11 +161,25 @@ trait WebformTableTrait {
    */
   public static function processTableSelectOptions(array $element) {
     foreach ($element['#options'] as $key => $choice) {
-      if (isset($element[$key]) && empty($element[$key]['#title'])) {
+      if (!isset($element[$key])) {
+        continue;
+      }
+
+      // Add #title to the table's options.
+      if (empty($element[$key]['#title'])) {
         if ($title = static::getTableSelectOptionTitle($choice)) {
           $element[$key]['#title'] = $title;
           $element[$key]['#title_display'] = 'invisible';
         }
+      }
+
+      // Suppress inline error messages from appearing below
+      // checkboxes and radios.
+      $element[$key]['#error_no_message'] = TRUE;
+
+      // Add required attribute to table select radios
+      if (!empty($element['#required']) && empty($element['#multiple'])) {
+        $element[$key]['#attributes']['required'] = TRUE;
       }
     }
     return $element;
@@ -199,6 +234,44 @@ trait WebformTableTrait {
     else {
       return NULL;
     }
+  }
+
+  /**
+   * Build an element's title with help.
+   *
+   * @param array $element
+   *   An element.
+   *
+   * @return array
+   *   A render array containing an element's title with help.
+   */
+  protected static function buildElementTitle(array $element) {
+    $title = (!empty($element['#title'])) ? $element['#title'] : '';
+
+    $help = (!empty($element['#help'])) ? [
+      '#type' => 'webform_help',
+      '#help' => $element['#help'],
+      '#help_title' => $title,
+    ] : NULL;
+    $help_display = (!empty($element['#help_display'])) ? $element['#help_display'] : 'title_after';
+
+    $build = [];
+    if ($help && $help_display === 'title_before') {
+      $build['help'] = $help;
+    }
+    $build['title'] = [
+      '#markup' => $title,
+    ];
+    if (!empty($element['#required']) || !empty($element['#_required'])) {
+      $build['title'] += [
+        '#prefix' => '<span class="form-required">',
+        '#suffix' => '</span>',
+      ];
+    }
+    if ($help && $help_display === 'title_after') {
+      $build['help'] = $help;
+    }
+    return $build;
   }
 
 }

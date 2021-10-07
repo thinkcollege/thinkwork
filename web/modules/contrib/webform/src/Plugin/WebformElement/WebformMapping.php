@@ -31,7 +31,7 @@ class WebformMapping extends WebformElementBase {
   /**
    * {@inheritdoc}
    */
-  public function getDefaultProperties() {
+  protected function defineDefaultProperties() {
     return [
       'title' => '',
       'default_value' => [],
@@ -66,15 +66,17 @@ class WebformMapping extends WebformElementBase {
       // Attributes.
       'wrapper_attributes' => [],
       'label_attributes' => [],
-    ] + $this->getDefaultBaseProperties();
+    ] + $this->defineDefaultBaseProperties();
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getTranslatableProperties() {
-    return array_merge(parent::getTranslatableProperties(), ['source', 'destination']);
+  protected function defineTranslatableProperties() {
+    return array_merge(parent::defineTranslatableProperties(), ['source', 'destination']);
   }
+
+  /****************************************************************************/
 
   /**
    * {@inheritdoc}
@@ -129,8 +131,8 @@ class WebformMapping extends WebformElementBase {
       case 'table':
 
         $element += [
-          '#source__title' => t('Source'),
-          '#destination__title' => t('Destination'),
+          '#source__title' => $this->t('Source'),
+          '#destination__title' => $this->t('Destination'),
         ];
 
         $header = [
@@ -140,7 +142,7 @@ class WebformMapping extends WebformElementBase {
 
         $rows = [];
         foreach ($element['#source'] as $source_key => $source_text) {
-          list($source_title) = explode(WebformOptionsHelper::DESCRIPTION_DELIMITER, $source_text);
+          list($source_title) = WebformOptionsHelper::splitOption($source_text);
           $destination_value = (isset($value[$source_key])) ? $value[$source_key] : NULL;
           $destination_title = ($destination_value) ? WebformOptionsHelper::getOptionText($destination_value, $element['#destination']) : $this->t('[blank]');
           $rows[$source_key] = [
@@ -163,7 +165,7 @@ class WebformMapping extends WebformElementBase {
       case 'list':
         $items = [];
         foreach ($element['#source'] as $source_key => $source_text) {
-          list($source_title) = explode(WebformOptionsHelper::DESCRIPTION_DELIMITER, $source_text);
+          list($source_title) = WebformOptionsHelper::splitOption($source_text);
           $destination_value = (isset($value[$source_key])) ? $value[$source_key] : NULL;
           $destination_title = ($destination_value) ? WebformOptionsHelper::getOptionText($destination_value, $element['#destination']) : $this->t('[blank]');
           $items[$source_key] = ['#markup' => "$source_title $arrow $destination_title"];
@@ -208,7 +210,7 @@ class WebformMapping extends WebformElementBase {
       case 'list':
         $list = [];
         foreach ($element['#source'] as $source_key => $source_text) {
-          list($source_title) = explode(WebformOptionsHelper::DESCRIPTION_DELIMITER, $source_text);
+          list($source_title) = WebformOptionsHelper::splitOption($source_text);
           $destination_value = (isset($value[$source_key])) ? $value[$source_key] : NULL;
           $destination_title = ($destination_value) ? WebformOptionsHelper::getOptionText($destination_value, $element['#destination']) : $this->t('[blank]');
           $list[] = "$source_title $arrow $destination_title";
@@ -242,7 +244,7 @@ class WebformMapping extends WebformElementBase {
   public function buildExportHeader(array $element, array $options) {
     $header = [];
     foreach ($element['#source'] as $key => $label) {
-      $header[] = ($options['header_format'] == 'key') ? $key : $label;
+      $header[] = ($options['header_format'] === 'key') ? $key : $label;
     }
     return $this->prefixExportHeader($header, $element, $options);
   }

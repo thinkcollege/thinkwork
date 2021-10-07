@@ -3,6 +3,7 @@
 namespace Drupal\webform\Utility;
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Form\OptGroup;
 
 /**
  * Helper class webform options based methods.
@@ -26,12 +27,12 @@ class WebformOptionsHelper {
    *   An associative array of options.
    */
   public static function appendValueToText(array $options) {
-    foreach ($options as $value => $text) {
-      if (is_array($text)) {
-        $options[$value] = self::appendValueToText($text);
+    foreach ($options as $option_value => $option_text) {
+      if (is_array($option_text)) {
+        $options[$option_value] = self::appendValueToText($option_text);
       }
       else {
-        $options[$value] = $text . ' (' . $value . ')';
+        $options[$option_value] = $option_text . ' (' . $option_value . ')';
       }
     }
     return $options;
@@ -55,7 +56,7 @@ class WebformOptionsHelper {
           return $has_value;
         }
       }
-      elseif ($value == $option_value) {
+      elseif ((string) $value === (string) $option_value) {
         return TRUE;
       }
     }
@@ -81,6 +82,32 @@ class WebformOptionsHelper {
   }
 
   /**
+   * Determine if option text includes a description.
+   *
+   * @param string $text
+   *   Option text.
+   *
+   * @return bool
+   *   TRUE option text includes a description.
+   */
+  public static function hasOptionDescription($text) {
+    return (strpos($text, WebformOptionsHelper::DESCRIPTION_DELIMITER) !== FALSE) ? TRUE : FALSE;
+  }
+
+  /**
+   * Split option text into an array containing an option's text and description.
+   *
+   * @param string $text
+   *   Option text.
+   *
+   * @return array
+   *   An array containing an option's text and description.
+   */
+  public static function splitOption($text) {
+    return explode(static::DESCRIPTION_DELIMITER, $text);
+  }
+
+  /**
    * Get the text string for an option value.
    *
    * @param string $value
@@ -96,13 +123,14 @@ class WebformOptionsHelper {
   public static function getOptionText($value, array $options, $options_description = FALSE) {
     foreach ($options as $option_value => $option_text) {
       if (is_array($option_text)) {
-        if ($option_text = self::getOptionText($value, $option_text, $options_description)) {
+        $option_text = self::getOptionText($value, $option_text, $options_description);
+        if ((string) $value !== (string) $option_text) {
           return $option_text;
         }
       }
       elseif ($value !== NULL && (string) $value === (string) $option_value) {
         if ($options_description && strpos($option_text, static::DESCRIPTION_DELIMITER) !== FALSE) {
-          list($option_text) = explode(static::DESCRIPTION_DELIMITER, $option_text);
+          list($option_text) = static::splitOption($option_text);
           return $option_text;
         }
         else {
@@ -135,7 +163,7 @@ class WebformOptionsHelper {
       }
       elseif ($value !== NULL && (string) $value === (string) $option_value) {
         if ($options_description && strpos($option_text, static::DESCRIPTION_DELIMITER) !== FALSE) {
-          list($option_text, $option_description) = explode(static::DESCRIPTION_DELIMITER, $option_text);
+          list($option_text, $option_description) = static::splitOption($option_text);
           return $option_description;
         }
         else {
@@ -169,6 +197,27 @@ class WebformOptionsHelper {
   }
 
   /**
+   * Strip tags from options.
+   *
+   * @param array $options
+   *   An associative array of options.
+   *
+   * @return array
+   *   Options with HTML tags removed
+   */
+  public static function stripTagsOptions(array $options) {
+    foreach ($options as $option_value => $option_text) {
+      if (is_array($option_text)) {
+        $options[$option_value] = self::stripTagsOptions($option_text);
+      }
+      else {
+        $options[$option_value] = strip_tags((string) $option_text);
+      }
+    }
+    return $options;
+  }
+
+  /**
    * Decode HTML entities in options.
    *
    * Issue #2826451: TermSelection returning HTML characters in select list.
@@ -189,6 +238,27 @@ class WebformOptionsHelper {
       }
     }
     return $options;
+  }
+
+  /**
+   * Validate options values by removing invalid option values.
+   *
+   * @param array $options
+   *   An associative array of options.
+   * @param array $values
+   *   An indexed array of options values.
+   *
+   * @return array
+   *   An indexed array of options values with invalid options removed.
+   */
+  public static function validateOptionValues(array $options, array $values) {
+    $flattened_options = OptGroup::flattenOptions($options) ?: [];
+    foreach ($values as $index => $item) {
+      if (!isset($flattened_options[$item])) {
+        unset($values[$index]);
+      }
+    }
+    return array_values($values);
   }
 
   /**
@@ -234,10 +304,10 @@ class WebformOptionsHelper {
    */
   public static function encodeConfig(array $options) {
     $config = [];
-    foreach ($options as $value => $text) {
+    foreach ($options as $option_value => $option_text) {
       $config[] = [
-        'value' => $value,
-        'text' => $text,
+        'value' => $option_value,
+        'text' => $option_text,
       ];
     }
     return $config;

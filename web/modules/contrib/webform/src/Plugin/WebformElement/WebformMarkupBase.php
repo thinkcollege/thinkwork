@@ -17,6 +17,30 @@ abstract class WebformMarkupBase extends WebformElementBase implements WebformEl
   /**
    * {@inheritdoc}
    */
+  protected function defineDefaultProperties() {
+    return [
+      // Markup settings.
+      'display_on' => WebformElementDisplayOnInterface::DISPLAY_ON_FORM,
+    ] + $this->defineDefaultBaseProperties();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function defineDefaultBaseProperties() {
+    $properties = parent::defineDefaultBaseProperties();
+    unset(
+      $properties['prepopulate'],
+      $properties['states_clear']
+    );
+    return $properties;
+  }
+
+  /****************************************************************************/
+
+  /**
+   * {@inheritdoc}
+   */
   public function isInput(array $element) {
     return FALSE;
   }
@@ -31,31 +55,11 @@ abstract class WebformMarkupBase extends WebformElementBase implements WebformEl
   /**
    * {@inheritdoc}
    */
-  public function getDefaultProperties() {
-    return [
-      // Markup settings.
-      'display_on' => static::DISPLAY_ON_FORM,
-    ] + $this->getDefaultBaseProperties();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function getDefaultBaseProperties() {
-    $properties = parent::getDefaultBaseProperties();
-    unset($properties['prepopulate']);
-    unset($properties['states_clear']);
-    return $properties;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function prepare(array &$element, WebformSubmissionInterface $webform_submission = NULL) {
     parent::prepare($element, $webform_submission);
 
     // Hide element if it should not be displayed on 'form'.
-    if ($this->hasProperty('display_on') && !$this->isDisplayOn($element, static::DISPLAY_ON_FORM)) {
+    if ($this->hasProperty('display_on') && !$this->isDisplayOn($element, WebformElementDisplayOnInterface::DISPLAY_ON_FORM)) {
       $element['#access'] = FALSE;
     }
 
@@ -70,7 +74,7 @@ abstract class WebformMarkupBase extends WebformElementBase implements WebformEl
    */
   public function buildHtml(array $element, WebformSubmissionInterface $webform_submission, array $options = []) {
     // Hide element if it should not be displayed on 'view'.
-    if (!$this->isDisplayOn($element, static::DISPLAY_ON_VIEW)) {
+    if (!$this->isDisplayOn($element, WebformElementDisplayOnInterface::DISPLAY_ON_VIEW)) {
       return [];
     }
 
@@ -95,7 +99,7 @@ abstract class WebformMarkupBase extends WebformElementBase implements WebformEl
    */
   public function buildText(array $element, WebformSubmissionInterface $webform_submission, array $options = []) {
     // Hide element if it should not be displayed on 'view'.
-    if (!$this->isDisplayOn($element, static::DISPLAY_ON_VIEW)) {
+    if (!$this->isDisplayOn($element, WebformElementDisplayOnInterface::DISPLAY_ON_VIEW)) {
       return [];
     }
 

@@ -163,9 +163,6 @@ class PanelizerDefaultPanelsStorageTest extends UnitTestCase {
 
   /**
    * @covers ::save
-   *
-   * @expectedException \Exception
-   * @expectedExceptionMessage Couldn't find Panelizer default to store Panels display
    */
   public function testSaveDoesntExist() {
     $panels_display = $this->prophesize(PanelsDisplayVariant::class);
@@ -174,14 +171,13 @@ class PanelizerDefaultPanelsStorageTest extends UnitTestCase {
     $this->panelizer->setDefaultPanelsDisplay('default', 'entity_type_id', 'bundle', 'view_mode', $panels_display->reveal())
       ->willThrow(new PanelizerException());
 
+    $this->expectException('Exception');
+    $this->expectExceptionMessage("Couldn't find Panelizer default to store Panels display");
     $this->panelsStorage->save($panels_display->reveal());
   }
 
   /**
    * @covers ::save
-   *
-   * @expectedException \Exception
-   * @expectedExceptionMessage Couldn't find Panelizer default to store Panels display
    */
   public function testSaveNoEntity() {
     $panels_display = $this->prophesize(PanelsDisplayVariant::class);
@@ -192,6 +188,8 @@ class PanelizerDefaultPanelsStorageTest extends UnitTestCase {
     $this->panelizer->setDefaultPanelsDisplay('default', 'entity_type_id', 'bundle', 'view_mode', $panels_display->reveal())
       ->shouldNotBeCalled();
 
+    $this->expectException('Exception');
+    $this->expectExceptionMessage("Couldn't find Panelizer default to store Panels display");
     $this->panelsStorage->save($panels_display->reveal());
   }
 

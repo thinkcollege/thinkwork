@@ -93,7 +93,7 @@ class StrReplace extends ProcessPluginBase {
       'case_insensitive' => FALSE,
       'regex' => FALSE,
     ];
-    $function = "str_replace";
+    $function = 'str_replace';
     if ($this->configuration['case_insensitive']) {
       $function = 'str_ireplace';
     }

@@ -6,8 +6,7 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Plugin\Context\Context;
-use Drupal\Core\Plugin\Context\ContextDefinition;
+use Drupal\Core\Plugin\Context\EntityContextDefinition;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\ctools\Context\AutomaticContext;
 use Drupal\panelizer\Exception\PanelizerException;
@@ -126,7 +125,7 @@ class PanelizerDefaultPanelsStorage extends PanelsStorageBase implements Contain
     // Set a placeholder context so that the calling code knows that we need
     // an entity context. If we have the value available, then we actually set
     // the context value.
-    $contexts['@panelizer.entity_context:entity'] = new AutomaticContext(new ContextDefinition('entity:' . $entity_type_id, NULL, TRUE), $entity);
+    $contexts['@panelizer.entity_context:entity'] = new AutomaticContext(EntityContextDefinition::fromEntityTypeId($entity_type_id), $entity);
     return $contexts;
   }
 

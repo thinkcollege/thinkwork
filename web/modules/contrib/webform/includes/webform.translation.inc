@@ -14,9 +14,10 @@ use Drupal\webform\Entity\Webform;
 use Drupal\webform\Utility\WebformYaml;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\webform\Utility\WebformElementHelper;
+use Drupal\field\Entity\FieldConfig;
 
 /**
- * Implements hook_form_FORM_ID_alter() for language_content_settings_form().
+ * Implements hook_form_FORM_ID_alter() for language content settings form.
  */
 function webform_form_language_content_settings_form_alter(array &$form, FormStateInterface $form_state) {
   // Completely remove webform_submission from Content language admin
@@ -31,7 +32,7 @@ function webform_form_language_content_settings_form_alter(array &$form, FormSta
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_FORM_ID_alter() for locale translate edit form.
  */
 function webform_form_locale_translate_edit_form_alter(&$form, FormStateInterface $form_state) {
   // Don't allow YAML to be validated using locale string translation.
@@ -56,14 +57,29 @@ function webform_form_locale_translate_edit_form_alter(&$form, FormStateInterfac
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_FORM_ID_alter() for config translation add form.
  */
 function webform_form_config_translation_add_form_alter(&$form, FormStateInterface $form_state, $is_new = TRUE) {
   // Manually apply YAML editor to text field that store YAML data.
   foreach ($form['config_names'] as $config_name => &$config_element) {
-    if ($config_name == 'webform.settings') {
+    if ($config_name === 'webform.settings') {
       _webform_form_config_translate_add_form_alter_yaml_element($config_element['test']['types']);
       _webform_form_config_translate_add_form_alter_yaml_element($config_element['test']['names']);
+    }
+    elseif ($config_name === 'block.block.webform') {
+      _webform_form_config_translate_add_form_alter_yaml_element($config_element['settings']['default_data']);;
+    }
+    elseif (strpos($config_name, 'field.field.') === 0
+      && preg_match('/^field\.field\.([_a-z0-9]+)\.([_a-z0-9]+)\.([_a-z0-9]+)$/', $config_name, $match)
+      && isset($config_element['default_value'])) {
+      $field = FieldConfig::loadByName($match[1], $match[2], $match[3]);
+      if ($field->getType() === 'webform') {
+        foreach (Element::children($config_element['default_value']) as $key) {
+          if (isset($config_element['default_value'][$key]['default_data'])) {
+            _webform_form_config_translate_add_form_alter_yaml_element($config_element['default_value'][$key]['default_data']);
+          }
+        }
+      }
     }
     elseif (strpos($config_name, 'webform.webform_options.') === 0
       || strpos($config_name, 'webform_options_custom.webform_options_custom.') === 0) {
@@ -87,12 +103,49 @@ function webform_form_config_translation_add_form_alter(&$form, FormStateInterfa
       $form_state->set('webform_config_name', $config_name);
       $form_state->set('webform_source_elements', $source_elements);
 
-      // Tweak default 128 max length for certain settings.
-      $config_element['title']['translation']['#maxlength'] = 255;
-      $config_element['settings']['submission_label']['translation']['#maxlength'] = NULL;
+      // Tweak form elements.
+      $element_alterations = [
+        // Form settings.
+        'title' => ['#maxlength' => 255],
+        // Submission settings.
+        'submission_label' => ['#maxlength' => NULL],
+        // Email handler.
+        // @see \Drupal\webform\Plugin\WebformHandler\EmailWebformHandler
+        'subject' => ['#maxlength' => NULL],
+        'from_name' => ['#maxlength' => 255],
+        'sender_name' => ['#maxlength' => 255],
+      ];
+      _webform_form_config_translation_add_form_alter_elements($config_element, $element_alterations);
 
       $form['#validate'][] = '_webform_form_config_translate_add_form_validate';
+
     }
+  }
+}
+
+/**
+ * Alter form element recursively.
+ *
+ * @param array $elements
+ *   An associative array of form elements.
+ * @param array $element_alterations
+ *   An associative array of element alterations.
+ */
+function _webform_form_config_translation_add_form_alter_elements(array &$elements, array $element_alterations) {
+  foreach ($elements as $key => &$element) {
+    if (WebformElementHelper::property($key) || !is_array($element)) {
+      continue;
+    }
+
+    // Override/alter translation element.
+    if (array_key_exists($key, $element_alterations)
+      && isset($element['translation'])
+      && isset($element['translation']['#type'])) {
+      $element['translation'] = $element_alterations[$key] + $element['translation'];
+    }
+
+    _webform_form_config_translation_add_form_alter_elements($element, $element_alterations);
+
   }
 }
 
@@ -136,7 +189,7 @@ function _webform_form_config_translate_add_form_filter_elements(array &$transla
       continue;
     }
     $source_element = $source_elements[$key];
-    if ($translation_element == $source_element) {
+    if ($translation_element === $source_element) {
       unset($translation_elements[$key]);
     }
     elseif (is_array($translation_element)) {
@@ -149,7 +202,7 @@ function _webform_form_config_translate_add_form_filter_elements(array &$transla
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_FORM_ID_alter() for config translation edit form.
  */
 function webform_form_config_translation_edit_form_alter(&$form, FormStateInterface $form_state) {
   webform_form_config_translation_add_form_alter($form, $form_state, FALSE);
@@ -289,7 +342,7 @@ function webform_lingotek_config_entity_translation_presave(ConfigEntityInterfac
         unset($options['_optgroups_']);
 
         // Build translated optgroup options.
-        $optgroup_options = [];
+        $optgroups_options = [];
         foreach ($options as $option_value => $option_text) {
           if (is_array($option_text)) {
             $optgroups_options[$optgroups[$option_value]] = $option_text;

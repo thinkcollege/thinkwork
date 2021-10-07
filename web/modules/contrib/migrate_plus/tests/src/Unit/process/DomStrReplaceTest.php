@@ -23,7 +23,7 @@ class DomStrReplaceTest extends MigrateProcessTestCase {
    */
   protected $exampleConfiguration = [
     'mode' => 'attribute',
-    'expression' => '//a',
+    'xpath' => '//a',
     'attribute_options' => [
       'name' => 'href',
     ],
@@ -36,10 +36,11 @@ class DomStrReplaceTest extends MigrateProcessTestCase {
    *
    * @dataProvider providerTestConfigEmpty
    */
-  public function testConfigValidation(array $config_overrides, $message) {
+  public function testConfigValidation(array $config_overrides, $message): void {
     $configuration = $config_overrides + $this->exampleConfiguration;
     $value = '<p>A simple paragraph.</p>';
-    $this->setExpectedException(InvalidPluginDefinitionException::class, $message);
+    $this->expectException(InvalidPluginDefinitionException::class);
+    $this->expectExceptionMessage($message);
     (new DomStrReplace($configuration, 'dom_str_replace', []))
       ->transform($value, $this->migrateExecutable, $this->row, 'destinationproperty');
   }
@@ -47,11 +48,11 @@ class DomStrReplaceTest extends MigrateProcessTestCase {
   /**
    * Dataprovider for testConfigValidation().
    */
-  public function providerTestConfigEmpty() {
+  public function providerTestConfigEmpty(): array {
     $cases = [
-      'expression-null' => [
-        ['expression' => NULL],
-        "Configuration option 'expression' is required.",
+      'xpath-null' => [
+        ['xpath' => NULL],
+        "Configuration option 'xpath' is required.",
       ],
       'mode-null' => [
         ['mode' => NULL],
@@ -81,9 +82,9 @@ class DomStrReplaceTest extends MigrateProcessTestCase {
   /**
    * @covers ::transform
    */
-  public function testTransformInvalidInput() {
+  public function testTransformInvalidInput(): void {
     $configuration = [
-      'expression' => '//a',
+      'xpath' => '//a',
       'mode' => 'attribute',
       'attribute_options' => [
         'name' => 'href',
@@ -92,7 +93,8 @@ class DomStrReplaceTest extends MigrateProcessTestCase {
       'replace' => 'bar',
     ];
     $value = 'string';
-    $this->setExpectedException(MigrateSkipRowException::class, 'The dom_str_replace plugin in the destinationproperty process pipeline requires a \DOMDocument object. You can use the dom plugin to convert a string to \DOMDocument.');
+    $this->expectException(MigrateSkipRowException::class);
+    $this->expectExceptionMessage('The dom_str_replace plugin in the destinationproperty process pipeline requires a \DOMDocument object. You can use the dom plugin to convert a string to \DOMDocument.');
     (new DomStrReplace($configuration, 'dom_str_replace', []))
       ->transform($value, $this->migrateExecutable, $this->row, 'destinationproperty');
   }
@@ -102,7 +104,7 @@ class DomStrReplaceTest extends MigrateProcessTestCase {
    *
    * @dataProvider providerTestTransform
    */
-  public function testTransform($input_string, $configuration, $output_string) {
+  public function testTransform($input_string, $configuration, $output_string): void {
     $value = Html::load($input_string);
     $document = (new DomStrReplace($configuration, 'dom_str_replace', []))
       ->transform($value, $this->migrateExecutable, $this->row, 'destinationproperty');
@@ -113,7 +115,7 @@ class DomStrReplaceTest extends MigrateProcessTestCase {
   /**
    * Dataprovider for testTransform().
    */
-  public function providerTestTransform() {
+  public function providerTestTransform(): array {
     $cases = [
       'string:case_sensitive' => [
         '<a href="/foo/Foo/foo">text</a>',

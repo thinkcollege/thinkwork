@@ -3,14 +3,19 @@
 namespace Drupal\Tests\fontyourface\Functional;
 
 use Drupal\Core\Url;
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
 
 /**
  * Tests that installing @font-your-face local fonts module is not broken.
  *
  * @group fontyourface
  */
-class FontYourFaceLocalFontInstallTest extends WebTestBase {
+class FontYourFaceLocalFontInstallTest extends BrowserTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
 
   /**
    * Modules to install.
@@ -44,7 +49,7 @@ class FontYourFaceLocalFontInstallTest extends WebTestBase {
   public function testFontYourFaceLocalFontsSection() {
     // Font settings page.
     $this->drupalGet(Url::fromRoute('entity.local_font_config_entity.collection'));
-    $this->assertText(t('There is no Custom Font yet.'));
+    $this->assertText(t('There are no custom font entities yet.'));
     $this->drupalGet(Url::fromRoute('entity.local_font_config_entity.add_form'));
     $this->assertText(t('Name of the Custom Font'));
   }

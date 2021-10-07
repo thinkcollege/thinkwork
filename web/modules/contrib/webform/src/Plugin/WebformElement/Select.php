@@ -22,21 +22,25 @@ class Select extends OptionsBase {
   /**
    * {@inheritdoc}
    */
-  public function getDefaultProperties() {
-    return [
+  protected function defineDefaultProperties() {
+    $properties = [
       // Options settings.
       'multiple' => FALSE,
       'multiple_error' => '',
       'empty_option' => '',
       'empty_value' => '',
+      'sort_options' => FALSE,
       'select2' => FALSE,
       'choices' => FALSE,
       'chosen' => FALSE,
       'placeholder' => '',
       'help_display' => '',
       'size' => '',
-    ] + parent::getDefaultProperties();
+    ] + parent::defineDefaultProperties();
+    return $properties;
   }
+
+  /****************************************************************************/
 
   /**
    * {@inheritdoc}

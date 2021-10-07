@@ -2,7 +2,6 @@
 
 namespace Drupal\fontyourface\Form;
 
-use Drupal\Core\Url;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\fontyourface\FontDisplayInterface;
@@ -44,7 +43,7 @@ class FontDisplayForm extends EntityForm {
 
     $fonts = Font::loadActivatedFonts();
     if (empty($fonts)) {
-      drupal_set_message($this->t('Please enable at least one font before creating/updating a font style.'), 'warning');
+      \Drupal::messenger()->addMessage($this->t('Please enable at least one font before creating/updating a font style.'), 'warning');
       $this->redirect('entity.font.collection')->send();
       exit();
     }
@@ -171,19 +170,19 @@ class FontDisplayForm extends EntityForm {
 
     switch ($status) {
       case SAVED_NEW:
-        drupal_set_message($this->t('Created the %label Font display.', [
+        \Drupal::messenger()->addMessage($this->t('Created the %label Font display.', [
           '%label' => $font_display->label(),
         ]));
         break;
 
       default:
-        drupal_set_message($this->t('Saved the %label Font display.', [
+        \Drupal::messenger()->addMessage($this->t('Saved the %label Font display.', [
           '%label' => $font_display->label(),
         ]));
     }
     fontyourface_save_and_generate_font_display_css($font_display);
     drupal_flush_all_caches();
-    $form_state->setRedirectUrl($font_display->urlInfo('collection'));
+    $form_state->setRedirectUrl($font_display->toUrl('collection'));
   }
 
   /**

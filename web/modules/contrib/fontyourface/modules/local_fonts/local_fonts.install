@@ -10,7 +10,7 @@
  */
 function local_fonts_install() {
   module_set_weight('local_fonts', 10);
-  drupal_set_message(t('You may now install your own custom fonts. Remember to follow the EULA for any given font.'));
+  Drupal::messenger()->addMessage(t('You may now install your own custom fonts. Remember to follow the EULA for any given font.'));
 }
 
 /**

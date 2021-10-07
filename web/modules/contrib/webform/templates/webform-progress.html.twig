@@ -7,7 +7,8 @@
  * - webform: A webform.
  * - pages: Array of wizard pages.
  * - current_page: Current wizard page.
- * - total_pages: Current wizard page.
+ * - index: Index of the current page.
+ * - total: Total number of pages.
  * - summary: Summary of progress.
  * - percentage: Percentage completed.
  * - bar: A progress bar.
@@ -26,12 +27,12 @@
   {% if summary or percentage %}
     <div class="webform-progress__status">
       {% if summary %}
-        <span class="webform-progress__summary">{{ summary }}</span>
+        <span class="webform-progress__summary" data-webform-progress-summary>{{ summary }}</span>
         {% if percentage %}
-          <span class="webform-progress__percentage">({{ percentage }})</span>
+          <span class="webform-progress__percentage">(<span data-webform-progress-percentage>{{ percentage }}</span>)</span>
         {% endif %}
       {% else %}
-        <span class="webform-progress__percentage">{{ percentage }}</span>
+        <span class="webform-progress__percentage" data-webform-progress-percentage>{{ percentage }}</span>
       {% endif %}
     </div>
   {% endif %}

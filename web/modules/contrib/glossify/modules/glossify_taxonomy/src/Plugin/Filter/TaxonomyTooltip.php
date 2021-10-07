@@ -67,7 +67,7 @@ class TaxonomyTooltip extends GlossifyBase {
         [
           get_class($this),
           'validateTaxonomyVocabs',
-         ],
+        ],
       ],
       '#title' => $this->t('Taxonomy vocabularies'),
       '#description' => $this->t('Select the taxonomy vocabularies you want to use term names from to link their term page.'),
@@ -102,6 +102,7 @@ class TaxonomyTooltip extends GlossifyBase {
     if (!empty($values['filters']['glossify_taxonomy']['status'])) {
       $field_values = array_filter($values['filters']['glossify_taxonomy']['settings']['glossify_taxonomy_vocabs']);
       if (empty($field_values)) {
+        $element['#required'] = TRUE;
         $form_state->setError($element, t('%field is required.', ['%field' => $element['#title']]));
       }
     }
@@ -128,6 +129,7 @@ class TaxonomyTooltip extends GlossifyBase {
       $query->addfield('tfd', 'name', 'name_norm');
       $query->addField('tfd', 'description__value', 'tip');
       $query->condition('tfd.vid', $vocabs, 'IN');
+      $query->condition('tfd.langcode', $langcode);
       $query->orderBy('name_norm', 'DESC');
 
       $results = $query->execute()->fetchAllAssoc('name_norm');
@@ -169,7 +171,7 @@ class TaxonomyTooltip extends GlossifyBase {
       // Workaround for not accepting arrays in config schema.
       if (is_array($configuration['settings']['glossify_taxonomy_vocabs'])) {
         $glossify_taxonomy_vocabs = array_filter($configuration['settings']['glossify_taxonomy_vocabs']);
-        $configuration['settings']['glossify_taxonomy_vocabs'] = implode($glossify_taxonomy_vocabs, ';');
+        $configuration['settings']['glossify_taxonomy_vocabs'] = implode(';', $glossify_taxonomy_vocabs);
       }
       $this->settings = (array) $configuration['settings'];
     }

@@ -1219,7 +1219,7 @@ class SuperfishBlock extends SystemMenuBlock {
     else {
       $sfoptions['disableHI'] = TRUE;
     }
-    $sfoptions = sf_array_filter($sfoptions);
+    $sfoptions = superfish_array_filter($sfoptions);
 
     // Options for Superfish sub-plugins.
     $sfplugins = [];
@@ -1475,7 +1475,7 @@ class SuperfishBlock extends SystemMenuBlock {
       }
       $sfplugins['smallscreen']['title'] = $title ? $title : $this->label();
     }
-    $sfplugins = sf_array_filter($sfplugins);
+    $sfplugins = superfish_array_filter($sfplugins);
 
     // Menu block ID.
     $menu_name = $this->getDerivativeId();
@@ -1519,7 +1519,7 @@ class SuperfishBlock extends SystemMenuBlock {
         }
       }
       else {
-        return array();
+        return [];
       }
     }
 

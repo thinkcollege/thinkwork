@@ -1,0 +1,6 @@
+services:
+  mailgun.sanitize.commands:
+    class: Drupal\mailgun\Commands\MailgunSanitizeCommands
+    arguments: ['@queue']
+    tags:
+      - { name: drush.command }

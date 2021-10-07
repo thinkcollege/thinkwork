@@ -25,7 +25,7 @@ class TransliterationTest extends MigrateProcessTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     $this->transliteration = new PhpTransliteration();
     $this->row = $this->getMockBuilder(Row::class)
       ->disableOriginalConstructor()
@@ -39,7 +39,7 @@ class TransliterationTest extends MigrateProcessTestCase {
   /**
    * Tests transliteration transformation of non-alphanumeric characters.
    */
-  public function testTransform() {
+  public function testTransform(): void {
     $actual = '9000004351_53494854_Spøgelsesjægerneáéö';
     $expected_result = '9000004351_53494854_Spogelsesjaegerneaeo';
 

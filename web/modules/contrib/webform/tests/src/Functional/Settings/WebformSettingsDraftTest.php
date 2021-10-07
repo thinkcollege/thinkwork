@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\webform\Functional\Settings;
 
+use Drupal\Component\Utility\Html;
+use Drupal\user\Entity\User;
 use Drupal\webform\Entity\Webform;
 use Drupal\webform\Entity\WebformSubmission;
 use Drupal\Tests\webform\Functional\WebformBrowserTestBase;
@@ -9,7 +11,7 @@ use Drupal\Tests\webform\Functional\WebformBrowserTestBase;
 /**
  * Tests for webform submission form draft.
  *
- * @group Webform
+ * @group webform
  */
 class WebformSettingsDraftTest extends WebformBrowserTestBase {
 
@@ -24,6 +26,9 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
    * Test webform submission form draft.
    */
   public function testDraft() {
+    /** @var \Drupal\webform\WebformSubmissionStorageInterface $webform_submission_storage */
+    $webform_submission_storage = \Drupal::entityTypeManager()->getStorage('webform_submission');
+
     $normal_user = $this->drupalCreateUser(['view own webform submission']);
 
     $admin_submission_user = $this->drupalCreateUser([
@@ -55,7 +60,7 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
       'test_form_draft_anonymous' => 'Test: Webform: Draft anonymous',
     ];
     foreach ($webform_ids as $webform_id => $webform_title) {
-      $is_authenticated = ($webform_id == 'test_form_draft_authenticated') ? TRUE : FALSE;
+      $is_authenticated = ($webform_id === 'test_form_draft_authenticated') ? TRUE : FALSE;
 
       // Login draft account.
       ($is_authenticated) ? $this->drupalLogin($normal_user) : $this->drupalLogout();
@@ -63,7 +68,7 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
       $webform = Webform::load($webform_id);
 
       // Save a draft.
-      $sid = $this->postSubmission($webform, ['name' => 'John Smith'], t('Save Draft'));
+      $sid = $this->postSubmission($webform, ['name' => 'John Smith'], 'Save Draft');
       /** @var \Drupal\webform\WebformSubmissionInterface $webform_submission */
       $webform_submission = WebformSubmission::load($sid);
 
@@ -74,6 +79,11 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
       // Check access allowed to review drafts.
       $this->drupalGet("webform/$webform_id/drafts");
       $this->assertResponse(200);
+
+      // Check draft title and info.
+      $account = ($is_authenticated) ? $normal_user : User::getAnonymousUser();
+      $this->assertRaw('<title>' . Html::escape('Drafts for ' . $webform->label() . ' for ' . ($account->getAccountName() ?: 'Anonymous') . ' | Drupal') . '</title>');
+      $this->assertRaw('<div>1 draft</div>');
 
       // Check loaded draft message.
       $this->drupalGet("webform/$webform_id");
@@ -103,7 +113,7 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
       $this->drupalPostForm("webform/$webform_id", [
         'name' => '',
         'comment' => 'Hello World!',
-      ], t('Save Draft'));
+      ], 'Save Draft');
       $this->assertRaw('Your draft has been saved');
       $this->assertNoRaw('You have an existing draft');
       $this->assertFieldByName('name', '');
@@ -113,7 +123,7 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
       $this->drupalPostForm("webform/$webform_id", [
         'name' => 'John Smith',
         'comment' => 'Hello World!',
-      ], t('Preview'));
+      ], 'Preview');
       $this->assertNoRaw('Your draft has been saved');
       $this->assertNoRaw('You have an existing draft');
       $this->assertNoFieldByName('name', '');
@@ -123,7 +133,7 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
       $this->assertRaw('Please review your submission. Your submission is not complete until you press the "Submit" button!');
 
       // Check submit.
-      $this->drupalPostForm("webform/$webform_id", [], t('Submit'));
+      $this->drupalPostForm("webform/$webform_id", [], 'Submit');
       $this->assertRaw("New submission added to $webform_title.");
 
       // Check submission not in draft.
@@ -141,11 +151,11 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
     $webform = Webform::load('test_form_draft_anonymous');
 
     // Save a draft.
-    $sid = $this->postSubmission($webform, ['name' => 'John Smith'], t('Save Draft'));
+    $sid = $this->postSubmission($webform, ['name' => 'John Smith'], 'Save Draft');
     $this->assertRaw('Your draft has been saved');
 
     // Check that submission is owned anonymous.
-    \Drupal::entityTypeManager()->getStorage('webform_submission')->resetCache();
+    $webform_submission_storage->resetCache();
     $webform_submission = WebformSubmission::load($sid);
     $this->assertEqual($webform_submission->getOwnerId(), 0);
 
@@ -158,7 +168,7 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
     $this->drupalLogin($normal_user);
 
     // Check that submission is now owned by the normal user.
-    \Drupal::entityTypeManager()->getStorage('webform_submission')->resetCache();
+    $webform_submission_storage->resetCache();
     $webform_submission = WebformSubmission::load($sid);
     $this->assertEqual($webform_submission->getOwnerId(), $normal_user->id());
 
@@ -170,7 +180,7 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
     $this->drupalLogin($normal_user);
 
     // Check that submission is still owned by anonymous user.
-    \Drupal::entityTypeManager()->getStorage('webform_submission')->resetCache();
+    $webform_submission_storage->resetCache();
     $webform_submission = WebformSubmission::load($sid);
     $this->assertEqual($webform_submission->getOwnerId(), 0);
 
@@ -181,11 +191,11 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
     $webform->setSetting('form_confidential', TRUE);
 
     // Save a draft.
-    $sid = $this->postSubmission($webform, ['name' => 'John Smith'], t('Save Draft'));
+    $sid = $this->postSubmission($webform, ['name' => 'John Smith'], 'Save Draft');
     $this->assertRaw('Your draft has been saved');
 
     // Check that submission is owned anonymous.
-    \Drupal::entityTypeManager()->getStorage('webform_submission')->resetCache();
+    $webform_submission_storage->resetCache();
     $webform_submission = WebformSubmission::load($sid);
     $this->assertEqual($webform_submission->getOwnerId(), 0);
 
@@ -196,7 +206,7 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
     // Login the normal user.
     $this->drupalLogin($normal_user);
 
-    \Drupal::entityTypeManager()->getStorage('webform_submission')->resetCache();
+    $webform_submission_storage->resetCache();
     $webform_submission = WebformSubmission::load($sid);
     // Check that submission is NOT owned by the normal user.
     $this->assertNotEqual($webform_submission->getOwnerId(), $normal_user->id());
@@ -219,13 +229,13 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
     $this->assertNoFieldByName('state', 'all');
 
     // Check autosave on submit with validation errors.
-    $this->drupalPostForm('/webform/test_form_draft_authenticated', [], t('Submit'));
+    $this->drupalPostForm('/webform/test_form_draft_authenticated', [], 'Submit');
     $this->assertRaw('Name field is required.');
     $this->drupalGet('/webform/test_form_draft_authenticated');
     $this->assertRaw('You have an existing draft');
 
     // Check autosave on preview.
-    $this->drupalPostForm('/webform/test_form_draft_authenticated', ['name' => 'John Smith'], t('Preview'));
+    $this->drupalPostForm('/webform/test_form_draft_authenticated', ['name' => 'John Smith'], 'Preview');
     $this->assertRaw('Please review your submission.');
     $this->drupalGet('/webform/test_form_draft_authenticated');
     $this->assertRaw('You have an existing draft');
@@ -241,7 +251,7 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
     $webform = Webform::load('test_form_draft_multiple');
 
     // Save first draft.
-    $sid_1 = $this->postSubmission($webform, ['name' => 'John Smith'], t('Save Draft'));
+    $sid_1 = $this->postSubmission($webform, ['name' => 'John Smith'], 'Save Draft');
     $this->assertRaw('Submission saved. You may return to this form later and it will restore the current values.');
     $webform_submission_1 = WebformSubmission::load($sid_1);
 
@@ -278,7 +288,7 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
     $this->assertRaw('token=' . $webform_submission_1->getToken());
 
     // Save second draft.
-    $sid_2 = $this->postSubmission($webform, ['name' => 'John Smith'], t('Save Draft'));
+    $sid_2 = $this->postSubmission($webform, ['name' => 'John Smith'], 'Save Draft');
     $webform_submission_2 = WebformSubmission::load($sid_2);
     $this->assertRaw('Submission saved. You may return to this form later and it will restore the current values.');
     $this->drupalGet('/webform/test_form_draft_multiple');
@@ -311,7 +321,7 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
     $this->assertFieldByName('name', '');
 
     // Save third anonymous draft.
-    $this->postSubmission($webform, ['name' => 'Jane Doe'], t('Save Draft'));
+    $this->postSubmission($webform, ['name' => 'Jane Doe'], 'Save Draft');
     $this->assertRaw('Submission saved. You may return to this form later and it will restore the current values.');
 
     // Check restore third anonymous draft.
@@ -324,6 +334,25 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
     $this->clickLink('Load your pending draft');
     $this->assertFieldByName('name', 'Jane Doe');
 
+    // Get the total number of drafts.
+    $total_drafts = $webform_submission_storage->getTotal($webform, NULL, NULL, ['in_draft' => TRUE]);
+
+    // Post form with validation errors.
+    $this->postSubmission($webform);
+    $this->assertRaw('Name field is required.');
+
+    // Check that 1 additional draft was created.
+    $total = $webform_submission_storage->getTotal($webform, NULL, NULL, ['in_draft' => TRUE]);
+    $this->assertEqual($total_drafts + 1, $total);
+
+    // Post the same form with validation errors.
+    $this->drupalPostForm(NULL, [], 'Submit');
+    $this->assertRaw('Name field is required.');
+
+    // Check that only 1 additional draft exists.
+    $total = $webform_submission_storage->getTotal($webform, NULL, NULL, ['in_draft' => TRUE]);
+    $this->assertEqual($total_drafts + 1, $total);
+
     /**************************************************************************/
     // Test webform submission form reset draft.
     /**************************************************************************/
@@ -333,31 +362,35 @@ class WebformSettingsDraftTest extends WebformBrowserTestBase {
     $webform = Webform::load('test_form_draft_authenticated');
 
     // Check saved draft.
-    $sid = $this->postSubmission($webform, ['name' => 'John Smith'], t('Save Draft'));
+    $sid = $this->postSubmission($webform, ['name' => 'John Smith'], 'Save Draft');
     $this->assertNotNull($sid);
     $webform_submission = WebformSubmission::load($sid);
     $this->assertEqual($sid, $webform_submission->id());
 
     // Check reset delete's the draft.
-    $this->postSubmission($webform, [], t('Reset'));
-    \Drupal::entityTypeManager()->getStorage('webform_submission')->resetCache();
+    $this->postSubmission($webform, [], 'Reset');
+    $webform_submission_storage->resetCache();
     $webform_submission = WebformSubmission::load($sid);
     $this->assertNull($webform_submission);
 
     // Check submission with comment.
-    $sid = $this->postSubmission($webform, ['name' => 'John Smith', 'comment' => 'This is a comment'], t('Save Draft'));
+    $sid = $this->postSubmission($webform, ['name' => 'John Smith', 'comment' => 'This is a comment'], 'Save Draft');
     $this->postSubmission($webform);
-    \Drupal::entityTypeManager()->getStorage('webform_submission')->resetCache();
+    $webform_submission_storage->resetCache();
     $webform_submission = WebformSubmission::load($sid);
     $this->assertEqual('This is a comment', $webform_submission->getElementData('comment'));
 
     // Check submitted draft is not delete on reset.
-    $this->drupalPostForm('/admin/structure/webform/manage/test_form_draft_authenticated/submission/' . $sid . '/edit', ['comment' => 'This is ignored'], t('Reset'));
-    \Drupal::entityTypeManager()->getStorage('webform_submission')->resetCache();
+    $this->drupalPostForm('/admin/structure/webform/manage/test_form_draft_authenticated/submission/' . $sid . '/edit', ['comment' => 'This is ignored'], 'Reset');
+    $webform_submission_storage->resetCache();
     $webform_submission = WebformSubmission::load($sid);
     $this->assertEqual($sid, $webform_submission->id());
     $this->assertEqual('This is a comment', $webform_submission->getElementData('comment'));
     $this->assertNotEqual('This is ignored', $webform_submission->getElementData('comment'));
+
+    // Check total number of drafts.
+    $total = $webform_submission_storage->getTotal($webform, NULL, $this->rootUser, ['in_draft' => TRUE]);
+    $this->assertEqual(0, $total);
   }
 
 }

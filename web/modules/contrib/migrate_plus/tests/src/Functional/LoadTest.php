@@ -13,11 +13,9 @@ use Drupal\Tests\BrowserTestBase;
 class LoadTest extends BrowserTestBase {
 
   /**
-   * Modules to enable.
-   *
-   * @var array
+   * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'migrate_plus',
     'migrate_example',
     'migrate_example_setup',
@@ -36,7 +34,12 @@ class LoadTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp(): void {
     parent::setUp();
     $this->user = $this->drupalCreateUser(['administer site configuration']);
     $this->drupalLogin($this->user);
@@ -45,7 +48,7 @@ class LoadTest extends BrowserTestBase {
   /**
    * Tests that the home page loads with a 200 response.
    */
-  public function testLoad() {
+  public function testLoad(): void {
     $this->drupalGet(Url::fromRoute('<front>'));
     $this->assertSession()->statusCodeEquals(200);
   }

@@ -10,7 +10,7 @@ use Drupal\Tests\webform\Functional\Element\WebformElementManagedFileTestBase;
 /**
  * Tests for custom composite element.
  *
- * @group Webform
+ * @group webform
  */
 class WebformCompositeCustomFileTest extends WebformElementManagedFileTestBase {
 
@@ -31,19 +31,36 @@ class WebformCompositeCustomFileTest extends WebformElementManagedFileTestBase {
 
     /**************************************************************************/
 
-    // Create submission with file.
+    // Upload file while adding a new row to the composite element.
     $edit = [
       'webform_custom_composite_file[items][0][_item_][textfield]' => '{textfield}',
       'files[webform_custom_composite_file_items_0__item__managed_file]' => \Drupal::service('file_system')->realpath($first_file->uri),
     ];
-    $sid = $this->postSubmission($webform, $edit);
+    $this->drupalPostForm('webform/test_composite_custom_file', $edit, 'webform_custom_composite_file_table_add');
+
+    // Check that file was uploaded.
+    $this->assertRaw(basename($first_file->uri));
+
+    // Add another empty row and check that file is still uploaded and attached.
+    $this->drupalPostForm(NULL, [], 'webform_custom_composite_file_table_add');
+    $this->assertRaw(basename($first_file->uri));
+
+    // Submit the file and the text field.
+    $this->drupalPostForm(NULL, [], 'Submit');
+    $sid = $this->getLastSubmissionId($webform);
+
     $webform_submission = WebformSubmission::load($sid);
 
     $fid = $this->getLastFileId();
+    /** @var \Drupal\file\FileInterface $file */
     $file = File::load($fid);
 
+    // Check the composite file is attached to the email.
+    $this->assertRaw('<label>Attachments</label>');
+    $this->assertRaw('<strong><a href="' . file_create_url($file->getFileUri()) . '">' . $file->getFileName() . '</a></strong> (text/plain) - 1 KB');
+
     // Check file permanent.
-    $this->assert($file->isPermanent(), 'Test file is permanent');
+    $this->assertTrue($file->isPermanent());
 
     // Check file upload.
     $element_data = $webform_submission->getElementData('webform_custom_composite_file');
@@ -56,7 +73,19 @@ class WebformCompositeCustomFileTest extends WebformElementManagedFileTestBase {
     $this->assertEqual($file->getFileUri(), 'private://webform/test_composite_custom_file/' . $sid . '/' . $first_file->filename);
 
     // Check that test file exists.
-    $this->assert(file_exists($file->getFileUri()), 'File exists');
+    $this->assertFileExists($file->getFileUri());
+
+    // Login as root user.
+    $this->drupalLogin($this->rootUser);
+
+    // Check that the file exists on the submission edit form.
+    $this->drupalGet("/admin/structure/webform/manage/test_composite_custom_file/submission/$sid/edit");
+    $this->assertLink($file->getFileName());
+
+    // Check that test file still exists as more items are be added to the
+    // composite element.
+    $this->drupalPostForm(NULL, [], 'webform_custom_composite_file_table_add');
+    $this->assertLink($file->getFileName());
   }
 
 }

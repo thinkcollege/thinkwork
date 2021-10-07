@@ -12,7 +12,7 @@ template: false
 archive: false
 id: test_element_other
 title: 'Test: Element: Other'
-description: 'Test the webform other elements, includes select_other, checkboxes_other, radios_other, and buttons_other.'
+description: 'Test the webform other elements, includes select_other, checkboxes_other and radios_other.'
 category: 'Test: Element'
 elements: |
   select_other:
@@ -48,6 +48,7 @@ elements: |
       '#other__counter_minimum': '4'
       '#other__counter_maximum': '10'
       '#required': true
+      '#required_error': 'This is a custom required error message.'
     select_other_multiple:
       '#type': webform_select_other
       '#title': 'Select other multiple'
@@ -61,6 +62,14 @@ elements: |
         - One
         - Two
         - Four
+    select_other_zero:
+      '#type': webform_select_other
+      '#title': 'Select other zero'
+      '#options':
+        One: One
+        Two: Two
+        Three: Three
+      '#default_value': 0
   checkboxes_other:
     '#type': details
     '#title': 'Checkboxes other (checkboxes_other)'
@@ -119,30 +128,6 @@ elements: |
       '#other__option_label': 'Is there another option you wish to enter?'
       '#other__placeholder': 'What is this other option'
       '#other__description': 'Other radio description'
-  buttons_other:
-    '#type': details
-    '#title': 'Buttons other (buttons_other)'
-    '#open': true
-    buttons_other_basic:
-      '#type': webform_buttons_other
-      '#title': 'Buttons other basic'
-      '#options':
-        One: One
-        Two: Two
-        Three: Three
-      '#default_value': Four
-    buttons_other_advanced:
-      '#type': webform_buttons_other
-      '#title': 'Buttons other advanced'
-      '#options':
-        One: One
-        Two: Two
-        Three: Three
-      '#default_value': Four
-      '#required': true
-      '#other__option_label': Other
-      '#other__placeholder': 'What is this other option'
-      '#other__description': 'Other button description'
   wrapper_other:
     '#type': details
     '#title': 'Wrapper other (#wrapper_type)'
@@ -171,7 +156,6 @@ elements: |
         Two: Two
         Three: Three
       '#wrapper_type': container
-  
 css: ''
 javascript: ''
 settings:
@@ -183,7 +167,7 @@ settings:
   page: true
   page_submit_path: ''
   page_confirm_path: ''
-  page_admin_theme: false
+  page_theme_name: ''
   form_title: source_entity_webform
   form_submit_once: false
   form_exception_message: ''
@@ -213,6 +197,11 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
   submission_label: ''
   submission_log: false
   submission_views: {  }
@@ -238,11 +227,19 @@ settings:
   wizard_progress_percentage: false
   wizard_progress_link: false
   wizard_progress_states: false
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
   wizard_start_label: ''
   wizard_preview_link: false
   wizard_confirmation: true
   wizard_confirmation_label: ''
   wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
   preview: 0
   preview_label: ''
   preview_title: ''
@@ -285,8 +282,11 @@ settings:
   purge_days: null
   results_disabled: true
   results_disabled_ignore: false
+  results_customize: false
   token_view: false
   token_update: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -338,8 +338,12 @@ handlers:
   debug:
     id: debug
     label: Debug
+    notes: ''
     handler_id: debug
     status: true
     conditions: {  }
     weight: 1
-    settings: {  }
+    settings:
+      format: yaml
+      submission: false
+variants: {  }

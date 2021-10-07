@@ -5,6 +5,7 @@ namespace Drupal\webform\Plugin\WebformElement;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Mail\MailFormatHelper;
+use Drupal\Core\Render\Element;
 use Drupal\filter\Entity\FilterFormat;
 use Drupal\user\Entity\User;
 use Drupal\webform\Plugin\WebformElementBase;
@@ -29,13 +30,13 @@ class TextFormat extends WebformElementBase {
   /**
    * {@inheritdoc}
    */
-  public function getDefaultProperties() {
+  protected function defineDefaultProperties() {
     $properties = [
       'default_value' => [],
       // Text format settings.
       'allowed_formats' => [],
       'hide_help' => FALSE,
-    ] + parent::getDefaultProperties();
+    ] + parent::defineDefaultProperties();
     unset(
       $properties['disabled'],
       $properties['attributes'],
@@ -43,10 +44,15 @@ class TextFormat extends WebformElementBase {
       $properties['title_display'],
       $properties['description_display'],
       $properties['field_prefix'],
-      $properties['field_suffix']
+      $properties['field_suffix'],
+      $properties['format_items'],
+      $properties['format_items_html'],
+      $properties['format_items_text']
     );
     return $properties;
   }
+
+  /****************************************************************************/
 
   /**
    * {@inheritdoc}
@@ -135,8 +141,8 @@ class TextFormat extends WebformElementBase {
     }
 
     // Hide filter format if the select menu and help is hidden.
-    if (!empty($element['#hide_help']) &&
-      isset($element['format']['format']['#access']) && $element['format']['format']['#access'] === FALSE) {
+    if (!empty($element['#hide_help'])
+      && !Element::isVisibleElement($element['format']['format'])) {
       // Can't hide the format via #access but we can use CSS.
       $element['format']['#attributes']['style'] = 'display: none';
     }
@@ -180,7 +186,18 @@ class TextFormat extends WebformElementBase {
         $element['#suffix'] = $element['#suffix'] . '</div>';
       }
     }
+    // Do not allow format value to be cleared when the text form is hidden
+    // via #states.
+    // @see \Drupal\webform\Element\WebformHtmlEditor::processWebformHtmlEditor
+    $element['format']['#attributes']['data-webform-states-no-clear'] = TRUE;
     return $element;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public static function trustedCallbacks() {
+    return array_merge(parent::trustedCallbacks(), ['preRenderFixTextFormatStates']);
   }
 
   /**
@@ -267,8 +284,8 @@ class TextFormat extends WebformElementBase {
   protected function getElementSelectorInputsOptions(array $element) {
     $title = $this->getAdminLabel($element);
     return [
-      'value' => $title . ' [' . t('Textarea') . ']',
-      'format' => $title . ' [' . t('Select') . ']',
+      'value' => $title . ' [' . $this->t('Textarea') . ']',
+      'format' => $title . ' [' . $this->t('Select') . ']',
     ];
   }
 

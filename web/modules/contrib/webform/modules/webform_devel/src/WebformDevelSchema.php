@@ -25,14 +25,14 @@ class WebformDevelSchema implements WebformDevelSchemaInterface {
   use StringTranslationTrait;
 
   /**
-   * A element info manager.
+   * The element info manager.
    *
    * @var \Drupal\Core\Render\ElementInfoManagerInterface
    */
   protected $elementInfo;
 
   /**
-   * Webform element manager.
+   * The webform element manager.
    *
    * @var \Drupal\webform\Plugin\WebformElementManagerInterface
    */
@@ -60,6 +60,7 @@ class WebformDevelSchema implements WebformDevelSchemaInterface {
   public function getColumns() {
     return [
       'name' => $this->t('Name'),
+      'title' => $this->t('Title'),
       'type' => $this->t('Type'),
       'datatype' => $this->t('Datatype'),
       'maxlength' => $this->t('Maxlength'),
@@ -114,6 +115,18 @@ class WebformDevelSchema implements WebformDevelSchemaInterface {
 
     // Name.
     $data['name'] = $element_key;
+
+    // Title.
+    if (isset($element['#admin_title'])) {
+      $title = $element['#admin_title'];
+    }
+    elseif (isset($element['#title'])) {
+      $title = $element['#title'];
+    }
+    else {
+      $title = $element_key;
+    }
+    $data['title'] = $title;
 
     // Element type.
     $data['type'] = $element['#type'];

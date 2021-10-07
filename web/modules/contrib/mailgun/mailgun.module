@@ -7,8 +7,6 @@
 
 use Drupal\Core\Routing\RouteMatchInterface;
 
-define('MAILGUN_CONFIG_NAME', 'mailgun.settings');
-
 /**
  * Implements hook_help().
  */
@@ -82,13 +80,6 @@ function mailgun_mail($key, &$message, $params) {
       if (isset($params['bcc'])) {
         $message['headers']['Bcc'] = $params['bcc'];
       }
-
-      // Here we have just an example how we can add sender name to emails.
-      // Everyone can implement this in  hook_mail for own emails or in
-      // hook_mail_alter for any other emails.
-      $site_name = \Drupal::config('system.site')->get('name');
-      $message['from'] = sprintf('%s <%s>', $site_name, $message['from']);
-
       break;
   }
 }

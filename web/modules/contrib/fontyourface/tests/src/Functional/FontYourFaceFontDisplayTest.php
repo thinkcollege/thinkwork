@@ -3,14 +3,19 @@
 namespace Drupal\Tests\fontyourface\Functional;
 
 use Drupal\Core\Url;
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
 
 /**
  * Tests that font displays show css.
  *
  * @group fontyourface
  */
-class FontYourFaceFontDisplayTest extends WebTestBase {
+class FontYourFaceFontDisplayTest extends BrowserTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
 
   /**
    * Modules to install.
@@ -45,8 +50,10 @@ class FontYourFaceFontDisplayTest extends WebTestBase {
       ->save();
 
     // Enable Arial font.
-    $this->drupalPostForm(Url::fromRoute('font.settings'), ['load_all_enabled_fonts' => FALSE], t('Save configuration'));
-    $this->drupalPostForm(Url::fromRoute('font.settings'), [], t('Import from websafe_fonts_test'));
+    $this->drupalGet(Url::fromRoute('font.settings'));
+    $this->submitForm(['load_all_enabled_fonts' => FALSE], 'Save configuration');
+    $this->drupalGet(Url::fromRoute('font.settings'));
+    $this->submitForm([], 'Import from websafe_fonts_test');
   }
 
   /**
@@ -75,14 +82,15 @@ class FontYourFaceFontDisplayTest extends WebTestBase {
       'selectors' => '.fontyourface h1, .fontyourface h2, .fontyourface h3, .fontyourface h4, .fontyourface h5, .fontyourface h6',
       'theme' => 'bartik',
     ];
-    $this->drupalPostForm(Url::fromRoute('entity.font_display.add_form'), $edit, 'Save');
+    $this->drupalGet(Url::fromRoute('entity.font_display.add_form'));
+    $this->submitForm($edit, 'Save');
     $this->drupalGet(Url::fromRoute('entity.font_display.collection'));
     $this->resetAll();
 
     // Assert Arial loads in general bartik section.
     $this->drupalGet('/node');
-    $this->assertRaw('<meta name="Websafe Font" content="Arial" />');
-    $this->assertRaw("fontyourface/font_display/headers.css");
+    $this->assertSession()->responseContains('<meta name="Websafe Font" content="Arial" />');
+    $this->assertSession()->responseContains("fontyourface/font_display/headers.css");
   }
 
 }

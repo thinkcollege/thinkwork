@@ -111,6 +111,20 @@ elements: |
       '#title': radios_buttons
       '#options': yes_no
       '#options_display': buttons
+    radios_buttons_horizontal:
+      '#type': radios
+      '#title': radios_buttons_horizontal
+      '#options_display': buttons_horizontal
+      '#options_description_display': description
+      '#options':
+        one: One
+        two: Two
+        three: 'Three -- This is a description'
+    radios_buttons_vertical:
+      '#type': radios
+      '#title': radios_buttons_vertical
+      '#options': yes_no
+      '#options_display': buttons_vertical
     radios_buttons_inline:
       '#type': radios
       '#title': radios_buttons_inline
@@ -139,7 +153,7 @@ elements: |
       '#type': radios
       '#title': radios_buttons_wrapping
       '#options':
-        one: 'OneOneOneOneOneOneOne'
+        one: OneOneOneOneOneOneOne
         two: Two
         three: Three
         four: Four
@@ -161,17 +175,17 @@ elements: |
       '#options__properties':
         two:
           '#wrapper_attributes':
-            'data-custom': 'custom wrapper data'
+            data-custom: 'custom wrapper data'
             style: 'border: red 1px solid'
             class:
               - one-custom-wrapper-class
           '#label_attributes':
-            'data-custom': 'custom label data'
+            data-custom: 'custom label data'
             style: 'border: blue 1px solid'
             class:
               - one-custom-label-class
           '#attributes':
-            'data-custom': 'custom input data'
+            data-custom: 'custom input data'
             style: 'border: yellow 1px solid'
             class:
               - one-custom-class
@@ -197,11 +211,11 @@ elements: |
           '#disabled': true
     radios_other_options_properties:
       '#type': webform_radios_other
-      '#title':   radios_other_options_properties
+      '#title': radios_other_options_properties
       '#options':
-        one: 'One'
-        two: 'Two'
-        three: 'Three'
+        one: One
+        two: Two
+        three: Three
       '#options__properties':
         one:
           '#disabled': true
@@ -209,7 +223,20 @@ elements: |
           '#disabled': true
         three:
           '#disabled': true
-  
+    radios_options_grouped:
+      '#type': radios
+      '#title': radios_options_properties
+      '#options_description_display': description
+      '#options':
+        one: 'One -- This is a description'
+        two: 'Two -- This is a description'
+        three: 'Three -- This is a description'
+        four: 'Four -- This is a description'
+      '#options__properties':
+        one:
+          '#prefix': '<div><strong>Group 1</strong></div>'
+        three:
+          '#prefix': '<div><strong>Group 2</strong></div>'
 css: ''
 javascript: ''
 settings:
@@ -221,7 +248,7 @@ settings:
   page: true
   page_submit_path: ''
   page_confirm_path: ''
-  page_admin_theme: false
+  page_theme_name: ''
   form_title: source_entity_webform
   form_submit_once: false
   form_exception_message: ''
@@ -251,6 +278,11 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
   submission_label: ''
   submission_log: false
   submission_views: {  }
@@ -276,11 +308,19 @@ settings:
   wizard_progress_percentage: false
   wizard_progress_link: false
   wizard_progress_states: false
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
   wizard_start_label: ''
   wizard_preview_link: false
   wizard_confirmation: true
   wizard_confirmation_label: ''
   wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
   preview: 1
   preview_label: ''
   preview_title: ''
@@ -323,8 +363,11 @@ settings:
   purge_days: null
   results_disabled: false
   results_disabled_ignore: false
+  results_customize: false
   token_view: false
   token_update: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -376,8 +419,12 @@ handlers:
   debug:
     id: debug
     label: Debug
+    notes: ''
     handler_id: debug
     status: true
     conditions: {  }
     weight: 1
-    settings: {  }
+    settings:
+      format: yaml
+      submission: false
+variants: {  }

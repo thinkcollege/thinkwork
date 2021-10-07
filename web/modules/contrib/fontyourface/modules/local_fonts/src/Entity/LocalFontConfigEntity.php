@@ -27,7 +27,8 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *     "id" = "id",
  *     "label" = "label",
  *     "uuid" = "uuid",
- *     "font_family" = "font_family"
+ *     "font_family" = "font_family",
+ *     "font_classification" = "font_classification"
  *   },
  *   links = {
  *     "canonical" = "/admin/appearance/font/local_font_config_entity/{local_font_config_entity}",
@@ -35,6 +36,13 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *     "edit-form" = "/admin/appearance/font/local_font_config_entity/{local_font_config_entity}/edit",
  *     "delete-form" = "/admin/appearance/font/local_font_config_entity/{local_font_config_entity}/delete",
  *     "collection" = "/admin/appearance/font/local_font_config_entity"
+ *   },
+ *   config_export = {
+ *     "id",
+ *     "label",
+ *     "uuid",
+ *     "font_family",
+ *     "font_classification"
  *   }
  * )
  */

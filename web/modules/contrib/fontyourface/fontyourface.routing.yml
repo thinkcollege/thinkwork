@@ -15,3 +15,13 @@ entity.font.deactivate:
   requirements:
     _permission: 'administer font entities'
     js: 'nojs|ajax'
+
+font.settings:
+  path: '/admin/appearance/font/settings'
+  defaults:
+    _form: '\Drupal\fontyourface\Form\FontSettingsForm'
+    _title: 'Font settings'
+  requirements:
+    _permission: 'administer font entities'
+  options:
+    _admin_route: TRUE

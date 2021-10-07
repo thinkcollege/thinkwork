@@ -1,6 +1,6 @@
 /**
  * @file
- * Element color styles
+ * Color element styles.
  *
  * @see \Drupal\webform\Plugin\WebformElement\Color
  * @see webform-element-color-value-swatch.html.twig
@@ -39,6 +39,6 @@ input.form-color.form-color-large {
 
 input.form-color.form-color-output {
   width: 6em;
-  padding: 0 .5em;
+  padding: 0 0.5em;
   border-left: 0;
 }

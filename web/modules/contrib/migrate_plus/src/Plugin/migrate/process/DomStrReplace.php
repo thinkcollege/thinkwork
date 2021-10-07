@@ -16,8 +16,7 @@ use Drupal\migrate\Row;
  * Available configuration keys:
  * - mode: What to modify. Possible values:
  *   - attribute: One element attribute.
- * - expression: XPath query expression that will produce the \DOMNodeList to
- *   walk.
+ * - xpath: XPath query expression that will produce the \DOMNodeList to walk.
  * - attribute_options: A map of options related to the attribute mode. Required
  *   when mode is attribute. The keys can be:
  *   - name: Name of the attribute to match and modify.
@@ -38,7 +37,7 @@ use Drupal\migrate\Row;
  *     -
  *       plugin: dom_str_replace
  *       mode: attribute
- *       expression: '//a'
+ *       xpath: '//a'
  *       attribute_options:
  *         name: href
  *       search: 'foo'
@@ -46,7 +45,7 @@ use Drupal\migrate\Row;
  *     -
  *       plugin: dom_str_replace
  *       mode: attribute
- *       expression: '//a'
+ *       xpath: '//a'
  *       attribute_options:
  *         name: href
  *       regex: true
@@ -73,7 +72,7 @@ class DomStrReplace extends DomProcessBase {
       'regex' => FALSE,
     ];
     $options_validation = [
-      'expression' => NULL,
+      'xpath' => NULL,
       'mode' => ['attribute'],
       // @todo Move out once another mode is supported.
       // @see https://www.drupal.org/project/migrate_plus/issues/3042833
@@ -107,7 +106,7 @@ class DomStrReplace extends DomProcessBase {
   public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     $this->init($value, $destination_property);
 
-    foreach ($this->xpath->query($this->configuration['expression']) as $html_node) {
+    foreach ($this->xpath->query($this->configuration['xpath']) as $html_node) {
       $subject = $this->getSubject($html_node);
       if (empty($subject)) {
         // Could not find subject, skip processing.
@@ -183,7 +182,7 @@ class DomStrReplace extends DomProcessBase {
       $function = 'str_ireplace';
     }
     else {
-      $function = "str_replace";
+      $function = 'str_replace';
     }
     $new_subject = $function($search, $replace, $subject);
     $this->postReplace($html_node, $new_subject);

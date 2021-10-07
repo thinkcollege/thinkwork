@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\panels_ipe\FunctionalJavascript;
 
+use Behat\Mink\Driver\Selenium2Driver;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 
 /**
@@ -36,11 +37,15 @@ trait PanelsIPETestTrait {
    * Enables the in-place editing mode of IPE.
    */
   protected function enableEditing() {
+    $session = $this->getSession();
+
     // Click the "Edit" tab if it's not already active.
     $selector = '[data-tab-id="edit"]:not(.active)';
-    $inactive_tab = $this->getSession()->getPage()->find('css', $selector);
+    $inactive_tab = $session->getPage()->find('css', $selector);
     if ($inactive_tab) {
       $this->clickAndWait($selector);
+      // Accept alert dialog.
+      $session->getDriver()->getWebDriverSession()->accept_alert();
     }
     $this->assertSession()->elementExists('css', '[data-tab-id="edit"].active');
   }
@@ -62,11 +67,18 @@ trait PanelsIPETestTrait {
    * Breaks the lock of an IPE session.
    */
   protected function breakLock() {
+    $session = $this->getSession();
+
     // Click the "Locked" tab.
     $selector = '[data-tab-id="locked"]:not(.active)';
-    $inactive_tab = $this->getSession()->getPage()->find('css', $selector);
+    $inactive_tab = $session->getPage()->find('css', $selector);
     if ($inactive_tab) {
-      $this->click($selector);
+      $inactive_tab->click();
+
+      $driver = $session->getDriver();
+      if ($driver instanceof Selenium2Driver) {
+        $driver->getWebDriverSession()->accept_alert();
+      }
     }
   }
 
@@ -96,6 +108,13 @@ trait PanelsIPETestTrait {
 
     // Wait for the form to load/submit.
     $this->waitUntilNotPresent('.ipe-icon-loading');
+
+    // In Drupal 8.8 and later, the layout may have settings of its own. If this
+    // is the case, submit the layout settings form with no changes.
+    $button = $this->getSession()->getPage()->findButton('Change Layout');
+    if ($button) {
+      $button->press();
+    }
 
     // Wait for the edit tab to become active (happens automatically after
     // form submit).
@@ -204,7 +223,7 @@ trait PanelsIPETestTrait {
 
     // Ensure that the Block is removed.
     $message = 'Block does not exist after removal';
-    $this->assertElementNotPresent($base_selector, $message);
+    $this->assertSession()->elementNotExists($base_selector, $message);
   }
 
   /**

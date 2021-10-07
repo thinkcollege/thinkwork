@@ -3,6 +3,7 @@
 namespace Drupal\Tests\mailgun\Functional;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\mailgun\MailgunHandlerInterface;
 use Drupal\Tests\BrowserTestBase;
 
 /**
@@ -11,6 +12,11 @@ use Drupal\Tests\BrowserTestBase;
 abstract class MailgunFunctionalTestBase extends BrowserTestBase {
 
   use StringTranslationTrait;
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
 
   /**
    * Modules to enable.
@@ -40,7 +46,7 @@ abstract class MailgunFunctionalTestBase extends BrowserTestBase {
    */
   protected function setUp() {
     parent::setUp();
-    $this->mailgunConfig = $this->config(MAILGUN_CONFIG_NAME);
+    $this->mailgunConfig = $this->config(MailgunHandlerInterface::CONFIG_NAME);
   }
 
 }

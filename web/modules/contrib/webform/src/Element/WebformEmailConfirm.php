@@ -2,6 +2,7 @@
 
 namespace Drupal\webform\Element;
 
+use Drupal\Core\Render\Element;
 use Drupal\Core\Render\Element\FormElement;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\webform\Utility\WebformElementHelper;
@@ -92,6 +93,9 @@ class WebformEmailConfirm extends FormElement {
     $mail_1_properties = [
       '#title',
       '#description',
+      '#help_title',
+      '#help',
+      '#help_display',
     ];
     $element['mail_1'] = $element_shared_properties + array_intersect_key($element, array_combine($mail_1_properties, $mail_1_properties));
     $element['mail_1']['#attributes']['class'][] = 'webform-email';
@@ -124,9 +128,14 @@ class WebformEmailConfirm extends FormElement {
     $element['#description_display'] = 'invisible';
 
     // Remove properties that are being applied to the sub elements.
-    unset($element['#maxlength']);
-    unset($element['#attributes']);
-    unset($element['#description']);
+    unset(
+      $element['#maxlength'],
+      $element['#attributes'],
+      $element['#description'],
+      $element['#help'],
+      $element['#help_title'],
+      $element['#help_display']
+    );
 
     // Add validate callback.
     $element += ['#element_validate' => []];
@@ -166,8 +175,7 @@ class WebformEmailConfirm extends FormElement {
 
     $mail_1 = trim($mail_element['mail_1']['#value']);
     $mail_2 = trim($mail_element['mail_2']['#value']);
-    $has_access = (!isset($element['#access']) || $element['#access'] === TRUE);
-    if ($has_access) {
+    if (Element::isVisibleElement($element)) {
       // Compare email addresses.
       if ((!empty($mail_1) || !empty($mail_2)) && strcmp($mail_1, $mail_2)) {
         $form_state->setError($element, t('The specified email addresses do not match.'));

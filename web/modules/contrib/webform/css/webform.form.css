@@ -1,7 +1,21 @@
 /**
  * @file
- * Webform styles.
+ * Webform form styles.
  */
+
+/**
+ * This allows components to be hidden when a JS plugin provides the UI.
+ */
+html.js .js-webform-visually-hidden,
+html.js .js-webform-visually-hidden[style*="display: none"] {
+  display: inline !important;
+  position: absolute !important;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  width: 1px;
+  height: 1px;
+  word-wrap: normal;
+}
 
 /**
  * Element states.
@@ -18,11 +32,16 @@
 }
 
 /**
- * Make sure flexbox is always using 'display: flex' when toggled via #states.
- * @see https://stackoverflow.com/questions/38491653/jquery-show-a-flex-box/4121
+ * Form inline. (This is not included in all themes)
  */
-.webform-flexbox.js-webform-states-hidden[style*='display: block'] {
-  display: flex !important;
+.form--inline .form-item {
+  float: left; /* LTR */
+  margin-right: 0.5em; /* LTR */
+}
+[dir="rtl"] .form--inline .form-item {
+  float: right;
+  margin-right: 0;
+  margin-left: 0.5em;
 }
 
 /**
@@ -65,8 +84,8 @@
 
 [dir=rtl] .form-composite.webform-fieldset--title-inline legend {
   float: right; /* RTL */
-  margin-left: 0.5em; /* RTL */
   margin-right: 0; /* RTL */
+  margin-left: 0.5em; /* RTL */
 }
 
 .form-composite.webform-fieldset--title-inline .fieldset-wrapper,
@@ -80,6 +99,15 @@
 .webform-element--title-inline .form-radios,
 .webform-element--title-inline .form-checkboxes {
   display: inline;
+}
+
+/**
+ * Clientside validation errors.
+
+ * @see webform_clientside_validation.ife.css
+ */
+.webform-submission-form strong.error.form-item--error-message {
+  display: block;
 }
 
 /**
@@ -97,7 +125,7 @@
 .webform-readonly input[type="time"],
 .webform-readonly input[type="url"],
 .webform-readonly textarea {
-  background: #ededed;
-  border-color: #bbb;
   color: #717171;
+  border-color: #bbb;
+  background: #ededed;
 }

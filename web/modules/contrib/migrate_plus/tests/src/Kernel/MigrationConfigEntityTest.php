@@ -14,6 +14,9 @@ use Drupal\Tests\migrate\Kernel\MigrateTestBase;
  */
 class MigrationConfigEntityTest extends MigrateTestBase {
 
+  /**
+   * {@inheritdoc}
+   */
   public static $modules = [
     'migrate',
     'migrate_plus',
@@ -34,7 +37,7 @@ class MigrationConfigEntityTest extends MigrateTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->pluginManager = \Drupal::service('plugin.manager.migration');
     $this->installConfig('migrate_plus');
@@ -45,7 +48,7 @@ class MigrationConfigEntityTest extends MigrateTestBase {
   /**
    * Tests cache invalidation.
    */
-  public function testCacheInvalidation() {
+  public function testCacheInvalidation(): void {
     $config = Migration::create([
       'id' => 'test',
       'status' => TRUE,
@@ -57,7 +60,7 @@ class MigrationConfigEntityTest extends MigrateTestBase {
     ]);
     $config->save();
 
-    $this->assertTrue($this->pluginManager->getDefinition('test'));
+    $this->assertNotEmpty($this->pluginManager->getDefinition('test'));
     $this->assertSame('Label A', $this->pluginManager->getDefinition('test')['label']);
 
     // Clear static cache in the plugin manager, the cache tag take care of the
@@ -74,7 +77,7 @@ class MigrationConfigEntityTest extends MigrateTestBase {
   /**
    * Tests migration status.
    */
-  public function testMigrationStatus() {
+  public function testMigrationStatus(): void {
     $configs = [
       [
         'id' => 'test_active',
@@ -104,14 +107,15 @@ class MigrationConfigEntityTest extends MigrateTestBase {
     $this->assertCount(1, $definitions);
     $this->assertArrayHasKey('test_active', $definitions);
 
-    $this->setExpectedException(PluginNotFoundException::class, 'The "test_inactive" plugin does not exist.');
+    $this->expectException(PluginNotFoundException::class);
+    $this->expectExceptionMessage('The "test_inactive" plugin does not exist.');
     $this->pluginManager->getDefinition('test_inactive');
   }
 
   /**
    * Tests migration from configuration.
    */
-  public function testImport() {
+  public function testImport(): void {
     $this->installConfig('migrate_plus_test');
     /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
     $migration = $this->pluginManager->createInstance('fruit_terms');

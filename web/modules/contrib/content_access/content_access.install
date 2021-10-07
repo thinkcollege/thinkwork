@@ -43,15 +43,15 @@ function content_access_schema() {
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
-        'default' => 0
+        'default' => 0,
       ],
       'settings' => [
         'type' => 'text',
         'not null' => FALSE,
-        'size' => 'medium'
+        'size' => 'medium',
       ],
     ],
-    'primary key' => ['nid']
+    'primary key' => ['nid'],
   ];
 
   return $schema;

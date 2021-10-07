@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\subpathauto\Unit;
 
-use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Language\Language;
 use Drupal\Core\Url;
 use Drupal\Tests\UnitTestCase;
@@ -16,7 +15,7 @@ use Drupal\subpathauto\PathProcessor;
 class SubPathautoTest extends UnitTestCase {
 
   /**
-   * @var \Drupal\Core\PathProcessor\PathProcessorAlias|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\path_alias\PathProcessor\AliasPathProcessor|\PHPUnit_Framework_MockObject_MockObject
    */
   protected $aliasProcessor;
 
@@ -65,20 +64,20 @@ class SubPathautoTest extends UnitTestCase {
   public function setUp() {
     parent::setUp();
 
-    $this->aliasProcessor = $this->getMockBuilder('Drupal\Core\PathProcessor\PathProcessorAlias')
+    $this->aliasProcessor = $this->getMockBuilder('Drupal\path_alias\PathProcessor\AliasPathProcessor')
       ->disableOriginalConstructor()
       ->getMock();
 
-    $this->languageManager = $this->getMock('Drupal\Core\Language\LanguageManagerInterface');
+    $this->languageManager = $this->createMock('Drupal\Core\Language\LanguageManagerInterface');
     $this->languageManager->expects($this->any())
       ->method('getCurrentLanguage')
       ->willReturn(new Language(Language::$defaultValues));
 
-    $this->pathValidator = $this->getMock('Drupal\Core\Path\PathValidatorInterface');
+    $this->pathValidator = $this->createMock('Drupal\Core\Path\PathValidatorInterface');
 
-    $this->subPathautoSettings = $this->getMock('Drupal\Core\Config\ConfigBase');
+    $this->subPathautoSettings = $this->createMock('Drupal\Core\Config\ConfigBase');
 
-    $this->configFactory = $this->getMock('Drupal\Core\Config\ConfigFactoryInterface');
+    $this->configFactory = $this->createMock('Drupal\Core\Config\ConfigFactoryInterface');
     $this->configFactory->expects($this->any())
       ->method('get')
       ->with('subpathauto.settings')
@@ -94,7 +93,7 @@ class SubPathautoTest extends UnitTestCase {
   public function testInboundSubPath() {
     $this->aliasProcessor->expects($this->any())
       ->method('processInbound')
-      ->will($this->returnCallback([$this, 'pathAliasCallback']));
+      ->willReturnCallback([$this, 'pathAliasCallback']);
     $this->pathValidator->expects($this->any())
       ->method('getUrlIfValidWithoutAccessCheck')
       ->willReturn(new Url('any_route'));
@@ -142,7 +141,7 @@ class SubPathautoTest extends UnitTestCase {
 
     $this->aliasProcessor->expects($this->any())
       ->method('processInbound')
-      ->will($this->returnCallback([$this, 'pathAliasCallback']));
+      ->willReturnCallback([$this, 'pathAliasCallback']);
 
     // Subpath shouldn't be processed since the iterations has been limited.
     $processed = $this->sut->processInbound('/content/first-node/first/second/third/fourth', Request::create('/content/first-node/first/second/third/fourth'));
@@ -169,7 +168,7 @@ class SubPathautoTest extends UnitTestCase {
   public function testOutboundSubPath() {
     $this->aliasProcessor->expects($this->any())
       ->method('processOutbound')
-      ->will($this->returnCallback([$this, 'aliasByPathCallback']));
+      ->willReturnCallback([$this, 'aliasByPathCallback']);
     $this->subPathautoSettings->expects($this->atLeastOnce())
       ->method('get')
       ->willReturn(0);
@@ -209,7 +208,7 @@ class SubPathautoTest extends UnitTestCase {
 
     $this->aliasProcessor->expects($this->any())
       ->method('processOutbound')
-      ->will($this->returnCallback([$this, 'aliasByPathCallback']));
+      ->willReturnCallback([$this, 'aliasByPathCallback']);
 
     // Subpath shouldn't be processed since the iterations has been limited.
     $processed = $this->sut->processOutbound('/node/1/first/second/third/fourth');

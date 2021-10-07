@@ -37,7 +37,7 @@ class WebformResultsExportController extends ControllerBase implements Container
   protected $submissionExporter;
 
   /**
-   * Webform request handler.
+   * The webform request handler.
    *
    * @var \Drupal\webform\WebformRequestInterface
    */
@@ -190,7 +190,7 @@ class WebformResultsExportController extends ControllerBase implements Container
     }
 
     $response = new BinaryFileResponse($file_path, 200, $headers, FALSE, $download ? 'attachment' : 'inline');
-    // Don't delete the file during automatted tests.
+    // Don't delete the file during automated tests.
     // @see \Drupal\webform\Tests\WebformResultsExportDownloadTest
     // @see \Drupal\Tests\webform_entity_print\Functional\WebformEntityPrintFunctionalTest
     if (!drupal_valid_test_ua()) {
@@ -294,8 +294,11 @@ class WebformResultsExportController extends ControllerBase implements Container
     $context['message'] = t('Exported @count of @total submissions…', ['@count' => $context['sandbox']['progress'], '@total' => $context['sandbox']['max']]);
 
     // Track finished.
-    if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+    if ($context['sandbox']['max'] > 0 && $context['sandbox']['progress'] !== $context['sandbox']['max']) {
       $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
+    }
+    else {
+      $context['finished'] = 1;
     }
   }
 

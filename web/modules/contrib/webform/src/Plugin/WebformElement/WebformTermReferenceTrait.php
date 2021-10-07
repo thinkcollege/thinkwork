@@ -55,7 +55,7 @@ trait WebformTermReferenceTrait {
 
     $form['term_reference'] = [
       '#type' => 'fieldset',
-      '#title' => t('Term reference settings'),
+      '#title' => $this->t('Term reference settings'),
       '#weight' => -40,
     ];
     $form['term_reference']['vocabulary'] = [
@@ -102,6 +102,11 @@ trait WebformTermReferenceTrait {
           ],
         ],
       ],
+    ];
+    $form['term_reference']['depth'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Limit term depth'),
+      '#field_suffix' => $this->t('level(s)'),
     ];
     $form['term_reference']['scroll'] = [
       '#type' => 'checkbox',

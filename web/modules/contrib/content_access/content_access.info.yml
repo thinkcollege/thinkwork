@@ -1,14 +1,17 @@
 name: Content Access
 type: module
 description: 'Provides flexible content access control.'
-# core: 8.x
+core: 8.x
+core_version_requirement: ^8 || ^9
 package: 'Access control'
 
 dependencies:
-  - node
+  - drupal:node
 
-# Information added by Drupal.org packaging script on 2017-11-07
-version: '8.x-1.0-alpha1'
-core: '8.x'
+test_dependencies:
+  - drupal:acl
+
+# Information added by Drupal.org packaging script on 2020-09-17
+version: '8.x-1.0-alpha3'
 project: 'content_access'
-datestamp: 1510069090
+datestamp: 1600327759

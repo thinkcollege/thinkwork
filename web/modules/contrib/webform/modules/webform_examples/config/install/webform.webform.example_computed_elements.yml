@@ -1,3 +1,4 @@
+uuid: null
 langcode: en
 status: open
 dependencies:
@@ -15,55 +16,6 @@ title: 'Example: Computed'
 description: 'Examples of a computed elements.'
 category: Example
 elements: |
-  calculation:
-    '#title': Calculation
-    '#type': webform_wizard_page
-    '#open': true
-    calculation_section:
-      '#type': webform_section
-      '#title': 'Basic adding calculation using a ''computed twig'' element'
-      container:
-        '#type': container
-        '#attributes':
-          class:
-            - 'container-inline clearfix'
-        a:
-          '#type': number
-          '#title': a
-          '#title_display': invisible
-          '#placeholder': a
-        markup:
-          '#type': webform_markup
-          '#markup': ' + '
-        b:
-          '#type': number
-          '#title': b
-          '#title_display': invisible
-          '#placeholder': b
-        markup_01:
-          '#type': webform_markup
-          '#markup': ' = '
-        c:
-          '#type': webform_computed_twig
-          '#title': c
-          '#title_display': invisible
-          '#ajax': true
-          '#template': '{% if data.a|length and data.b|length %}{{ data.a + data.b }}{% else %}c{% endif %}'
-    message_warning:
-      '#type': webform_message
-      '#states':
-        visible:
-          ':input[name="c"]':
-            value: c
-      '#message_type': warning
-      '#message_message': 'Please enter <strong>a</strong> and <strong>b</strong> to perform a basic adding calculation.'
-    message_status:
-      '#type': webform_message
-      '#message_message': 'Thank you for entering <strong>a</strong> and <strong>b</strong> to perform basic adding calculation.'
-      '#states':
-        visible:
-          ':input[name="c"]':
-            '!value': c
   information:
     '#title': 'Your Information'
     '#type': webform_wizard_page
@@ -107,7 +59,7 @@ settings:
   page: true
   page_submit_path: ''
   page_confirm_path: ''
-  page_admin_theme: false
+  page_theme_name: ''
   form_title: source_entity_webform
   form_submit_once: false
   form_exception_message: ''
@@ -137,6 +89,11 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
   submission_label: ''
   submission_log: false
   submission_views: {  }
@@ -162,11 +119,19 @@ settings:
   wizard_progress_percentage: false
   wizard_progress_link: false
   wizard_progress_states: false
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
   wizard_start_label: ''
   wizard_preview_link: false
   wizard_confirmation: true
   wizard_confirmation_label: ''
   wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
   preview: 0
   preview_label: ''
   preview_title: ''
@@ -209,8 +174,11 @@ settings:
   purge_days: null
   results_disabled: false
   results_disabled_ignore: false
+  results_customize: false
   token_view: false
   token_update: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -259,3 +227,4 @@ access:
     users: {  }
     permissions: {  }
 handlers: {  }
+variants: {  }

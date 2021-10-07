@@ -11,10 +11,18 @@ use Psr\Log\LogLevel;
 trait ActionCommonTrait {
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   *   The entity type manager.
+   */
+  protected $entityTypeManager;
+
+  /**
    * Verifies that per content settings are activated for the given node.
    */
   protected function checkSetting(NodeInterface $node) {
-    $config = \Drupal::configFactory()->getEditable('content_access.settings');
+    $config = $this->configFactory->getEditable('content_access.settings');
 
     $type = $node->getType();
     $settings = unserialize($config->get('content_access_node_type.' . $type));
@@ -48,7 +56,7 @@ trait ActionCommonTrait {
    * Apply the new grants to the affected node.
    */
   protected function aquireGrants(NodeInterface $node) {
-    \Drupal::entityTypeManager()->getAccessControlHandler('node')->writeGrants($node);
+    $this->entityTypeManager->getAccessControlHandler('node')->writeGrants($node);
   }
 
   /**
@@ -67,7 +75,7 @@ trait ActionCommonTrait {
 
     foreach ($settings as $op => $uid) {
       $acl_id = content_access_get_acl_id($node, $op);
-      acl_node_add_acl($node->nid, $acl_id, (int) ($op == 'view'), (int) ($op == 'update'), (int) ($op == 'delete'), content_access_get_settings('priority', $node->getType()));
+      acl_node_add_acl($node->id(), $acl_id, (int) ($op == 'view'), (int) ($op == 'update'), (int) ($op == 'delete'), content_access_get_settings('priority', $node->getType()));
 
       $this->database->delete('acl_user')
         ->condition('acl_id', $acl_id)

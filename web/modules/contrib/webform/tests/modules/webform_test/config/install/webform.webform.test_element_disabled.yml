@@ -27,22 +27,6 @@ elements: |
     '#type': webform_autocomplete
     '#title': Autocomplete
     '#disabled': true
-  webform_buttons:
-    '#type': webform_buttons
-    '#title': Buttons
-    '#options':
-      one: One
-      two: Two
-      three: Three
-    '#disabled': true
-  webform_buttons_other:
-    '#type': webform_buttons_other
-    '#title': 'Buttons other'
-    '#options':
-      one: One
-      two: Two
-      three: Three
-    '#disabled': true
   checkbox:
     '#type': checkbox
     '#title': Checkbox
@@ -173,6 +157,10 @@ elements: |
     '#title': File
     '#description': '<b>Known Issues:</b><br /><a href="https://www.drupal.org/node/2705471">Issue #2705471: Webform states managed file fields</a><br /><a href="https://www.drupal.org/node/2113931">Issue #2113931: File Field design update</a><br /><a href="https://www.drupal.org/node/2346893">Issue #2346893: Duplicate Ajax wrapper around a file field</a><br /><a href="https://www.drupal.org/node/2482783">Issue #2482783: File upload errors not set or shown correctly</a>'
     '#disabled': true
+  webform_height:
+    '#type': webform_height
+    '#title': 'Height (feet/inches)'
+    '#disabled': true
   webform_image_file:
     '#type': webform_image_file
     '#title': 'Image file'
@@ -200,13 +188,6 @@ elements: |
   webform_location_places:
     '#type': webform_location_places
     '#title': 'Location (Algolia Places)'
-    '#disabled': true
-  webform_location_geocomplete:
-    '#type': webform_location_geocomplete
-    '#title': 'Location (Geocomplete)'
-    '#map': true
-    '#geolocation': true
-    '#format': map
     '#disabled': true
   machine_name:
     '#type': machine_name
@@ -277,6 +258,16 @@ elements: |
     '#type': webform_rating
     '#title': Rating
     '#disabled': true
+  webform_same:
+    '#type': webform_same
+    '#title': 'Billing address is the same as the shipping address'
+    '#disabled': true
+  webform_scale:
+    '#type': webform_scale
+    '#title': Scale
+    '#min': 1
+    '#max': 5
+    '#disabled': true
   search:
     '#type': search
     '#title': Search
@@ -297,6 +288,10 @@ elements: |
       one: One
       two: Two
       three: Three
+    '#disabled': true
+  webform_signature:
+    '#type': webform_signature
+    '#title': Signature
     '#disabled': true
   tableselect:
     '#type': tableselect
@@ -362,18 +357,6 @@ elements: |
     '#title': Time
     '#description': '<b>Known Issues:</b><br /><a href="https://www.drupal.org/node/1838234">Issue #1838234: Add jQuery Timepicker for the Time element of the datetime field</a>'
     '#disabled': true
-  webform_toggle:
-    '#type': webform_toggle
-    '#title': Toggle
-    '#disabled': true
-  webform_toggles:
-    '#type': webform_toggles
-    '#title': Toggles
-    '#options':
-      one: One
-      two: Two
-      three: Three
-    '#disabled': true
   url:
     '#type': url
     '#title': URL
@@ -382,7 +365,6 @@ elements: |
     '#type': webform_video_file
     '#title': 'Video file'
     '#disabled': true
-  
 css: ''
 javascript: ''
 settings:
@@ -394,7 +376,7 @@ settings:
   page: true
   page_submit_path: ''
   page_confirm_path: ''
-  page_admin_theme: false
+  page_theme_name: ''
   form_title: source_entity_webform
   form_submit_once: false
   form_exception_message: ''
@@ -424,6 +406,11 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
   submission_label: ''
   submission_log: false
   submission_views: {  }
@@ -449,11 +436,19 @@ settings:
   wizard_progress_percentage: false
   wizard_progress_link: false
   wizard_progress_states: false
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
   wizard_start_label: ''
   wizard_preview_link: false
   wizard_confirmation: true
   wizard_confirmation_label: ''
   wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
   preview: 1
   preview_label: ''
   preview_title: ''
@@ -496,8 +491,11 @@ settings:
   purge_days: null
   results_disabled: false
   results_disabled_ignore: false
+  results_customize: false
   token_view: false
   token_update: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -546,3 +544,4 @@ access:
     users: {  }
     permissions: {  }
 handlers: {  }
+variants: {  }

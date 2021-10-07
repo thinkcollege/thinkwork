@@ -18,10 +18,11 @@ class DomTest extends MigrateProcessTestCase {
   /**
    * @covers ::__construct
    */
-  public function testConfigMethodEmpty() {
+  public function testConfigMethodEmpty(): void {
     $configuration = [];
     $value = '<p>A simple paragraph.</p>';
-    $this->setExpectedException(\InvalidArgumentException::class, 'The "method" must be set.');
+    $this->expectException(\InvalidArgumentException::class);
+    $this->expectExceptionMessage('The "method" must be set.');
     (new Dom($configuration, 'dom', []))
       ->transform($value, $this->migrateExecutable, $this->row, 'destinationproperty');
   }
@@ -29,10 +30,11 @@ class DomTest extends MigrateProcessTestCase {
   /**
    * @covers ::__construct
    */
-  public function testConfigMethodInvalid() {
+  public function testConfigMethodInvalid(): void {
     $configuration['method'] = 'invalid';
     $value = '<p>A simple paragraph.</p>';
-    $this->setExpectedException(\InvalidArgumentException::class, 'The "method" must be "import" or "export".');
+    $this->expectException(\InvalidArgumentException::class);
+    $this->expectExceptionMessage('The "method" must be "import" or "export".');
     (new Dom($configuration, 'dom', []))
       ->transform($value, $this->migrateExecutable, $this->row, 'destinationproperty');
   }
@@ -40,7 +42,7 @@ class DomTest extends MigrateProcessTestCase {
   /**
    * @covers ::import
    */
-  public function testImportNonRoot() {
+  public function testImportNonRoot(): void {
     $configuration['method'] = 'import';
     $value = '<p>A simple paragraph.</p>';
     $document = (new Dom($configuration, 'dom', []))
@@ -51,10 +53,11 @@ class DomTest extends MigrateProcessTestCase {
   /**
    * @covers ::import
    */
-  public function testImportNonRootInvalidInput() {
+  public function testImportNonRootInvalidInput(): void {
     $configuration['method'] = 'import';
     $value = [1, 1];
-    $this->setExpectedException(MigrateException::class, 'Cannot import a non-string value.');
+    $this->expectException(MigrateException::class);
+    $this->expectExceptionMessage('Cannot import a non-string value.');
     (new Dom($configuration, 'dom', []))
       ->transform($value, $this->migrateExecutable, $this->row, 'destinationproperty');
   }
@@ -62,7 +65,7 @@ class DomTest extends MigrateProcessTestCase {
   /**
    * @covers ::export
    */
-  public function testExportNonRoot() {
+  public function testExportNonRoot(): void {
     $configuration['method'] = 'export';
     $partial = '<p>A simple paragraph.</p>';
     $document = Html::load($partial);
@@ -74,9 +77,10 @@ class DomTest extends MigrateProcessTestCase {
   /**
    * @covers ::export
    */
-  public function testExportNonRootInvalidInput() {
+  public function testExportNonRootInvalidInput(): void {
     $configuration['method'] = 'export';
-    $this->setExpectedException(MigrateException::class, 'Cannot export a "string".');
+    $this->expectException(MigrateException::class);
+    $this->expectExceptionMessage('Cannot export a "string".');
     (new Dom($configuration, 'dom', []))
       ->transform('string is not DOMDocument', $this->migrateExecutable, $this->row, 'destinationproperty');
   }

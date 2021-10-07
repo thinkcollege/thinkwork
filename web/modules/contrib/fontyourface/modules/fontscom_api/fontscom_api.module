@@ -5,6 +5,7 @@
  * Fonts.com API module file.
  */
 
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\Html;
@@ -37,7 +38,7 @@ function fontscom_api_fontyourface_api() {
  */
 function fontscom_api_modules_installed($modules) {
   if (in_array('fontscom_api', $modules)) {
-    drupal_set_message(t('Fonts.com settings needs to be set up in order to import fonts from Fonts.com. Please use @link to import Fonts.com fonts.', ['@link' => Link::createFromRoute('@font-your-face settings', 'font.settings')->toString()]));
+    Drupal::messenger()->addMessage(t('Fonts.com settings needs to be set up in order to import fonts from Fonts.com. Please use @link to import Fonts.com fonts.', ['@link' => Link::createFromRoute('@font-your-face settings', 'font.settings')->toString()]));
   }
 }
 
@@ -122,7 +123,7 @@ function fontscom_api_form_font_settings_submit(&$form, FormStateInterface $form
   $config->save();
   fontscom_api_get_allowed_api_filters(TRUE);
   fontscom_api_get_all_remote_fonts_count(TRUE);
-  drupal_set_message(t('Saved Fonts.com Authentication Key'));
+  Drupal::messenger()->addMessage(t('Saved Fonts.com Authentication Key'));
 }
 
 /**
@@ -155,9 +156,9 @@ function fontscom_api_page_attachments(&$page) {
   if (!empty($font_css)) {
     $hash = hash('sha256', $font_css);
     $directory_location = 'fontyourface/fontscom_api';
-    file_prepare_directory($directory_location, FILE_CREATE_DIRECTORY);
+    \Drupal::service('file_system')->prepareDirectory($directory_location, FileSystemInterface::CREATE_DIRECTORY);
     if (!file_exists($directory_location . '/fontyourface-stylesheet-' . $hash . '.css')) {
-      file_unmanaged_save_data($font_css, $directory_location . '/fontyourface-stylesheet-' . $hash . '.css', FILE_EXISTS_REPLACE);
+      \Drupal::service('file_system')->saveData($font_css, $directory_location . '/fontyourface-stylesheet-' . $hash . '.css', FileSystemInterface::EXISTS_REPLACE);
     }
     $page['#attached']['html_head'][] = [
       [
@@ -253,11 +254,11 @@ function fontscom_api_fontyourface_import($font_context = []) {
       $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
     }
     else {
-      drupal_set_message(t('Imported @count fonts from fonts.com', ['@count' => $context['sandbox']['font_count']]));
+      Drupal::messenger()->addMessage(t('Imported @count fonts from fonts.com', ['@count' => $context['sandbox']['font_count']]));
     }
   }
   else {
-    drupal_set_message(t('Due to the number of fonts, automated import from install for Fonts.com is disabled. Please enter your Authentication Key and Project ID first before trying to import fonts.'));
+    Drupal::messenger()->addMessage(t('Due to the number of fonts, automated import from install for Fonts.com is disabled. Please enter your Authentication Key and Project ID first before trying to import fonts.'));
   }
   return $context;
 }
@@ -301,7 +302,7 @@ function fontscom_api_get_projects() {
     $data = json_decode((string) $response->getBody());
   }
   catch (Exception $e) {
-    drupal_set_message(t('There was an error retrieving project list from Fonts.com. Error: %error', ['%error' => $e->getMessage()]), 'error');
+    Drupal::messenger()->addMessage(t('There was an error retrieving project list from Fonts.com. Error: %error', ['%error' => $e->getMessage()]), 'error');
     return [];
   }
 
@@ -355,7 +356,7 @@ function fontscom_api_get_all_fonts($start = 0, $limit = 50) {
 
   $filters = fontscom_api_get_allowed_api_filters();
   if ($filters->FreeOrPaid == 0) {
-    $query['wfsfree'] = 'true';
+    $query['wfsfree'] = 'TRUE';
   }
 
   try {
@@ -365,7 +366,7 @@ function fontscom_api_get_all_fonts($start = 0, $limit = 50) {
     $data = json_decode((string) $response->getBody());
   }
   catch (Exception $e) {
-    drupal_set_message(t('There was an error importing fonts from Fonts.com. Error: %error', ['%error' => $e->getMessage()]), 'error');
+    Drupal::messenger()->addMessage(t('There was an error importing fonts from Fonts.com. Error: %error', ['%error' => $e->getMessage()]), 'error');
     return FALSE;
   }
   return $data->AllFonts->Font;
@@ -396,7 +397,7 @@ function fontscom_api_get_all_remote_fonts_count($reset = FALSE) {
     $data = json_decode((string) $response->getBody());
   }
   catch (Exception $e) {
-    drupal_set_message(t('There was an error retrieving total Font count from Fonts.com. Error: %error', ['%error' => $e->getMessage()]), 'error');
+    Drupal::messenger()->addMessage(t('There was an error retrieving total Font count from Fonts.com. Error: %error', ['%error' => $e->getMessage()]), 'error');
     return FALSE;
   }
   \Drupal::cache()->set('fontscom_api_remote_fonts_count', $data->AllFonts->TotalRecords);
@@ -424,7 +425,7 @@ function fontscom_api_get_allowed_api_filters($reset = FALSE) {
     $data = json_decode((string) $response->getBody());
   }
   catch (Exception $e) {
-    drupal_set_message(t('There was an error retrieving Font filters from Fonts.com. Error: %error', ['%error' => $e->getMessage()]), 'error');
+    Drupal::messenger()->addMessage(t('There was an error retrieving Font filters from Fonts.com. Error: %error', ['%error' => $e->getMessage()]), 'error');
     return FALSE;
   }
   \Drupal::cache()->set('fontscom_api_allowed_api_filters', $data->FilterValues);
@@ -446,7 +447,7 @@ function fontscom_api_get_all_enabled_fonts() {
     $data = json_decode((string) $response->getBody());
   }
   catch (Exception $e) {
-    drupal_set_message(t('There was an error retrieving total Font count from Fonts.com. Error: %error', ['%error' => $e->getMessage()]), 'error');
+    Drupal::messenger()->addMessage(t('There was an error retrieving total Font count from Fonts.com. Error: %error', ['%error' => $e->getMessage()]), 'error');
     return FALSE;
   }
   $enabled_fonts = [];
@@ -480,7 +481,7 @@ function fontscom_api_add_font_to_current_project($fid) {
     return TRUE;
   }
   catch (Exception $e) {
-    drupal_set_message(t('There was an error adding font to Fonts.com project. Error: %error', ['%error' => Psr7\str($e->getResponse())]), 'error');
+    Drupal::messenger()->addMessage(t('There was an error adding font to Fonts.com project. Error: %error', ['%error' => Psr7\str($e->getResponse())]), 'error');
     return FALSE;
   }
 }
@@ -505,7 +506,7 @@ function fontscom_api_remove_font_from_current_project($fid) {
     return TRUE;
   }
   catch (Exception $e) {
-    drupal_set_message(t('There was an error removing font from Fonts.com project. Error: %error', ['%error' => Psr7\str($e->getResponse())]), 'error');
+    Drupal::messenger()->addMessage(t('There was an error removing font from Fonts.com project. Error: %error', ['%error' => Psr7\str($e->getResponse())]), 'error');
     return FALSE;
   }
 }
@@ -524,7 +525,7 @@ function fontscom_api_publish_updated_project() {
     return TRUE;
   }
   catch (Exception $e) {
-    drupal_set_message(t('There was an error publishing project on Fonts.com. Error: %error', ['%error' => Psr7\str($e->getResponse())]), 'error');
+    Drupal::messenger()->addMessage(t('There was an error publishing project on Fonts.com. Error: %error', ['%error' => Psr7\str($e->getResponse())]), 'error');
     return FALSE;
   }
 }
@@ -595,7 +596,7 @@ function _fontscom_api_generate_font_css(FontInterface $font) {
     $lines[] = "url('{$metadata['woff']}') format('woff')";
   }
   if ($metadata['svg']) {
-    $lines[] = "url('{$metadata['svg']}#{$css_family}') format('svg')";
+    $lines[] = "url('{$metadata['svg']}#{$font->css_family->value}') format('svg')";
   }
 
   $data .= 'src: ' . implode(', ', $lines) . ";\n";

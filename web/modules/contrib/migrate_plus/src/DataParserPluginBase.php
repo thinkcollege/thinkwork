@@ -80,10 +80,10 @@ abstract class DataParserPluginBase extends PluginBase implements DataParserPlug
    *   The data fetcher plugin.
    */
   public function getDataFetcherPlugin() {
-    if (!isset($this->dataFetcherPlugin)) {
-      $this->dataFetcherPlugin = \Drupal::service('plugin.manager.migrate_plus.data_fetcher')->createInstance($this->configuration['data_fetcher_plugin'], $this->configuration);
+    if (!isset($this->dataFetcher)) {
+      $this->dataFetcher = \Drupal::service('plugin.manager.migrate_plus.data_fetcher')->createInstance($this->configuration['data_fetcher_plugin'], $this->configuration);
     }
-    return $this->dataFetcherPlugin;
+    return $this->dataFetcher;
   }
 
   /**
@@ -149,13 +149,17 @@ abstract class DataParserPluginBase extends PluginBase implements DataParserPlug
    *   TRUE if a valid source URL was opened
    */
   protected function nextSource() {
+    if (empty($this->urls)) {
+      return FALSE;
+    }
+
     while ($this->activeUrl === NULL || (count($this->urls) - 1) > $this->activeUrl) {
       if (is_null($this->activeUrl)) {
         $this->activeUrl = 0;
       }
       else {
         // Increment the activeUrl so we try to load the next source.
-        $this->activeUrl = $this->activeUrl + 1;
+        ++$this->activeUrl;
         if ($this->activeUrl >= count($this->urls)) {
           return FALSE;
         }

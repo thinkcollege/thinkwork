@@ -9,12 +9,11 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\mailgun\MailgunHandlerInterface;
 use Html2Text\Html2Text;
-use Drupal\Component\Utility\Html;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Modify the Drupal mail system to use Mandrill when sending emails.
+ * Default Mailgun mail system plugin.
  *
  * @Mail(
  *   id = "mailgun_mail",
@@ -60,7 +59,7 @@ class MailgunMail implements MailInterface, ContainerFactoryPluginInterface {
   protected $mailgunHandler;
 
   /**
-   * Mailgun constructor.
+   * MailgunMail constructor.
    */
   public function __construct(ImmutableConfig $settings, LoggerInterface $logger, RendererInterface $renderer, QueueFactory $queueFactory, MailgunHandlerInterface $mailgunHandler) {
     $this->mailgunConfig = $settings;
@@ -75,7 +74,7 @@ class MailgunMail implements MailInterface, ContainerFactoryPluginInterface {
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
-      $container->get('config.factory')->get(MAILGUN_CONFIG_NAME),
+      $container->get('config.factory')->get(MailgunHandlerInterface::CONFIG_NAME),
       $container->get('logger.factory')->get('mailgun'),
       $container->get('renderer'),
       $container->get('queue'),
@@ -84,13 +83,7 @@ class MailgunMail implements MailInterface, ContainerFactoryPluginInterface {
   }
 
   /**
-   * Concatenate and wrap the e-mail body for either plain-text or HTML e-mails.
-   *
-   * @param array $message
-   *   A message array, as described in hook_mail_alter().
-   *
-   * @return array
-   *   The formatted $message.
+   * {@inheritdoc}
    */
   public function format(array $message) {
     // Join the body array into one string.
@@ -104,46 +97,103 @@ class MailgunMail implements MailInterface, ContainerFactoryPluginInterface {
       $message['body'] = check_markup($message['body'], $format, $message['langcode']);
     }
 
+    // Skip theme formatting if the message does not support HTML.
+    if (isset($message['params']['html']) && !$message['params']['html']) {
+      return $message;
+    }
+
     // Wrap body with theme function.
     if ($this->mailgunConfig->get('use_theme')) {
       $render = [
         '#theme' => isset($message['params']['theme']) ? $message['params']['theme'] : 'mailgun',
         '#message' => $message,
       ];
-      $message['body'] = $this->renderer->renderRoot($render);
+      $message['body'] = $this->renderer->renderPlain($render);
     }
 
     return $message;
   }
 
   /**
-   * Send the e-mail message.
+   * {@inheritdoc}
+   */
+  public function mail(array $message) {
+    $mailgun_message = $this->buildMessage($message);
+
+    if ($this->mailgunConfig->get('use_queue')) {
+      return $this->queueMessage($mailgun_message);
+    }
+    return $this->mailgunHandler->sendMail($mailgun_message);
+  }
+
+  /**
+   * Queue a message for sending.
+   *
+   * @param array $message
+   *   Mailgun message array that was build and ready for sending.
+   *
+   * @return bool
+   *   TRUE if the message was queued, otherwise FALSE.
+   */
+  public function queueMessage(array $message) {
+    /** @var \Drupal\Core\Queue\QueueInterface $queue */
+    $queue = $this->queueFactory->get('mailgun_send_mail');
+
+    $item = new \stdClass();
+    $item->message = $message;
+    $result = $queue->createItem($item);
+
+    if ($result !== FALSE) {
+      // Debug mode: log all messages.
+      if ($this->mailgunConfig->get('debug_mode')) {
+        $this->logger->notice('Successfully queued message from %from to %to.', [
+          '%from' => $message['from'],
+          '%to' => $message['to'],
+        ]);
+      }
+    }
+    else {
+      $this->logger->error('Unable to queue message from %from to %to.', [
+        '%from' => $message['from'],
+        '%to' => $message['to'],
+      ]);
+    }
+
+    return !empty($result);
+  }
+
+  /**
+   * Builds the e-mail message in preparation to be sent to Mailgun.
    *
    * @param array $message
    *   A message array, as described in hook_mail_alter().
-   *   $message['params'] may contain additional parameters. See mailgun_send().
+   *   $message['params'] may contain additional parameters.
    *
-   * @return bool
-   *   TRUE if the mail was successfully accepted or queued, FALSE otherwise.
+   * @return array
+   *   An email array formatted for Mailgun delivery.
    *
-   * @see drupal_mail()
-   * @see https://documentation.mailgun.com/api-sending.html#sending
+   * @see https://documentation.mailgun.com/en/latest/api-sending.html#sending
    */
-  public function mail(array $message) {
+  protected function buildMessage(array $message) {
     // Build the Mailgun message array.
     $mailgun_message = [
-      'from' => $message['from'],
+      'from' => $message['headers']['From'],
       'to' => $message['to'],
       'subject' => $message['subject'],
-      'text' => Html::escape($message['body']),
       'html' => $message['body'],
     ];
 
+    // Remove HTML version if the message does not support HTML.
+    if (isset($message['params']['html']) && !$message['params']['html']) {
+      unset($mailgun_message['html']);
+    }
+
+    // Set text version of the message.
     if (isset($message['plain'])) {
       $mailgun_message['text'] = $message['plain'];
     }
     else {
-      $converter = new Html2Text($message['body']);
+      $converter = new Html2Text($message['body'], ['width' => 0]);
       $mailgun_message['text'] = $converter->getText();
     }
 
@@ -200,8 +250,14 @@ class MailgunMail implements MailInterface, ContainerFactoryPluginInterface {
     if (!empty($message['params']['attachments'])) {
       $attachments = [];
       foreach ($message['params']['attachments'] as $attachment) {
-        if (file_exists($attachment)) {
-          $attachments[] = ['filePath' => $attachment];
+        if (!empty($attachment['filepath']) && file_exists($attachment['filepath'])) {
+          $attachments[] = ['filePath' => $attachment['filepath']];
+        }
+        elseif (!empty($attachment['filecontent']) && !empty($attachment['filename'])) {
+          $attachments[] = [
+            'fileContent' => $attachment['filecontent'],
+            'filename' => $attachment['filename'],
+          ];
         }
       }
 
@@ -224,27 +280,7 @@ class MailgunMail implements MailInterface, ContainerFactoryPluginInterface {
       $mailgun_message['o:tracking'] = 'no';
     }
 
-    if ($this->mailgunConfig->get('use_queue')) {
-      /** @var \Drupal\Core\Queue\QueueInterface $queue */
-      $queue = $this->queueFactory->get('mailgun_send_mail');
-
-      $item = new \stdClass();
-      $item->message = $mailgun_message;
-      $queue->createItem($item);
-
-      // Debug mode: log all messages.
-      if ($this->mailgunConfig->get('debug_mode')) {
-        $this->logger->notice('Successfully queued message from %from to %to.',
-          [
-            '%from' => $mailgun_message['from'],
-            '%to' => $mailgun_message['to'],
-          ]
-        );
-      }
-      return TRUE;
-    }
-
-    return $this->mailgunHandler->sendMail($mailgun_message);
+    return $mailgun_message;
   }
 
   /**
@@ -258,9 +294,10 @@ class MailgunMail implements MailInterface, ContainerFactoryPluginInterface {
    */
   protected function checkTracking(array $message) {
     $tracking = TRUE;
-    $tracking_exception = $this->mailgunConfig->get('tracking_exception');
-    if (!empty($tracking_exception)) {
-      $tracking = !in_array($message['module'] . ':' . $message['key'], explode("\n", $tracking_exception));
+    $exceptions = $this->mailgunConfig->get('tracking_exception');
+    if (!empty($exceptions)) {
+      $exceptions = str_replace(["\r\n", "\r"], "\n", $exceptions);
+      $tracking = !in_array($message['module'] . ':' . $message['key'], explode("\n", $exceptions));
     }
     return $tracking;
   }

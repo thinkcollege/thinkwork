@@ -51,7 +51,7 @@ class WebformDateHelper {
    *
    * @see \Drupal\Core\Datetime\DateFormatterInterface::format
    */
-  public static function format($timestamp, $type = 'fallback', $format = '', $timezone = NULL, $langcode = NULL) {
+  public static function format($timestamp, $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL) {
     /** @var \Drupal\Core\Datetime\DateFormatterInterface $date_formatter */
     $date_formatter = \Drupal::service('date.formatter');
     return $timestamp ? $date_formatter->format($timestamp, $type, $format, $timezone, $langcode) : '';

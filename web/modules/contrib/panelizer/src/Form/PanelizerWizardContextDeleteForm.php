@@ -45,7 +45,7 @@ class PanelizerWizardContextDeleteForm extends ContextDelete {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $cached_values = $this->getTempstore();
     $context = $cached_values['contexts'][$this->context_id];
-    drupal_set_message($this->t('The static context %label has been removed.', ['%label' => $context['label']]));
+    \Drupal::messenger()->addMessage($this->t('The static context %label has been removed.', ['%label' => $context['label']]));
     unset($cached_values['contexts'][$this->context_id]);
     $this->setTempstore($cached_values);
     parent::submitForm($form, $form_state);

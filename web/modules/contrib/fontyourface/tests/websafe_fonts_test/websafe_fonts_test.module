@@ -54,7 +54,7 @@ function websafe_fonts_test_fontyourface_import($font_context = []) {
     $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
   }
   else {
-    drupal_set_message(t('Imported @count fonts from Websafe Fonts', ['@count' => $context['sandbox']['progress']]));
+    Drupal::messenger()->addMessage(t('Imported @count fonts from Websafe Fonts', ['@count' => $context['sandbox']['progress']]));
   }
   return $context;
 }

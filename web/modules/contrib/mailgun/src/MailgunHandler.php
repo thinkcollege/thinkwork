@@ -56,19 +56,21 @@ class MailgunHandler implements MailgunHandlerInterface {
    *
    * @param \Mailgun\Mailgun $mailgun_client
    *   Mailgun PHP SDK Object.
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
    * @param \Psr\Log\LoggerInterface $logger
    *   A logger instance.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The messenger.
+   * @param \Drupal\Component\Utility\EmailValidatorInterface $email_validator
+   *   The email validator.
    */
-  public function __construct(Mailgun $mailgun_client, ConfigFactoryInterface $configFactory, LoggerInterface $logger, MessengerInterface $messenger, EmailValidatorInterface $emailValidator) {
-    $this->mailgunConfig = $configFactory->get(MAILGUN_CONFIG_NAME);
+  public function __construct(Mailgun $mailgun_client, ConfigFactoryInterface $config_factory, LoggerInterface $logger, MessengerInterface $messenger, EmailValidatorInterface $email_validator) {
+    $this->mailgunConfig = $config_factory->get(MailgunHandlerInterface::CONFIG_NAME);
     $this->logger = $logger;
     $this->mailgun = $mailgun_client;
     $this->messenger = $messenger;
-    $this->emailValidator = $emailValidator;
+    $this->emailValidator = $email_validator;
   }
 
   /**
@@ -80,7 +82,7 @@ class MailgunHandler implements MailgunHandlerInterface {
         $this->logger->error('Failed to send message from %from to %to. Please check the Mailgun settings.',
           [
             '%from' => $mailgunMessage['from'],
-            '%to' => $mailgunMessage['to'],
+            '%to' => $this->getRecipients($mailgunMessage),
           ]
         );
         return FALSE;
@@ -91,7 +93,7 @@ class MailgunHandler implements MailgunHandlerInterface {
         $this->logger->error('Failed to send message from %from to %to. Could not retrieve domain from sender info.',
           [
             '%from' => $mailgunMessage['from'],
-            '%to' => $mailgunMessage['to'],
+            '%to' => $this->getRecipients($mailgunMessage),
           ]
         );
         return FALSE;
@@ -104,22 +106,21 @@ class MailgunHandler implements MailgunHandlerInterface {
         $this->logger->notice('Successfully sent message from %from to %to. %id %message.',
           [
             '%from' => $mailgunMessage['from'],
-            '%to' => $mailgunMessage['to'],
+            '%to' => $this->getRecipients($mailgunMessage),
             '%id' => $response->getId(),
             '%message' => $response->getMessage(),
           ]
         );
       }
-      return TRUE;
+      return $response;
     }
     catch (Exception $e) {
-      $this->logger->error('Exception occurred while trying to send test email from %from to %to. @code: @message @responseBodyMessage.',
+      $this->logger->error('Exception occurred while trying to send test email from %from to %to. Error code @code: @message',
         [
           '%from' => $mailgunMessage['from'],
-          '%to' => $mailgunMessage['to'],
+          '%to' => $this->getRecipients($mailgunMessage),
           '@code' => $e->getCode(),
           '@message' => $e->getMessage(),
-          '@responseBodyMessage' => $e->getResponseBody()['message'],
         ]
       );
       return FALSE;
@@ -133,9 +134,16 @@ class MailgunHandler implements MailgunHandlerInterface {
     $domains = [];
     try {
       $result = $this->mailgun->domains()->index();
+
+      // By default, limit is 100 domains, but we want to load all of them.
+      if ($result->getTotalCount() > 100) {
+        $result = $this->mailgun->domains()->index($result->getTotalCount());
+      }
+
       foreach ($result->getDomains() as $domain) {
         $domains[$domain->getName()] = $domain->getName();
       }
+      ksort($domains);
     }
     catch (Exception $e) {
       $this->logger->error('Could not retrieve domains from Mailgun API. @code: @message.',
@@ -152,69 +160,22 @@ class MailgunHandler implements MailgunHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  private function getDomain($email) {
+  public function getDomain($from) {
     $domain = $this->mailgunConfig->get('working_domain');
     if ($domain !== '_sender') {
       return $domain;
     }
 
     $emailParser = new EmailParser(new EmailLexer());
-    if ($this->emailValidator->isValid($email)) {
-      return $emailParser->parse($email)['domain'];
+    if ($this->emailValidator->isValid($from)) {
+      return $emailParser->parse($from)['domain'];
     }
 
     // Extract the domain from the sender's email address.
     // Use regular expression to check since it could be either a plain email
     // address or in the form "Name <example@example.com>".
-    $tokens = (preg_match('/^\s*(.+?)\s*<\s*([^>]+)\s*>$/', $email, $matches) === 1) ? explode('@', $matches[2]) : explode('@', $email);
-    return array_pop($tokens);
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * @deprecated Scheduled for removal.
-   *   Use MailgunHandlerInterface::moduleStatus() service method instead.
-   */
-  public static function status($showMessage = FALSE) {
-    return \Drupal::service('mailgun.mail_handler')
-      ->moduleStatus($showMessage);
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * @deprecated Scheduled for removal.
-   *   Use MailgunHandlerInterface::validateMailgunLibrary() service method
-   *   instead.
-   */
-  public static function checkLibrary($showMessage = FALSE) {
-    return \Drupal::service('mailgun.mail_handler')
-      ->validateMailgunLibrary($showMessage);
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * @deprecated Scheduled for removal.
-   *   Use MailgunHandlerInterface::validateMailgunApiSettings() service method
-   *   instead.
-   */
-  public static function checkApiSettings($showMessage = FALSE) {
-    return \Drupal::service('mailgun.mail_handler')
-      ->validateMailgunApiSettings($showMessage);
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * @deprecated Scheduled for removal.
-   *   Use MailgunHandlerInterface::validateMailgunApiKey() service method
-   *   instead.
-   */
-  public static function validateKey($key) {
-    return \Drupal::service('mailgun.mail_handler')
-      ->validateMailgunApiKey($key);
+    $tokens = (preg_match('/^\s*(.+?)\s*<\s*([^>]+)\s*>$/', $from, $matches) === 1) ? explode('@', $matches[2]) : explode('@', $from);
+    return !empty($tokens) ? array_pop($tokens) : FALSE;
   }
 
   /**
@@ -252,14 +213,14 @@ class MailgunHandler implements MailgunHandlerInterface {
 
     if (empty($apiKey) || empty($workingDomain)) {
       if ($showMessage) {
-        $this->messenger->addMessage(t("Please check your API settings. API key and domain shouldn't be empty."), 'warning');
+        $this->messenger->addMessage("Please check your API settings. API key and domain shouldn't be empty.", 'warning');
       }
       return FALSE;
     }
 
     if (!$this->validateMailgunApiKey($apiKey)) {
       if ($showMessage) {
-        $this->messenger->addMessage(t("Couldn't connect to the Mailgun API. Please check your API settings."), 'warning');
+        $this->messenger->addMessage("Couldn't connect to the Mailgun API. Please check your API settings.", 'warning');
       }
       return FALSE;
     }
@@ -277,9 +238,32 @@ class MailgunHandler implements MailgunHandlerInterface {
     }
 
     if ($libraryStatus === FALSE) {
-      $this->messenger->addMessage(t('The Mailgun library has not been installed correctly.'), 'warning');
+      $this->messenger->addMessage('The Mailgun library has not been installed correctly.', 'warning');
     }
     return $libraryStatus;
+  }
+
+  /**
+   * Returns a list of recipients for error/debug log message.
+   *
+   * @param array $mailgunMessage
+   *   A message array, as described in
+   *   https://documentation.mailgun.com/en/latest/api-sending.html#sending.
+   *
+   * @return string
+   *   Recipients list in the following format:
+   *   user@test.com, user1@test.com; cc: user2@test.com; bcc: user3@test.com.
+   */
+  protected function getRecipients(array $mailgunMessage) {
+    $recipients = is_array($mailgunMessage['to']) ? implode(', ', $mailgunMessage['to']) : $mailgunMessage['to'];
+
+    // Add all recipients (including 'cc' and 'bcc').
+    foreach (['cc', 'bcc'] as $parameter) {
+      if (!empty($mailgunMessage[$parameter])) {
+        $recipients .= "; {$parameter}: {$mailgunMessage[$parameter]}";
+      }
+    }
+    return $recipients;
   }
 
 }

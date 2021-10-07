@@ -9,7 +9,7 @@ use Drupal\Core\Url;
 use Drupal\Core\Menu\InaccessibleMenuLink;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Component\Utility\Html;
-use Drupal\Component\Utility\SafeMarkup;
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Template\Attribute;
 
 /**
@@ -55,7 +55,7 @@ function template_preprocess_superfish(array &$variables) {
   else {
     $menu_classes[] = Html::cleanCssIdentifier($element['#settings']['ulclass']);
   }
-  $menu_classes = implode(' ', sf_array_filter($menu_classes));
+  $menu_classes = implode(' ', superfish_array_filter($menu_classes));
 
   $variables['id'] = $element['#html_id'];
   $variables['menu_classes'] = $menu_classes;
@@ -101,7 +101,7 @@ function template_preprocess_superfish_menu_items(array &$variables) {
   $active_trails = \Drupal::service('menu.active_trail')
     ->getActiveTrailIds($element['#menu_name']);
 
-  foreach ($menu as $key => $menu_item) {
+  foreach ($menu as $menu_item) {
 
     if (NULL !== $menu_item->link &&
         !($menu_item->link instanceof InaccessibleMenuLink)) {
@@ -134,8 +134,8 @@ function template_preprocess_superfish_menu_items(array &$variables) {
         $current_path = $current_url->toString();
         $link_url = $item['url']->toString();
         // Anchor links.
-        if ( strpos( $link_url, '#' ) !== FALSE ) {
-          $link_url = explode( '#', $link_url );
+        if (strpos($link_url, '#') !== FALSE) {
+          $link_url = explode('#', $link_url);
           $link_url = $link_url[0];
         }
 
@@ -265,7 +265,7 @@ function template_preprocess_superfish_menu_items(array &$variables) {
       }
 
       // Preparing <li> classes for the theme.
-      $item_class = implode(' ', sf_array_filter($item_class));
+      $item_class = implode(' ', superfish_array_filter($item_class));
 
       // Merging link classes.
       if (isset($item['options']['attributes']['class'])) {
@@ -275,10 +275,10 @@ function template_preprocess_superfish_menu_items(array &$variables) {
         }
         $link_class = array_merge(
           $link_class_current,
-          sf_array_filter($link_class)
+          superfish_array_filter($link_class)
         );
       }
-      $item['options']['attributes']['class'] = sf_array_filter($link_class);
+      $item['options']['attributes']['class'] = superfish_array_filter($link_class);
 
       // Dirty fix! to only add a "menuparent" class.
       $item['options_menuparent'] = $item['options'];
@@ -288,13 +288,13 @@ function template_preprocess_superfish_menu_items(array &$variables) {
       }
       $link_element = [
         '#type' => 'link',
-        '#title' => SafeMarkup::format($link_text, $link_text_replace),
+        '#title' => new FormattableMarkup($link_text, $link_text_replace),
         '#url' => $item['url'],
         '#options' => $item['options'],
       ];
       $link_element_menuparent = [
         '#type' => 'link',
-        '#title' => SafeMarkup::format($link_text, $link_text_replace),
+        '#title' => new FormattableMarkup($link_text, $link_text_replace),
         '#url' => $item['url'],
         '#options' => $item['options_menuparent'],
       ];

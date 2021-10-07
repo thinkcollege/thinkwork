@@ -1,3 +1,4 @@
 nid_list: []
 translation_sync: true
-search: 0
+search: false
+type: hidden

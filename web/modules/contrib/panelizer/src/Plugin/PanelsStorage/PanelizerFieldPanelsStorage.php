@@ -7,8 +7,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Plugin\Context\Context;
-use Drupal\Core\Plugin\Context\ContextDefinition;
+use Drupal\Core\Plugin\Context\EntityContextDefinition;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\ctools\Context\AutomaticContext;
 use Drupal\panelizer\Exception\PanelizerException;
@@ -103,7 +102,7 @@ class PanelizerFieldPanelsStorage extends PanelsStorageBase implements Container
    *   The context.
    */
   protected function getEntityContext($entity_type_id, EntityInterface $entity) {
-    return new AutomaticContext(new ContextDefinition('entity:' . $entity_type_id, NULL, TRUE), $entity);
+    return new AutomaticContext(EntityContextDefinition::fromEntityTypeId($entity_type_id), $entity);
   }
 
   /**

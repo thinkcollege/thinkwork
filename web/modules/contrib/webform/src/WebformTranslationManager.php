@@ -12,6 +12,7 @@ use Drupal\webform\Utility\WebformArrayHelper;
 use Drupal\webform\Utility\WebformElementHelper;
 use Drupal\webform\Utility\WebformYaml;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\webform\Plugin\WebformElement\WebformCustomComposite;
 
 /**
  * Defines a class to translate webform elements.
@@ -40,7 +41,7 @@ class WebformTranslationManager implements WebformTranslationManagerInterface {
   protected $configFactory;
 
   /**
-   * Webform element manager.
+   * The webform element manager.
    *
    * @var \Drupal\webform\Plugin\WebformElementManagerInterface
    */
@@ -177,7 +178,7 @@ class WebformTranslationManager implements WebformTranslationManagerInterface {
   public function getTranslationElements(WebformInterface $webform, $langcode) {
     $elements = $this->getSourceElements($webform);
     $translation_elements = $this->getElements($webform, $langcode);
-    if ($elements == $translation_elements) {
+    if ($elements === $translation_elements) {
       return $elements;
     }
     WebformElementHelper::merge($elements, $translation_elements);
@@ -209,7 +210,7 @@ class WebformTranslationManager implements WebformTranslationManagerInterface {
   protected function removeUnTranslatablePropertiesFromElement(array &$element) {
     $translatable_properties = $this->getTranslatableProperties();
 
-    $element_type = (isset($element['#type'])) ? $element['#type'] : NULL;
+    $element_plugin = $this->elementManager->getElementInstance($element);
     foreach ($element as $property_key => $property_value) {
       $translatable_property_key = $property_key;
 
@@ -223,7 +224,7 @@ class WebformTranslationManager implements WebformTranslationManagerInterface {
         // Unset options and answers that are webform option ids.
         unset($element[$property_key]);
       }
-      elseif ($translatable_property_key === '#element' && $element_type === 'webform_custom_composite') {
+      elseif ($translatable_property_key === '#element' && $element_plugin instanceof WebformCustomComposite) {
         foreach ($element[$property_key] as &$composite_element_value) {
           $this->removeUnTranslatablePropertiesFromElement($composite_element_value);
         }

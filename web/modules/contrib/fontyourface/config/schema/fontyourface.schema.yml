@@ -10,3 +10,8 @@ fontyourface.settings:
       label: 'Enabled fonts'
       sequence:
         type: string
+    load_on_themes:
+      type: sequence
+      label: 'Load on selected themes'
+      sequence:
+        type: string

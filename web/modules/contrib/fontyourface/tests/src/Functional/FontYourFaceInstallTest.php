@@ -3,14 +3,19 @@
 namespace Drupal\Tests\fontyourface\Functional;
 
 use Drupal\Core\Url;
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
 
 /**
- * Tests that installing @font-your-face provides access to the necessary sections.
+ * Tests that installing provides access to the necessary sections.
  *
  * @group fontyourface
  */
-class FontYourFaceInstallTest extends WebTestBase {
+class FontYourFaceInstallTest extends BrowserTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
 
   /**
    * Modules to install.
@@ -50,7 +55,7 @@ class FontYourFaceInstallTest extends WebTestBase {
 
     // Font display page.
     $this->drupalGet(Url::fromRoute('entity.font_display.collection'));
-    $this->assertText(t('There is no Font display yet.'));
+    $this->assertText(t('There are no font display entities yet.'));
 
     // Font display add page.
     $this->drupalGet(Url::fromRoute('entity.font_display.add_form'));
@@ -59,7 +64,7 @@ class FontYourFaceInstallTest extends WebTestBase {
     // Font settings page.
     $this->drupalGet(Url::fromRoute('font.settings'));
     $this->assertText(t('Settings form for @font-your-face. Support modules can use this form for settings or to import fonts.'));
-    $this->assertRaw(t('Import all fonts'));
+    $this->assertSession()->responseContains(t('Import all fonts'));
   }
 
 }

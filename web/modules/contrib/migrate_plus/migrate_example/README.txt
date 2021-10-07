@@ -1,7 +1,7 @@
 INTRODUCTION
 ------------
 The migrate_example module demonstrates how to implement custom migrations
-for Drupal 8. It includes a group of "beer" migrations demonstrating a complete
+for Drupal 8+. It includes a group of "beer" migrations demonstrating a complete
 simple migration scenario.
 
 THE BEER SITE
@@ -15,7 +15,7 @@ to the basic structure.
 To make the example as simple as to run as possible, the source data is placed
 in tables directly in your Drupal database - in most real-world scenarios, your
 source data will be in an external database. The migrate_example_setup submodule
-creates and populates these tables, as well as configuring your Drupal 8 site
+creates and populates these tables, as well as configuring your Drupal 8+ site
 (creating a node type, vocabulary, fields, etc.) to receive the data.
 
 STRUCTURE

@@ -14,6 +14,7 @@ use Drupal\Core\Mail\MailInterface;
  * )
  */
 class DummySender implements MailInterface {
+
   /**
    * {@inheritdoc}
    */

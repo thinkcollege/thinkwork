@@ -5,13 +5,13 @@ namespace Drupal\webform\Form;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\AnnounceCommand;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\EventSubscriber\MainContentViewSubscriber;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
-use Drupal\webform\Ajax\WebformAnnounceCommand;
 use Drupal\webform\Ajax\WebformCloseDialogCommand;
 use Drupal\webform\Ajax\WebformConfirmReloadCommand;
 use Drupal\webform\Ajax\WebformRefreshCommand;
@@ -161,7 +161,7 @@ trait WebformAjaxFormTrait {
     $wrapper_attributes = new Attribute($wrapper_attributes);
 
     $form['#form_wrapper_id'] = $wrapper_id;
-    $form['#prefix'] = '<a id="' . $wrapper_id . '-content" tabindex="-1" aria-hidden="true"></a>';
+    $form['#prefix'] = '<span id="' . $wrapper_id . '-content"></span>';
     $form['#prefix'] .= '<div' . $wrapper_attributes . '>';
     $form['#suffix'] = '</div>';
 
@@ -200,6 +200,12 @@ trait WebformAjaxFormTrait {
       // Announce validation errors.
       $this->announce($this->t('Form validation errors have been found.'));
     }
+    elseif ($form_state->getResponse() instanceof AjaxResponse) {
+      // Allow developers via form_alter hooks to set their own Ajax response.
+      // The custom Ajax response could be used to close modals and refresh
+      // selected regions and blocks on the page.
+      $response = $form_state->getResponse();
+    }
     elseif ($form_state->isRebuilding()) {
       // Rebuild form.
       $response = $this->replaceForm($form, $form_state);
@@ -221,7 +227,7 @@ trait WebformAjaxFormTrait {
     // @see \Drupal\webform\Form\WebformAjaxFormTrait::announce
     $announcements = $this->getAnnouncements();
     foreach ($announcements as $announcement) {
-      $response->addCommand(new WebformAnnounceCommand($announcement['text'], $announcement['priority']));
+      $response->addCommand(new AnnounceCommand($announcement['text'], $announcement['priority']));
     }
     $this->resetAnnouncements();
 
@@ -398,16 +404,15 @@ trait WebformAjaxFormTrait {
    *   A string to indicate the priority of the message. Can be either
    *   'polite' or 'assertive'.
    *
-   * @see \Drupal\webform\Ajax\WebformAnnounceCommand
+   * @see \Drupal\Core\Ajax\AnnounceCommand
    * @see \Drupal\webform\Form\WebformAjaxFormTrait::submitAjaxForm
    */
   protected function announce($text, $priority = 'polite') {
-    $announcements = $this->getAnnouncements();
+    $announcements =& drupal_static('webform_announcements', []);
     $announcements[] = [
       'text' => $text,
       'priority' => $priority,
     ];
-    $this->setAnnouncements($announcements);
   }
 
   /**
@@ -417,8 +422,7 @@ trait WebformAjaxFormTrait {
    *   An associative array of announcements.
    */
   protected function getAnnouncements() {
-    $session = $this->getRequest()->getSession();
-    return $session->get('announcements') ?: [];
+    return drupal_static('webform_announcements', []);
   }
 
   /**
@@ -428,18 +432,15 @@ trait WebformAjaxFormTrait {
    *   An associative array of announcements.
    */
   protected function setAnnouncements(array $announcements) {
-    $session = $this->getRequest()->getSession();
-    $session->set('announcements', $announcements);
-    $session->save();
+    $this->resetAnnouncements();
+    drupal_static('webform_announcements', $announcements);
   }
 
   /**
    * Reset announcements.
    */
   protected function resetAnnouncements() {
-    $session = $this->getRequest()->getSession();
-    $session->remove('announcements');
-    $session->save();
+    drupal_static_reset('webform_announcements');
   }
 
 }

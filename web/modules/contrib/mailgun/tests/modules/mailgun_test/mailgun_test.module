@@ -6,7 +6,6 @@
  */
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\mailgun\MailgunHandler;
 
 /**
  * Implements hook_form_FORM_ID_alter().
@@ -21,10 +20,12 @@ function mailgun_test_form_mailgun_admin_settings_form_alter(&$form, FormStateIn
  * Overridden validate for test purposes.
  */
 function mailgun_test_settings_form_validate($form, FormStateInterface $form_state) {
+  /** @var \Drupal\mailgun\MailgunHandlerInterface $mailgun_handler */
+  $mailgun_handler = \Drupal::service('mailgun.mail_handler');
   if ($form_state->getValue('api_key') === 'key-1234567890workingabcdefghijklmno') {
     // Do nothing. It's just to emulate correct API key.
   }
-  elseif (MailgunHandler::validateKey($form_state->getValue('api_key')) === FALSE) {
-    $form_state->setErrorByName('api_key', t("Couldn't connect to the Mailgun API. Please check your API settings."));
+  elseif ($mailgun_handler->validateMailgunApiKey($form_state->getValue('api_key')) === FALSE) {
+    $form_state->setErrorByName('api_key', "Couldn't connect to the Mailgun API. Please check your API settings.");
   }
 }

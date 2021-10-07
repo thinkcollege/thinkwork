@@ -30,6 +30,7 @@ function webform_drush_command() {
         'delimiter' => 'Delimiter between columns (defaults to site-wide setting). This option may need to be wrapped in quotes. i.e. --delimiter="\t".',
         'multiple-delimiter' => 'Delimiter between an element with multiple values (defaults to site-wide setting).',
         'file-name' => 'File name used to export submission and uploaded filed. You may use tokens.',
+        'archive-type' => 'Archive file type for submission file uploadeds and generated records. (tar or zip)',
         'header-format' => 'Set to "label" (default) or "key"',
         'options-item-format' => 'Set to "label" (default) or "key". Set to "key" to print select list values by their keys instead of labels.',
         'options-single-format' => 'Set to "separate" (default) or "compact" to determine how single select list values are exported.',
@@ -134,20 +135,6 @@ function webform_drush_command() {
         'webform:libraries:status',
       ),
     ),
-    'webform-libraries-make' => array(
-      'description' => 'Generates libraries YAML to be included in a drush.make.yml files.',
-      'core' => array(
-        '8+',
-      ),
-      'bootstrap' => 1,
-      'examples' => array(
-        'webform-libraries-make' => 'Generates libraries YAML to be included in a drush.make.yml file.',
-      ),
-      'aliases' => array(
-        'wflm',
-        'webform:libraries:make',
-      ),
-    ),
     'webform-libraries-composer' => array(
       'description' => "Generates the Webform module's composer.json with libraries as repositories.",
       'core' => array(
@@ -224,6 +211,20 @@ function webform_drush_command() {
         'webform:repair',
       ),
     ),
+    'webform-remove-orphans' => array(
+      'description' => "Removes orphaned submissions where the submission's webform was deleted.",
+      'core' => array(
+        '8+',
+      ),
+      'bootstrap' => 1,
+      'examples' => array(
+        'webform-remove-orphans' => "Removes orphaned submissions where the submission's webform was deleted.",
+      ),
+      'aliases' => array(
+        'wfro',
+        'webform:remove:orphans',
+      ),
+    ),
     'webform-docs' => array(
       'description' => 'Generates HTML documentation.',
       'core' => array(
@@ -231,7 +232,7 @@ function webform_drush_command() {
       ),
       'bootstrap' => 1,
       'examples' => array(
-        'webform-repair' => "Generates HTML documentation used by the Webform module's documentation pages.",
+        'webform-docs' => "Generates HTML documentation used by the Webform module's documentation pages.",
       ),
       'aliases' => array(
         'wfd',
@@ -356,17 +357,6 @@ function drush_webform_libraries_status() {
 }
 
 /******************************************************************************/
-// drush webform-libraries-make. DO NOT EDIT.
-/******************************************************************************/
-
-/**
- * Implements drush_hook_COMMAND().
- */
-function drush_webform_libraries_make() {
-  return call_user_func_array([\Drupal::service('webform.cli_service'), 'drush_webform_libraries_make'], func_get_args());
-}
-
-/******************************************************************************/
 // drush webform-libraries-composer. DO NOT EDIT.
 /******************************************************************************/
 
@@ -426,6 +416,17 @@ function drush_webform_generate() {
  */
 function drush_webform_repair() {
   return call_user_func_array([\Drupal::service('webform.cli_service'), 'drush_webform_repair'], func_get_args());
+}
+
+/******************************************************************************/
+// drush webform-remove-orphans. DO NOT EDIT.
+/******************************************************************************/
+
+/**
+ * Implements drush_hook_COMMAND().
+ */
+function drush_webform_remove_orphans() {
+  return call_user_func_array([\Drupal::service('webform.cli_service'), 'drush_webform_remove_orphans'], func_get_args());
 }
 
 /******************************************************************************/

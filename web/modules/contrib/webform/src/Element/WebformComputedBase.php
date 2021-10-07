@@ -8,6 +8,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element\FormElement;
 use Drupal\Core\Template\Attribute;
 use Drupal\webform\Entity\WebformSubmission;
+use Drupal\webform\Utility\WebformElementHelper;
+use Drupal\webform\Utility\WebformFormHelper;
 use Drupal\webform\Utility\WebformHtmlHelper;
 use Drupal\webform\Utility\WebformXss;
 use Drupal\webform\WebformSubmissionForm;
@@ -17,27 +19,6 @@ use Drupal\webform\WebformSubmissionInterface;
  * Provides a base class for 'webform_computed' elements.
  */
 abstract class WebformComputedBase extends FormElement implements WebformComputedInterface {
-
-  /**
-   * Denotes HTML.
-   *
-   * @var string
-   */
-  const MODE_HTML = 'html';
-
-  /**
-   * Denotes plain text.
-   *
-   * @var string
-   */
-  const MODE_TEXT = 'text';
-
-  /**
-   * Denotes markup whose content type should be detected.
-   *
-   * @var string
-   */
-  const MODE_AUTO = 'auto';
 
   /**
    * Cache of submissions being processed.
@@ -88,7 +69,7 @@ abstract class WebformComputedBase extends FormElement implements WebformCompute
       $element['#tree'] = TRUE;
 
       // Set #type to item to trigger #states behavior.
-      // @see drupal_process_states;
+      // @see \Drupal\Core\Form\FormHelper::processStates;
       $element['#type'] = 'item';
 
       $value = static::computeValue($element, $webform_submission);
@@ -96,7 +77,14 @@ abstract class WebformComputedBase extends FormElement implements WebformCompute
     }
 
     if (!empty($element['#states'])) {
-      webform_process_states($element, '#wrapper_attributes');
+      if (!empty($element['#ajax'])) {
+        // The element's #states must be place outside the
+        // computed ajax wrapper.
+        WebformElementHelper::fixStatesWrapper($element);
+      }
+      else {
+        WebformFormHelper::processStates($element, '#wrapper_attributes');
+      }
     }
 
     // Add validate callback.
@@ -115,17 +103,19 @@ abstract class WebformComputedBase extends FormElement implements WebformCompute
       $wrapper_id = 'webform-computed-' . implode('-', $element['#parents']) . '-wrapper';
 
       // Get computed value element keys which are used to trigger Ajax updates.
-      preg_match_all('/(?:\[webform_submission:values:|data\.)([_a-z0-9]+)/', $element['#template'], $matches);
+      preg_match_all('/(?:\[webform_submission:values:|data\.|data\[\')([_a-z0-9]+)/', $element['#template'], $matches);
       $element_keys = $matches[1] ?: [];
       $element_keys = array_unique($element_keys);
 
       // Wrapping the computed element is two div tags.
       // div.js-webform-computed is used to initialize the Ajax updates.
       // div#wrapper_id is used to display response from the Ajax updates.
+      $element += ['#prefix' => '', '#suffix' => ''];
+
       $element['#wrapper_id'] = $wrapper_id;
-      $element['#prefix'] = '<div class="js-webform-computed" data-webform-element-keys="' . implode(',', $element_keys) . '">' .
+      $element['#prefix'] .= '<div class="js-webform-computed" data-webform-element-keys="' . implode(',', $element_keys) . '">' .
         '<div class="js-webform-computed-wrapper" id="' . $wrapper_id . '">';
-      $element['#suffix'] = '</div></div>';
+      $element['#suffix'] = '</div></div>' . $element['#suffix'];
 
       // Add hidden update button.
       $element['update'] = [
@@ -296,19 +286,11 @@ abstract class WebformComputedBase extends FormElement implements WebformCompute
       'data-webform-announce' => t('@title is @value', $t_args),
     ];
     $element['#prefix'] = '<div' . new Attribute($attributes) . '>';
-
     $element['#suffix'] = '</div>';
 
-    // Remove flexbox wrapper because it already been render outside this
-    // computed element's ajax wrapper.
-    // @see \Drupal\webform\Plugin\WebformElementBase::prepareWrapper
+    // Disable states and flexbox wrapper.
     // @see \Drupal\webform\Plugin\WebformElementBase::preRenderFixFlexboxWrapper
-    $preRenderFixFlexWrapper = ['Drupal\webform\Plugin\WebformElement\WebformComputedTwig', 'preRenderFixFlexboxWrapper'];
-    foreach ($element['#pre_render'] as $index => $pre_render) {
-      if (is_array($pre_render) && $pre_render === $preRenderFixFlexWrapper) {
-        unset($element['#pre_render'][$index]);
-      }
-    }
+    $element['#webform_wrapper'] = FALSE;
 
     return $element;
   }
@@ -327,8 +309,8 @@ abstract class WebformComputedBase extends FormElement implements WebformCompute
    *   The markup type (html or text).
    */
   public static function getMode(array $element) {
-    if (empty($element['#mode']) || $element['#mode'] === static::MODE_AUTO) {
-      return (WebformHtmlHelper::containsHtml($element['#template'])) ? static::MODE_HTML : static::MODE_TEXT;
+    if (empty($element['#mode']) || $element['#mode'] === WebformComputedInterface::MODE_AUTO) {
+      return (WebformHtmlHelper::containsHtml($element['#template'])) ? WebformComputedInterface::MODE_HTML : WebformComputedInterface::MODE_TEXT;
     }
     else {
       return $element['#mode'];

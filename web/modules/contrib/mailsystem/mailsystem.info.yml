@@ -7,7 +7,7 @@ configure: mailsystem.settings
 dependencies:
  - drupal:filter
 
-# Information added by Drupal.org packaging script on 2019-11-19
-version: '8.x-4.2'
+# Information added by Drupal.org packaging script on 2020-04-06
+version: '8.x-4.3'
 project: 'mailsystem'
-datestamp: 1574194691
+datestamp: 1586203026

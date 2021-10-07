@@ -1,0 +1,4 @@
+mailgun_mailing_lists.settings:
+  title: 'Mailing Lists'
+  route_name: mailgun_mailing_lists.admin_settings_form
+  parent: mailgun.admin_settings_form

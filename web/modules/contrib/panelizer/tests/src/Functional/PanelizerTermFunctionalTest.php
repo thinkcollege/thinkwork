@@ -16,6 +16,11 @@ class PanelizerTermFunctionalTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
   public static $modules = [
     // Modules for core functionality.
     'field',

@@ -3,12 +3,11 @@ description: 'API module to automatically create links or tooltips based on othe
 type: module
 package: "Input filters"
 configure: 'admin/config/content/formats'
-# core: 8.x
+core_version_requirement: ^8 || ^9
 dependencies:
   - drupal:filter
 
-# Information added by Drupal.org packaging script on 2018-10-16
-version: '8.x-1.0-beta1'
-core: '8.x'
+# Information added by Drupal.org packaging script on 2021-06-07
+version: '8.x-1.0-beta2'
 project: 'glossify'
-datestamp: 1539681491
+datestamp: 1623055311

@@ -53,7 +53,7 @@ set title_classes = [
 
 <div{{ attributes.addClass(classes) }}>
   {{ title_prefix }}
-  {% if not label_hidden %}
+  {% if not label_hidden and label %}
     <div{{ title_attributes.addClass(title_classes) }}>{{ label }}</div>
   {% endif %}
   {{ title_suffix }}

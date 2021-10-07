@@ -1,0 +1,15 @@
+mailgun_mailing_lists.admin_settings_form:
+  path: '/admin/config/services/mailgun/settings/mailing-lists'
+  defaults:
+    _form: '\Drupal\mailgun_mailing_lists\Form\MailingListsAdminForm'
+    _title: 'Mailgun Mailing Lists'
+  requirements:
+    _permission: 'administer mailgun'
+
+mailgun_mailing_lists.list:
+  path: '/admin/config/services/mailgun/settings/mailing-lists/{list_address}'
+  defaults:
+    _controller: '\Drupal\mailgun_mailing_lists\Controller\MailingListController::members'
+    _title: 'Mailing List Members'
+  requirements:
+    _permission: 'administer mailgun'

@@ -1,14 +1,14 @@
-name: Exclude node title
+name: Exclude Node Title
 type: module
-description: 'Excludes a node title from display. It provides a checkbox on node-edit pages for easier exclusion. You can also exclude title display from teaser pages.'
-# core: 8.x
+core: 8.x
+description: 'Provides the option of excluding node title(s) from display by individual node, node bundle, and view mode.'
+core_version_requirement: ^8 || ^9
 package: Other
 configure: exclude_node_title.settings
-
 dependencies:
-  - node
-# Information added by Drupal.org packaging script on 2016-01-12
-version: '8.x-1.0-beta1'
-core: '8.x'
+  - drupal:node
+
+# Information added by Drupal.org packaging script on 2021-03-05
+version: '8.x-1.2'
 project: 'exclude_node_title'
-datestamp: 1452556956
+datestamp: 1614965956

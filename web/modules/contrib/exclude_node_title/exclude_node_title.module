@@ -4,13 +4,35 @@
  * @file
  * Primarily Drupal hooks and global API functions to exclude node titles.
  *
- * This is the main module file for Exclude Node Title. 
+ * This is the main module file for Exclude Node Title.
  */
 
-use Drupal\Core\Render\Element;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeForm;
+
+/**
+ * Implements hook_help().
+ */
+function exclude_node_title_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.exclude_node_title':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Provides the option of excluding node title(s) from display by individual node or by bundle and view mode.') . '</p>';
+      $output .= '<h3>' . t('Uses') . '</h3>';
+      $output .= '<dl>';
+      $output .= '<dt>' . t('Exclude title(s) by bundle and view mode') . '</dt>';
+      $output .= '<dd>' . t('<em>All nodes..</em> excludes the Node title from all of the node displays using the View Mode(s) you select.') . '</dd>';
+      $output .= '<dt>' . t('Exclude title(s) on a node-by-node basis') . '</dt>';
+      $output .= '<dd>' . t('<em>User defined nodes..</em> does not, by default, hide any Node title. However, it provides users with the permission to exclude node title a checkbox on the node edit form that allows them to exclude node titles, from the View Modes selected in this form, on a node-by-node basis.') . '</dd>';
+      $output .= '<dt>' . t('Exclude title(s) by role') . '</dt>';
+      $output .= '<dd>' . t('You may exclude title(s) by role using the <a href=":permission">Use exclude node title</a> permission.', [':permission' => 'http://contribd8.dev/admin/people/permissions#module-exclude_node_title']) . '</dd>';
+      $output .= '</dl>';
+      return $output;
+  }
+}
 
 /**
  * Implements hook_preprocess_html().
@@ -20,6 +42,7 @@ function exclude_node_title_preprocess_html(&$vars) {
     return;
   }
 
+  /** @var \Drupal\exclude_node_title\ExcludeNodeTitleManagerInterface $exclude_manager */
   $exclude_manager = \Drupal::service('exclude_node_title.manager');
   $route_match = \Drupal::routeMatch();
 
@@ -34,6 +57,8 @@ function exclude_node_title_preprocess_html(&$vars) {
       $node = $route_match->getParameter('node');
       if ($exclude_manager->isTitleExcluded($node, 'full')) {
         unset($vars['head_title']['title']);
+        // Add a class to pages with excluded node title.
+        $vars['attributes']['class'][] = 'exclude-node-title';
       }
       break;
 
@@ -48,6 +73,7 @@ function exclude_node_title_preprocess_page_title(&$vars) {
     return;
   }
 
+  /** @var \Drupal\exclude_node_title\ExcludeNodeTitleManagerInterface $exclude_manager */
   $exclude_manager = \Drupal::service('exclude_node_title.manager');
   $route_match = \Drupal::routeMatch();
 
@@ -63,6 +89,13 @@ function exclude_node_title_preprocess_page_title(&$vars) {
       $exclude_manager->preprocessTitle($vars, $node, 'full');
       break;
 
+    case 'entity.node.preview':
+      $node = $route_match->getParameter('node_preview');
+      if (exclude_node_title_check_perm($node)) {
+        exclude_node_title_set_flag($node, $node->exclude_node_title);
+      }
+      $exclude_manager->preprocessTitle($vars, $node, 'full');
+      break;
   }
 }
 
@@ -89,7 +122,15 @@ function exclude_node_title_preprocess_page(&$vars) {
       $exclude_manager->preprocessTitle($vars, $node, 'full');
       break;
 
-   }
+    case 'entity.node.preview':
+      $node = $route_match->getParameter('node_preview');
+      if (exclude_node_title_check_perm($node)) {
+        exclude_node_title_set_flag($node, $node->exclude_node_title);
+      }
+      $exclude_manager->preprocessTitle($vars, $node, 'full');
+      break;
+
+  }
 }
 
 /**
@@ -106,6 +147,7 @@ function exclude_node_title_preprocess_node(&$vars) {
  * Implements hook_preprocess_field().
  */
 function exclude_node_title_preprocess_field(&$vars) {
+  /** @var \Drupal\exclude_node_title\ExcludeNodeTitleManagerInterface $exclude_manager */
   $exclude_manager = \Drupal::service('exclude_node_title.manager');
 
   if (\Drupal::currentUser()->hasPermission('use exclude node title') &&
@@ -125,6 +167,7 @@ function exclude_node_title_preprocess_field(&$vars) {
  * Implements hook_preprocess_search_result().
  */
 function exclude_node_title_preprocess_search_result(&$vars) {
+  /** @var \Drupal\exclude_node_title\ExcludeNodeTitleManagerInterface $exclude_manager */
   $exclude_manager = \Drupal::service('exclude_node_title.manager');
 
   if ($vars['plugin_id'] == 'node_search' &&
@@ -133,7 +176,7 @@ function exclude_node_title_preprocess_search_result(&$vars) {
     $exclude_manager->isTitleExcluded($vars['result']['node']->id(), 'search_result')
   ) {
     $vars['result']['title'] = '';
-    $vars['title'] = '<em>' . t('View content') . '</em>';
+    $vars['title'] = '';
   }
 }
 
@@ -167,8 +210,11 @@ function exclude_node_title_node_delete(NodeInterface $node) {
 /**
  * Check permission to change node title exclusion.
  *
- * @param NodeInterface $node
+ * @param \Drupal\node\NodeInterface $node
+ *   The node that is being inserted or updated.
+ *
  * @return bool
+ *   Returns TRUE if the current user may exclude this node's title.
  */
 function exclude_node_title_check_perm(NodeInterface $node) {
   $user = \Drupal::currentUser();
@@ -189,10 +235,12 @@ function exclude_node_title_check_perm(NodeInterface $node) {
  */
 function exclude_node_title_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $form_object = $form_state->getFormObject();
+
+  /** @var \Drupal\exclude_node_title\ExcludeNodeTitleManagerInterface $exclude_manager */
   $exclude_manager = \Drupal::service('exclude_node_title.manager');
 
   if ($form_object instanceof NodeForm) {
-    /** @var NodeInterface $node */
+    /** @var \Drupal\node\NodeInterface $node */
     $node = $form_object->getEntity();
     $node_type = $node->getType();
 
@@ -211,7 +259,7 @@ function exclude_node_title_form_alter(&$form, FormStateInterface $form_state, $
     // to be excluded by user...
     if ($exclude_manager->getBundleExcludeMode($node_type) == 'user') {
       $weight = $form['title']['#weight'] + 0.1;
-      $form['exclude_node_title'] = array(
+      $form['exclude_node_title'] = [
         '#type' => 'checkbox',
         '#field_name' => 'exclude_node_title',
         '#title' => t('Exclude title from display'),
@@ -219,7 +267,7 @@ function exclude_node_title_form_alter(&$form, FormStateInterface $form_state, $
         '#element_validate' => ['exclude_node_title_set_form_value'],
         '#default_value' => $exclude_manager->isNodeExcluded($node),
         '#weight' => $weight,
-      );
+      ];
     }
   }
 }

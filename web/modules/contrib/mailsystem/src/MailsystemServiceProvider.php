@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class MailsystemServiceProvider implements ServiceProviderInterface, ServiceModifierInterface {
 
- /**
+  /**
    * {@inheritdoc}
    */
   public function register(ContainerBuilder $container) {

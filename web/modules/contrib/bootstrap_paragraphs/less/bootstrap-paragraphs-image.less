@@ -6,11 +6,7 @@
  */
 
 /* Remove padding on full width image paragraph. */
-.paragraph--type--bp-image {
-  &.paragraph--width--full {
-    .paragraph__column {
-      padding-left: 0;
-      padding-right: 0;
-    }
-  }
+.paragraph.paragraph--type--bp-image.paragraph--width--full > .paragraph__column {
+  padding-right: 0;
+  padding-left: 0;
 }

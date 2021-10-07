@@ -16,6 +16,7 @@ use Drupal\webform\WebformSubmissionInterface;
  *   label = @Translation("Wizard page"),
  *   description = @Translation("Provides an element to display multiple form elements as a page in a multi-step form wizard."),
  *   category = @Translation("Wizard"),
+ *   hidden = TRUE,
  * )
  */
 class WebformWizardPage extends Details implements WebformElementWizardPageInterface {
@@ -23,13 +24,20 @@ class WebformWizardPage extends Details implements WebformElementWizardPageInter
   /**
    * {@inheritdoc}
    */
-  public function getDefaultProperties() {
+  protected function defineDefaultProperties() {
     $properties = [
       'title' => '',
       'open' => FALSE,
       'prev_button_label' => '',
       'next_button_label' => '',
-    ] + $this->getDefaultBaseProperties();
+      // Attributes.
+      'attributes' => [],
+      // Submission display.
+      'format' => $this->getItemDefaultFormat(),
+      'format_html' => '',
+      'format_text' => '',
+      'format_attributes' => [],
+    ] + $this->defineDefaultBaseProperties();
     unset($properties['flex']);
     return $properties;
   }
@@ -37,9 +45,11 @@ class WebformWizardPage extends Details implements WebformElementWizardPageInter
   /**
    * {@inheritdoc}
    */
-  public function getTranslatableProperties() {
-    return array_merge(parent::getTranslatableProperties(), ['prev_button_label', 'next_button_label']);
+  protected function defineTranslatableProperties() {
+    return array_merge(parent::defineTranslatableProperties(), ['prev_button_label', 'next_button_label']);
   }
+
+  /****************************************************************************/
 
   /**
    * {@inheritdoc}
@@ -107,13 +117,13 @@ class WebformWizardPage extends Details implements WebformElementWizardPageInter
       '#type' => 'textfield',
       '#title' => $this->t('Previous page button label'),
       '#description' => $this->t('This is used for the Next Page button on the page before this page break.') . '<br /><br />' .
-      $this->t('Defaults to: %value', ['%value' => $this->getDefaultSettings($webform, 'wizard_prev_button_label')]),
+      $this->t('Defaults to: %value', ['%value' => $webform->getSetting('wizard_prev_button_label', TRUE)]),
     ];
     $form['wizard_page']['next_button_label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Next page button label'),
       '#description' => $this->t('This is used for the Previous Page button on the page after this page break.') . '<br /><br />' .
-      $this->t('Defaults to: %value', ['%value' => $this->getDefaultSettings($webform, 'wizard_next_button_label')]),
+      $this->t('Defaults to: %value', ['%value' => $webform->getSetting('wizard_next_button_label', TRUE)]),
     ];
 
     // Wizard pages only support visible or hidden state.
@@ -132,9 +142,12 @@ class WebformWizardPage extends Details implements WebformElementWizardPageInter
    *
    * @return string
    *   The setting's value.
+   *
+   * @deprecated Scheduled for removal in Webform 8.x-6.x
+   *   Use \Drupal\webform\Webform::getSetting instead.
    */
   protected function getDefaultSettings(WebformInterface $webform, $name) {
-    return $webform->getSetting($name) ?: \Drupal::config('webform.settings')->get("settings.default_$name");
+    return $webform->getSetting($name, TRUE);
   }
 
   /**

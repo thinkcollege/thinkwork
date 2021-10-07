@@ -7,6 +7,7 @@
 
 use Drupal\webform\Entity\Webform;
 use Drupal\webform_scheduled_email\Plugin\WebformHandler\ScheduleEmailWebformHandler;
+use Drush\Drush;
 
 /**
  * Implements hook_drush_command().
@@ -96,5 +97,5 @@ function webform_scheduled_email_cron_process($webform_id = NULL, $handler_id = 
   /** @var \Drupal\webform_scheduled_email\WebformScheduledEmailManagerInterface $webform_scheduled_email_manager */
   $webform_scheduled_email_manager = \Drupal::service('webform_scheduled_email.manager');
   $stats = $webform_scheduled_email_manager->cron($webform, $handler_id, $schedule_limit, $send_limit);
-  drush_print(dt($stats['_message'], $stats['_context']));
+  Drush::output()->writeln(dt($stats['_message'], $stats['_context']));
 }

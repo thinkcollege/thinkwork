@@ -43,7 +43,7 @@ abstract class WebformExporterBase extends PluginBase implements WebformExporter
   protected $entityTypeManager;
 
   /**
-   * Webform submission storage.
+   * The webform submission storage.
    *
    * @var \Drupal\webform\WebformSubmissionStorageInterface
    */
@@ -62,6 +62,13 @@ abstract class WebformExporterBase extends PluginBase implements WebformExporter
    * @var \Drupal\webform\WebformTokenManagerInterface
    */
   protected $tokenManager;
+
+  /**
+   * Cached archive object.
+   *
+   * @var \Archive_Tar|\ZipArchive
+   */
+  protected $archive;
 
   /**
    * Constructs a WebformExporterBase object.
@@ -186,13 +193,6 @@ abstract class WebformExporterBase extends PluginBase implements WebformExporter
   }
 
   /**
-   * {@inheritdoc}
-   */
-  public function calculateDependencies() {
-    return [];
-  }
-
-  /**
    * Get the webform whose submissions are being exported.
    *
    * @return \Drupal\webform\WebformInterface
@@ -263,7 +263,7 @@ abstract class WebformExporterBase extends PluginBase implements WebformExporter
    * {@inheritdoc}
    */
   public function getFileTempDirectory() {
-    return $this->configFactory->get('webform.settings')->get('export.temp_directory') ?: file_directory_temp();
+    return $this->configFactory->get('webform.settings')->get('export.temp_directory') ?: \Drupal::service('file_system')->getTempDirectory();
   }
 
   /**
@@ -327,7 +327,43 @@ abstract class WebformExporterBase extends PluginBase implements WebformExporter
    * {@inheritdoc}
    */
   public function getArchiveFileName() {
-    return $this->getBaseFileName() . '.tar.gz';
+    return $this->getBaseFileName() . '.' . $this->getArchiveFileExtension();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getArchiveType() {
+    return ($this->configuration['archive_type'] === WebformExporterInterface::ARCHIVE_ZIP
+      && class_exists('\ZipArchive'))
+      ? WebformExporterInterface::ARCHIVE_ZIP
+      : WebformExporterInterface::ARCHIVE_TAR;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getArchiveFileExtension() {
+    return ($this->getArchiveType() === WebformExporterInterface::ARCHIVE_ZIP)
+      ? 'zip'
+      : 'tar.gz';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function addToArchive($path, $name, array $options = []) {
+    $options += [
+      'remove_path' => '',
+      'close' => FALSE,
+    ];
+
+    if ($this->getArchiveType() === WebformExporterInterface::ARCHIVE_ZIP) {
+      $this->addToZipFile($path, $name, $options);
+    }
+    else {
+      $this->addToTarArchive($path, $name, $options);
+    }
   }
 
   /**
@@ -335,6 +371,94 @@ abstract class WebformExporterBase extends PluginBase implements WebformExporter
    */
   public function getBatchLimit() {
     return $this->configFactory->get('webform.settings')->get('batch.default_batch_export_size') ?: 500;
+  }
+
+  /****************************************************************************/
+  // Archive helper methods.
+  /****************************************************************************/
+
+  /**
+   * Add file, directory, or content to Tar archive.
+   *
+   * @param string $path
+   *   System path or file content.
+   * @param string $name
+   *   Archive path or file name (applies to file content).
+   * @param array $options
+   *   Zip file options.
+   */
+  protected function addToTarArchive($path, $name, array $options = []) {
+    if (!isset($this->archive)) {
+      $this->archive = new \Archive_Tar($this->getArchiveFilePath(), 'gz');
+    }
+
+    if (@file_exists($path)) {
+      if (is_dir($path)) {
+        // Add directory to Tar archive.
+        $this->archive->addModify((array) $path, $name, $options['remove_path']);
+      }
+      else {
+        // Add file to Tar archive.
+        $this->archive->addModify((array) $path, $name, $options['remove_path']);
+      }
+    }
+    else {
+      // Add text to Tar archive.
+      $this->archive->addString($name, $path);
+    }
+
+    // Reset the Tar archive.
+    // @see \Drupal\webform\WebformSubmissionExporter::writeExportToArchive
+    if (!empty($options['close'])) {
+      $this->archive = NULL;
+    }
+  }
+
+  /**
+   * Add file, directory, or content to ZIP file.
+   *
+   * @param string $path
+   *   System path or file content.
+   * @param string $name
+   *   Archive path or file name (applies to file content).
+   * @param array $options
+   *   Zip file options.
+   */
+  protected function addToZipFile($path, $name, array $options = []) {
+    if (!isset($this->archive)) {
+      $this->archive = new \ZipArchive();
+      $flags = !file_exists($this->getArchiveFilePath()) ? \ZipArchive::CREATE : NULL;
+      $this->archive->open($this->getArchiveFilePath(), $flags);
+    }
+
+    if (@file_exists($path)) {
+      if (is_dir($path)) {
+        // Add directory to ZIP file.
+        $options += ['add_path' => $name . '/'];
+        $this->archive->addPattern('/\.[a-z0-9]+$/', $path, $options);
+      }
+      else {
+        // Add file to ZIP file.
+        // Get file name from the path and remove path option.
+        $file_name = $path;
+        if ($options['remove_path']) {
+          $file_name = preg_replace('#^' . $options['remove_path'] . '#', '', $file_name);
+        }
+        $file_name = ltrim($file_name, '/');
+        $this->archive->addFile($path, $name . '/' . $file_name);
+      }
+    }
+    else {
+      // Add text to ZIP file.
+      $this->archive->addFromString($name, $path);
+    }
+
+    // Close and reset the ZIP file.
+    // @see \Drupal\webform\WebformSubmissionExporter::writeExportToArchive
+    if (!empty($options['close'])) {
+      $this->archive->close();
+      $this->archive = NULL;
+    }
   }
 
 }

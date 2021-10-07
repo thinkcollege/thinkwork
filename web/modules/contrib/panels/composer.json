@@ -26,6 +26,16 @@
   "license": "GPL-2.0+",
   "minimum-stability": "dev",
   "require": {
-    "drupal/ctools": ">=3.0.0"
+    "drupal/core": "^8.8 || ^9",
+    "drupal/ctools": ">=3.0.0",
+    "drupal/jquery_ui_droppable": "^1.2"
+  },
+  "require-dev": {
+    "drupal/page_manager": "^4"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-8.x-4.x": "4.x-dev"
+    }
   }
 }
