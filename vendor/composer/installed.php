@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '4186129996534d74dcccbbfd88f34fa09123be3b',
+        'reference' => '28ea51e2f5b2384393642882c7359d1e2e1888dc',
         'name' => 'drupal-composer/drupal-project',
         'dev' => true,
     ),
@@ -370,7 +370,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '4186129996534d74dcccbbfd88f34fa09123be3b',
+            'reference' => '28ea51e2f5b2384393642882c7359d1e2e1888dc',
             'dev_requirement' => false,
         ),
         'drupal/action' => array(
@@ -1231,6 +1231,15 @@
             'replaced' => array(
                 0 => '9.2.7',
             ),
+        ),
+        'drupal/node_export' => array(
+            'pretty_version' => '1.0.0-alpha1',
+            'version' => '1.0.0.0-alpha1',
+            'type' => 'drupal-module',
+            'install_path' => __DIR__ . '/../../web/modules/contrib/node_export',
+            'aliases' => array(),
+            'reference' => '8.x-1.0-alpha1',
+            'dev_requirement' => false,
         ),
         'drupal/olivero' => array(
             'dev_requirement' => false,
