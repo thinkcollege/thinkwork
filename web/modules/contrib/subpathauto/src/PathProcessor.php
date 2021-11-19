@@ -144,7 +144,7 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
    * @param string $path_info
    *   Path that might contain language prefix.
    *
-   * @return string $path info
+   * @return string
    *   Path without language prefix.
    */
   protected function getPath($path_info) {
@@ -154,7 +154,7 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
       $path_info = '/' . substr($path_info, strlen($language_prefix));
     }
 
-    return $path_info;
+    return rtrim(urldecode($path_info), '/');
   }
 
   /**
@@ -181,6 +181,7 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
    * Gets the path validator.
    *
    * @return \Drupal\Core\Path\PathValidatorInterface
+   *   The path validator.
    */
   protected function getPathValidator() {
     if (!$this->pathValidator) {
@@ -211,6 +212,7 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
    * Gets the max depth that subpaths should be scanned through.
    *
    * @return int
+   *   The maximum depth.
    */
   protected function getMaxDepth() {
     return $this->configFactory->get('subpathauto.settings')->get('depth');

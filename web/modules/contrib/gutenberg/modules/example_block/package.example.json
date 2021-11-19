@@ -1,0 +1,16 @@
+{
+  "name": "example_block",
+  "version": "1.0.0",
+  "description": "",
+  "main": "js/index.js",
+  "scripts": {
+    "start": "./node_modules/.bin/drupal-js-build watch --css",
+    "build": "./node_modules/.bin/drupal-gutenberg-translations && ./node_modules/.bin/drupal-js-build --css"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "drupal-js-build": "^1.1.1",
+    "drupal-gutenberg-translations": "^1.0.2"
+  }
+}

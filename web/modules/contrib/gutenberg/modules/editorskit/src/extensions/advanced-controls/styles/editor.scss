@@ -1,0 +1,27 @@
+.editorskit-panel {
+
+	small {
+		display: block;
+		margin-bottom: 15px;
+	}
+}
+
+.components-panel {
+
+	.editorskit-user-state-controls {
+
+		.editorskit-divider {
+			display: none !important;
+		}
+	}
+}
+
+.components-panel__body {
+
+	&.editor-block-inspector__advanced {
+
+		.components-form-token-field {
+			margin-bottom: 24px;
+		}
+	}
+}

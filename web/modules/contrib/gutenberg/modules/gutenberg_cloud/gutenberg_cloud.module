@@ -1,0 +1,47 @@
+<?php
+
+/**
+ * @file
+ * Provides integration with Gutenberg cloud.
+ */
+
+/**
+ * Implements hook_gutenberg_blocks_alter().
+ */
+function gutenberg_cloud_gutenberg_blocks_alter(array &$js_files_edit, array &$css_files_edit, array &$css_files_view) {
+  $cloudBlocksManager = \Drupal::service('gutenberg_cloud.block_manager');
+  $blocks = $cloudBlocksManager->loadInstalledBlocks();
+
+  $base_url = $cloudBlocksManager->getCdnUrl();
+
+  foreach ($blocks as $block) {
+    if ($block->getEditCss()) {
+      $css_files_edit[] = $block->getAssetUrl('edit_css', $base_url);
+    }
+    if ($block->getViewCss()) {
+      $css_files_view[] = $block->getAssetUrl('view_css', $base_url);
+    }
+    if ($block->getJs()) {
+      $js_files_edit[] = $block->getAssetUrl('js', $base_url);
+    }
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function gutenberg_cloud_theme() {
+  return [
+    'gutenberg_cloud__details' => [
+      'variables' => [
+        'name' => NULL,
+        'version' => NULL,
+        'description' => NULL,
+        'author' => NULL,
+        'author_url' => NULL,
+        'picture' => NULL,
+        'tags' => [],
+      ],
+    ],
+  ];
+}

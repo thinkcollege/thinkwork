@@ -1,0 +1,10 @@
+.wp-block {
+  max-width: 720px;
+
+  &[data-align="wide"],
+  &[data-align="full"] {
+    img {
+      width: 100%;
+    }
+  }
+}

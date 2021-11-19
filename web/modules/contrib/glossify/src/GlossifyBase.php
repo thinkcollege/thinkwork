@@ -5,9 +5,7 @@ namespace Drupal\glossify;
 use Drupal\filter\Plugin\FilterBase;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Url;
-use DOMXPath;
 use Drupal\Component\Utility\Unicode;
-use Drupal\Core\Render;
 
 /**
  * Base implementation of tooltip filter type plugin.
@@ -40,17 +38,21 @@ abstract class GlossifyBase extends FilterBase {
    *   The original HTML with the term string replaced by links.
    */
   protected function parseTooltipMatch($text, array $terms, $case_sensitivity, $first_only, $displaytype, $urlpattern) {
-
     // Create dom document.
     $html_dom = Html::load($text);
-    $xpath = new DOMXPath($html_dom);
+    $xpath = new \DOMXPath($html_dom);
     $pattern_parts = $replaced = [];
+    $normalized_terms = [];
 
     // Transform terms into normalized search pattern.
     foreach ($terms as $term) {
       $term_norm = preg_replace('/\s+/', ' ', preg_quote(trim($term->name_norm)));
       $term_norm = preg_replace('#/#', '\/', $term_norm);
       $pattern_parts[] = preg_replace('/ /', '\\s+', $term_norm);
+
+      // We need to keep track of the original vs normalized term names for
+      // later.
+      $normalized_terms[stripslashes($term_norm)] = $term->name_norm;
     }
 
     // Process HTML.
@@ -86,13 +88,17 @@ abstract class GlossifyBase extends FilterBase {
           $term_txt = preg_replace('/\s+/', ' ', $term_txt);
           $terms_key = $case_sensitivity ? $term_txt : strtolower($term_txt);
 
+          // Works around an issue where terms can't be found when comparing a
+          // match to the original term name.
+          $term = $terms[$terms_key] ?? $terms[$normalized_terms[$terms_key]];
+
           // Insert any text before the term instance.
           $prefix = substr($text, $offset, $term_pos - $offset);
           $parent->insertBefore($html_dom->createTextNode($prefix), $refnode);
 
           $dom_fragment = $html_dom->createDocumentFragment();
 
-          if ($current_path == str_replace('[id]', $terms[$terms_key]->id, $urlpattern)) {
+          if ($current_path == str_replace('[id]', $term->id, $urlpattern)) {
             // Reinsert the found match if whe are on the page
             // this match points to.
             $dom_fragment->appendXML($term_txt);
@@ -107,13 +113,13 @@ abstract class GlossifyBase extends FilterBase {
 
               // Insert the matched term instance as link.
               if ($displaytype == 'tooltips_links') {
-                $tip = $this->sanitizeTip($terms[$terms_key]->tip);
+                $tip = $this->sanitizeTip($term->tip);
               }
               if (\Drupal::hasContainer()) {
-                $tipurl = Url::fromUri('internal:' . str_replace('[id]', $terms[$terms_key]->id, $urlpattern));
+                $tipurl = Url::fromUri('internal:' . str_replace('[id]', $term->id, $urlpattern));
               }
               else {
-                $tipurl = str_replace('[id]', $terms[$terms_key]->id, $urlpattern);
+                $tipurl = str_replace('[id]', $term->id, $urlpattern);
               }
               $word_link = [
                 '#theme' => 'glossify_link',
@@ -125,9 +131,8 @@ abstract class GlossifyBase extends FilterBase {
             }
             else {
               // Has to be 'tooltips'.
-
               // Insert the matched term instance as tooltip.
-              $tip = $this->sanitizeTip($terms[$terms_key]->tip);
+              $tip = $this->sanitizeTip($term->tip);
 
               $word_tip = [
                 '#theme' => 'glossify_tooltip',
@@ -179,13 +184,11 @@ abstract class GlossifyBase extends FilterBase {
    * Cleanup and truncate tip text.
    */
   private function sanitizeTip($tip) {
-
     // Get rid of HTML.
     $tip = strip_tags($tip);
 
     // Maximise tooltip text length.
     $tip = Unicode::truncate($tip, 300, TRUE, TRUE);
-
     return $tip;
   }
 

@@ -1,0 +1,163 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the gutenberg module.
+ */
+
+use Drupal\Core\Database\Database;
+
+/**
+ * Implements hook_schema().
+ */
+function gutenberg_schema() {
+  $schema['file_managed_data'] = [
+    'description' => '',
+    'fields' => [
+      'fid' => [
+        'description' => 'The {file_managed}.fid this record affects.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'data' => [
+        'type' => 'blob',
+        'size' => 'big',
+        'description' => 'A serialized configuration object data.',
+        'not null' => FALSE,
+      ],
+    ],
+  ];
+
+  return $schema;
+}
+
+/**
+ * Add file_managed_data table to database when updating from RC1.
+ */
+function gutenberg_update_8001() {
+  $spec = gutenberg_schema();
+  $schema = Database::getConnection()->schema();
+
+  if (!$schema->tableExists('file_managed_data')) {
+    $schema->createTable('file_managed_data', $spec['file_managed_data']);
+  }
+}
+
+/**
+ * Enable the new Gutenberg filter, uninstalling the old ones.
+ */
+function gutenberg_update_8201(&$sandbox) {
+  $config_factory = \Drupal::configFactory();
+  // Iterate on all text formats config entities.
+  foreach ($config_factory->listAll('filter.format.') as $name) {
+    $filter = $config_factory->getEditable($name);
+
+    $deprecated_filters = [
+      'filter_block',
+      'filter_comment_delimiter',
+      'filter_field_mapping',
+      'filter_mapping_fields',
+      'filter_media_entity_block',
+      'filter_oembed',
+      'filter_reusable_block',
+    ];
+
+    $changed = FALSE;
+
+    $filters = $filter->get('filters');
+
+    $processor_settings = [];
+
+    // Disable deprecated filters in favour of the processor services.
+    foreach ($deprecated_filters as $deprecated_filter) {
+      if (isset($filters[$deprecated_filter])) {
+        if ($deprecated_filter === 'filter_oembed') {
+          $processor_settings['oembed'] = [
+            'providers' => $filters[$deprecated_filter]['settings']['oembed_providers'],
+            'maxwidth' => (int) $filters[$deprecated_filter]['settings']['oembed_maxwidth'],
+          ];
+        }
+
+        unset($filters[$deprecated_filter]);
+        $changed = TRUE;
+      }
+    }
+
+    if ($changed) {
+      // Add the gutenberg filter.
+      $filters['gutenberg'] = [
+        'id' => 'gutenberg',
+        'provider' => 'gutenberg',
+        'status' => TRUE,
+        'weight' => 1,
+        'settings' => [
+          'processor_settings' => $processor_settings,
+        ],
+      ];
+
+      $filter->set('filters', $filters);
+      $filter->save(TRUE);
+    }
+  }
+
+  return t('Migrated existing Gutenberg text filter settings.');
+}
+
+/**
+ * Apply the Gutenberg formatter on the Reusable blocks body.
+ */
+function gutenberg_update_8202(&$sandbox) {
+  $config_factory = \Drupal::configFactory();
+  foreach ($config_factory->listAll('core.entity_view_display.block_content.reusable_block.') as $name) {
+    $display_mode = $config_factory->getEditable($name);
+
+    if ($display_mode->get('content.body')) {
+      $display_mode->set('content.body.type', 'gutenberg_text');
+      $display_mode->set('content.body.settings', [
+        'format' => 'gutenberg',
+        'content_only' => TRUE,
+      ]);
+      $display_mode->save(TRUE);
+    }
+  }
+}
+
+/**
+ * Rename Gutenberg permission name to "Use gutenberg".
+ */
+function gutenberg_update_8203(&$sandbox) {
+  // Load roles with the legacy gutenberg administer role.
+  $roles = user_roles(FALSE, 'gutenberg administer');
+  foreach ($roles as $role) {
+    $role->revokePermission('gutenberg administer');
+    $role->grantPermission('use gutenberg');
+    $role->save();
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function gutenberg_uninstall() {
+  // Delete text format settings.
+  Drupal::configFactory()->getEditable('filter.format.gutenberg')->delete();
+
+  // Remove filter settings leftovers from the config to avoid "Plugin not
+  // found" errors after uninstall Gutenberg. This is required, because even
+  // disabled filters are part of the filter format configuration objects.
+  $formats = Drupal::configFactory()->listAll('filter.format.');
+  foreach ($formats as $format_id) {
+    $format_config = Drupal::configFactory()->getEditable($format_id);
+    $format_config->clear('filters.gutenberg');
+    $module_dependencies = $format_config->get('dependencies.module');
+    if (is_array($module_dependencies)) {
+      $module_dependencies = array_filter($module_dependencies, function($module) {
+        return ($module !== 'gutenberg');
+      });
+      $format_config->set('dependencies.module', $module_dependencies);
+    }
+    $format_config->save();
+  }
+}

@@ -15,36 +15,46 @@ use Drupal\subpathauto\PathProcessor;
 class SubPathautoTest extends UnitTestCase {
 
   /**
+   * The mocked path alias processor.
+   *
    * @var \Drupal\path_alias\PathProcessor\AliasPathProcessor|\PHPUnit_Framework_MockObject_MockObject
    */
   protected $aliasProcessor;
 
   /**
+   * The mocked language manager.
+   *
    * @var \Drupal\Core\Language\LanguageManagerInterface|\PHPUnit_Framework_MockObject_MockObject
    */
   protected $languageManager;
 
   /**
+   * The mocked path validator.
+   *
    * @var \Drupal\Core\Path\PathValidatorInterface|\PHPUnit_Framework_MockObject_MockObject
    */
   protected $pathValidator;
 
   /**
+   * The mocked config factory.
+   *
    * @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject
    */
   protected $configFactory;
 
   /**
+   * The mocked configuration entity.
+   *
    * @var \Drupal\Core\Config\ConfigBase|\PHPUnit_Framework_MockObject_MockObject
    */
   protected $subPathautoSettings;
 
   /**
-   * The service under testing.
+   * The path processor service.
    *
    * @var \Drupal\subpathauto\PathProcessor
    */
-  protected $sut;
+  protected $pathProcessor;
 
   /**
    * List of aliases used in the tests.
@@ -83,8 +93,8 @@ class SubPathautoTest extends UnitTestCase {
       ->with('subpathauto.settings')
       ->willReturn($this->subPathautoSettings);
 
-    $this->sut = new PathProcessor($this->aliasProcessor, $this->languageManager, $this->configFactory);
-    $this->sut->setPathValidator($this->pathValidator);
+    $this->pathProcessor = new PathProcessor($this->aliasProcessor, $this->languageManager, $this->configFactory);
+    $this->pathProcessor->setPathValidator($this->pathValidator);
   }
 
   /**
@@ -102,29 +112,29 @@ class SubPathautoTest extends UnitTestCase {
       ->willReturn(0);
 
     // Look up a subpath of the 'content/first-node' alias.
-    $processed = $this->sut->processInbound('/content/first-node/a', Request::create('/content/first-node/a'));
+    $processed = $this->pathProcessor->processInbound('/content/first-node/a', Request::create('/content/first-node/a'));
     $this->assertEquals('/node/1/a', $processed);
 
     // Look up a subpath of the 'content/first-node' alias when request has
     // language prefix.
-    $processed = $this->sut->processInbound('/content/first-node/a', Request::create('/en/content/first-node/a'));
+    $processed = $this->pathProcessor->processInbound('/content/first-node/a', Request::create('/en/content/first-node/a'));
     $this->assertEquals('/node/1/a', $processed);
 
     // Look up a multilevel subpath of the '/content/first-node' alias.
-    $processed = $this->sut->processInbound('/content/first-node/kittens/more-kittens', Request::create('/content/first-node/kittens/more-kittens'));
+    $processed = $this->pathProcessor->processInbound('/content/first-node/kittens/more-kittens', Request::create('/content/first-node/kittens/more-kittens'));
     $this->assertEquals('/node/1/kittens/more-kittens', $processed);
 
     // Look up a subpath of the 'content/first-node-test' alias.
-    $processed = $this->sut->processInbound('/content/first-node-test/a', Request::create('/content/first-node-test/a'));
+    $processed = $this->pathProcessor->processInbound('/content/first-node-test/a', Request::create('/content/first-node-test/a'));
     $this->assertEquals('/node/1/test/a', $processed);
 
     // Look up an admin sub-path of the 'content/first-node' alias without
     // disabling sub-paths for admin.
-    $processed = $this->sut->processInbound('/content/first-node/edit', Request::create('/content/first-node/edit'));
+    $processed = $this->pathProcessor->processInbound('/content/first-node/edit', Request::create('/content/first-node/edit'));
     $this->assertEquals('/node/1/edit', $processed);
 
     // Look up an admin sub-path without disabling sub-paths for admin.
-    $processed = $this->sut->processInbound('/malicious-path/modules', Request::create('/malicious-path/modules'));
+    $processed = $this->pathProcessor->processInbound('/malicious-path/modules', Request::create('/malicious-path/modules'));
     $this->assertEquals('/admin/modules', $processed);
   }
 
@@ -144,11 +154,11 @@ class SubPathautoTest extends UnitTestCase {
       ->willReturnCallback([$this, 'pathAliasCallback']);
 
     // Subpath shouldn't be processed since the iterations has been limited.
-    $processed = $this->sut->processInbound('/content/first-node/first/second/third/fourth', Request::create('/content/first-node/first/second/third/fourth'));
+    $processed = $this->pathProcessor->processInbound('/content/first-node/first/second/third/fourth', Request::create('/content/first-node/first/second/third/fourth'));
     $this->assertEquals('/content/first-node/first/second/third/fourth', $processed);
 
     // Subpath should be processed when the max depth doesn't exceed.
-    $processed = $this->sut->processInbound('/content/first-node/first/second/third', Request::create('/content/first-node/first/second/third'));
+    $processed = $this->pathProcessor->processInbound('/content/first-node/first/second/third', Request::create('/content/first-node/first/second/third'));
     $this->assertEquals('/node/1/first/second/third', $processed);
   }
 
@@ -158,7 +168,7 @@ class SubPathautoTest extends UnitTestCase {
   public function testInboundAlreadyProcessed() {
     // The subpath processor should ignore this and not pass it on to the
     // alias processor.
-    $processed = $this->sut->processInbound('node/1', Request::create('/content/first-node'));
+    $processed = $this->pathProcessor->processInbound('node/1', Request::create('/content/first-node'));
     $this->assertEquals('node/1', $processed);
   }
 
@@ -174,24 +184,24 @@ class SubPathautoTest extends UnitTestCase {
       ->willReturn(0);
 
     // Look up a subpath of the 'content/first-node' alias.
-    $processed = $this->sut->processOutbound('/node/1/a');
+    $processed = $this->pathProcessor->processOutbound('/node/1/a');
     $this->assertEquals('/content/first-node/a', $processed);
 
     // Look up a multilevel subpath of the '/content/first-node' alias.
-    $processed = $this->sut->processOutbound('/node/1/kittens/more-kittens');
+    $processed = $this->pathProcessor->processOutbound('/node/1/kittens/more-kittens');
     $this->assertEquals('/content/first-node/kittens/more-kittens', $processed);
 
     // Look up a subpath of the 'content/first-node-test' alias.
-    $processed = $this->sut->processOutbound('/node/1/test/a');
+    $processed = $this->pathProcessor->processOutbound('/node/1/test/a');
     $this->assertEquals('/content/first-node-test/a', $processed);
 
     // Look up an admin sub-path of the 'content/first-node' alias without
     // disabling sub-paths for admin.
-    $processed = $this->sut->processOutbound('/node/1/edit');
+    $processed = $this->pathProcessor->processOutbound('/node/1/edit');
     $this->assertEquals('/content/first-node/edit', $processed);
 
     // Look up an admin sub-path without disabling sub-paths for admin.
-    $processed = $this->sut->processOutbound('/admin/modules');
+    $processed = $this->pathProcessor->processOutbound('/admin/modules');
     $this->assertEquals('/malicious-path/modules', $processed);
   }
 
@@ -211,11 +221,11 @@ class SubPathautoTest extends UnitTestCase {
       ->willReturnCallback([$this, 'aliasByPathCallback']);
 
     // Subpath shouldn't be processed since the iterations has been limited.
-    $processed = $this->sut->processOutbound('/node/1/first/second/third/fourth');
+    $processed = $this->pathProcessor->processOutbound('/node/1/first/second/third/fourth');
     $this->assertEquals('/node/1/first/second/third/fourth', $processed);
 
     // Subpath should be processed when the max depth doesn't exceed.
-    $processed = $this->sut->processOutbound('/node/1/first/second/third');
+    $processed = $this->pathProcessor->processOutbound('/node/1/first/second/third');
     $this->assertEquals('/content/first-node/first/second/third', $processed);
   }
 
@@ -226,12 +236,12 @@ class SubPathautoTest extends UnitTestCase {
     // The subpath processor should ignore this and not pass it on to the
     // alias processor.
     $options = ['absolute' => TRUE];
-    $processed = $this->sut->processOutbound('node/1', $options);
+    $processed = $this->pathProcessor->processOutbound('node/1', $options);
     $this->assertEquals('node/1', $processed);
   }
 
   /**
-   * Return value callback for getSystemPath() method on the mock alias manager.
+   * Return value callback for getPathByAlias() method on the alias manager.
    *
    * Ensures that by default the call to getPathAlias() will return the first
    * argument that was passed in. We special-case the paths for which we wish it
@@ -241,9 +251,10 @@ class SubPathautoTest extends UnitTestCase {
    *   The path.
    *
    * @return string
+   *   The path represented by the alias, or the alias if no path was found.
    */
   public function pathAliasCallback($path) {
-    return isset($this->aliases[$path]) ? $this->aliases[$path] : $path;
+    return $this->aliases[$path] ?? $path;
   }
 
   /**
@@ -253,10 +264,11 @@ class SubPathautoTest extends UnitTestCase {
    *   The path.
    *
    * @return string
+   *   An alias that represents the path, or path if no alias was found.
    */
   public function aliasByPathCallback($path) {
     $aliases = array_flip($this->aliases);
-    return isset($aliases[$path]) ? $aliases[$path] : $path;
+    return $aliases[$path] ?? $path;
   }
 
 }

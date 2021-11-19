@@ -1,0 +1,9 @@
+{
+	"version": 3,
+	"file": "block-library.css",
+	"sources": [
+		"sass/block-library.scss"
+	],
+	"names": [],
+	"mappings": "AAAA,AAAA,EAAE,AAAA,iBAAiB,CAAC;EAClB,YAAY,EAAE,YAAY;EAC1B,WAAW,EAAE,CAAC;CACf"
+}

@@ -278,10 +278,10 @@ function exclude_node_title_form_alter(&$form, FormStateInterface $form_state, $
 function exclude_node_title_set_flag($node, $value = 1) {
   $exclude_manager = \Drupal::service('exclude_node_title.manager');
 
-  if ($value == 1 && !$exclude_manager->isNodeExcluded($node)) {
+  if ($value === 1 && !$exclude_manager->isNodeExcluded($node)) {
     $exclude_manager->addNodeToList($node);
   }
-  if ($value == 0 && $exclude_manager->isNodeExcluded($node)) {
+  if ($value === 0 && $exclude_manager->isNodeExcluded($node)) {
     $exclude_manager->removeNodeFromList($node);
   }
 }

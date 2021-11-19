@@ -3,9 +3,10 @@ type: module
 description: Provides support for extending sub-paths of URL aliases.
 core_version_requirement: ^8.8 || ^9
 configure: subpathauto.admin_settings
+dependencies:
+  - drupal:path_alias
 
-
-# Information added by Drupal.org packaging script on 2020-05-21
-version: '8.x-1.1'
+# Information added by Drupal.org packaging script on 2021-11-19
+version: '8.x-1.2'
 project: 'subpathauto'
-datestamp: 1590076269
+datestamp: 1637313105

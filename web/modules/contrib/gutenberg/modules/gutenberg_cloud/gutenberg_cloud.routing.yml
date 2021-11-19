@@ -1,0 +1,7 @@
+gutenberg_cloud.manager:
+  path: '/admin/config/gutenberg-cloud'
+  defaults:
+    _form: 'Drupal\gutenberg_cloud\Form\BlockManagerForm'
+    _title: 'Gutenberg Cloud block manager'
+  requirements:
+    _permission: 'administer site configuration'

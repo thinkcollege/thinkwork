@@ -1,0 +1,23 @@
+.media-entity-search-input {
+  margin: 0 !important;
+
+  input {
+    padding: 0 4px !important;
+    line-height: 28px !important;
+  }
+
+  @media (min-width: 600px) {
+    input {
+      width: 240px !important;
+    }
+  }
+}
+
+.wp-block-drupalmedia-drupal-media-entity {
+  margin-right: 0;
+  margin-left: 0;
+
+  figcaption {
+    text-align: center;
+  }
+}

@@ -1,0 +1,6 @@
+gutenberg_cloud.manager:
+  title: Gutenberg Cloud block manager
+  description: 'Enable and disable blocks from Gutenberg Cloud.'
+  weight: 0
+  parent: system.admin_config_content
+  route_name: gutenberg_cloud.manager

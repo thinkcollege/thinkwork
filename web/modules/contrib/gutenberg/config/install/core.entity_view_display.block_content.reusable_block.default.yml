@@ -1,0 +1,26 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.reusable_block
+    - field.field.block_content.reusable_block.body
+  module:
+    - text
+  enforced:
+    module:
+      - gutenberg
+id: block_content.reusable_block.default
+targetEntityType: block_content
+bundle: reusable_block
+mode: default
+content:
+  body:
+    label: hidden
+    type: gutenberg_text
+    weight: 0
+    settings:
+      format: gutenberg
+      content_only: true
+    third_party_settings: {  }
+    region: content
+hidden: {  }

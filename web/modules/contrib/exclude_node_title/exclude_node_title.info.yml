@@ -8,7 +8,7 @@ configure: exclude_node_title.settings
 dependencies:
   - drupal:node
 
-# Information added by Drupal.org packaging script on 2021-03-05
-version: '8.x-1.2'
+# Information added by Drupal.org packaging script on 2021-10-20
+version: '8.x-1.3'
 project: 'exclude_node_title'
-datestamp: 1614965956
+datestamp: 1634750843

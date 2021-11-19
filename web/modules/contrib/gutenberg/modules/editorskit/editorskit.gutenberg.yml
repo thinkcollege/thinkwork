@@ -1,0 +1,6 @@
+# Libraries to be injected on editor (node edit)
+libraries-edit:
+  - editorskit/block-edit
+# Libraries to be injected on node view
+libraries-view:
+  - editorskit/block-view

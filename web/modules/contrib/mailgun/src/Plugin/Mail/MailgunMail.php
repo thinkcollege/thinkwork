@@ -210,6 +210,13 @@ class MailgunMail implements MailInterface, ContainerFactoryPluginInterface {
       $mailgun_message['h:Reply-To'] = $message['reply-to'];
     }
 
+    // Include custom MIME headers (for example, 'X-My-Header').
+    foreach ($message['headers'] as $key => $value) {
+      if (stripos($key, 'X-') === 0) {
+        $mailgun_message['h:' . $key] = $value;
+      }
+    }
+
     // For a full list of allowed parameters,
     // see: https://documentation.mailgun.com/api-sending.html#sending.
     $allowed_params = [

@@ -1,0 +1,9 @@
+# Libraries to be injected on editor (node edit)
+libraries-edit:
+  - example_block/block-edit
+# Libraries to be injected on node view
+libraries-view:
+  - example_block/block-view
+# Blocks which can be rendered server side.
+dynamic-blocks:
+  example/dynamic-block: {}

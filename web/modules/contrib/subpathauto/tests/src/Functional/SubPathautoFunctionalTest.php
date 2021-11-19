@@ -55,7 +55,7 @@ class SubPathautoFunctionalTest extends BrowserTestBase {
     ]);
     $path_alias->save();
 
-    $alias_white_list = $this->container->get('path.alias_whitelist');
+    $alias_white_list = $this->container->get('path_alias.whitelist');
     $alias_white_list->set('node', TRUE);
 
     $admin_user = $this->drupalCreateUser([

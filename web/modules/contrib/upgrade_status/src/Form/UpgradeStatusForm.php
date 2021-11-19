@@ -225,8 +225,22 @@ class UpgradeStatusForm extends FormBase {
     catch (\Exception $e) {
       $analyzer_ready = FALSE;
       // Message and impact description is not translated as the message
-      // is sourced from an exception thrown.
+      // is sourced from an exception thrown. Adding it to both the set
+      // of standard Drupal messages and to the bottom around the buttons.
       $this->messenger()->addError($e->getMessage() . ' Scanning is not possible until this is resolved.');
+      $form['warning'] = [
+        [
+          '#theme' => 'status_messages',
+          '#message_list' => [
+            'error' => [$e->getMessage() . ' Scanning is not possible until this is resolved.'],
+          ],
+          '#status_headings' => [
+            'error' => t('Error message'),
+          ],
+        ],
+        // Set weight lower than the "actions" element's 100.
+        '#weight' => 90,
+      ];
     }
 
     $environment = $this->buildEnvironmentChecks();
@@ -268,21 +282,23 @@ class UpgradeStatusForm extends FormBase {
       }
     }
 
-    $form['drupal_upgrade_status_form']['action']['submit'] = [
+
+    $form['actions']['#type'] = 'actions';
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Scan selected'),
       '#weight' => 2,
       '#button_type' => 'primary',
       '#disabled' => !$analyzer_ready,
     ];
-    $form['drupal_upgrade_status_form']['action']['export'] = [
+    $form['actions']['export'] = [
       '#type' => 'submit',
       '#value' => $this->t('Export selected as HTML'),
       '#weight' => 5,
       '#submit' => [[$this, 'exportReport']],
       '#disabled' => !$analyzer_ready,
     ];
-    $form['drupal_upgrade_status_form']['action']['export_ascii'] = [
+    $form['actions']['export_ascii'] = [
       '#type' => 'submit',
       '#value' => $this->t('Export selected as text'),
       '#weight' => 6,

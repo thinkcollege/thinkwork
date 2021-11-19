@@ -1,0 +1,26 @@
+{
+  "name": "drupal-gutenberg",
+  "description": "Drupal is an open source content management platform powering millions of websites and applications.",
+  "license": "GPL-2.0",
+  "private": true,
+  "engines": {
+    "yarn": ">= 1.6",
+    "node": ">= 8.11"
+  },
+  "gutenberg-version": "v8.4.0",
+  "scripts": {
+    "start": "node ./node_modules/drupal-js-build/index.js watch --css",
+    "build": "node ./node_modules/drupal-js-build/index.js --css && npm run translations",
+    "build:gutenbergjs": "bash ./scripts/build-gutenberg.sh --version $npm_package_gutenberg_version",
+    "build:gutenbergjs-dev": "bash ./scripts/build-gutenberg.sh --version $npm_package_gutenberg_version --dev",
+    "build:gutenberg-dependencies": "php ./scripts/gutenberg-dependencies.php",
+    "build:generate-vendors": "php ./scripts/generate-vendor.php",
+    "dev": "npm run build && npm start",
+    "translations": "node ./node_modules/drupal-gutenberg-translations/index.js ./js",
+    "release": "npm run build:gutenbergjs && npm run build"
+  },
+  "devDependencies": {
+    "drupal-gutenberg-translations": "^1.1.0",
+    "drupal-js-build": "https://github.com/codebymikey/drupal-js-build/tarball/87d9423e6973e1388964d35cd223750ff4f86768"
+  }
+}

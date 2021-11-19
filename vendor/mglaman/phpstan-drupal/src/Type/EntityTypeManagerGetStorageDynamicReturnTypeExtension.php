@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace PHPStan\Type;
+namespace mglaman\PHPStanDrupal\Type;
 
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\MethodCall;
@@ -10,6 +10,8 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\ShouldNotHappenException;
+use PHPStan\Type\DynamicMethodReturnTypeExtension;
+use PHPStan\Type\ObjectType;
 
 class EntityTypeManagerGetStorageDynamicReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {
@@ -42,7 +44,7 @@ class EntityTypeManagerGetStorageDynamicReturnTypeExtension implements DynamicMe
         MethodReflection $methodReflection,
         MethodCall $methodCall,
         Scope $scope
-    ): Type {
+    ): \PHPStan\Type\Type {
         $returnType = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())->getReturnType();
         if (!isset($methodCall->args[0])) {
             // Parameter is required.
@@ -74,6 +76,8 @@ class EntityTypeManagerGetStorageDynamicReturnTypeExtension implements DynamicMe
         if (isset($this->entityTypeStorageMapping[$entityTypeId])) {
             return new ObjectType($this->entityTypeStorageMapping[$entityTypeId]);
         }
+        // @todo get entity type class reflection and return proper storage for entity type
+        // example: config storage, sqlcontententitystorage, etc.
         return $returnType;
     }
 }

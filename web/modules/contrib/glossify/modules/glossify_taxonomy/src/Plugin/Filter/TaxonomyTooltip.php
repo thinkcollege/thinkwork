@@ -96,7 +96,7 @@ class TaxonomyTooltip extends GlossifyBase {
    * @param array $complete_form
    *   The complete form structure.
    */
-  public static function validateTaxonomyVocabs(&$element, FormStateInterface $form_state, &$complete_form) {
+  public static function validateTaxonomyVocabs(array &$element, FormStateInterface $form_state, array &$complete_form) {
     $values = $form_state->getValues();
     // Make taxonomy_vocabs required if the filter is enabled.
     if (!empty($values['filters']['glossify_taxonomy']['status'])) {
@@ -112,6 +112,7 @@ class TaxonomyTooltip extends GlossifyBase {
    * {@inheritdoc}
    */
   public function process($text, $langcode) {
+    $cacheTags = [];
 
     // Get vocabularies.
     $vocabs = explode(';', $this->settings['glossify_taxonomy_vocabs']);
@@ -129,6 +130,7 @@ class TaxonomyTooltip extends GlossifyBase {
       $query->addfield('tfd', 'name', 'name_norm');
       $query->addField('tfd', 'description__value', 'tip');
       $query->condition('tfd.vid', $vocabs, 'IN');
+      $query->condition('tfd.status', 1);
       $query->condition('tfd.langcode', $langcode);
       $query->orderBy('name_norm', 'DESC');
 
@@ -140,6 +142,7 @@ class TaxonomyTooltip extends GlossifyBase {
           $result->name_norm = strtolower($result->name_norm);
         }
         $terms[$result->name_norm] = $result;
+        $cacheTags[] = 'term:' . $result->id;
       }
 
       // Process text.
@@ -154,7 +157,13 @@ class TaxonomyTooltip extends GlossifyBase {
         );
       }
     }
-    return new FilterProcessResult($text);
+
+    // Prepare result.
+    $result = new FilterProcessResult($text);
+
+    // Add cache tag dependency.
+    $result->setCacheTags($cacheTags);
+    return $result;
   }
 
   /**

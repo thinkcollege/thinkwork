@@ -1,0 +1,7 @@
+.button {
+  padding: calc(0.6rem - 1px) calc(1.5rem - 1px) !important;
+}
+
+.page-wrapper :focus {
+  box-shadow: none !important;
+}

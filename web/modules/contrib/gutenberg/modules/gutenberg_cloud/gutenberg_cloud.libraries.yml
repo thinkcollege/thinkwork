@@ -1,0 +1,17 @@
+blocks:
+  version: VERSION
+  css:
+    theme:
+      css/gutenberg_cloud.css: {}
+  js:
+    js/gutenberg_cloud.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupal.debounce
+
+details:
+  version: VERSION
+  css:
+    component:
+      css/gutenberg_cloud_details.css: {}

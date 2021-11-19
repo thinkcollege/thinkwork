@@ -22,22 +22,18 @@ class SubPathautoKernelTest extends KernelTestBase {
    */
   public static $modules = [
     'system',
+    'path_alias',
     'subpathauto',
     'node',
     'user',
   ];
 
   /**
-   * @var \Drupal\Core\Path\AliasWhitelistInterface
-   */
-  protected $aliasWhiteList;
-
-  /**
-   * The service under testing.
+   * The path processor service.
    *
    * @var \Drupal\subpathauto\PathProcessor
    */
-  protected $sut;
+  protected $pathProcessor;
 
   /**
    * {@inheritdoc}
@@ -48,9 +44,7 @@ class SubPathautoKernelTest extends KernelTestBase {
     $this->installSchema('system', 'sequences');
     $this->installEntitySchema('user');
     $this->installEntitySchema('node');
-    if ($this->container->get('entity_type.manager')->hasDefinition('path_alias')) {
-      $this->installEntitySchema('path_alias');
-    }
+    $this->installEntitySchema('path_alias');
 
     $this->installConfig('subpathauto');
 
@@ -61,8 +55,8 @@ class SubPathautoKernelTest extends KernelTestBase {
     ]);
     $type->save();
 
-    $this->sut = $this->container->get('path_processor_subpathauto');
-    $this->aliasWhiteList = $this->container->get('path.alias_whitelist');
+    $this->pathProcessor = $this->container->get('path_processor_subpathauto');
+    $aliasWhiteList = $this->container->get('path_alias.whitelist');
 
     Node::create(['type' => 'page', 'title' => 'test'])->save();
 
@@ -75,7 +69,7 @@ class SubPathautoKernelTest extends KernelTestBase {
     ]);
     $path_alias->save();
 
-    $this->aliasWhiteList->set('node', TRUE);
+    $aliasWhiteList->set('node', TRUE);
 
     User::create(['uid' => 0, 'name' => 'anonymous user'])->save();
   }
@@ -85,23 +79,23 @@ class SubPathautoKernelTest extends KernelTestBase {
    */
   public function testProcessInbound() {
     // Alias should not be converted for aliases that are not valid.
-    $processed = $this->sut->processInbound('/kittens/are-fake', Request::create('/kittens/are-fake'));
+    $processed = $this->pathProcessor->processInbound('/kittens/are-fake', Request::create('/kittens/are-fake'));
     $this->assertEquals('/kittens/are-fake', $processed);
 
     // Alias should be converted on a request wih language prefix.
-    $processed = $this->sut->processInbound('/kittens/edit', Request::create('/en/kittens/edit'));
+    $processed = $this->pathProcessor->processInbound('/kittens/edit', Request::create('/en/kittens/edit'));
     $this->assertEquals('/node/1/edit', $processed);
 
     // Alias should be converted even when the user doesn't have permissions to
     // view the page.
-    $processed = $this->sut->processInbound('/kittens/edit', Request::create('/kittens/edit'));
+    $processed = $this->pathProcessor->processInbound('/kittens/edit', Request::create('/kittens/edit'));
     $this->assertEquals('/node/1/edit', $processed);
 
     // Alias should be converted because of admin user has access to edit the
     // node.
     $admin_user = $this->createUser();
     \Drupal::currentUser()->setAccount($admin_user);
-    $processed = $this->sut->processInbound('/kittens/edit', Request::create('/kittens/edit'));
+    $processed = $this->pathProcessor->processInbound('/kittens/edit', Request::create('/kittens/edit'));
     $this->assertEquals('/node/1/edit', $processed);
   }
 
@@ -110,25 +104,25 @@ class SubPathautoKernelTest extends KernelTestBase {
    */
   public function testProcessOutbound() {
     // Alias should not be converted for invalid paths.
-    $processed = $this->sut->processOutbound('/kittens/are-fake');
+    $processed = $this->pathProcessor->processOutbound('/kittens/are-fake');
     $this->assertEquals('/kittens/are-fake', $processed);
 
     // Alias should be converted even when the user doesn't have permissions to
     // view the page.
-    $processed = $this->sut->processOutbound('/node/1/edit');
+    $processed = $this->pathProcessor->processOutbound('/node/1/edit');
     $this->assertEquals('/kittens/edit', $processed);
 
     // Alias should be converted also for user that has access to view the page.
     $admin_user = $this->createUser();
     \Drupal::currentUser()->setAccount($admin_user);
-    $processed = $this->sut->processOutbound('/node/1/edit');
+    $processed = $this->pathProcessor->processOutbound('/node/1/edit');
     $this->assertEquals('/kittens/edit', $processed);
 
     // Check that alias is converted for absolute paths. The Redirect module,
     // for instance, requests an absolute path when it checks if a redirection
     // is needed.
     $options = ['absolute' => TRUE];
-    $processed = $this->sut->processOutbound('/node/1/edit', $options);
+    $processed = $this->pathProcessor->processOutbound('/node/1/edit', $options);
     $this->assertEquals('/kittens/edit', $processed);
   }
 

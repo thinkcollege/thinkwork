@@ -1,0 +1,33 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display a Gutenberg Drupal media block.
+ *
+ * Available variables:
+ * - block_name: The Gutenberg block name.
+ * - block_content: The content of this block.
+ * - block_attributes: The attributes of this block.
+ * - attributes: array of HTML attributes populated by modules, intended to
+ *   be added to the main container tag of this template.
+ *
+ * @see template_preprocess_gutenberg_block__drupalmedia_drupal_media_entity()
+ *
+ * @ingroup themeable
+ */
+#}
+{%
+  set classes = [
+    block_attributes.align ? 'align' ~ block_attributes.align|clean_class
+  ]
+%}
+
+{% if block_attributes.caption %}
+<figure{{ attributes.addClass(classes) }}>
+  {{- block_content -}}
+  <figcaption>{{ block_attributes.caption }}</figcaption>
+</figure>
+{% else %}
+<div{{ attributes.addClass(classes) }}>
+  {{- block_content -}}
+</div>
+{% endif %}

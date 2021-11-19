@@ -1,0 +1,9 @@
+{
+	"version": 3,
+	"file": "claro.css",
+	"sources": [
+		"sass/claro.scss"
+	],
+	"names": [],
+	"mappings": "AAAA,AAAA,OAAO,CAAC;EACN,OAAO,EAAE,kBAAkB,CAAC,kBAAkB,CAAC,UAAU;CAC1D;;AAED,AAAA,aAAa,CAAC,MAAM,CAAC;EACnB,UAAU,EAAE,eAAe;CAC5B"
+}

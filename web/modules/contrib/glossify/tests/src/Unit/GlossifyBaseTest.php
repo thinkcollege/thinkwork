@@ -71,10 +71,39 @@ class GlossifyBaseTest extends UnitTestCase {
  */
 class DummyTooltip extends GlossifyBase {
 
+  /**
+   * Taxonomy terms.
+   *
+   * @var array
+   */
   private $terms;
+
+  /**
+   * Cas sensitivity.
+   *
+   * @var bool
+   */
   private $caseSensitivity;
+
+  /**
+   * First only.
+   *
+   * @var bool
+   */
   private $firstOnly;
+
+  /**
+   * Displaytype.
+   *
+   * @var string
+   */
   private $displaytype;
+
+  /**
+   * Urlpattern.
+   *
+   * @var string
+   */
   private $urlpattern;
 
   /**

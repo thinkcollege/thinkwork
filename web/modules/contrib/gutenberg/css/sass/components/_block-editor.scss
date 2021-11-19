@@ -1,0 +1,40 @@
+.gutenberg__editor {
+  position: relative;
+
+  * {
+    box-sizing: border-box;
+
+    &:focus {
+      outline-width: 0;
+    }
+  }
+}
+
+// Seven theme is a bit aggresive regarding font size
+.block-editor-block-list__layout {
+  font-size: 15px;
+}
+
+@media (min-width: 782px) {
+  // .block-editor-editor-skeleton {
+  .interface-interface-skeleton {
+    top: 39px;
+    left: 0;
+
+    .toolbar-horizontal.toolbar-tray-open & {
+      top: 78px;
+      left: 0;
+    }
+
+    .toolbar-vertical.toolbar-tray-open & {
+      top: 39px;
+      left: 240px;
+    }
+  }
+}
+
+ul.block-editor-block-navigation__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

@@ -1,0 +1,25 @@
+.wp-block-example-example-block {
+  display: flex;
+  flex-direction: row;
+
+  .column {
+    flex: 1
+  }
+
+  .icon {
+    text-align: center;
+
+    svg {
+      width: 120px;
+      height: 120px;  
+    }
+  }
+}
+
+.wp-block-example-dynamic-block {
+  background-color: #0f0;
+  border: 2px solid #f00;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}

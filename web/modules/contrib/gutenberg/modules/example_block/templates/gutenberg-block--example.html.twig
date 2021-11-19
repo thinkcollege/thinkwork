@@ -1,0 +1,24 @@
+{#
+/**
+ * @file
+ * Default theme fallback for all blocks with a name matching "example/*"
+ *
+ * Available variables:
+ * - block_name: The Gutenberg block name.
+ * - block_content: The content of this block.
+ * - block_attributes: The attributes of this block.
+ * - attributes: array of HTML attributes populated by modules, intended to
+ *   be added to the main container tag of this template.
+ *
+ * @see template_preprocess_gutenberg_block()
+ * @see template_preprocess_gutenberg_block__example()
+ *
+ * @ingroup themeable
+ */
+#}
+<div{{ attributes }}>
+    <div>{{ '— Hello from the Gutenberg Drupal example namespace fallback.' }}</div>
+    <div class="dynamic-block-content">
+        {{ block_content }}
+    </div>
+</div>

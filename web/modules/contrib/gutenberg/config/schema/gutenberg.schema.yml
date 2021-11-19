@@ -1,0 +1,57 @@
+action.configuration.reusable_block_delete_action:
+  type: action_configuration_default
+  label: 'Delete reusable block'
+
+# TODO normalize the gutenberg.settings schema so its mappable.
+
+# \Drupal\gutenberg\Plugin\Editor\Gutenberg plugin
+editor.settings.gutenberg:
+  type: mapping
+  label: 'Gutenberg settings'
+  mapping:
+    # TODO review plugin_settings and whether dom ids should be stored.
+    plugin_settings:
+      type: sequence
+      label: 'Plugin settings'
+      sequence:
+        type: string
+    plugins:
+      type: sequence
+      label: 'Plugins'
+      sequence:
+        type: string
+
+# \Drupal\gutenberg\Plugin\Field\FieldFormatter\GutenbergTextFormatter plugin
+field.formatter.settings.gutenberg_text:
+  type: mapping
+  label: 'Formatter settings'
+  mapping:
+    format:
+      type: string
+      label: 'Gutenberg text format'
+    content_only:
+      type: boolean
+      label: 'Display content only'
+
+# \Drupal\gutenberg\Plugin\Filter\GutenbergFilter plugin
+filter_settings.gutenberg:
+  type: filter
+  label: 'gutenberg'
+  mapping:
+    processor_settings:
+      type: sequence
+      label: 'Gutenberg processor settings'
+      sequence:
+        type: gutenberg_processor_settings.[%key]
+
+# \Drupal\gutenberg\BlockProcessor\OEmbedProcessor plugin
+gutenberg_processor_settings.oembed:
+  type: mapping
+  label: 'oEmbed settings'
+  mapping:
+    maxwidth:
+      type: integer
+      label: 'Maximum width of media embed'
+    providers:
+      type: string
+      label: 'oEmbed providers'

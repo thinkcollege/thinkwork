@@ -113,6 +113,7 @@ class NodeTooltip extends GlossifyBase {
    * {@inheritdoc}
    */
   public function process($text, $langcode) {
+    $cacheTags = [];
 
     // Get node types.
     $node_types = explode(';', $this->settings['glossify_node_bundles']);
@@ -126,10 +127,11 @@ class NodeTooltip extends GlossifyBase {
       $query->addfield('nfd', 'title', 'name');
       $query->addfield('nfd', 'title', 'name_norm');
       $query->addField('nb', 'body_value', 'tip');
-      $query->join('node__body', 'nb', 'nb.entity_id = nfd.nid');
+      $query->leftJoin('node__body', 'nb', 'nb.entity_id = nfd.nid');
       $query->condition('nfd.type', $node_types, 'IN');
       $query->condition('nfd.status', 1);
       $query->condition('nfd.langcode', $langcode);
+      $query->condition('nb.langcode', $langcode);
       $query->orderBy('name_norm', 'DESC');
       $results = $query->execute()->fetchAllAssoc('name_norm');
 
@@ -140,6 +142,7 @@ class NodeTooltip extends GlossifyBase {
           $result->name_norm = strtolower($result->name_norm);
         }
         $terms[$result->name_norm] = $result;
+        $cacheTags[] = 'node:' . $result->id;
       }
 
       // Process text.
@@ -154,7 +157,13 @@ class NodeTooltip extends GlossifyBase {
         );
       }
     }
-    return new FilterProcessResult($text);
+
+    // Prepare result.
+    $result = new FilterProcessResult($text);
+
+    // Add cache tag dependency.
+    $result->setCacheTags($cacheTags);
+    return $result;
   }
 
   /**

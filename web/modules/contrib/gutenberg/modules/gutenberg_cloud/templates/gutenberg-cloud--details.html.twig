@@ -1,0 +1,25 @@
+{% set base_class = 'gutenberg-cloud-details' %}
+
+<div class="{{ base_class }}">
+  <div class="{{ base_class }}__picture">
+    <img src="{{ picture }}" />
+  </div>
+  <div class="{{ base_class }}__info">
+    <div class="heading">
+      <h2>{{ name }}</h2> Version: {{ version }}
+    </div>
+    {% if author %}
+      <div class="author">
+        {{ 'By'|t }} <a href="{{ author_url }}">{{ author }}</a>
+      </div>
+    {% endif %}
+    <div class="details">
+      {{ description }}
+    </div>
+    {% if tags %}
+      <div class="tags">
+        <strong>{{ 'Tags'|t }}:</strong> {{ tags|join(', ') }}
+      </div>
+    {% endif %}
+  </div>
+</div>

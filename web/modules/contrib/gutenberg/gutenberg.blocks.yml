@@ -1,0 +1,244 @@
+categories:
+  - name: "Core"
+    reference: "core"
+    description: ""
+    blocks:
+      - id: "core/paragraph"
+        name: "Paragraph"
+        default: true
+      - id: "core/image"
+        name: "Image"
+        default: true
+      - id: "core/heading"
+        name: "Heading"
+        default: true
+      - id: "core/gallery"
+        name: "Gallery"
+        default: true
+      - id: "core/list"
+        name: "List"
+        default: true
+      - id: "core/quote"
+        name: "Quote"
+        default: true
+      - id: "core/shortcode"
+        name: "Shortcode"
+        default: false
+      - id: "core/archives"
+        name: "Archives"
+        default: false
+      - id: "core/audio"
+        name: "Audio"
+        default: true
+      - id: "core/button"
+        name: "Button"
+        default: true
+      - id: "core/categories"
+        name: "Categories"
+        default: false
+      - id: "core/code"
+        name: "Code"
+        default: true
+      - id: "core/columns"
+        name: "Columns"
+        default: true
+      - id: "core/column"
+        name: "Column"
+        default: true
+      - id: "core/cover"
+        name: "Cover"
+        default: true
+      - id: "core/embed"
+        name: "Embed"
+        default: true
+      - id: "core/file"
+        name: "File"
+        default: true
+      - id: "core/freeform"
+        name: "Freeform"
+        default: true
+      - id: "core/html"
+        name: "HTML"
+        default: true
+      - id: "core/media-text"
+        name: "Media Text"
+        default: true
+      - id: "core/latest-comments"
+        name: "Latest Comments"
+        default: false
+      - id: "core/latest-posts"
+        name: "Latest Posts"
+        default: false
+      # - id: "core/missing"
+      #   name: "Missing"
+      - id: "core/more"
+        name: "More"
+        default: false
+      - id: "core/navigation"
+        name: "Navigation"
+        default: true
+      - id: "core/nextpage"
+        name: "Next page"
+        default: false
+      - id: "core/preformatted"
+        name: "Preformatted"
+        default: true
+      - id: "core/pullquote"
+        name: "Pull Quote"
+        default: true
+      - id: "core/separator"
+        name: "Separator"
+        default: true
+      - id: "core/block"
+        name: "Block"
+        default: true
+      - id: "core/spacer"
+        name: "Spacer"
+        default: true
+      - id: "core/subhead"
+        name: "Subheading"
+        default: true
+      - id: "core/table"
+        name: "Table"
+        default: true
+      # - id: "core/template"
+      #   name: "Template"
+      - id: "core/text-columns"
+        name: "Text Columns"
+        default: true
+      - id: "core/verse"
+        name: "Verse"
+        default: true
+      - id: "core/video"
+        name: "Video"
+        default: true
+  - name: "Core Embed"
+    reference: "core/embed"
+    description: ""
+    blocks:
+      - id: "core-embed/twitter"
+        name: "Twitter"
+        default: true
+      - id: "core-embed/youtube"
+        name: "Youtube"
+        default: true
+      - id: "core-embed/facebook"
+        name: "Facebook"
+        default: true
+      - id: "core-embed/instagram"
+        name: "Instagram"
+        default: true
+      - id: "core-embed/wordpress"
+        name: "WordPress"
+        default: false
+      - id: "core-embed/soundcloud"
+        name: "SoundCloud"
+        default: true
+      - id: "core-embed/spotify"
+        name: "Spotify"
+        default: true
+      - id: "core-embed/flickr"
+        name: "Flickr"
+        default: true
+      - id: "core-embed/vimeo"
+        name: "Vimeo"
+        default: true
+      - id: "core-embed/amazon-kindle"
+        name: "Amazon Kindle"
+        default: false
+      - id: "core-embed/animoto"
+        name: "Animoto"
+        default: false
+      - id: "core-embed/cloudup"
+        name: "CloudUp"
+        default: false
+      - id: "core-embed/collegehumor"
+        name: "College Humor"
+        default: false
+      - id: "core-embed/crowdsignal"
+        name: "Crowdsignal"
+        default: false
+      - id: "core-embed/dailymotion"
+        name: "Daily Motion"
+        default: false
+      - id: "embed"
+        name: "Embed"
+        default: true
+      - id: "core-embed/hulu"
+        name: "Hulu"
+        default: false
+      - id: "core-embed/imgur"
+        name: "Imgur"
+        default: false
+      - id: "core-embed/issuu"
+        name: "Issuu"
+        default: false
+      - id: "core-embed/kickstarter"
+        name: "Kickstarter"
+        default: false
+      - id: "core-embed/meetup-com"
+        name: "MeetUp"
+        default: false
+      - id: "core-embed/mixcloud"
+        name: "MixCloud"
+        default: false
+      - id: "core-embed/polldaddy"
+        name: "Poll Daddy"
+        default: false
+      - id: "core-embed/reddit"
+        name: "Reddit"
+        default: false
+      - id: "core-embed/reverbnation"
+        name: "Reverb Nation"
+        default: false
+      - id: "core-embed/screencast"
+        name: "Screencast"
+        default: false
+      - id: "core-embed/scribd"
+        name: "Scribd"
+        default: false
+      - id: "core-embed/slideshare"
+        name: "Slideshare"
+        default: false
+      - id: "core-embed/smugmug"
+        name: "Smugmug"
+        default: false
+      - id: "core-embed/speaker-deck"
+        name: "Speaker Deck"
+        default: false
+      - id: "core-embed/speaker"
+        name: "Speaker"
+        default: false
+      - id: "core-embed/tiktok"
+        name: "TikTok"
+        default: false
+      - id: "core-embed/ted"
+        name: "TED"
+        default: false
+      - id: "core-embed/tumblr"
+        name: "Tumblr"
+        default: false
+      - id: "core-embed/videopress"
+        name: "VideoPress"
+        default: false
+      - id: "core-embed/wordpress-tv"
+        name: "WordPress TV"
+        default: false
+default_drupal_blocks:
+  - drupalblock/system_breadcrumb_block
+  - drupalblock/search_form_block
+blacklist:
+  - core/categories
+  - core/latest-posts
+  - core/latest-comments
+  - core/archives
+  - core/shortcode
+  - core/more
+  - core/nextpage
+  - drupalblock/system_main_block
+  - drupalblock/system_menu_block:tools
+  - drupalblock/local_actions_block
+  - drupalblock/local_tasks_block
+  - drupalblock/system_menu_block:admin
+  - drupalblock/shortcuts
+  - drupalblock/views_block:who_s_new-block_1

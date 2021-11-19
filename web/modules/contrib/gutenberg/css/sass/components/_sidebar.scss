@@ -1,0 +1,36 @@
+.components-panel__header{
+  &.edit-post-sidebar__panel-tabs{
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+  }
+}
+
+.components-panel__body {
+  &.node-settings-plugin.is-opened {
+    padding: 0;
+
+    .components-panel__body-title {
+      display: none;
+    }
+  }
+
+  // See https://git.io/JOYPF and remove after upgrading Gutenberg to 9.1.0.
+  .components-input-control__container {
+    .components-input-control__input,
+    .components-select-control__input {
+      z-index: 1;
+    }
+
+    .components-input-control__backdrop {
+      z-index: 0;
+      background: none;
+    }
+  }
+}
+
+.entity-meta {
+  border: 0 !important;
+}

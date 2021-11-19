@@ -1,0 +1,16 @@
+.components-toolbar {
+
+	&.editorskit-components-alignment-toolbar {
+		padding: 0;
+		border-right: 0;
+
+		> .components-toolbar {
+			padding: 0 !important;
+		}
+
+		.components-dropdown-menu,
+		> .components-toolbar {
+			border: 0 !important;
+		}
+	}
+}

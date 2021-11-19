@@ -1,0 +1,38 @@
+{
+    "name": "drupal/gutenberg",
+    "description": "Drupal Gutenberg brings the powerful admin features of Gutenberg Editor to Drupal.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://www.drupal.org/project/gutenberg",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Marco Fernandes (marcofernandes)",
+            "homepage": "https://www.drupal.org/u/marcofernandes"
+        },
+        {
+            "name": "Thor Andre Gretland (thorandre)",
+            "homepage": "https://www.drupal.org/u/thorandre"
+        },
+        {
+            "name": "Roberto Ornelas (roborn)",
+            "homepage": "https://www.drupal.org/u/roborn"
+        },
+        {
+            "name": "Paweł Pregiel (ppregiel)",
+            "homepage": "https://www.drupal.org/u/ppregiel"
+        },
+        {
+            "name": "codebymikey",
+            "homepage": "https://www.drupal.org/u/codebymikey"
+        }
+    ],
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/gutenberg",
+        "source": "https://git.drupalcode.org/project/gutenberg"
+    },
+    "require": {
+        "php": ">=7.0",
+        "ext-json": "*"
+    }
+}

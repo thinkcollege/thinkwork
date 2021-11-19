@@ -5,3 +5,8 @@ services:
     tags:
       - { name: path_processor_inbound, priority: 50 }
       - { name: path_processor_outbound, priority: 50 }
+  subpathauto.config_cache_invalidator:
+    class: Drupal\subpathauto\EventSubscriber\ConfigCacheInvalidator
+    arguments: ['@cache_tags.invalidator']
+    tags:
+      - { name: event_subscriber }

@@ -1,11 +1,17 @@
 <?php
 
-namespace PHPStan\Reflection;
+namespace mglaman\PHPStanDrupal\Reflection;
+
+use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\PropertiesClassReflectionExtension;
+use PHPStan\Reflection\PropertyReflection;
 
 /**
  * Allows field access via magic methods
  *
  * See \Drupal\Core\Entity\ContentEntityBase::__get and ::__set.
+ *
+ * @todo split into Entity and FieldItem specifics.
  */
 class EntityFieldsViaMagicReflectionExtension implements PropertiesClassReflectionExtension
 {

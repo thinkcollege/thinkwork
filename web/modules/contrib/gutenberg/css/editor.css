@@ -1,0 +1,214 @@
+/**
+ * Don't edit this file. Find all style at ./sass folder.
+ **/
+.node-form .gutenberg-sidebar {
+  display: none;
+}
+
+#gutenberg-loading {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+#gutenberg-loading.hide {
+  display: none;
+}
+
+.gutenberg-full-editor:not(.ready) {
+  display: none;
+}
+
+.layout-container.full-width {
+  margin: 0;
+}
+
+body .gutenberg {
+  position: relative;
+}
+
+.field--gutenberg .form-item + label {
+  display: none;
+}
+
+.field--gutenberg .filter-wrapper {
+  display: none;
+}
+
+.edit-post-more-menu__content .components-dropdown-menu__menu .components-menu-group:last-child {
+  display: none;
+}
+
+.edit-post-header__settings .components-button.editor-post-save-draft {
+  display: none;
+}
+
+.edit-post-header__settings .components-button.editor-post-publish-panel__toggle {
+  display: none;
+}
+
+.edit-post-header__settings .editor-post-saved-state {
+  display: none;
+}
+
+.edit-post-sidebar select {
+  background-repeat: no-repeat;
+  background-position: center right;
+}
+
+.edit-post-header .edit-post-fullscreen-mode-close {
+  display: none;
+}
+
+.is-fullscreen-mode .edit-post-header .edit-post-fullscreen-mode-close.drupal {
+  display: flex;
+}
+
+.edit-post-layout {
+  transition: ease-in-out 0.2s all;
+}
+
+.edit-post-visual-editor {
+  padding-top: 60px;
+}
+
+.edit-post-welcome-guide .components-guide__page-control li[aria-current="step"] svg circle {
+  fill: #0678be;
+}
+
+.edit-post-more-menu__content .components-popover__content .components-dropdown-menu__menu .components-menu-group:nth-child(3) div[role='group'] *:nth-child(4), .edit-post-more-menu__content .components-popover__content .components-dropdown-menu__menu .components-menu-group:nth-child(3) div[role='group'] *:nth-child(5) {
+  display: none;
+}
+
+body.is-fullscreen-mode .edit-post-layout {
+  left: 0 !important;
+  top: 0 !important;
+  z-index: 999 !important;
+}
+
+body.is-fullscreen-mode .ui-autocomplete {
+  z-index: 1000;
+}
+
+input[type="search"] {
+  box-sizing: border-box;
+}
+
+.gutenberg__editor {
+  position: relative;
+}
+
+.gutenberg__editor * {
+  box-sizing: border-box;
+}
+
+.gutenberg__editor *:focus {
+  outline-width: 0;
+}
+
+.block-editor-block-list__layout {
+  font-size: 15px;
+}
+
+@media (min-width: 782px) {
+  .interface-interface-skeleton {
+    top: 39px;
+    left: 0;
+  }
+  .toolbar-horizontal.toolbar-tray-open .interface-interface-skeleton {
+    top: 78px;
+    left: 0;
+  }
+  .toolbar-vertical.toolbar-tray-open .interface-interface-skeleton {
+    top: 39px;
+    left: 240px;
+  }
+}
+
+ul.block-editor-block-navigation__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.components-panel__header.edit-post-sidebar__panel-tabs ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.components-panel__body.node-settings-plugin.is-opened {
+  padding: 0;
+}
+
+.components-panel__body.node-settings-plugin.is-opened .components-panel__body-title {
+  display: none;
+}
+
+.components-panel__body .components-input-control__container .components-input-control__input,
+.components-panel__body .components-input-control__container .components-select-control__input {
+  z-index: 1;
+}
+
+.components-panel__body .components-input-control__container .components-input-control__backdrop {
+  z-index: 0;
+  background: none;
+}
+
+.entity-meta {
+  border: 0 !important;
+}
+
+.wp-block {
+  max-width: 720px;
+}
+
+.wp-block[data-align="wide"] img, .wp-block[data-align="full"] img {
+  width: 100%;
+}
+
+.media-entity-search-input {
+  margin: 0 !important;
+}
+
+.media-entity-search-input input {
+  padding: 0 4px !important;
+  line-height: 28px !important;
+}
+
+@media (min-width: 600px) {
+  .media-entity-search-input input {
+    width: 240px !important;
+  }
+}
+
+.wp-block-drupalmedia-drupal-media-entity {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.wp-block-drupalmedia-drupal-media-entity figcaption {
+  text-align: center;
+}
+
+.ui-dialog {
+  z-index: 1000000 !important;
+}
+
+[data-type*="drupalblock/"] .no-access {
+  padding: 20px;
+  background-color: #e0e0e0;
+  text-align: center;
+}
+
+input, textarea {
+  box-sizing: border-box;
+}
+
+/*# sourceMappingURL=editor.css.map */

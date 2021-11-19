@@ -1,0 +1,92 @@
+services:
+  logger.channel.gutenberg:
+    parent: logger.channel_base
+    arguments: ['gutenberg']
+  plugin.manager.gutenberg.plugin:
+    class: Drupal\gutenberg\GutenbergPluginManager
+    parent: default_plugin_manager
+  plugin.manager.gutenberg.library:
+    class: Drupal\gutenberg\GutenbergLibraryManager
+    arguments: ['@module_handler', '@theme_handler', '@theme.initialization', '@cache.discovery', '@logger.channel.gutenberg']
+  gutenberg.block_processor_manager:
+    class: Drupal\gutenberg\BlockProcessor\GutenbergBlockProcessorManager
+    tags:
+      - { name: service_collector, tag: gutenberg_block_processor, call: addProcessor }
+  gutenberg.block_processor_drupal_blocks:
+    class: Drupal\gutenberg\BlockProcessor\DrupalBlockProcessor
+    arguments: ['@gutenberg.blocks_renderer', '@renderer']
+    tags:
+      - { name: gutenberg_block_processor, priority: 50 }
+  gutenberg.block_processor_oembed:
+    class: Drupal\gutenberg\BlockProcessor\OEmbedProcessor
+    arguments: ['@renderer', '@module_handler', '@datetime.time', '@gutenberg.oembed_resolver', '@cache.default']
+    tags:
+      - { name: gutenberg_block_processor, priority: 50 }
+  gutenberg.block_processor_resusable_blocks:
+    class: Drupal\gutenberg\BlockProcessor\ReusableBlockProcessor
+    arguments: ['@entity_type.manager', '@renderer', '@logger.channel.gutenberg']
+    tags:
+      - { name: gutenberg_block_processor, priority: 50 }
+  gutenberg.block_processor_dynamic_render:
+    class: Drupal\gutenberg\BlockProcessor\DynamicRenderProcessor
+    arguments: ['@plugin.manager.gutenberg.library', '@renderer', '@module_handler']
+    tags:
+      - { name: gutenberg_block_processor, priority: 0 }
+  gutenberg.block_processor_field_mapping:
+    class: Drupal\gutenberg\BlockProcessor\FieldMappingProcessor
+    arguments: []
+    tags:
+      - { name: gutenberg_block_processor, priority: -50 }
+  gutenberg.blocks_renderer:
+    class: Drupal\gutenberg\BlocksRendererHelper
+    arguments: ['@renderer', '@plugin.manager.block', '@current_user', '@context.repository', '@context.handler', '@title_resolver', '@logger.channel.gutenberg']
+  gutenberg.oembed_resolver:
+    class: Drupal\gutenberg\OEmbedResolver
+    arguments: ['@service_container', '@http_client', '@renderer', '@module_handler']
+  gutenberg.media_entity.renderer:
+    class: Drupal\gutenberg\MediaEntityRenderer
+    arguments: ['@renderer', '@entity_type.manager']
+  gutenberg.media_library.opener:
+    class: Drupal\gutenberg\MediaLibraryGutenbergOpener
+  gutenberg.media_type.guesser:
+    class: Drupal\gutenberg\MediaTypeGuesser
+    arguments: ['@entity_type.manager', '@gutenberg.file_extension_guesser']
+  gutenberg.media_type.persistence_manager:
+    class: Drupal\gutenberg\Persistence\MediaTypePersistenceManager
+    arguments: ['@entity_type.manager', '@current_user']
+  gutenberg.media_uploader:
+    class: Drupal\gutenberg\MediaUploader
+    arguments: ['@file_system']
+  gutenberg.entity_type.data_provider_manager:
+    class: Drupal\gutenberg\DataProvider\EntityDataProviderManager
+    tags:
+      - { name: service_collector, tag: entity_type_data_provider, call: registerDataProvider }
+  gutenberg.entity_type.data_provider.media:
+    class: Drupal\gutenberg\DataProvider\MediaEntityDataProvider
+    arguments: ['@entity_type.manager', '@database', '@image.factory']
+    tags:
+      - { name: entity_type_data_provider, entity_type: media }
+  gutenberg.entity_type.data_provider.file:
+    class: Drupal\gutenberg\DataProvider\FileEntityDataProvider
+    arguments: ['@entity_type.manager', '@database', '@image.factory']
+    tags:
+      - { name: entity_type_data_provider, entity_type: file }
+  gutenberg.file_extension_guesser:
+    class: Drupal\gutenberg\FileExtensionGuesser
+    arguments: ['@module_handler']
+  gutenberg.media_service:
+    class: Drupal\gutenberg\Service\MediaService
+    arguments: ['@gutenberg.media_type.guesser', '@entity_type.manager', '@gutenberg.media_type.persistence_manager', '@gutenberg.entity_type.data_provider_manager', '@module_handler', '@gutenberg.media_uploader', '@renderer', '@entity_type.bundle.info', '@gutenberg.media_entity.renderer', '@database', '@entity_display.repository']
+  gutenberg.media_library.ui_builder:
+    class: Drupal\gutenberg\GutenbergMediaLibraryUiBuilder
+    arguments: ['@entity_type.manager', '@request_stack', '@views.executable', '@form_builder', '@?media_library.opener_resolver']
+  gutenberg.media_selection_processor_manager:
+    class: Drupal\gutenberg\MediaSelectionProcessor\MediaSelectionProcessorManager
+    arguments: []
+    tags:
+      - { name: service_collector, tag: media_selection_processor, call: registerProcessor }
+  gutenberg.media_selection_processor.default:
+    class: Drupal\gutenberg\MediaSelectionProcessor\DefaultMediaSelectionProcessor
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: media_selection_processor, processor_name: default }

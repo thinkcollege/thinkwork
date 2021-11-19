@@ -1,0 +1,4 @@
+services:
+  gutenberg_cloud.block_manager:
+    class: Drupal\gutenberg_cloud\CloudBlockManager
+    arguments: ['@http_client', '@config.factory']

@@ -1,0 +1,18 @@
+#media-entity-browser-modal {
+  & {
+    padding: 0;
+  }
+
+  > div {
+    height: 100%;
+  }
+
+  .media-library-wrapper {
+    height: 100%;
+    margin: 0;
+  }
+
+  .media-library-select.form-submit {
+    display: none;
+  }
+}

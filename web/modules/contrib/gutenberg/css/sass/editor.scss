@@ -1,0 +1,13 @@
+@import './variables';
+@import './components/node-form';
+@import './components/edit-post';
+@import './components/block-editor';
+@import './components/sidebar';
+@import './components/block';
+@import './components/media-entity';
+@import './components/ui-dialog';
+@import './components/drupal-block';
+
+input, textarea {
+  box-sizing: border-box;
+}
