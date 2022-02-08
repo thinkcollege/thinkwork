@@ -104,7 +104,7 @@ easy_breadcrumb.settings:
       type: boolean
       label: 'Enable truncation for titles.'
     truncator_length:
-      type: text
+      type: integer
       label: 'Set the limit for truncation.'
     truncator_dots:
       type: boolean

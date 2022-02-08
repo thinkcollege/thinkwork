@@ -39,7 +39,7 @@ use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
-use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityInterface;
 
 /**
  * Primary implementation for the Easy Breadcrumb builder.
@@ -224,17 +224,6 @@ class EasyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      // $container->get('easy_breadcrumb.title_resolver'),.
-      $definition = $container->getDefinition('easy_breadcrumb.title_resolver'),
-      $definition->setClass('Drupal\easy_breadcrumb\TitleResolver')
-    );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function applies(RouteMatchInterface $route_match) {
     $applies_admin_routes = $this->config->get(EasyBreadcrumbConstants::APPLIES_ADMIN_ROUTES);
 
@@ -332,13 +321,32 @@ class EasyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
         foreach ($values as $pair) {
           $settings = explode("|", $pair);
           $title = Html::decodeEntities(Xss::filter(trim($settings[0])));
+          $use_current_page_title = trim($settings[0]) === '<title>';
+
+          // If the custom title uses the current page title, fetch it.
+          if ($use_current_page_title) {
+            $route_request = $this->getRequestForPath($path, []);
+
+            if ($route_request) {
+              $route_match = RouteMatch::createFromRequest($route_request);
+              $access = $this->accessManager->check($route_match, $this->currentUser, NULL, TRUE);
+              $breadcrumb = $breadcrumb->addCacheableDependency($access);
+              // The set of breadcrumb links depends on the access result, so merge
+              // the access result's cacheability metadata.
+              if ($access->isAllowed()) {
+                if ($this->config->get(EasyBreadcrumbConstants::TITLE_FROM_PAGE_WHEN_AVAILABLE)) {
+                  $title = $this->normalizeText($this->getTitleString($route_request, $route_match, $replacedTitles));
+                }
+              }
+            }
+          }
 
           // If the custom title includes any regex match groups
           // (eg. "/foo/(\d*)/bar") then check if the urls for any segments
           // have matched group variables (eg. $1 or $3) and if they do
           // substitute them out for the the corresponding
           // matched strings.
-          if ($is_regex) {
+          elseif ($is_regex) {
             foreach ($regex_group_matches as $group_num => $captured_str) {
               $title = str_replace('$' . ($group_num + 1), urlencode($captured_str), $title);
             }
@@ -455,7 +463,8 @@ class EasyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
         $config_textarea = $this->config->get(EasyBreadcrumbConstants::EXCLUDED_PATHS);
         $excludes = preg_split('/[\r\n]+/', $config_textarea, -1, PREG_SPLIT_NO_EMPTY);
         if (in_array(end($path_elements), $excludes)) {
-          break;
+          array_pop($path_elements);
+          continue;
         }
       }
 
@@ -472,8 +481,11 @@ class EasyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
               foreach ($parameters as $name => $options) {
                 if (isset($options['type']) && strpos($options['type'], 'entity:') === 0) {
                   $entity = $route_match->getParameter($name);
-                  if ($entity instanceof ContentEntityInterface && $entity->hasLinkTemplate('canonical')) {
+                  if ($entity instanceof EntityInterface && $entity->hasLinkTemplate('canonical')) {
                     $title = $entity->label();
+                    if ($this->config->get(EasyBreadcrumbConstants::TRUNCATOR_MODE)) {
+                      $title = $this->truncator($title);
+                    }
                     break;
                   }
                 }
@@ -507,10 +519,10 @@ class EasyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
               if (empty($menu_links)) {
                 if ($this->config->get(EasyBreadcrumbConstants::USE_PAGE_TITLE_AS_MENU_TITLE_FALLBACK)) {
                   $title = $this->getTitleString($route_request, $route_match, $replacedTitles);
-                  if ($title && array_key_exists($title, $replacedTitles)) {
+                  if (!empty($title) && array_key_exists($title, $replacedTitles)) {
                     $title = $replacedTitles[$title];
                   }
-                  if ($this->config->get(EasyBreadcrumbConstants::TRUNCATOR_MODE)) {
+                  if (!empty($title) && $this->config->get(EasyBreadcrumbConstants::TRUNCATOR_MODE)) {
                     $title = $this->truncator($title);
                   }
                 }
@@ -884,6 +896,9 @@ class EasyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
       // Transforms the text 'once a time' to 'Once a Time'.
       // List of words to be ignored by the capitalizator.
       $ignored_words = $this->config->get(EasyBreadcrumbConstants::CAPITALIZATOR_IGNORED_WORDS);
+      if (!is_array($ignored_words)) {
+        $ignored_words = explode(' ', $ignored_words);
+      }
       $words = explode(' ', $normalized_text);
 
       // Transforms the non-ignored words of the segment.

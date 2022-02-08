@@ -128,7 +128,4 @@ function easy_breadcrumb_install() {
   $messenger = \Drupal::messenger();
   $help_url = 'https://www.drupal.org/docs/8/modules/easy-breadcrumb';
   $messenger->addMessage("Easy Breadcrumb documentation is found in the help module or at $help_url.");
-
-  // Clear the cache so that the breadcrumbs appear after install.
-  drupal_flush_all_caches();
 }
