@@ -16,7 +16,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   };
 
   function serializedToNested(elements) {
-    var regex = /\[([a-z_]*)\]/gm;
+    var regex = /\[([a-z0-9_]*)]/gm;
 
     var tree = {};
 

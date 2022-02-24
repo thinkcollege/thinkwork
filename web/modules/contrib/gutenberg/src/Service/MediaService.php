@@ -170,19 +170,26 @@ class MediaService {
    *
    * @param array $media_types
    *   Array of media types.
+   * @param array $media_bundles
+   *   Array of media bundles.
    *
    * @return string
    *   The rendered element.
    *
    * @throws \Drupal\gutenberg\Service\MediaTypeNotFoundException
    */
-  public function renderDialog(array $media_types) {
+  public function renderDialog(array $media_types, array $media_bundles = NULL) {
     $media_types = array_filter($media_types)
       ? $media_types
       : ['application', 'image', 'audio', 'video', 'text'];
     $allowed_media_type_ids = [];
     foreach ($media_types as $media_type) {
       $allowed_media_type_ids = array_merge($allowed_media_type_ids, $this->mediaTypeGuesser->guess($media_type));
+    }
+
+    if (!empty($media_bundles)) {
+      // Filter by bundle.
+      $allowed_media_type_ids = array_intersect($allowed_media_type_ids, $media_bundles);
     }
 
     if (!$allowed_media_type_ids) {
@@ -311,15 +318,37 @@ class MediaService {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public function loadMediaData(MediaInterface $media) {
-    $file_entity_id = $media->getSource()->getSourceFieldValue($media);
-    $file_entity = $this->entityTypeManager->getStorage('file')->load($file_entity_id);
-    $file_data = $this->entityDataProviderManager->getData('file', $file_entity);
-    $file_data['media_entity'] = [
+    $data = [];
+    if (in_array($media->getSource()->getPluginId(), [
+      'file', 'image', 'video', 'audio',
+    ])) {
+      // We expect the sources of ['file', 'image', 'video', 'audio']
+      // to have a file connected to the media entity.
+      $file_entity = $media->get($media->getSource()->getConfiguration()['source_field'])->entity;
+      $data = $this->entityDataProviderManager->getData('file', $file_entity);
+    }
+    elseif ($media->getSource()->getPluginId() === 'oembed:video') {
+      // We have to handle sources of oembed:video special
+      // since it does not have a file.
+      $mediaAttributes = $media->getSource()->getMetadataAttributes();
+      foreach (array_keys($mediaAttributes) as $attribute) {
+        $data[$attribute] = $media->getSource()->getMetadata($media, $attribute);
+      }
+    }
+    else {
+      // Handle everything else.
+      $data['value'] = $media->getSource()->getSourceFieldValue($media);
+    }
+
+    $data['media_entity'] = [
       'bundle' => $media->bundle(),
+      'plugin' => $media->getSource()->getPluginId(),
       'id' => $media->id(),
       'label' => $media->label(),
+      'entity_uuid' => $media->uuid(),
     ];
-    return $file_data;
+
+    return $data;
   }
 
   /**

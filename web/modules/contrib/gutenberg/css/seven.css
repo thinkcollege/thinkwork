@@ -1,12 +1,32 @@
 /**
  * Don't edit this file. Find all style at ./sass folder.
  **/
+:root {
+  --wp-admin-theme-color: #0071b8;
+  --wp-admin-theme-color-darker-10: #2369a6;
+  --wp-admin-theme-color-darker-20: #00131f;
+}
+
 .components-panel__header.edit-post-sidebar-header {
   background-color: #e0e0d8;
 }
 
 .edit-post-layout .block-editor-editor-skeleton__content {
   background-color: #e0e0d8;
+}
+
+.edit-post-layout fieldset:not(.fieldgroup) {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.edit-post-layout fieldset:not(.fieldgroup) > legend {
+  position: initial;
+}
+
+.edit-post-layout fieldset:not(.fieldgroup) > legend.components-visually-hidden {
+  position: absolute;
 }
 
 /*# sourceMappingURL=seven.css.map */

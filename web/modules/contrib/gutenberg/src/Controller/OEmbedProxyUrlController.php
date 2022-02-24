@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class OEmbedProxyUrlController.
+ * Proxy Url Controller for OEmbed.
  *
  * @package Drupal\gutenberg\Controller
  */
@@ -63,8 +63,9 @@ class OEmbedProxyUrlController extends ControllerBase {
     }
 
     /*
-     * TODO: up for discussion, but the proxy previews won't match the custom oEmbeds settings declared in the
-     *  OEmbedProcessor settings. I think the settings should be moved into an API for consolidation.
+     * @todo Up for discussion, but the proxy previews won't match the
+     * custom oEmbeds settings declared in the OEmbedProcessor settings.
+     * I think the settings should be moved into an API for consolidation.
      */
     $oembed = $this->oembedResolver->resolveOembed($url, $max_width);
 

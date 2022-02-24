@@ -22,10 +22,13 @@
     var ref = useRef(null);
 
     useEffect(function () {
-      ref.current.appendChild(document.getElementById('edit-advanced'));
+      var editAdvanced = document.getElementById('edit-advanced');
+      var sidebar = document.getElementById('gutenberg-sidebar');
+
+      editAdvanced && ref.current.appendChild(editAdvanced);
 
       return function () {
-        document.getElementById('gutenberg-sidebar').appendChild(document.getElementById('edit-advanced'));
+        editAdvanced && sidebar && sidebar.appendChild(editAdvanced);
       };
     }, []);
 

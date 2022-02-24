@@ -99,14 +99,27 @@ class BlocksController extends ControllerBase {
     // Get blocks definition.
     $definitions = $blockManager->getDefinitionsForContexts($contextRepository->getAvailableContexts());
     $definitions = $blockManager->getSortedDefinitions($definitions);
+    $groups = $blockManager->getGroupedDefinitions($definitions);
+    foreach ($groups as $key => $blocks) {
+      $group_reference = preg_replace('@[^a-z0-9-]+@', '_', strtolower($key));
+      $groups['drupalblock/all_' . $group_reference] = $blocks;
+      unset($groups[$key]);
+    }
 
     $return = [];
     foreach ($config_values as $key => $value) {
       if ($value) {
-        $return[$key] = $definitions[$key];
+        if (preg_match('/^drupalblock\/all/', $value)) {
+          // Getting all blocks from group.
+          foreach ($groups[$value] as $key_block => $definition) {
+            $return[$key_block] = $definition;
+          }
+        }
+        else {
+          $return[$key] = $definitions[$key];
+        }
       }
     }
-
     return new JsonResponse($return);
   }
 
@@ -137,16 +150,13 @@ class BlocksController extends ControllerBase {
       $access_result = $this->blocksRenderer->getBlockAccess($plugin_block);
       if ($access_result->isForbidden()) {
         // You might need to add some cache tags/contexts.
-        return new JsonResponse(['access' => FALSE, 'html' => $this->t('Unable to render block. Check block settings or permissions.')]);
+        return new JsonResponse([
+          'access' => FALSE,
+          'html' => $this->t('Unable to render block. Check block settings or permissions.'),
+        ]);
       }
 
       $content = $this->blocksRenderer->getRenderFromBlockPlugin($plugin_block);
-
-      // Create a block entity.
-      // $entity = $this->entityTypeManager()->getStorage('block')->create(['plugin' => $plugin_id, 'theme' => NULL]);
-      // $form = $this->entityFormBuilder()->getForm($entity);
-      // Render block settings.
-      // $config = $this->renderer->render($form['settings']);
     }
 
     // If the block is a view with contexts defined, it may
@@ -156,7 +166,7 @@ class BlocksController extends ControllerBase {
       $content = $this->t('Unable to render the content possibly due to path restrictions.');
     }
 
-    return new JsonResponse(['access' => TRUE, 'html' => $content]); // , 'config' => $config
+    return new JsonResponse(['access' => TRUE, 'html' => $content]);
   }
 
 }

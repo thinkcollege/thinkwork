@@ -34,6 +34,17 @@ gutenberg.media.load:
   requirements:
     _permission: 'use gutenberg'
     _format: json
+gutenberg.media.edit:
+  path: '/editor/media/edit/{file}'
+  defaults:
+    _controller: '\Drupal\gutenberg\Controller\MediaController::edit'
+    parameters:
+      file:
+        type: entity:file
+  methods: 'POST'
+  requirements:
+    _permission: 'use gutenberg'
+    _format: json
 gutenberg.media.load_media:
   path: '/editor/media/load-media/{media}'
   defaults:

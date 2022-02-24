@@ -153,11 +153,12 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     };
 
     var getDialog = function getDialog(_ref2) {
-      var allowedTypes = _ref2.allowedTypes;
+      var allowedTypes = _ref2.allowedTypes,
+          allowedBundles = _ref2.allowedBundles;
       return new Promise(function (resolve, reject) {
         wp.apiFetch({
           path: 'load-media-library-dialog',
-          data: { allowedTypes: allowedTypes }
+          data: { allowedTypes: allowedTypes, allowedBundles: allowedBundles }
         }).then(function (result) {
           resolve({
             component: function component(props) {

@@ -7,6 +7,7 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\filter\FilterPluginManager;
 use Drupal\mailgun\MailgunHandlerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -23,21 +24,30 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
   protected $mailgunHandler;
 
   /**
+   * The filter plugin manager.
+   *
+   * @var \Drupal\filter\FilterPluginManager
+   */
+  protected $filterManager;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-      $container->get('mailgun.mail_handler')
+      $container->get('mailgun.mail_handler'),
+      $container->get('plugin.manager.filter')
     );
   }
 
   /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $config_factory, MailgunHandlerInterface $mailgun_handler) {
+  public function __construct(ConfigFactoryInterface $config_factory, MailgunHandlerInterface $mailgun_handler, FilterPluginManager $filter_manager) {
     parent::__construct($config_factory);
     $this->mailgunHandler = $mailgun_handler;
+    $this->filterManager = $filter_manager;
   }
 
   /**
@@ -89,7 +99,9 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Mailgun API Key'),
       '#type' => 'textfield',
       '#required' => TRUE,
-      '#description' => $this->t('Enter your API key. It should be similar to: @key', ['@key' => 'key-1234567890abcdefghijklmnopqrstu']),
+      '#description' => $this->t('Enter your @link.', [
+        '@link' => Link::fromTextAndUrl($this->t('Private API key'), Url::fromUri('https://app.mailgun.com/app/account/security/api_keys'))->toString(),
+      ]),
       '#default_value' => $config->get('api_key'),
     ];
 
@@ -210,12 +222,21 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
     foreach ($filter_formats as $filter_format_id => $filter_format) {
       $options[$filter_format_id] = $filter_format->label();
     }
+
+    // Add additional description text if there is a recommended filter plugin.
+    // To be sure we are using the correct plugin name, let's use the plugin definition.
+    $recommendation = !$this->filterManager->hasDefinition('filter_autop') ? ''
+      : $this->t('Recommended format filters: @filter.', ['@filter' => $this->filterManager->getDefinition('filter_autop')['title'] ?? '']);
+
     $form['advanced_settings']['format']['format_filter'] = [
       '#title' => $this->t('Format filter'),
       '#type' => 'select',
       '#options' => $options,
       '#default_value' => $config->get('format_filter'),
-      '#description' => $this->t('Format filter to use to render the message.'),
+      '#description' => $this->t('@text_format to use to render the message. @recommendation', [
+        '@text_format' => Link::fromTextAndUrl($this->t('Text format'), Url::fromRoute('filter.admin_overview'))->toString(),
+        '@recommendation' => $recommendation,
+      ]),
     ];
     $form['advanced_settings']['format']['use_theme'] = [
       '#title' => $this->t('Use theme'),

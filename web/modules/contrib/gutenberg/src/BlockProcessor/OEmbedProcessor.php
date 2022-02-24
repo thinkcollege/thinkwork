@@ -91,7 +91,9 @@ class OEmbedProcessor extends ConfigurableProcessorBase {
   public function processBlock(array &$block, &$block_content, RefinableCacheableDependencyInterface $bubbleable_metadata) {
     $block_attributes = $block['attrs'];
     $url = $block_attributes['url'] ?? '';
-    if (!$url) return;
+    if (!$url) {
+      return;
+    };
 
     // Try and check against the cache as too many requests might lead to
     // the site being blacklisted.
@@ -102,7 +104,9 @@ class OEmbedProcessor extends ConfigurableProcessorBase {
     if ($cached) {
       if ($cached->data) {
         // Only replace if there's cache data.
-        $block_content = str_replace($url, $cached->data, $block_content);
+        // Use the URL with html entities, because the URL in the block content
+        // also includes html entities.
+        $block_content = str_replace(htmlentities($url), $cached->data, $block_content);
       }
       return;
     }
@@ -150,7 +154,9 @@ class OEmbedProcessor extends ConfigurableProcessorBase {
 
     if ($output) {
       // Replace the oEmbed link.
-      $block_content = str_replace($url, $output, $block_content);
+      // Use the URL with html entities, because the URL in the block content
+      // also includes html entities.
+      $block_content = str_replace(htmlentities($url), $output, $block_content);
     }
   }
 

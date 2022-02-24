@@ -6,7 +6,7 @@ package: Testing
 dependencies:
   -drupal:upgrade_status_contrib_error
 
-# Information added by Drupal.org packaging script on 2021-11-16
-version: '8.x-3.12'
+# Information added by Drupal.org packaging script on 2021-12-14
+version: '8.x-3.13'
 project: 'upgrade_status'
-datestamp: 1637076802
+datestamp: 1639504713

@@ -1,0 +1,132 @@
+@font-face {
+  font-family: "metropolis";
+  src:
+    url("../../../../../core/themes/olivero/fonts/metropolis/Metropolis-Regular.woff2") format("woff2"),
+    url("../../../../../core/themes/olivero/fonts/metropolis/Metropolis-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "metropolis";
+  src:
+    url("../../../../../core/themes/olivero/fonts/metropolis/Metropolis-Bold.woff2") format("woff2"),
+    url("../../../../../core/themes/olivero/fonts/metropolis/Metropolis-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "metropolis";
+  src:
+    url("../../../../../core/themes/olivero/fonts/metropolis/Metropolis-SemiBold.woff2") format("woff2"),
+    url("../../../../../core/themes/olivero/fonts/metropolis/Metropolis-SemiBold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* lora-regular - latin */
+
+@font-face {
+  font-family: "Lora";
+  src:
+    local("Lora Regular"),
+    local("Lora-Regular"),
+    url("../../../../../core/themes/olivero/fonts/lora/lora-v14-latin-regular.woff2") format("woff2"),
+    url("../../../../../core/themes/olivero/fonts/lora/lora-v14-latin-regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* lora-italic - latin */
+
+@font-face {
+  font-family: "Lora";
+  src:
+    local("Lora Italic"),
+    local("Lora-Italic"),
+    url("../../../../../core/themes/olivero/fonts/lora/lora-v14-latin-italic.woff2") format("woff2"),
+    url("../../../../../core/themes/olivero/fonts/lora/lora-v14-latin-italic.woff") format("woff");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* lora-700 - latin */
+
+@font-face {
+  font-family: "Lora";
+  src:
+    local("Lora Bold"),
+    local("Lora-Bold"),
+    url("../../../../../core/themes/olivero/fonts/lora/lora-v14-latin-700.woff2") format("woff2"),
+    url("../../../../../core/themes/olivero/fonts/lora/lora-v14-latin-700.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+.editor-styles-wrapper {
+  @import '../../../../../core/themes/olivero/css/base/variables';
+  @import '../../../../../core/themes/olivero/css/base/utility';
+  @import '../../../../../core/themes/olivero/css/base/base';
+  @import '../../../../../core/themes/olivero/css/components/text-content';
+
+  font-family: "Lora", "georgia", serif;
+  // font-family: "metropolis", sans-serif;
+  // font-size: 100%;
+  font-weight: normal;
+  font-style: normal;
+  // line-height: 1.6875rem;
+  font-size: 18px;
+  line-height: 2.25rem;
+
+  margin: 0;
+  color: #313637;
+  // background-color: #f7f9fa;
+  background-color: #fff;
+
+  .editor-post-title__input {
+    letter-spacing: -0.01em;
+    font-size: 3.75rem;
+    line-height: 4.5rem;
+    margin-top: 1.125rem;
+    margin-bottom: 1.125rem;
+    color: #0d1214;
+    font-family: "metropolis", sans-serif;
+    font-weight: bold;
+  }
+
+  blockquote {
+    font-size: 2rem;
+    line-height: 3.375rem;
+
+    &::before {
+      position: absolute;
+      top: 0;
+      content: "“";
+      color: #53b0eb;
+      font-size: 3.375rem;
+      left: 0;
+    }
+
+    &::after {
+      position: absolute;
+      bottom: 0;
+      width: 0.5625rem;
+      height: calc(100% - 1.875rem);
+      content: "";
+      background: #f7f9fa;
+    }
+  }
+}
+
+.alignfull {
+  width: calc(85.375rem + 115px);
+  margin-left: calc(-4.5rem - 9.5rem);
+}

@@ -37,7 +37,7 @@ body .gutenberg {
   display: none;
 }
 
-.field--gutenberg .filter-wrapper {
+.field--gutenberg > .text-format-wrapper > .filter-wrapper {
   display: none;
 }
 
@@ -74,10 +74,6 @@ body .gutenberg {
   transition: ease-in-out 0.2s all;
 }
 
-.edit-post-visual-editor {
-  padding-top: 60px;
-}
-
 .edit-post-welcome-guide .components-guide__page-control li[aria-current="step"] svg circle {
   fill: #0678be;
 }
@@ -112,8 +108,8 @@ input[type="search"] {
   outline-width: 0;
 }
 
-.block-editor-block-list__layout {
-  font-size: 15px;
+.block-editor-block-list__layout.is-root-container {
+  padding-top: 40px;
 }
 
 @media (min-width: 782px) {

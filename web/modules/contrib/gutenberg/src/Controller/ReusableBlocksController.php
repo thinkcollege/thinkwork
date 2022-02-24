@@ -42,8 +42,8 @@ class ReusableBlocksController extends ControllerBase {
 
       return new JsonResponse(
         $this->getBlockAttributes($block) + [
-      // Kind of a hack but accepted by Gutenberg ;)
-        'headers' => $headers,
+          // Kind of a hack but accepted by Gutenberg ;)
+          'headers' => $headers,
         ], Response::HTTP_OK, $headers
       );
     }
@@ -189,7 +189,7 @@ class ReusableBlocksController extends ControllerBase {
     $block_id = (int) $block_id;
 
     if ($block_id > 0 && $block = BlockContent::load($block_id)) {
-      /* @var \Drupal\block_content\BlockContentInterface $block */
+      /** @var \Drupal\block_content\BlockContentInterface $block */
       if ($block->bundle() !== 'reusable_block') {
         // Avoid accidental/malicious manipulation of non reusable blocks in
         // this controller.

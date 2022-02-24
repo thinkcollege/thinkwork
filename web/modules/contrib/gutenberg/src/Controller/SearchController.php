@@ -28,6 +28,12 @@ class SearchController extends ControllerBase {
   public function search(Request $request) {
     $search = (string) $request->query->get('search');
     $limit = (int) $request->query->get('per_page', 20);
+    $langcode = (string) $request->query->get('langcode');
+    $type = (string) $request->query->get('type');
+
+    if ($type !== 'post') {
+      return new JsonResponse([]);
+    }
 
     $query = \Drupal::entityQuery('node');
     $query->condition('title', $search, 'CONTAINS')
@@ -39,11 +45,29 @@ class SearchController extends ControllerBase {
     $nodes = Node::loadMultiple($node_ids);
     $result = [];
     foreach ($nodes as $node) {
+      if (!empty($langcode) && $node->hasTranslation($langcode)) {
+        $node = $node->getTranslation($langcode);
+      }
+
+      // @todo Any other way to get node's internal path
+      // with language prefix?
+      // Also, probably this won't work with sub-domains
+      $language_prefix = '';
+      $language = '';
+      if ($prefixes = \Drupal::config('language.negotiation')->get('url.prefixes')) {
+        $language        = $node->language()->getId();
+        $language_prefix = $prefixes[$language] !== '' ? $prefixes[$language] . '/' : '';
+      }
+
       $result[] = [
         'id' => $node->id(),
         'title' => $node->getTitle(),
-        'type' => $node->getType(),
-        'url' => $node->toUrl('canonical', ['absolute' => FALSE])->toString(),
+        'type' => !empty($language) ? '[' . strtoupper($language) . '] ' . $node->getType() : $node->getType(),
+        'language_id' => $language,
+        'url' => '/' . $language_prefix . $node->toUrl('canonical', [
+          'absolute' => FALSE,
+          'language' => $language,
+        ])->getInternalPath(),
       ];
     }
 

@@ -175,6 +175,12 @@ class MailgunMail implements MailInterface, ContainerFactoryPluginInterface {
    * @see https://documentation.mailgun.com/en/latest/api-sending.html#sending
    */
   protected function buildMessage(array $message) {
+    // Add default values to make sure those array keys exist.
+    $message += [
+      'body' => [],
+      'params' => [],
+    ];
+
     // Build the Mailgun message array.
     $mailgun_message = [
       'from' => $message['headers']['From'],

@@ -72,7 +72,7 @@ while (( "$#" )); do
   esac
 done
 
-set -- "${POSITIONAL[@]}" # restore unmatched positional parameters
+set -- "${POSITIONAL[@]//\//\_}" # restore unmatched positional parameters
 
 if [[ "$#" -gt 0 ]]; then
   REPO_DIR="$1";
@@ -158,7 +158,7 @@ echo "Running npm install..."
 npm install
 
 echo "Building assets..."
-rm "${REPO_DIR}/build" -rf
+rm "${REPO_DIR}/build" -rf || true
 if [[ "${BUILD_MODE}" = 'production' ]]; then
   npm run build
 else

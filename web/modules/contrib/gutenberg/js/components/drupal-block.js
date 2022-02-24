@@ -48,12 +48,12 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
     };
   }();
 
-  var editor = wp.editor,
+  var blockEditor = wp.blockEditor,
       element = wp.element,
       components = wp.components,
       i18n = wp.i18n;
   var __ = i18n.__;
-  var BlockControls = editor.BlockControls;
+  var BlockControls = blockEditor.BlockControls;
   var Fragment = element.Fragment,
       useState = element.useState,
       useEffect = element.useEffect;

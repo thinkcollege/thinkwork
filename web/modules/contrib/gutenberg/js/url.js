@@ -24,6 +24,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
     }
 
+    url = url + '?langcode=' + drupalSettings.path.currentLanguage;
+
     if (qs) {
       if (url.indexOf('?') === -1) {
         return url + '?' + qs;

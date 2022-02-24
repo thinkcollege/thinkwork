@@ -71,7 +71,7 @@ class DynamicRenderProcessor implements GutenbergBlockProcessorInterface {
       '#block_name' => $block['blockName'],
       '#block_attributes' => $block['attrs'],
       '#block_content' => [
-        // TODO @codebymikey: Review whether this might be susceptible to XSS.
+        // @todo @codebymikey: Review whether this might be susceptible to XSS.
         // I don't think it should.
         '#markup' => Markup::create($block_content),
       ],

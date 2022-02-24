@@ -96,7 +96,8 @@ class DrupalBlockProcessor implements GutenbergBlockProcessorInterface {
       $block_content = $this->renderer->render($render);
 
       $bubbleable_metadata->addCacheableDependency(
-        CacheableMetadata::createFromRenderArray($render)
+        CacheableMetadata::createFromObject($plugin_block)
+          ->merge(CacheableMetadata::createFromRenderArray($render))
       );
     }
   }

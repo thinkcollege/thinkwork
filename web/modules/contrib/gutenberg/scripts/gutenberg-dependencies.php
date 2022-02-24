@@ -35,6 +35,31 @@ function get_drupal_root_directory() {
   throw new \RuntimeException('Could not find the Drupal root.');
 }
 
+/**
+ * Gets the Drupal root directory.
+ *
+ * @return string
+ *   The id.
+ */
+function get_asset_id($asset) {
+  $suffix = '';
+
+  $asset_ids = [
+    "components/style$suffix.css" => "wp-components-css",
+    "block-editor/style$suffix.css" => "wp-block-editor-css",
+    "nux/style$suffix.css" => "wp-nux-css",
+    "reusable-blocks/style$suffix.css" => "wp-reusable-blocks-css",
+    "editor/style$suffix.css" => "wp-editor-css",
+    "block-library/editor$suffix.css" => "wp-edit-blocks-css",
+    "block-library/reset$suffix.css" => "wp-reset-editor-styles-css",
+    "block-library/style$suffix.css" => "wp-block-library-css",
+    "format-library/style$suffix.css" => "wp-format-library-css",
+    "block-directory/style$suffix.css" => "wp-block-directory-css",
+  ];
+
+  return isset($asset_ids[$asset]) ? $asset_ids[$asset] : null;
+}
+
 require_once get_drupal_root_directory() . '/autoload.php';
 // Could require bootstrap but maybe it's a "overkill"...?
 require_once __DIR__ . '/../src/ScanDir.php';
@@ -46,13 +71,18 @@ $whitelisted_libraries = [
   // Global/3rd party libraries.
   'react', 'react-dom', 'lodash', 'moment', 'sprintf', 'regenerator-runtime', 'polyfill', 'g-media-attributes',
   // Drupal Gutenberg libraries.
-  'admin', 'bartik', 'seven', 'claro', 'filters', 'drupal-blocks', 'blocks-edit', 'blocks-view', 'init', 'edit-node', 'drupal-url',
-  'drupal-api-fetch', 'drupal-data', 'drupal-i18n', 'special-media-selection',
+  'admin', 'bartik', 'seven', 'claro', 'olivero', 'filters', 'drupal-blocks', 'blocks-edit', 'blocks-view', 'init', 'edit-node', 'drupal-url',
+  'drupal-api-fetch', 'drupal-block-settings', 'drupal-data', 'drupal-i18n', 'special-media-selection',
+  'dashicons',
 ];
-$ignore_dirs = ['edit-site', 'edit-navigation', 'edit-widgets'];
+$ignore_dirs = [
+  'admin-manifest', 'edit-site', 'edit-navigation', 'edit-widgets', 'customize-widgets', 'react-i18n', 'widgets',
+];
+
 $original_yaml = Yaml::parse(file_get_contents($gutenberg_libraries_file));
 $yaml = [];
-// Keep only the whitelisted libraries, anything else will be generated and picked up from the Gutenberg dependency.
+// Keep only the whitelisted libraries, anything else will be generated
+// and picked up from the Gutenberg dependency.
 // This is required when switching between Gutenberg JS versions.
 foreach ($whitelisted_libraries as $whitelisted_library) {
   if (isset($original_yaml[$whitelisted_library])) {
@@ -85,13 +115,29 @@ foreach ($packages as $package) {
   // $yaml[$package]['version'] = "\'{$version}\'";
   $yaml[$package]['js'] = [];
   foreach ($js_files as $file) {
-    $yaml[$package]['js'][$asset_prefix . $file] = [];
+    if (str_contains($file, '.js') && !str_contains($file, '.min.js')) {
+      $yaml[$package]['js'][$asset_prefix . $file] = [];
+    }
   }
 
-  $yaml[$package]['css'] = ['theme' => []];
+  // $yaml[$package]['css'] = [$style_level => []];
+  // $yaml[$package]['css'] = [];
   foreach ($css_files as $file) {
+    $style_level = 'component';
+
+    if (str_contains($file, 'reset')) {
+      $style_level = 'base';
+    }
+  
+    if (str_contains($file, 'theme')) {
+      $style_level = 'theme';
+    }
+  
     if (!strpos($file, '-rtl')) {
-      $yaml[$package]['css']['theme'][$asset_prefix . $file] = [];
+      $css_id = get_asset_id("$package/$file");
+      $yaml[$package]['css'][$style_level][$asset_prefix . $file] = isset($css_id) ? ['attributes' => [
+        'id' => $css_id
+      ]]: [];
     }
   }
 

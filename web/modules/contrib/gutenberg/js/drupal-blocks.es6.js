@@ -4,8 +4,8 @@
 
 /* eslint func-names: ["error", "never"] */
 (function(wp, $, Drupal, drupalSettings) {
-  const { data, blocks, editor } = wp;
-  const { BlockAlignmentToolbar, BlockControls } = editor;
+  const { data, blocks, blockEditor } = wp;
+  const { BlockAlignmentToolbar, BlockControls } = blockEditor;
   const { Fragment } = wp.element;
   const { DrupalIcon, DrupalBlock } = window.DrupalGutenberg.Components;
 

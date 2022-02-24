@@ -10,6 +10,7 @@ use Egulias\EmailValidator\EmailParser;
 use Psr\Log\LoggerInterface;
 use Mailgun\Mailgun;
 use Mailgun\Exception;
+use Egulias\EmailValidator\Result\Result;
 
 /**
  * Mail handler to send out an email message array to the Mailgun API.
@@ -168,7 +169,14 @@ class MailgunHandler implements MailgunHandlerInterface {
 
     $emailParser = new EmailParser(new EmailLexer());
     if ($this->emailValidator->isValid($from)) {
-      return $emailParser->parse($from)['domain'];
+      // @todo Remove the condition when
+      // https://www.drupal.org/project/mailgun/issues/3259446 is fixed.
+      if ($emailParser->parse($from) instanceof Result) {
+        return $emailParser->getDomainPart();
+      }
+      else {
+        return $emailParser->parse($from)['domain'];
+      }
     }
 
     // Extract the domain from the sender's email address.

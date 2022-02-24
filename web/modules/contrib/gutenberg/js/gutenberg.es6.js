@@ -99,6 +99,8 @@
     })();
   };
 
+  wp.galleryBlockV2Enabled = false;
+
   /**
    * @namespace
    */
@@ -115,6 +117,9 @@
      *   Whether the call to `CKEDITOR.replace()` created an editor or not.
      */
     async attach(element, format) {
+      const $gutenbergLoader = $('#gutenberg-loading');
+      $gutenbergLoader.html(Drupal.theme.ajaxProgressThrobber(Drupal.t('Loading')));
+
       // A bit of a hack. This avoids Gutenberg to be reinit'd on AJAX calls.
       // TODO: could be done in another way?
       if (drupalSettings.gutenbergLoaded) {
@@ -126,13 +131,13 @@
       const { data, blocks, hooks } = wp;
       const { dispatch } = data;
       const { addFilter } = hooks;
-      const { unregisterBlockType } = blocks;
+      const { unregisterBlockType, unregisterBlockVariation } = blocks;
       const {
         registerDrupalStore,
         registerDrupalBlocks,
         registerDrupalMedia,
       } = DrupalGutenberg;
-
+ 
       // Register plugins.
       // Not needed now. Leaving it here for reference.
       // const { AdditionalFieldsPluginSidebar } = DrupalGutenberg.Plugins;
@@ -174,6 +179,16 @@
       await registerDrupalMedia();
 
       await this._initGutenberg(element);
+
+      /*
+       * This is a hack to deal with an image editing crop issue.
+       *
+       * @todo Figure out why react-easy-crop is getting container's
+       * width and height as 0.
+       */
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 200);
 
       if (drupalSettings.gutenberg._listeners.init) {
         drupalSettings.gutenberg._listeners.init.forEach(callback => {
@@ -238,24 +253,16 @@
       for (const key in allowedBlocks) {
         if (allowedBlocks.hasOwnProperty(key)) {
           const value = allowedBlocks[key];
-          if (!value && !key.includes('/all') && !blackList.includes(key)) {
+          if (!value && !key.includes('/all') && !key.includes('core-embed/') && !blackList.includes(key)) {
             unregisterBlockType(key);
+          }
+
+          // Handle core/embed variations.
+          if (!value && key.includes('core-embed/')) {
+            unregisterBlockVariation('core/embed', key.split('core-embed/')[1]);
           }
         }
       }
-
-      // Remove unused blocks.
-      const categories = data
-        .select('core/blocks')
-        .getCategories()
-        .filter(item => {
-          if (item.slug === 'widgets') {
-            return false;
-          }
-          return true;
-        });
-
-      data.dispatch('core/blocks').setCategories(categories);
 
       // On page load always select sidebar's document tab.
       data.dispatch('core/edit-post').openGeneralSidebar('edit-post/document');
@@ -277,7 +284,7 @@
       }
 
       setTimeout(() => {
-        const $metaBoxContainer = $('.edit-post-meta-boxes-area__container');
+        const $metaBoxContainer = $('.edit-post-meta-boxes-area.is-advanced .edit-post-meta-boxes-area__container');
         drupalSettings.gutenberg.metaboxes.forEach(id => {
           const $metabox = $(`#${id}`);
           const metabox = $metabox.get(0);
@@ -318,7 +325,7 @@
       let isFormValid = false;
 
 
-      $('#edit-submit, #edit-preview').on('mousedown', e => {
+      $('.gutenberg-header-settings .form-submit').on('mousedown', e => {
         const { openGeneralSidebar } = data.dispatch('core/edit-post');
 
         // is checkValidity supported? If not, validate the form. 
@@ -353,7 +360,7 @@
         }
       });
 
-      $('#edit-submit, #edit-preview').on('click', e => {
+      $('.gutenberg-header-settings .form-submit').on('click', e => {
         $(e.currentTarget).attr('active', true);
 
         // Expand "More Settings" set.
@@ -404,8 +411,7 @@
 
         // If none of those buttons were clicked...
         if (
-          $source.attr('id') !== 'edit-submit' &&
-          $source.attr('id') !== 'edit-preview' &&
+          !$source.hasClass('form-submit') &&
           $source.attr('id') !== 'edit-delete'
         ) {
           // Just stop everything.
@@ -425,8 +431,7 @@
         // Clear content "dirty" state.
         if (!formSubmitted) {
           (async () => {
-            await data.dispatch('core/editor').savePost();
-
+            await data.dispatch('core/editor').savePost({isAutosave: false});    
             formSubmitted = true;
             // Submit again to save content on Drupal.
             // We need to submit the form via button click.
@@ -532,14 +537,8 @@
         slug: '',
       };
 
-      const defaultThemeSupport = {
-        disableCustomColors: false,
-        disableCustomFontSizes: false,
-        alignWide: true,
-      };
-
       const editorSettings = {
-        ...defaultThemeSupport,
+        ...(DrupalGutenberg.defaultSettings ? DrupalGutenberg.defaultSettings : {}),
         ...drupalSettings.gutenberg['theme-support'],
         availableTemplates: [],
         allowedBlockTypes: true,
@@ -667,16 +666,73 @@
    * @type {{attach(): (undefined)}}
    */
   Drupal.behaviors.gutenbergMediaLibrary = {
-    attach() {
+    attach(context) {
       const $form = $('#media-entity-browser-modal .media-library-add-form');
+      const $context = $(context);
+      const $dialog = $context.closest('.ui-dialog-content');
 
       if (!$form.length) {
         return;
       }
-
+      // Storing initial buttons to recover them when needed.
+      Drupal.gutenbergMediaLibraryButtons = Drupal.gutenbergMediaLibraryButtons || $dialog.dialog('option', 'buttons');
+      // Altering new media entity form buttons.
       $form
         .find('[data-drupal-selector="edit-save-insert"]')
         .css('display', 'none');
+
+      const saveAndSelectButton = $form.find('[data-drupal-selector="edit-save-select"]');
+      if (saveAndSelectButton.length) {
+        // Hide button.
+        saveAndSelectButton.css({
+          display: 'none'
+        });
+        // Move button to buttonpane.
+        let buttons = [];
+        buttons.push({
+          text: saveAndSelectButton.html() || saveAndSelectButton.attr('value'),
+          class: saveAndSelectButton.attr('class'),
+          click: function click(e) {
+            saveAndSelectButton.trigger('mousedown').trigger('mouseup').trigger('click');
+            e.preventDefault();
+          }
+        });
+        $dialog.dialog('option', 'buttons', buttons);
+      }
+      else {
+        $dialog.dialog('option', 'buttons', Drupal.gutenbergMediaLibraryButtons);
+      }
     },
   };
+
+  /**
+   * Update drupal block.
+   * 
+   * @param {integer|string} id 
+   */
+  async function updateDrupalBlockBasedOnMediaEntity(id) {
+    const { dispatch } = wp.data;
+    const response = await fetch(
+        Drupal.url(`editor/media/render/${id}`),
+    );
+    if (response.ok) {
+      const mediaEntity = await response.json();
+
+      if (mediaEntity && mediaEntity.view_modes) {
+        dispatch('drupal').setMediaEntity(id, mediaEntity);
+      }
+    }
+  }
+
+  /**
+   * Add new command for reloading the media block after editing..
+   */
+  Drupal.AjaxCommands.prototype.gutenbergUpdateMediaEntities = function() {
+    const { select, dispatch } = wp.data;
+    const selectedBlock = select('core/block-editor').getSelectedBlock();
+    const { clientId, attributes } = selectedBlock;
+    const { mediaEntityIds } = attributes;
+    updateDrupalBlockBasedOnMediaEntity(mediaEntityIds[0]);
+  };
+
 })(Drupal, DrupalGutenberg, drupalSettings, window.wp, jQuery);

@@ -153,7 +153,7 @@ function gutenberg_uninstall() {
     $format_config->clear('filters.gutenberg');
     $module_dependencies = $format_config->get('dependencies.module');
     if (is_array($module_dependencies)) {
-      $module_dependencies = array_filter($module_dependencies, function($module) {
+      $module_dependencies = array_filter($module_dependencies, function ($module) {
         return ($module !== 'gutenberg');
       });
       $format_config->set('dependencies.module', $module_dependencies);

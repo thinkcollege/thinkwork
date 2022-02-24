@@ -10,9 +10,9 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 (function (wp, $, Drupal, drupalSettings) {
   var data = wp.data,
       blocks = wp.blocks,
-      editor = wp.editor;
-  var BlockAlignmentToolbar = editor.BlockAlignmentToolbar,
-      BlockControls = editor.BlockControls;
+      blockEditor = wp.blockEditor;
+  var BlockAlignmentToolbar = blockEditor.BlockAlignmentToolbar,
+      BlockControls = blockEditor.BlockControls;
   var Fragment = wp.element.Fragment;
   var _window$DrupalGutenbe = window.DrupalGutenberg.Components,
       DrupalIcon = _window$DrupalGutenbe.DrupalIcon,

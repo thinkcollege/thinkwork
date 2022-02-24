@@ -10,6 +10,49 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 (function (Drupal, DrupalGutenberg, drupalSettings, wp, $) {
+  var updateDrupalBlockBasedOnMediaEntity = function () {
+    var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee5(id) {
+      var dispatch, response, mediaEntity;
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              dispatch = wp.data.dispatch;
+              _context5.next = 3;
+              return fetch(Drupal.url('editor/media/render/' + id));
+
+            case 3:
+              response = _context5.sent;
+
+              if (!response.ok) {
+                _context5.next = 9;
+                break;
+              }
+
+              _context5.next = 7;
+              return response.json();
+
+            case 7:
+              mediaEntity = _context5.sent;
+
+
+              if (mediaEntity && mediaEntity.view_modes) {
+                dispatch('drupal').setMediaEntity(id, mediaEntity);
+              }
+
+            case 9:
+            case 'end':
+              return _context5.stop();
+          }
+        }
+      }, _callee5, this);
+    }));
+
+    return function updateDrupalBlockBasedOnMediaEntity(_x3) {
+      return _ref3.apply(this, arguments);
+    };
+  }();
+
   Drupal.isMediaEnabled = function () {
     return (drupalSettings.gutenberg || false) && drupalSettings.gutenberg['media-enabled'];
   };
@@ -82,34 +125,40 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
     }))();
   };
 
+  wp.galleryBlockV2Enabled = false;
+
   Drupal.editors.gutenberg = {
     attach: function attach(element, format) {
       var _this2 = this;
 
       return _asyncToGenerator(regeneratorRuntime.mark(function _callee3() {
-        var _format$editorSetting, contentType, allowedBlocks, blackList, data, blocks, hooks, dispatch, addFilter, unregisterBlockType, registerDrupalStore, registerDrupalBlocks, registerDrupalMedia, key, value, categories, isWelcomeGuide, metaboxesContainer, metaboxForm, isFormValid, formSubmitted;
+        var $gutenbergLoader, _format$editorSetting, contentType, allowedBlocks, blackList, data, blocks, hooks, dispatch, addFilter, unregisterBlockType, unregisterBlockVariation, registerDrupalStore, registerDrupalBlocks, registerDrupalMedia, key, value, isWelcomeGuide, metaboxesContainer, metaboxForm, isFormValid, formSubmitted;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
+                $gutenbergLoader = $('#gutenberg-loading');
+
+                $gutenbergLoader.html(Drupal.theme.ajaxProgressThrobber(Drupal.t('Loading')));
+
                 if (!drupalSettings.gutenbergLoaded) {
-                  _context3.next = 2;
+                  _context3.next = 4;
                   break;
                 }
 
                 return _context3.abrupt('return', false);
 
-              case 2:
+              case 4:
                 drupalSettings.gutenbergLoaded = true;
 
                 _format$editorSetting = format.editorSettings, contentType = _format$editorSetting.contentType, allowedBlocks = _format$editorSetting.allowedBlocks, blackList = _format$editorSetting.blackList;
                 data = wp.data, blocks = wp.blocks, hooks = wp.hooks;
                 dispatch = data.dispatch;
                 addFilter = hooks.addFilter;
-                unregisterBlockType = blocks.unregisterBlockType;
+                unregisterBlockType = blocks.unregisterBlockType, unregisterBlockVariation = blocks.unregisterBlockVariation;
                 registerDrupalStore = DrupalGutenberg.registerDrupalStore, registerDrupalBlocks = DrupalGutenberg.registerDrupalBlocks, registerDrupalMedia = DrupalGutenberg.registerDrupalMedia;
-                _context3.next = 11;
+                _context3.next = 13;
                 return addFilter('blocks.registerBlockType', 'drupalgutenberg/custom-attributes', function (settings, name) {
                   settings.attributes = Object.assign(settings.attributes, {
                     mappingField: {
@@ -131,23 +180,26 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                   return settings;
                 });
 
-              case 11:
-                _context3.next = 13;
-                return registerDrupalStore(data);
-
               case 13:
                 _context3.next = 15;
-                return registerDrupalBlocks(contentType);
+                return registerDrupalStore(data);
 
               case 15:
                 _context3.next = 17;
-                return registerDrupalMedia();
+                return registerDrupalBlocks(contentType);
 
               case 17:
                 _context3.next = 19;
-                return _this2._initGutenberg(element);
+                return registerDrupalMedia();
 
               case 19:
+                _context3.next = 21;
+                return _this2._initGutenberg(element);
+
+              case 21:
+                setTimeout(function () {
+                  window.dispatchEvent(new Event('resize'));
+                }, 200);
 
                 if (drupalSettings.gutenberg._listeners.init) {
                   drupalSettings.gutenberg._listeners.init.forEach(function (callback) {
@@ -207,21 +259,15 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                   if (allowedBlocks.hasOwnProperty(key)) {
                     value = allowedBlocks[key];
 
-                    if (!value && !key.includes('/all') && !blackList.includes(key)) {
+                    if (!value && !key.includes('/all') && !key.includes('core-embed/') && !blackList.includes(key)) {
                       unregisterBlockType(key);
+                    }
+
+                    if (!value && key.includes('core-embed/')) {
+                      unregisterBlockVariation('core/embed', key.split('core-embed/')[1]);
                     }
                   }
                 }
-
-                categories = data.select('core/blocks').getCategories().filter(function (item) {
-                  if (item.slug === 'widgets') {
-                    return false;
-                  }
-                  return true;
-                });
-
-
-                data.dispatch('core/blocks').setCategories(categories);
 
                 data.dispatch('core/edit-post').openGeneralSidebar('edit-post/document');
 
@@ -239,7 +285,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                 }
 
                 setTimeout(function () {
-                  var $metaBoxContainer = $('.edit-post-meta-boxes-area__container');
+                  var $metaBoxContainer = $('.edit-post-meta-boxes-area.is-advanced .edit-post-meta-boxes-area__container');
                   drupalSettings.gutenberg.metaboxes.forEach(function (id) {
                     var $metabox = $('#' + id);
                     var metabox = $metabox.get(0);
@@ -270,7 +316,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                 isFormValid = false;
 
 
-                $('#edit-submit, #edit-preview').on('mousedown', function (e) {
+                $('.gutenberg-header-settings .form-submit').on('mousedown', function (e) {
                   var _data$dispatch = data.dispatch('core/edit-post'),
                       openGeneralSidebar = _data$dispatch.openGeneralSidebar;
 
@@ -302,7 +348,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                   }
                 });
 
-                $('#edit-submit, #edit-preview').on('click', function (e) {
+                $('.gutenberg-header-settings .form-submit').on('click', function (e) {
                   $(e.currentTarget).attr('active', true);
 
                   $('#edit-additional-fields').attr('open', '');
@@ -335,7 +381,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
                   $source.removeAttr('active');
 
-                  if ($source.attr('id') !== 'edit-submit' && $source.attr('id') !== 'edit-preview' && $source.attr('id') !== 'edit-delete') {
+                  if (!$source.hasClass('form-submit') && $source.attr('id') !== 'edit-delete') {
                     e.preventDefault();
                     e.stopPropagation();
                     return false;
@@ -353,10 +399,9 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                           switch (_context2.prev = _context2.next) {
                             case 0:
                               _context2.next = 2;
-                              return data.dispatch('core/editor').savePost();
+                              return data.dispatch('core/editor').savePost({ isAutosave: false });
 
                             case 2:
-
                               formSubmitted = true;
 
                               $source.click();
@@ -376,7 +421,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
                 return _context3.abrupt('return', true);
 
-              case 48:
+              case 49:
               case 'end':
                 return _context3.stop();
             }
@@ -397,7 +442,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
       var _this3 = this;
 
       return _asyncToGenerator(regeneratorRuntime.mark(function _callee4() {
-        var editPost, data, $textArea, target, $editor, defaultThemeSupport, editorSettings;
+        var editPost, data, $textArea, target, $editor, editorSettings;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -429,12 +474,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                   slug: ''
                 };
 
-                defaultThemeSupport = {
-                  disableCustomColors: false,
-                  disableCustomFontSizes: false,
-                  alignWide: true
-                };
-                editorSettings = _extends({}, defaultThemeSupport, drupalSettings.gutenberg['theme-support'], {
+                editorSettings = _extends({}, DrupalGutenberg.defaultSettings ? DrupalGutenberg.defaultSettings : {}, drupalSettings.gutenberg['theme-support'], {
                   availableTemplates: [],
                   allowedBlockTypes: true,
                   disablePostFormats: false,
@@ -518,10 +558,10 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                 sessionStorage.removeItem('wp-autosave-block-editor-post-1');
                 localStorage.removeItem('wp-autosave-block-editor-post-1');
 
-                _context4.next = 14;
+                _context4.next = 13;
                 return editPost.initializeEditor(target, 'page', 1, editorSettings);
 
-              case 14:
+              case 13:
               case 'end':
                 return _context4.stop();
             }
@@ -532,14 +572,51 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
   };
 
   Drupal.behaviors.gutenbergMediaLibrary = {
-    attach: function attach() {
+    attach: function attach(context) {
       var $form = $('#media-entity-browser-modal .media-library-add-form');
+      var $context = $(context);
+      var $dialog = $context.closest('.ui-dialog-content');
 
       if (!$form.length) {
         return;
       }
 
+      Drupal.gutenbergMediaLibraryButtons = Drupal.gutenbergMediaLibraryButtons || $dialog.dialog('option', 'buttons');
+
       $form.find('[data-drupal-selector="edit-save-insert"]').css('display', 'none');
+
+      var saveAndSelectButton = $form.find('[data-drupal-selector="edit-save-select"]');
+      if (saveAndSelectButton.length) {
+        saveAndSelectButton.css({
+          display: 'none'
+        });
+
+        var buttons = [];
+        buttons.push({
+          text: saveAndSelectButton.html() || saveAndSelectButton.attr('value'),
+          class: saveAndSelectButton.attr('class'),
+          click: function click(e) {
+            saveAndSelectButton.trigger('mousedown').trigger('mouseup').trigger('click');
+            e.preventDefault();
+          }
+        });
+        $dialog.dialog('option', 'buttons', buttons);
+      } else {
+        $dialog.dialog('option', 'buttons', Drupal.gutenbergMediaLibraryButtons);
+      }
     }
+  };
+
+  Drupal.AjaxCommands.prototype.gutenbergUpdateMediaEntities = function () {
+    var _wp$data2 = wp.data,
+        select = _wp$data2.select,
+        dispatch = _wp$data2.dispatch;
+
+    var selectedBlock = select('core/block-editor').getSelectedBlock();
+    var clientId = selectedBlock.clientId,
+        attributes = selectedBlock.attributes;
+    var mediaEntityIds = attributes.mediaEntityIds;
+
+    updateDrupalBlockBasedOnMediaEntity(mediaEntityIds[0]);
   };
 })(Drupal, DrupalGutenberg, drupalSettings, window.wp, jQuery);

@@ -9,12 +9,13 @@
     const ref = useRef(null);
 
     useEffect(() => {
-      ref.current.appendChild(document.getElementById('edit-advanced'));
+      const editAdvanced = document.getElementById('edit-advanced');
+      const sidebar = document.getElementById('gutenberg-sidebar');
+
+      editAdvanced && ref.current.appendChild(editAdvanced);
 
       return () => {
-        document
-          .getElementById('gutenberg-sidebar')
-          .appendChild(document.getElementById('edit-advanced'));
+        editAdvanced && sidebar && sidebar.appendChild(editAdvanced);
       };
     }, []);
 

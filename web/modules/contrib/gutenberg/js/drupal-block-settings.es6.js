@@ -12,7 +12,7 @@
   };
 
   function serializedToNested(elements) {
-    const regex = /\[([a-z_]*)\]/gm;
+    const regex = /\[([a-z0-9_]*)]/gm;
 
     let tree = {};
 

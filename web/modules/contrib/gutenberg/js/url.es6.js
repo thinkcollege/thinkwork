@@ -15,6 +15,9 @@
       }
     }
 
+    // Always add language code
+    url = `${url}?langcode=${drupalSettings.path.currentLanguage}`;
+
     if (qs) {
       if (url.indexOf('?') === -1) {
         return `${url}?${qs}`;

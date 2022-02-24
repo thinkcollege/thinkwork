@@ -12,6 +12,7 @@ use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\Core\Theme\MissingThemeDependencyException;
 use Drupal\Core\Theme\ThemeInitializationInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Provides the default .gutenberg.yml library plugin manager.
@@ -209,6 +210,15 @@ class GutenbergLibraryManager extends DefaultPluginManager implements GutenbergL
     try {
       $active_theme = $this->themeInitialization->getActiveThemeByName($theme_name);
       $definitions = $this->getDefinitionsByExtension();
+      $default_theme_definitions = [];
+
+      // Check if Gutenberg module has "default" settings for the active theme.
+      // TODO: A better way to do this?
+      $module_path = $this->moduleHandler->getModule('gutenberg')->getPath();
+      $config_file_path = $module_path . '/' . $theme_name . '.gutenberg.yml';
+      if (file_exists($config_file_path)) {
+        $default_theme_definitions = Yaml::parseFile($config_file_path);
+      }
 
       // Note: Reversing the order so that base themes are first.
       $themes = array_reverse(
@@ -217,7 +227,10 @@ class GutenbergLibraryManager extends DefaultPluginManager implements GutenbergL
 
       foreach ($themes as $theme) {
         if (isset($definitions['theme'][$theme])) {
-          $theme_definitions[$theme] = $definitions['theme'][$theme];
+          $theme_definitions[$theme] = array_merge($default_theme_definitions, $definitions['theme'][$theme]);
+        }
+        elseif (!empty($default_theme_definitions)) {
+          $theme_definitions[$theme] = $default_theme_definitions;
         }
       }
     }

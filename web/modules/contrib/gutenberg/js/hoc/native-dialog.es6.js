@@ -66,11 +66,11 @@
       nodes.forEach(node => node.remove());
     };
 
-    const getDialog = ({ allowedTypes }) =>
+    const getDialog = ({ allowedTypes, allowedBundles }) =>
       new Promise((resolve, reject) => {
         wp.apiFetch({
           path: 'load-media-library-dialog',
-          data: { allowedTypes },
+          data: { allowedTypes, allowedBundles },
         })
           .then(result => {
             resolve({

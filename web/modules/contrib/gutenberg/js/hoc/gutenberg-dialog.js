@@ -3,7 +3,7 @@
 * See the following change record for more information,
 * https://www.drupal.org/node/2815083
 * @preserve
-**/'use strict';
+**/"use strict";
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -12,13 +12,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
   var withGutenbergDialog = function withGutenbergDialog(Component) {
-    var onDialogCreate = function onDialogCreate(element) {
-      var $buttons = $(element).find('.form-actions');
-      var $dialogButtons = $buttons.closest('.ui-dialog').find('.ui-dialog-buttonpane');
-
-      $dialogButtons.empty();
-      $dialogButtons.append($buttons);
-    };
+    var onDialogCreate = function onDialogCreate(element) {};
 
     var getDialog = function getDialog(_ref) {
       var allowedTypes = _ref.allowedTypes,

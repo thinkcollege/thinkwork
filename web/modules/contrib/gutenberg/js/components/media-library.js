@@ -58,14 +58,19 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
         var _props = this.props,
             _props$allowedTypes = _props.allowedTypes,
             allowedTypes = _props$allowedTypes === undefined ? [] : _props$allowedTypes,
+            _props$allowedBundles = _props.allowedBundles,
+            allowedBundles = _props$allowedBundles === undefined ? [] : _props$allowedBundles,
             onDialogInsert = _props.onDialogInsert,
             onDialogCreate = _props.onDialogCreate,
+            _props$onClose = _props.onClose,
+            onClose = _props$onClose === undefined ? function () {} : _props$onClose,
             getDialog = _props.getDialog,
             multiple = _props.multiple;
 
 
         getDialog({
           allowedTypes: allowedTypes,
+          allowedBundles: allowedBundles,
           onSelect: this.closeDialog
         }).then(function (result) {
           _this2.mediaBrowserWrapper = document.createElement('div');
@@ -85,7 +90,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
               create: function create(event) {
                 return onDialogCreate(event.target, multiple);
               },
-              close: _this2.closeDialog
+              close: function close() {
+                onClose();_this2.closeDialog();
+              }
             });
 
             _this2.frame && _this2.frame.showModal();

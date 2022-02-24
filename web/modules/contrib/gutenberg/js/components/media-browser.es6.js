@@ -1,9 +1,23 @@
 ((wp, Drupal, DrupalGutenberg, drupalSettings) => {
-  const { components, element, editor } = wp;
-  const { Component, Fragment } = element;
+  const { components, element, blockEditor, editor } = wp;
+  const { Component, Fragment, createPortal, useRef } = element;
   const { MediaBrowserDetails } = DrupalGutenberg.Components;
   const { Button, FormFileUpload } = components;
   const { mediaUpload } = editor;
+
+  function ModalActions({element, children}) {
+    if (!element.current) {
+      return (
+        <Fragment>
+          {children}
+        </Fragment>
+      )
+    }
+
+    const pane = element.current.parentNode.parentNode.querySelector('.ui-dialog-buttonpane');
+    pane.querySelector('.ui-dialog-buttonset').innerHTML = '';
+    return createPortal(children, pane);
+  }
 
   class MediaBrowser extends Component {
     constructor() {
@@ -20,6 +34,7 @@
       this.selectMedia = this.selectMedia.bind(this);
       this.toggleMedia = this.toggleMedia.bind(this);
       this.uncheckMedia = this.uncheckMedia.bind(this);
+      this.wrapper = React.createRef();
     }
 
     componentWillMount() {
@@ -37,7 +52,7 @@
                 return result;
               }, {}),
             }
-          : { [value]: true });
+          : value && value.length > 0 ? { [value]: true } : {} );
 
       this.setState({
         selected,
@@ -150,7 +165,7 @@
       }
 
       return (
-        <div className="media-browser">
+        <div ref={this.wrapper} className="media-browser">
           <div className="content">
             <div className="toolbar">
               <div className="form-item">
@@ -249,37 +264,39 @@
               )}
             </div>
           </div>
-          <div className="form-actions">
-            {multiple && (
-              <div className="selected-summary">
-                {`${Drupal.t('Total selected')}: ${
-                  Object.values(selected).filter(item => item).length
-                }`}
-              </div>
-            )}
-            <div className="buttons">
-              <FormFileUpload
-                isLarge
-                className="editor-media-placeholder__button"
-                onChange={this.uploadFromFiles}
-                accept="image" // { accept }
-                multiple={multiple}
-              >
-                {Drupal.t('Upload')}
-              </FormFileUpload>
+          <ModalActions element={this.wrapper}>
+            <div className="form-actions">
+              {multiple && (
+                <div className="selected-summary">
+                  {`${Drupal.t('Total selected')}: ${
+                    Object.values(selected).filter(item => item).length
+                  }`}
+                </div>
+              )}
+              <div className="buttons">
+                <FormFileUpload
+                  isLarge
+                  className="editor-media-placeholder__button"
+                  onChange={this.uploadFromFiles}
+                  accept="image" // { accept }
+                  multiple={multiple}
+                >
+                  {Drupal.t('Upload')}
+                </FormFileUpload>
 
-              <Button
-                isLarge
-                disabled={
-                  Object.values(selected).filter(item => item).length === 0
-                }
-                isPrimary
-                onClick={this.selectMedia}
-              >
-                {Drupal.t('Select')}
-              </Button>
+                <Button
+                  isLarge
+                  disabled={
+                    Object.values(selected).filter(item => item).length == 0 || !selected
+                  }
+                  isPrimary
+                  onClick={this.selectMedia}
+                >
+                  {Drupal.t('Select')}
+                </Button>
+              </div>
             </div>
-          </div>
+          </ModalActions>
         </div>
       );
     }

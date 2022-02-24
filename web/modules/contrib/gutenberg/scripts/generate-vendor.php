@@ -40,13 +40,13 @@ $vendor_definitions = [
     'type' => JS_MIN,
   ],
   'react' => [
-    'version' => '16.9.0',
+    'version' => '17.0.2',
     'prod' => 'umd/react.production.min.js',
     'dev' => 'umd/react.development.js',
     'type' => JS_MIN,
   ],
   'react-dom' => [
-    'version' => '16.9.0',
+    'version' => '17.0.2',
     'prod' => 'umd/react-dom.production.min.js',
     'dev' => 'umd/react-dom.development.js',
     'type' => JS_MIN,

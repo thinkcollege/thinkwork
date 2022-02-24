@@ -7,7 +7,7 @@
     "yarn": ">= 1.6",
     "node": ">= 8.11"
   },
-  "gutenberg-version": "v8.4.0",
+  "gutenberg-version": "wp/5.8",
   "scripts": {
     "start": "node ./node_modules/drupal-js-build/index.js watch --css",
     "build": "node ./node_modules/drupal-js-build/index.js --css && npm run translations",

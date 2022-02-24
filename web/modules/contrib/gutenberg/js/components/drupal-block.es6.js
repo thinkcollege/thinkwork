@@ -1,8 +1,8 @@
 /* eslint func-names: ["error", "never"] */
 (function(wp, Drupal) {
-  const { editor, element, components, i18n } = wp;
+  const { blockEditor, element, components, i18n } = wp;
   const { __ } = i18n;
-  const { BlockControls } = editor;
+  const { BlockControls } = blockEditor;
   const { Fragment, useState, useEffect } = element;
 	const { Placeholder, Toolbar, IconButton, Button, Spinner } = components;
 

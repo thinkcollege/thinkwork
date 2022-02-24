@@ -232,6 +232,10 @@ class GutenbergFilter extends FilterBase implements ContainerFactoryPluginInterf
       $attachments['library'][] = 'gutenberg/bartik';
     }
 
+    if ($default_theme === 'olivero') {
+      $attachments['library'][] = 'gutenberg/olivero';
+    }
+
     if ($attachments) {
       // Add the frontend attachments.
       $result->addAttachments($attachments);

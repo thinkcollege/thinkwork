@@ -15,6 +15,9 @@ categories:
       - id: "core/gallery"
         name: "Gallery"
         default: true
+      # - id: "core/legacy-widget"
+      #   name: "Legacy Widget (Experimental)"
+      #   default: false
       - id: "core/list"
         name: "List"
         default: true
@@ -33,6 +36,12 @@ categories:
       - id: "core/button"
         name: "Button"
         default: true
+      - id: "core/buttons"
+        name: "Buttons"
+        default: true
+      - id: "core/calendar"
+        name: "Calendar"
+        default: false
       - id: "core/categories"
         name: "Categories"
         default: false
@@ -86,18 +95,30 @@ categories:
       - id: "core/pullquote"
         name: "Pull Quote"
         default: true
+      - id: "core/rss"
+        name: "RSS"
+        default: false
+      - id: "core/search"
+        name: "Search"
+        default: false
       - id: "core/separator"
         name: "Separator"
         default: true
       - id: "core/block"
         name: "Block"
         default: true
+      - id: "core/social-links"
+        name: "Social icons"
+        default: false
       - id: "core/spacer"
         name: "Spacer"
         default: true
       - id: "core/subhead"
         name: "Subheading"
         default: true
+      - id: "core/tag-cloud"
+        name: "Tag Cloud"
+        default: false
       - id: "core/table"
         name: "Table"
         default: true
@@ -235,6 +256,32 @@ blacklist:
   - core/shortcode
   - core/more
   - core/nextpage
+  - core/rss
+  - core/calendar
+  - core/search
+  - core/tag-cloud
+  - core/social-links
+  - core/page-list
+  - core/site-logo
+  - core/site-tagline
+  - core/site-title
+  - core/query
+  - core/post-template
+  - core/query-title
+  - core/query-pagination
+  - core/query-pagination-next
+  - core/query-pagination-numbers
+  - core/query-pagination-previous
+  - core/post-title
+  - core/post-content
+  - core/post-date
+  - core/post-excerpt
+  - core/post-featured-image
+  - core/post-terms
+  - core/loginout
+  - core/navigation
+  - core/navigation-link
+  - core/home-link
   - drupalblock/system_main_block
   - drupalblock/system_menu_block:tools
   - drupalblock/local_actions_block

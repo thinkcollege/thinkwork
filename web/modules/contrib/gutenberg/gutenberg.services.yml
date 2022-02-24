@@ -8,6 +8,9 @@ services:
   plugin.manager.gutenberg.library:
     class: Drupal\gutenberg\GutenbergLibraryManager
     arguments: ['@module_handler', '@theme_handler', '@theme.initialization', '@cache.discovery', '@logger.channel.gutenberg']
+  plugin.manager.gutenberg.blocks_library:
+    class: Drupal\gutenberg\BlocksLibraryManager
+    arguments: ['@app.root', '@module_handler', '@theme_handler', '@theme.initialization', '@cache.discovery', '@logger.channel.gutenberg']
   gutenberg.block_processor_manager:
     class: Drupal\gutenberg\BlockProcessor\GutenbergBlockProcessorManager
     tags:
@@ -37,9 +40,17 @@ services:
     arguments: []
     tags:
       - { name: gutenberg_block_processor, priority: -50 }
+  gutenberg.block_processor_duotone:
+    class: Drupal\gutenberg\BlockProcessor\DuotoneProcessor
+    arguments: ['@gutenberg.tiny_color', '@plugin.manager.gutenberg.blocks_library', '@logger.channel.gutenberg']
+    tags:
+      - { name: gutenberg_block_processor, priority: 50 }
   gutenberg.blocks_renderer:
     class: Drupal\gutenberg\BlocksRendererHelper
     arguments: ['@renderer', '@plugin.manager.block', '@current_user', '@context.repository', '@context.handler', '@title_resolver', '@logger.channel.gutenberg']
+  gutenberg.tiny_color:
+    class: Drupal\gutenberg\TinyColor
+    arguments: []
   gutenberg.oembed_resolver:
     class: Drupal\gutenberg\OEmbedResolver
     arguments: ['@service_container', '@http_client', '@renderer', '@module_handler']

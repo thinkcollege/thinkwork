@@ -2,14 +2,8 @@
   const {MediaBrowser} = DrupalGutenberg.Components;
 
   const withGutenbergDialog = Component => {
+    // Deprecated. To be removed.
     const onDialogCreate = element => {
-      const $buttons = $(element).find('.form-actions');
-      const $dialogButtons = $buttons
-        .closest('.ui-dialog')
-        .find('.ui-dialog-buttonpane');
-
-      $dialogButtons.empty();
-      $dialogButtons.append($buttons);
     };
 
     const getDialog = ({ allowedTypes, onSelect }) => {

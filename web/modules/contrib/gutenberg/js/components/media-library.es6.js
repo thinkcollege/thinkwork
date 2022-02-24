@@ -27,14 +27,17 @@
     openDialog() {
       const {
         allowedTypes = [],
+        allowedBundles = [],
         onDialogInsert,
         onDialogCreate,
+        onClose = () => {},
         getDialog,
         multiple,
       } = this.props;
 
       getDialog({
         allowedTypes,
+        allowedBundles,
         onSelect: this.closeDialog
       }).then(result => {
         this.mediaBrowserWrapper = document.createElement('div');
@@ -56,7 +59,7 @@
                 [__('Cancel')]: this.closeDialog,
               },
               create: event => onDialogCreate(event.target, multiple),
-              close: this.closeDialog,
+              close: () => { onClose(); this.closeDialog(); },
             });
 
             this.frame && this.frame.showModal();

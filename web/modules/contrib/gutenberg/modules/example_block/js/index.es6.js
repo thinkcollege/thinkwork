@@ -1,9 +1,9 @@
-const { blocks, data, element, components, editor } = wp;
+const { blocks, data, element, components, blockEditor } = wp;
 const { registerBlockType } = blocks;
 const { dispatch, select } = data;
 const { Fragment } = element;
 const { PanelBody, BaseControl, Icon, RangeControl, IconButton, Toolbar, SelectControl } = components;
-const { InnerBlocks, RichText, InspectorControls, PanelColorSettings, MediaUpload, BlockControls } = editor;
+const { InnerBlocks, RichText, InspectorControls, PanelColorSettings, MediaUpload, BlockControls } = blockEditor;
 const __ = Drupal.t;
 
 const settings = {

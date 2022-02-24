@@ -5,6 +5,8 @@ namespace Drupal\gutenberg\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\file\Entity\File;
+use Drupal\Core\Image\ImageFactory;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\gutenberg\MediaSelectionProcessor\MediaSelectionProcessorManagerInterface;
 use Drupal\gutenberg\Service\FileEntityNotFoundException;
 use Drupal\gutenberg\Service\MediaEntityNotFoundException;
@@ -46,6 +48,20 @@ class MediaController extends ControllerBase {
   protected $renderer;
 
   /**
+   * Drupal\Core\Image\ImageFactory instance.
+   *
+   * @var \Drupal\Core\Image\ImageFactory
+   */
+  protected $imageFactory;
+
+  /**
+   * Drupal\Core\File\FileSystemInterface instance.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
    * MediaController constructor.
    *
    * @param \Drupal\gutenberg\Service\MediaService $media_service
@@ -54,15 +70,23 @@ class MediaController extends ControllerBase {
    *   The media selection processor manager.
    * @param \Drupal\Core\Render\RendererInterface $renderer
    *   The renderer.
+   * @param \Drupal\Core\Image\ImageFactory $image_factory
+   *   The image factory.
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   The image factory.
    */
   public function __construct(
     MediaService $media_service,
     MediaSelectionProcessorManagerInterface $media_selection_processor_manager,
-    RendererInterface $renderer
+    RendererInterface $renderer,
+    ImageFactory $image_factory,
+    FileSystemInterface $file_system
   ) {
     $this->mediaService = $media_service;
     $this->mediaSelectionProcessorManager = $media_selection_processor_manager;
     $this->renderer = $renderer;
+    $this->imageFactory = $image_factory;
+    $this->fileSystem = $file_system;
   }
 
   /**
@@ -72,7 +96,9 @@ class MediaController extends ControllerBase {
     return new static(
       $container->get('gutenberg.media_service'),
       $container->get('gutenberg.media_selection_processor_manager'),
-      $container->get('renderer')
+      $container->get('renderer'),
+      $container->get('image.factory'),
+      $container->get('file_system'),
     );
   }
 
@@ -91,7 +117,8 @@ class MediaController extends ControllerBase {
     try {
       return new JsonResponse([
         'html' => $this->mediaService->renderDialog(
-          explode(',', $request->query->get('types', ''))
+          explode(',', $request->query->get('types', '')),
+          !empty($request->query->get('bundles', '')) ? explode(',', $request->query->get('bundles', '')) : NULL
         ),
       ]);
     }
@@ -214,6 +241,64 @@ class MediaController extends ControllerBase {
 
     try {
       return new JsonResponse($this->mediaService->loadFileData($file));
+    }
+    catch (FileEntityNotFoundException $exception) {
+      throw new NotFoundHttpException($exception->getMessage(), $exception);
+    }
+  }
+
+  /**
+   * Create a new media from Gutenberg image editing.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   Current request.
+   * @param \Drupal\file\Entity\File|null $file
+   *   Loaded found file entity instance.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The JSON response.
+   *
+   * @throws \Exception
+   */
+  public function edit(Request $request, File $file = NULL) {
+    if (!$file) {
+      throw new NotFoundHttpException('File entity not found.');
+    }
+
+    $x = $request->request->get('x');
+    $y = $request->request->get('y');
+    $width = $request->request->get('width');
+    $height = $request->request->get('height');
+
+    $image = $this->imageFactory->get($file->getFileUri());
+    $original_width = $image->getWidth();
+    $original_height = $image->getHeight();
+
+    $dir = $this->fileSystem->dirname($file->getFileUri());
+    $new_uri = $this->fileSystem->createFilename($file->getFilename(), $dir);
+    $new_filename = preg_replace('/(\.\w+$)/i', '-edited$1', $file->getFilename());
+    $new_x = (int) (($original_width * $x) / 100);
+    $new_y = (int) (($original_height * $y) / 100);
+    $new_width = (int) (($original_width * $width) / 100);
+    $new_height = (int) (($original_height * $height) / 100);
+
+    if (!$image->crop($new_x, $new_y, $new_width, $new_height)) {
+      throw new UnprocessableEntityHttpException($this->t('Image crop failed.'));
+    }
+
+    if (!$image->save($new_uri)) {
+      throw new UnprocessableEntityHttpException($this->t('Unable to save image.'));
+    }
+
+    $new_file = File::create([
+      'uid' => $this->currentUser()->id(),
+      'filename' => $new_filename,
+      'uri' => $new_uri,
+    ]);
+    $new_file->save();
+
+    try {
+      return new JsonResponse($this->mediaService->loadFileData($new_file), 201);
     }
     catch (FileEntityNotFoundException $exception) {
       throw new NotFoundHttpException($exception->getMessage(), $exception);

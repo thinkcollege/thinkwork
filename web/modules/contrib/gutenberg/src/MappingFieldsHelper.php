@@ -86,7 +86,8 @@ class MappingFieldsHelper implements ContainerInjectionInterface {
     foreach ($blocks as $block) {
       // Get block attributes.
       $attributes = $block['attrs'];
-      $content = trim($block['innerHTML']);
+      $innerHTML = $this->getInnerHtmlRecursive($block);
+      $content = trim(implode('', $innerHTML));
 
       foreach ($attributes['mappingFields'] as $mapping_field) {
         if (!isset($mapping_field['field'])) {
@@ -99,7 +100,7 @@ class MappingFieldsHelper implements ContainerInjectionInterface {
           $fields[$mapping_field_name] = [];
         }
 
-        if (isset($mapping_field['attribute'])) {
+        if (isset($mapping_field['attribute'], $attributes[$mapping_field['attribute']])) {
           $value = $attributes[$mapping_field['attribute']];
         }
         else {
@@ -153,6 +154,25 @@ class MappingFieldsHelper implements ContainerInjectionInterface {
         );
       }
     }
+  }
+
+  /**
+   * Get innerHTML for innerBlocks as well.
+   *
+   * @param array $block
+   * @return array
+   */
+  function getInnerHtmlRecursive(array $block): array {
+    $iterator = new \RecursiveArrayIterator($block);
+    $recursive = new \RecursiveIteratorIterator($iterator, \RecursiveIteratorIterator::SELF_FIRST);
+    $return = [];
+    foreach ($recursive as $key => $value) {
+      if ($key === 'innerHTML') {
+        $return[] = $value;
+      }
+    }
+
+    return $return;
   }
 
   /**

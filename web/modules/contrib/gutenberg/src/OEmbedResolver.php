@@ -2,6 +2,7 @@
 
 namespace Drupal\gutenberg;
 
+use \Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Render\RendererInterface;
@@ -141,7 +142,21 @@ class OEmbedResolver implements OEmbedResolverInterface {
       if (!empty($response)) {
         $embed = json_decode($response);
         if (!empty($embed->html)) {
-          $output = $embed->html;
+          // Get the HTML output
+          $output_html = $embed->html;
+
+          // Set the title if available
+          $embed_title = ! empty( $embed->title ) ? Html::escape($embed->title) : '';
+
+          // Check if the iframe already contains a title.
+          $title_pattern = '`<iframe[^>]*?title=(\\\\\'|\\\\"|[\'"])([^>]*?)\1`i';
+          $has_title_attr = preg_match( $title_pattern, $output_html, $matches );
+
+          if ( '' === $embed_title || $has_title_attr ) {
+            $output = $output_html;
+          } else {
+            $output =  str_ireplace( '<iframe ', sprintf( '<iframe title="%s" ', t( $embed_title ) ), $output_html );
+          }
         }
         elseif ($embed->type === 'link') {
           $render = [

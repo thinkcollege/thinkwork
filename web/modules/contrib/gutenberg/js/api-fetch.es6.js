@@ -76,10 +76,10 @@
     page: {
       id: 1,
       labels: {
-        singular_name: 'Node',
-        Document: Drupal.t('Node'),
-        document: Drupal.t('Node'),
-        posts: Drupal.t('Nodes'),
+        singular_name: drupalSettings.gutenberg.nodeTypeLabel, //'Node',
+        Document: drupalSettings.gutenberg.nodeTypeLabel,
+        document: drupalSettings.gutenberg.nodeTypeLabel,
+        // posts: Drupal.t('Nodes'),
       },
       name: 'Page',
       rest_base: 'pages',
@@ -95,6 +95,7 @@
         revisions: false,
         thumbnail: false, // featured-image panel
         title: false, // show title on editor
+        layout: false,
       },
       taxonomies: [],
     },
@@ -147,10 +148,6 @@
           type: 'page',
           date,
           date_gmt: date,
-          title: {
-            raw: document.title,
-            rendered: document.title,
-          },
           status: 'draft',
           content: {
             raw: data.content,
@@ -189,9 +186,31 @@
         });
       },
     },
+    'edit-media': {
+      method: 'POST',
+      regex: /\/wp\/v2\/media\/((\d+)\/edit(.*))/,
+      process(matches, data) {
+        console.log(matches);
+        return new Promise((resolve, reject) => {
+          Drupal.toggleGutenbergLoader('show');
+          $.ajax({
+            method: 'POST',
+            url: Drupal.url(`editor/media/edit/${matches[2]}`),
+            data
+          })
+            .done(resolve)
+            .fail(error => {
+              errorHandler(error, reject);
+            })
+            .always(() => {
+              Drupal.toggleGutenbergLoader('hide');
+            });
+        });
+      },
+    },
     'load-media': {
       method: 'GET',
-      regex: /\/wp\/v2\/media\/((\d+)(.*))/,
+      regex: /\/wp\/v2\/media\/(\d+)/,
       process(matches) {
         return new Promise((resolve, reject) => {
           Drupal.toggleGutenbergLoader('show');
@@ -287,6 +306,7 @@
             url: Drupal.url('editor/media/dialog'),
             data: {
               types: (data.allowedTypes || []).join(','),
+              bundles: (data.allowedBundles || []).join(',')
             },
           })
             .done(resolve)

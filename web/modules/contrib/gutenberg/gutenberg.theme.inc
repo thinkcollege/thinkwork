@@ -55,5 +55,9 @@ function template_preprocess_gutenberg_block__drupalmedia__drupal_media_entity(&
       reset($variables['block_attributes']['mediaEntityIds']),
       $variables['block_attributes']['viewMode'] ?? 'default'
     );
+
+    if (!empty($variables['block_attributes']['align'])) {
+      $variables['attributes']['class'][] = 'align' . $variables['block_attributes']['align'];
+    }
   }
 }

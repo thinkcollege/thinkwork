@@ -1,7 +1,53 @@
-.button {
-  padding: calc(0.6rem - 1px) calc(1.5rem - 1px) !important;
+:root {
+  --wp-admin-theme-color: #003cc5 !important;
+  --wp-admin-theme-color--rgb: 0, 124, 186;
+  --wp-admin-theme-color-darker-10: #0036b1 !important;
+  --wp-admin-theme-color-darker-10--rgb: 0, 107, 161;
+  --wp-admin-theme-color-darker-20: #00339a !important;
+  --wp-admin-theme-color-darker-20--rgb: 0, 90, 135;
+  --wp-admin-border-width-focus: 2px;
+}
+
+.edit-post-header {
+  .components-button {
+    height: 48px !important;
+    line-height: 1rem !important;
+  
+    &.has-icon {
+      min-width: 48px !important;
+    }
+  }  
+}
+
+.edit-post-layout {
+  fieldset:not(.fieldgroup) {
+    padding: 0;
+    border: 0;
+    background: none;
+
+    & > legend {
+      position: initial;
+
+      &.components-visually-hidden {
+        position: absolute;
+      }
+      
+    }
+  }
+}
+
+.edit-post-fullscreen-mode-close {
+  &.has-icon {
+    height: 61px !important;
+  }
 }
 
 .page-wrapper :focus {
   box-shadow: none !important;
+}
+
+.interface-complementary-area.edit-post-sidebar {
+  @media screen and (min-width: 85.375rem) {
+    width: 380px !important;
+  }
 }

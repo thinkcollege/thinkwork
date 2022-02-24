@@ -62,7 +62,7 @@ function hook_gutenberg_blocks_alter(array &$js_files_edit, array &$css_files_ed
  * @see \Drupal\gutenberg\GutenbergMediaLibraryUiBuilder
  */
 function hook_gutenberg_media_library_view_alter(array &$build_ui) {
-  // @todo: provide some example.
+  // @todo provide some example.
 }
 
 /**

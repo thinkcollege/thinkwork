@@ -52,8 +52,10 @@ body .gutenberg {
     }
   }
 
-  .filter-wrapper {
-    display: none;
+  > .text-format-wrapper {
+    > .filter-wrapper {
+      display: none;
+    }
   }
 }
 

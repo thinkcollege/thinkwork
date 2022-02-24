@@ -15,19 +15,13 @@
  * @ingroup themeable
  */
 #}
-{%
-  set classes = [
-    block_attributes.align ? 'align' ~ block_attributes.align|clean_class
-  ]
-%}
-
 {% if block_attributes.caption %}
-<figure{{ attributes.addClass(classes) }}>
+<figure{{ attributes }}>
   {{- block_content -}}
   <figcaption>{{ block_attributes.caption }}</figcaption>
 </figure>
 {% else %}
-<div{{ attributes.addClass(classes) }}>
+<div{{ attributes }}>
   {{- block_content -}}
 </div>
 {% endif %}

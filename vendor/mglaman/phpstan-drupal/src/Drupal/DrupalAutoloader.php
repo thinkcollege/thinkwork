@@ -4,8 +4,8 @@ namespace mglaman\PHPStanDrupal\Drupal;
 
 use Drupal\Core\DependencyInjection\ContainerNotInitializedException;
 use DrupalFinder\DrupalFinder;
-use Nette\Utils\Finder;
 use PHPStan\DependencyInjection\Container;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
 class DrupalAutoloader
@@ -89,16 +89,11 @@ class DrupalAutoloader
             return strpos($a->getName(), '_test') !== false ? 10 : 0;
         });
         $this->themeData = $extensionDiscovery->scan('theme');
-        $this->addTestNamespaces();
+        $this->addCoreTestNamespaces();
         $this->addModuleNamespaces();
         $this->addThemeNamespaces();
         $this->registerPs4Namespaces($this->namespaces);
         $this->loadLegacyIncludes();
-
-        // @todo stop requiring the bootstrap.php and just copy what is needed.
-        if (interface_exists(\PHPUnit\Framework\Test::class)) {
-            require $this->drupalRoot . '/core/tests/bootstrap.php';
-        }
 
         foreach ($this->moduleData as $extension) {
             $this->loadExtension($extension);
@@ -148,7 +143,7 @@ class DrupalAutoloader
                 }
                 $drushDir = dirname($reflect->getFileName(), $levels);
                 /** @var \SplFileInfo $file */
-                foreach (Finder::findFiles('*.inc')->in($drushDir . '/includes') as $file) {
+                foreach (Finder::create()->files()->name('*.inc')->in($drushDir . '/includes') as $file) {
                     require_once $file->getPathname();
                 }
             }
@@ -196,17 +191,25 @@ class DrupalAutoloader
 
         $service_map = $container->getByType(ServiceMap::class);
         $service_map->setDrupalServices($this->serviceMap);
+
+        if (interface_exists(\PHPUnit\Framework\Test::class)
+            && class_exists('Drupal\TestTools\PhpUnitCompatibility\PhpUnit8\ClassWriter')) {
+            \Drupal\TestTools\PhpUnitCompatibility\PhpUnit8\ClassWriter::mutateTestBase($this->autoloader);
+        }
+
+        $extension_map = $container->getByType(ExtensionMap::class);
+        $extension_map->setExtensions($this->moduleData, $this->themeData, $profiles);
     }
 
     protected function loadLegacyIncludes(): void
     {
         /** @var \SplFileInfo $file */
-        foreach (Finder::findFiles('*.inc')->in($this->drupalRoot . '/core/includes') as $file) {
+        foreach (Finder::create()->files()->name('*.inc')->in($this->drupalRoot . '/core/includes') as $file) {
             require_once $file->getPathname();
         }
     }
 
-    protected function addTestNamespaces(): void
+    protected function addCoreTestNamespaces(): void
     {
         // Add core test namespaces.
         $core_tests_dir = $this->drupalRoot . '/core/tests/Drupal';
@@ -246,6 +249,8 @@ class DrupalAutoloader
             $this->serviceClassProviders[$module_name] = $class;
             $serviceId = "service_provider.$module_name.service_provider";
             $this->serviceMap[$serviceId] = ['class' => $class];
+
+            $this->registerExtensionTestNamespace($module);
         }
     }
     protected function addThemeNamespaces(): void
@@ -253,6 +258,29 @@ class DrupalAutoloader
         foreach ($this->themeData as $theme_name => $theme) {
             $theme_dir = $this->drupalRoot . '/' . $theme->getPath();
             $this->namespaces["Drupal\\$theme_name"] = $theme_dir . '/src';
+            $this->registerExtensionTestNamespace($theme);
+        }
+    }
+
+    protected function registerExtensionTestNamespace(Extension $extension): void
+    {
+        $suite_names = ['Unit', 'Kernel', 'Functional', 'Build', 'FunctionalJavascript'];
+        $dir = $this->drupalRoot . '/' . $extension->getPath();
+        $test_dir = $dir . '/tests/src';
+        if (is_dir($test_dir)) {
+            foreach ($suite_names as $suite_name) {
+                $suite_dir = $test_dir . '/' . $suite_name;
+                if (is_dir($suite_dir)) {
+                    // Register the PSR-4 directory for PHPUnit-based suites.
+                    $this->namespaces['Drupal\\Tests\\' . $extension->getName() . '\\' . $suite_name . '\\'][] = $suite_dir;
+                }
+            }
+            // Extensions can have a \Drupal\Tests\extension\Traits namespace for
+            // cross-suite trait code.
+            $trait_dir = $test_dir . '/Traits';
+            if (is_dir($trait_dir)) {
+                $this->namespaces['Drupal\\Tests\\' . $extension->getName() . '\\Traits\\'][] = $trait_dir;
+            }
         }
     }
 

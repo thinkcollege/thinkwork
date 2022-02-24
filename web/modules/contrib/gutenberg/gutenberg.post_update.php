@@ -25,7 +25,6 @@ function gutenberg_post_update_reusable_block_view_access() {
   }
 }
 
-
 /**
  * Fix youtube and instagram oEmbed processor.
  */

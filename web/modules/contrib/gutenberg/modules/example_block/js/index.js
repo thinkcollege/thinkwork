@@ -14,7 +14,7 @@ var _wp = wp,
     data = _wp.data,
     element = _wp.element,
     components = _wp.components,
-    editor = _wp.editor;
+    blockEditor = _wp.blockEditor;
 var registerBlockType = blocks.registerBlockType;
 var dispatch = data.dispatch,
     select = data.select;
@@ -26,12 +26,12 @@ var PanelBody = components.PanelBody,
     IconButton = components.IconButton,
     Toolbar = components.Toolbar,
     SelectControl = components.SelectControl;
-var InnerBlocks = editor.InnerBlocks,
-    RichText = editor.RichText,
-    InspectorControls = editor.InspectorControls,
-    PanelColorSettings = editor.PanelColorSettings,
-    MediaUpload = editor.MediaUpload,
-    BlockControls = editor.BlockControls;
+var InnerBlocks = blockEditor.InnerBlocks,
+    RichText = blockEditor.RichText,
+    InspectorControls = blockEditor.InspectorControls,
+    PanelColorSettings = blockEditor.PanelColorSettings,
+    MediaUpload = blockEditor.MediaUpload,
+    BlockControls = blockEditor.BlockControls;
 
 var __ = Drupal.t;
 
