@@ -15,39 +15,6 @@ parameters:
 		- Drupal::VERSION
 	scanFiles:
 		- stubs/Twig/functions.stub
-	stubFiles:
-		- stubs/Drupal/Component/Plugin/PluginInspectionInterface.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldItemBase.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldItemInterface.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/PreconfiguredFieldUiOptionsInterface.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/BooleanItem.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/ChangedItem.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/CreatedItem.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/DecimalItem.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/EmailItem.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/EntityReferenceItem.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/FloatItem.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/IntegerItem.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/LanguageItem.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/MapItem.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/NumericItemBase.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/PasswordItem.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/StringItem.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/StringItemBase.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/StringLongItem.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/TimestampItem.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/UriItem.stub
-		- stubs/Drupal/Core/Field/Plugin/Field/FieldType/UuidItem.stub
-		- stubs/Drupal/Core/TypedData/ComplexDataInterface.stub
-		- stubs/Drupal/Core/TypedData/OptionsProviderInterface.stub
-		- stubs/Drupal/Core/TypedData/TraversableTypedDataInterface.stub
-		- stubs/Drupal/Core/TypedData/TypedData.stub
-		- stubs/Drupal/Core/TypedData/TypedDataInterface.stub
-		- stubs/Drupal/Core/TypedData/Plugin/DataType/Map.stub
-		- stubs/Drupal/file/Plugin/Field/FieldType/FileItem.stub
-		- stubs/Drupal/file/Plugin/Field/FieldType/FileUriItem.stub
-		- stubs/Drupal/link/LinkItemInterface.stub
-		- stubs/Drupal/link/Plugin/Field/FieldType/LinkItem.stub
 	drupal:
 		drupal_root: '%currentWorkingDirectory%'
 		entityMapping:
@@ -281,6 +248,17 @@ rules:
 	- mglaman\PHPStanDrupal\Rules\Drupal\GlobalDrupalDependencyInjectionRule
 	- mglaman\PHPStanDrupal\Rules\Drupal\PluginManager\PluginManagerSetsCacheBackendRule
 	- mglaman\PHPStanDrupal\Rules\Deprecations\AccessDeprecatedConstant
+	- mglaman\PHPStanDrupal\Rules\Classes\ClassExtendsInternalClassRule
+	- mglaman\PHPStanDrupal\Rules\Classes\PluginManagerInspectionRule
+	- mglaman\PHPStanDrupal\Rules\Deprecations\ConditionManagerCreateInstanceContextConfigurationRule
+	- mglaman\PHPStanDrupal\Rules\Drupal\RenderCallbackRule
+	- mglaman\PHPStanDrupal\Rules\Deprecations\StaticServiceDeprecatedServiceRule
+	- mglaman\PHPStanDrupal\Rules\Deprecations\GetDeprecatedServiceRule
+	- mglaman\PHPStanDrupal\Rules\Drupal\Tests\BrowserTestBaseDefaultThemeRule
+	- mglaman\PHPStanDrupal\Rules\Deprecations\ConfigEntityConfigExportRule
+	- mglaman\PHPStanDrupal\Rules\Deprecations\PluginAnnotationContextDefinitionsRule
+	- mglaman\PHPStanDrupal\Rules\Drupal\ModuleLoadInclude
+	- mglaman\PHPStanDrupal\Rules\Drupal\LoadIncludes
 services:
 	-
 		class: mglaman\PHPStanDrupal\Drupal\ServiceMap
@@ -290,12 +268,14 @@ services:
 		class: mglaman\PHPStanDrupal\Drupal\EntityDataRepository
 		arguments:
 			entityMapping: %drupal.entityMapping%
-
 	-
 		class: mglaman\PHPStanDrupal\Type\EntityTypeManagerGetStorageDynamicReturnTypeExtension
 		tags: [phpstan.broker.dynamicMethodReturnTypeExtension]
 	-
 		class: mglaman\PHPStanDrupal\Type\EntityStorage\EntityStorageDynamicReturnTypeExtension
+		tags: [phpstan.broker.dynamicMethodReturnTypeExtension]
+	-
+		class: mglaman\PHPStanDrupal\Type\EntityStorage\GetQueryReturnTypeExtension
 		tags: [phpstan.broker.dynamicMethodReturnTypeExtension]
 	-
 		class: mglaman\PHPStanDrupal\Type\ContainerDynamicReturnTypeExtension
@@ -331,48 +311,5 @@ services:
 		class: mglaman\PHPStanDrupal\Reflection\EntityFieldMethodsViaMagicReflectionExtension
 		tags: [phpstan.broker.methodsClassReflectionExtension]
 	-
-		class: mglaman\PHPStanDrupal\Rules\Classes\ClassExtendsInternalClassRule
-		tags: [phpstan.rules.rule]
-		arguments:
-			reflectionProvider: @reflectionProvider
-	-
-		class: mglaman\PHPStanDrupal\Rules\Classes\PluginManagerInspectionRule
-		tags: [phpstan.rules.rule]
-		arguments:
-			reflectionProvider: @reflectionProvider
-	-
-		class: mglaman\PHPStanDrupal\Rules\Drupal\LoadIncludes
-		tags: [phpstan.rules.rule]
-		arguments:
-			extensionMap: @mglaman\PHPStanDrupal\Drupal\ExtensionMap
-	-
-		class: mglaman\PHPStanDrupal\Rules\Drupal\ModuleLoadInclude
-		tags: [phpstan.rules.rule]
-		arguments:
-			extensionMap: @mglaman\PHPStanDrupal\Drupal\ExtensionMap
-
-	-
-		class: mglaman\PHPStanDrupal\Rules\Deprecations\PluginAnnotationContextDefinitionsRule
-		tags: [phpstan.rules.rule]
-
-	-
-		class: mglaman\PHPStanDrupal\Rules\Deprecations\ConfigEntityConfigExportRule
-		tags: [phpstan.rules.rule]
-
-	-
-		class: mglaman\PHPStanDrupal\Rules\Drupal\Tests\BrowserTestBaseDefaultThemeRule
-		tags: [phpstan.rules.rule]
-
-	-
-		class: mglaman\PHPStanDrupal\Rules\Deprecations\GetDeprecatedServiceRule
-		tags: [phpstan.rules.rule]
-	-
-		class: mglaman\PHPStanDrupal\Rules\Deprecations\StaticServiceDeprecatedServiceRule
-		tags: [phpstan.rules.rule]
-
-	-
-		class: mglaman\PHPStanDrupal\Rules\Drupal\RenderCallbackRule
-		tags: [phpstan.rules.rule]
-	-
-		class: mglaman\PHPStanDrupal\Rules\Deprecations\ConditionManagerCreateInstanceContextConfigurationRule
-		tags: [phpstan.rules.rule]
+		class: mglaman\PHPStanDrupal\Drupal\DrupalStubFilesExtension
+		tags: [phpstan.stubFilesExtension]
