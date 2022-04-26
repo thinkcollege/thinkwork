@@ -19,7 +19,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
     var DEFAULT_STATE = {
       blocks: {},
-      mediaEntities: {}
+      mediaEntities: {},
+      entitiesToSave: []
     };
 
     return registerStore('drupal', {
@@ -37,6 +38,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           case 'SET_MEDIA_ENTITY':
             return _extends({}, state, {
               mediaEntities: _extends({}, state.mediaEntities, _defineProperty({}, action.item, action.mediaEntity))
+            });
+          case 'SET_ENTITIES_TO_SAVE':
+            return _extends({}, state, {
+              entitiesToSave: _extends({}, action.entitiesToSave)
             });
           default:
             return state;
@@ -59,6 +64,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             item: item,
             mediaEntity: mediaEntity
           };
+        },
+        setEntitiesToSave: function setEntitiesToSave(entitiesToSave) {
+          return {
+            type: 'SET_ENTITIES_TO_SAVE',
+            entitiesToSave: entitiesToSave
+          };
         }
       },
 
@@ -66,13 +77,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         getBlock: function getBlock(state, item, settings) {
           var blocks = state.blocks;
 
-          console.log(state, item, settings);
           return blocks[item];
         },
         getMediaEntity: function getMediaEntity(state, item) {
           var mediaEntities = state.mediaEntities;
 
           return mediaEntities[item];
+        },
+        getEntitiesToSave: function getEntitiesToSave(state) {
+          return state.entitiesToSave;
         }
       },
 

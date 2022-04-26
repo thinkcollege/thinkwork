@@ -38,6 +38,9 @@
         "drupal/mailsystem": "*",
         "html2text/html2text": "~4.0.1"
     },
+    "require-dev": {
+        "drupal/key": "^1.0"
+    },
    "extra": {
      "drush": {
       "services": {

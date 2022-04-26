@@ -49,7 +49,7 @@
    */
    Drupal.behaviors.gutenbergBlockSettings = {
     attach(form) {
-      if (form.elements) {
+      if (form.elements && form.id === 'gutenberg-block-settings') {
         const btn = Array.from(form.elements).filter(el => el.name === 'op')[0];
 
         btn.onclick = (ev) => {

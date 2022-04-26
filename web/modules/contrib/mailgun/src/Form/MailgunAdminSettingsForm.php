@@ -3,6 +3,7 @@
 namespace Drupal\mailgun\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
@@ -31,23 +32,42 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
   protected $filterManager;
 
   /**
+   * Key module status.
+   *
+   * @var bool
+   */
+  protected $keyInstalled;
+
+  /**
+   * The key repository.
+   *
+   * @var \Drupal\key\KeyRepositoryInterface
+   */
+  protected $keyRepository;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
       $container->get('mailgun.mail_handler'),
-      $container->get('plugin.manager.filter')
+      $container->get('plugin.manager.filter'),
+      $container->get('module_handler')
     );
   }
 
   /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $config_factory, MailgunHandlerInterface $mailgun_handler, FilterPluginManager $filter_manager) {
+  public function __construct(ConfigFactoryInterface $config_factory, MailgunHandlerInterface $mailgun_handler, FilterPluginManager $filter_manager, ModuleHandlerInterface $module_handler) {
     parent::__construct($config_factory);
     $this->mailgunHandler = $mailgun_handler;
     $this->filterManager = $filter_manager;
+    if ($module_handler->moduleExists('key')) {
+      $this->keyInstalled = TRUE;
+      $this->keyRepository = \Drupal::service('key.repository');
+    }
   }
 
   /**
@@ -72,9 +92,18 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
 
-    $entered_api_key = $form_state->getValue('api_key');
+    $config_key_storage = $form_state->getValue('api_key_storage');
+    if ($config_key_storage === 'key') {
+      $key = $form_state->getValue('api_key_key');
+      $entered_api_key = $this->keyRepository->getKey($key)->getKeyValue();
+    }
+    else {
+      $entered_api_key = $form_state->getValue('api_key');
+    }
+
     if (!empty($entered_api_key) && $this->mailgunHandler->validateMailgunApiKey($entered_api_key) === FALSE) {
-      $form_state->setErrorByName('api_key', $this->t("Couldn't connect to the Mailgun API. Please check your API settings."));
+      $key_element = $config_key_storage === 'key' ? 'api_key_key' : 'api_key';
+      $form_state->setErrorByName($key_element, $this->t("Couldn't connect to the Mailgun API. Please check your API settings."));
     }
   }
 
@@ -95,22 +124,67 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
       ]),
     ];
 
+    $form['api_key_storage'] = [
+      '#title' => $this->t('API Key Storage'),
+      '#type' => 'select',
+      '#options' => [
+        'config' => $this->t('Mailgun config'),
+      ],
+      '#required' => TRUE,
+      '#description' => $this->t('How the API key is stored. You can install the <a href="@url" target="_blank">Key</a> module for greater security.', [
+        '@url' => 'https://www.drupal.org/project/key',
+      ]),
+      '#default_value' => $config->get('api_key_storage'),
+    ];
+    if ($this->keyInstalled) {
+      $form['api_key_storage']['#options']['key'] = $this->t('Key');
+      $form['api_key_storage']['#description'] = $this->t('How the API key is stored.');
+    }
+
     $form['api_key'] = [
       '#title' => $this->t('Mailgun API Key'),
       '#type' => 'textfield',
-      '#required' => TRUE,
       '#description' => $this->t('Enter your @link.', [
         '@link' => Link::fromTextAndUrl($this->t('Private API key'), Url::fromUri('https://app.mailgun.com/app/account/security/api_keys'))->toString(),
       ]),
       '#default_value' => $config->get('api_key'),
+      '#states' => [
+        'visible' => [
+          ':input[name="api_key_storage"]' => ['value' => 'config'],
+        ],
+        'required' => [
+          ':input[name="api_key_storage"]' => ['value' => 'config'],
+        ],
+      ],
     ];
+
+    if ($this->keyInstalled) {
+      $form['api_key_key'] = [
+        '#title' => $this->t('Key'),
+        '#type' => 'select',
+        '#options' => $this->getKeyOptions(),
+        '#description' => $this->t('The key from the Key module where the Mailgun API key is stored. Only "Authentication" keys are supported.'),
+        '#default_value' => $config->get('api_key_key'),
+        '#states' => [
+          'visible' => [
+            ':input[name="api_key_storage"]' => ['value' => 'key'],
+          ],
+          'required' => [
+            ':input[name="api_key_storage"]' => ['value' => 'key'],
+          ],
+        ],
+      ];
+    }
 
     // Load not-editable configuration object to check actual api key value
     // including overrides.
     $not_editable_config = $this->configFactory()->get(MailgunHandlerInterface::CONFIG_NAME);
 
     // Don't show other settings until we don't set API key.
-    if (empty($not_editable_config->get('api_key'))) {
+    if (empty($not_editable_config->get('api_key'))
+      && empty($not_editable_config->get('api_key_key'))
+      ) {
+
       return parent::buildForm($form, $form_state);
     }
 
@@ -275,9 +349,10 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $config_keys = [
-      'working_domain', 'api_key', 'debug_mode', 'test_mode', 'tracking_opens',
-      'tracking_clicks', 'tracking_exception', 'format_filter', 'use_queue',
-      'use_theme', 'tagging_mailkey', 'api_endpoint',
+      'working_domain', 'api_key_storage', 'api_key', 'api_key_key',
+      'debug_mode', 'test_mode', 'tracking_opens', 'tracking_clicks',
+      'tracking_exception', 'format_filter', 'use_queue', 'use_theme',
+      'tagging_mailkey', 'api_endpoint',
     ];
 
     $mailgun_config = $this->config(MailgunHandlerInterface::CONFIG_NAME);
@@ -289,6 +364,24 @@ class MailgunAdminSettingsForm extends ConfigFormBase {
     $mailgun_config->save();
 
     $this->messenger()->addMessage($this->t('The configuration options have been saved.'));
+  }
+
+  /**
+   * Gets a list of keys that use the 'authentication' key type plugin.
+   *
+   * @return array
+   *   An array of a keys.
+   */
+  protected function getKeyOptions() {
+    $return = [];
+
+    foreach ($this->keyRepository->getKeys() as $id => $key) {
+      if ($key->getKeyType()->getPluginId() === 'authentication') {
+        $return[$id] = $key->label();
+      }
+    }
+
+    return $return;
   }
 
 }

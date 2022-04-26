@@ -161,6 +161,10 @@ ul.block-editor-block-navigation__list {
   border: 0 !important;
 }
 
+.components-panel__row label {
+  display: initial !important;
+}
+
 .wp-block {
   max-width: 720px;
 }

@@ -4,6 +4,10 @@ mailgun.settings:
   mapping:
     api_endpoint:
       type: string
+    api_key_storage:
+      type: string
+    api_key_key:
+      type: string
     api_key:
       type: string
     working_domain:

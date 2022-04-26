@@ -98,7 +98,7 @@ class MediaController extends ControllerBase {
       $container->get('gutenberg.media_selection_processor_manager'),
       $container->get('renderer'),
       $container->get('image.factory'),
-      $container->get('file_system'),
+      $container->get('file_system')
     );
   }
 

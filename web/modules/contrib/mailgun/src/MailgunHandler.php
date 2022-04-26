@@ -77,6 +77,21 @@ class MailgunHandler implements MailgunHandlerInterface {
   /**
    * {@inheritdoc}
    */
+  public static function getApiKey() {
+    $mailgun_config = \Drupal::config(MailgunHandlerInterface::CONFIG_NAME);
+    $api_key_storage = $mailgun_config->get('api_key_storage');
+
+    // Retrieve API key value from Key module.
+    if ($api_key_storage === 'key') {
+      $key = $mailgun_config->get('api_key_key');
+      return \Drupal::service('key.repository')->getKey($key)->getKeyValue();
+    }
+    return $mailgun_config->get('api_key');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function sendMail(array $mailgunMessage) {
     try {
       if (!$this->validateMailgunApiSettings()) {
@@ -216,7 +231,7 @@ class MailgunHandler implements MailgunHandlerInterface {
    * {@inheritdoc}
    */
   public function validateMailgunApiSettings($showMessage = FALSE) {
-    $apiKey = $this->mailgunConfig->get('api_key');
+    $apiKey = self::getApiKey();
     $workingDomain = $this->mailgunConfig->get('working_domain');
 
     if (empty($apiKey) || empty($workingDomain)) {

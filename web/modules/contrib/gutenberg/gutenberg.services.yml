@@ -10,7 +10,7 @@ services:
     arguments: ['@module_handler', '@theme_handler', '@theme.initialization', '@cache.discovery', '@logger.channel.gutenberg']
   plugin.manager.gutenberg.blocks_library:
     class: Drupal\gutenberg\BlocksLibraryManager
-    arguments: ['@app.root', '@module_handler', '@theme_handler', '@theme.initialization', '@cache.discovery', '@logger.channel.gutenberg']
+    arguments: ['%app.root%', '@module_handler', '@theme_handler', '@theme.initialization', '@cache.discovery', '@logger.channel.gutenberg']
   gutenberg.block_processor_manager:
     class: Drupal\gutenberg\BlockProcessor\GutenbergBlockProcessorManager
     tags:

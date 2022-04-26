@@ -87,7 +87,7 @@
     "require-dev": {
         "composer/composer": "^2",
         "composer/semver": "^3.0",
-        "drupal/core": "^9.3.9",
+        "drupal/core": "^9.3.12",
         "drupal/core-dev": "^9.2.6",
         "mglaman/drupal-check": "^1.1",
         "symfony/debug": "^4.4",

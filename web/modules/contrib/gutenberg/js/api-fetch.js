@@ -86,7 +86,7 @@
       },
       taxonomies: []
     },
-    block: {
+    wp_block: {
       capabilities: {},
       labels: {
         singular_name: 'Block'

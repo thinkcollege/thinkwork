@@ -164,7 +164,7 @@ class OEmbedProcessor extends ConfigurableProcessorBase {
    * {@inheritdoc}
    */
   public function isSupported(array $block, $block_content = '') {
-    return $block['blockName'] === 'core/embed' || substr($block['blockName'], 0, 11) === 'core-embed/';
+    return $block['blockName'] === 'core/embed' || substr($block['blockName'] ?? '', 0, 11) === 'core-embed/';
   }
 
   /**

@@ -48,7 +48,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
   Drupal.behaviors.gutenbergBlockSettings = {
     attach: function attach(form) {
-      if (form.elements) {
+      if (form.elements && form.id === 'gutenberg-block-settings') {
         var btn = Array.from(form.elements).filter(function (el) {
           return el.name === 'op';
         })[0];

@@ -7,11 +7,13 @@
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 (function (Drupal, DrupalGutenberg, drupalSettings, wp, $) {
   var updateDrupalBlockBasedOnMediaEntity = function () {
-    var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee5(id) {
+    var _ref5 = _asyncToGenerator(regeneratorRuntime.mark(function _callee5(id) {
       var dispatch, response, mediaEntity;
       return regeneratorRuntime.wrap(function _callee5$(_context5) {
         while (1) {
@@ -49,7 +51,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
     }));
 
     return function updateDrupalBlockBasedOnMediaEntity(_x3) {
-      return _ref3.apply(this, arguments);
+      return _ref5.apply(this, arguments);
     };
   }();
 
@@ -355,17 +357,15 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
                   $(element.form).removeAttr('novalidate');
 
-                  setTimeout(function () {
-                    isFormValid = element.form.reportValidity();
+                  isFormValid = element.form.reportValidity();
 
-                    if (isFormValid) {
-                      $(e.currentTarget).click();
-                    } else {
-                      $(e.currentTarget).removeAttr('active');
-                    }
+                  if (!isFormValid) {
+                    $(e.currentTarget).removeAttr('active');
+                  } else {
+                    element.form.requestSubmit(e.currentTarget);
+                  }
 
-                    $(element.form).attr('novalidate', true);
-                  });
+                  $(element.form).attr('novalidate', true);
 
                   if (!isFormValid) {
                     e.preventDefault();
@@ -393,29 +393,100 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                   $(element).attr('data-editor-value-is-changed', true);
 
                   if (!formSubmitted) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
                     _asyncToGenerator(regeneratorRuntime.mark(function _callee2() {
+                      var entitiesToSave, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, _ref3, _ref4, index, _ref4$, kind, name, _key, property;
+
                       return regeneratorRuntime.wrap(function _callee2$(_context2) {
                         while (1) {
                           switch (_context2.prev = _context2.next) {
                             case 0:
                               _context2.next = 2;
-                              return data.dispatch('core/editor').savePost({ isAutosave: false });
+                              return data.select('drupal').getEntitiesToSave();
 
                             case 2:
+                              entitiesToSave = _context2.sent;
+                              _iteratorNormalCompletion = true;
+                              _didIteratorError = false;
+                              _iteratorError = undefined;
+                              _context2.prev = 6;
+                              _iterator = Object.entries(entitiesToSave)[Symbol.iterator]();
+
+                            case 8:
+                              if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
+                                _context2.next = 22;
+                                break;
+                              }
+
+                              _ref3 = _step.value;
+                              _ref4 = _slicedToArray(_ref3, 2);
+                              index = _ref4[0];
+                              _ref4$ = _ref4[1];
+                              kind = _ref4$.kind;
+                              name = _ref4$.name;
+                              _key = _ref4$.key;
+                              property = _ref4$.property;
+                              _context2.next = 19;
+                              return data.dispatch('core').saveEditedEntityRecord(kind, name, _key, property);
+
+                            case 19:
+                              _iteratorNormalCompletion = true;
+                              _context2.next = 8;
+                              break;
+
+                            case 22:
+                              _context2.next = 28;
+                              break;
+
+                            case 24:
+                              _context2.prev = 24;
+                              _context2.t0 = _context2['catch'](6);
+                              _didIteratorError = true;
+                              _iteratorError = _context2.t0;
+
+                            case 28:
+                              _context2.prev = 28;
+                              _context2.prev = 29;
+
+                              if (!_iteratorNormalCompletion && _iterator.return) {
+                                _iterator.return();
+                              }
+
+                            case 31:
+                              _context2.prev = 31;
+
+                              if (!_didIteratorError) {
+                                _context2.next = 34;
+                                break;
+                              }
+
+                              throw _iteratorError;
+
+                            case 34:
+                              return _context2.finish(31);
+
+                            case 35:
+                              return _context2.finish(28);
+
+                            case 36:
+                              _context2.next = 38;
+                              return data.dispatch('core/editor').savePost({ isAutosave: false });
+
+                            case 38:
+
                               formSubmitted = true;
 
                               $source.click();
 
-                            case 4:
+                            case 40:
                             case 'end':
                               return _context2.stop();
                           }
                         }
-                      }, _callee2, _this2);
+                      }, _callee2, _this2, [[6, 24, 28, 36], [29,, 31, 35]]);
                     }))();
-
-                    e.preventDefault();
-                    e.stopPropagation();
                   }
                 });
 
@@ -581,28 +652,29 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
         return;
       }
 
-      Drupal.gutenbergMediaLibraryButtons = Drupal.gutenbergMediaLibraryButtons || $dialog.dialog('option', 'buttons');
-
       $form.find('[data-drupal-selector="edit-save-insert"]').css('display', 'none');
 
-      var saveAndSelectButton = $form.find('[data-drupal-selector="edit-save-select"]');
-      if (saveAndSelectButton.length) {
-        saveAndSelectButton.css({
-          display: 'none'
-        });
+      if (context && context.id === 'media-library-add-form-wrapper') {
+        var saveAndSelectButton = $form.find('[data-drupal-selector="edit-save-select"]');
+        if (saveAndSelectButton.length) {
+          saveAndSelectButton.css({
+            display: 'none'
+          });
 
-        var buttons = [];
-        buttons.push({
-          text: saveAndSelectButton.html() || saveAndSelectButton.attr('value'),
-          class: saveAndSelectButton.attr('class'),
-          click: function click(e) {
-            saveAndSelectButton.trigger('mousedown').trigger('mouseup').trigger('click');
-            e.preventDefault();
-          }
-        });
-        $dialog.dialog('option', 'buttons', buttons);
-      } else {
-        $dialog.dialog('option', 'buttons', Drupal.gutenbergMediaLibraryButtons);
+          var originalButtons = $dialog.dialog('option', 'buttons');
+          var buttons = [];
+          buttons.push({
+            text: saveAndSelectButton.html() || saveAndSelectButton.attr('value'),
+            class: saveAndSelectButton.attr('class'),
+            click: function click(e) {
+              saveAndSelectButton.trigger('mousedown').trigger('mouseup').trigger('click');
+
+              $dialog.dialog('option', 'buttons', originalButtons);
+              e.preventDefault();
+            }
+          });
+          $dialog.dialog('option', 'buttons', buttons);
+        }
       }
     }
   };

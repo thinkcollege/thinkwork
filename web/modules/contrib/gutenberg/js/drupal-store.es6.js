@@ -6,6 +6,7 @@
     const DEFAULT_STATE = {
       blocks: {},
       mediaEntities: {},
+      entitiesToSave: [],
     };
 
     return registerStore('drupal', {
@@ -32,6 +33,13 @@
                 [action.item]: action.mediaEntity,
               },
             };
+          case 'SET_ENTITIES_TO_SAVE':
+            return {
+              ...state,
+              entitiesToSave: {
+                ...action.entitiesToSave,
+              },
+            };
           default:
             return state;
         }
@@ -53,17 +61,25 @@
             mediaEntity,
           };
         },
+        setEntitiesToSave(entitiesToSave) {
+          return {
+            type: 'SET_ENTITIES_TO_SAVE',
+            entitiesToSave,
+          }
+        },
       },
 
       selectors: {
         getBlock(state, item, settings) {
           const { blocks } = state;
-          console.log(state, item, settings);
           return blocks[item];
         },
         getMediaEntity(state, item) {
           const { mediaEntities } = state;
           return mediaEntities[item];
+        },
+        getEntitiesToSave(state) {
+          return state.entitiesToSave;
         },
       },
 

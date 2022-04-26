@@ -83,14 +83,20 @@ class ReusableBlocksController extends ControllerBase {
   public function save(Request $request, $block_id = NULL) {
     $updating_block = $block_id && $block_id > 0;
 
-    // Cast to string to avoid null pointer when the title or content is empty.
-    $title = (string) $request->request->get('title');
-    $content = (string) $request->request->get('content');
+    // The request may come with either properties null.
+    // Update property only if not null.
+    // For new blocks, no need to check null.
+    $title = $request->request->get('title');
+    $content = $request->request->get('content');
 
     if ($updating_block) {
       $block = $this->loadBlockOrThrow($block_id);
-      $block->set('info', $title);
-      $block->set('body', $content);
+      if (!is_null($title)) {
+        $block->set('info', $title);
+      }
+      if (!is_null($content)) {
+        $block->set('body', $content);
+      }
     }
     else {
       $block = BlockContent::create([

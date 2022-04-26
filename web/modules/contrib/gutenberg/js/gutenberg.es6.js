@@ -369,26 +369,18 @@
         // For these buttons enable form validation.
         $(element.form).removeAttr('novalidate');
 
-        // Wait for the next tick, React/Gutenberg is
-        // doing its DOM stuff.
-        setTimeout(() => {
-          // This will not work on IE (<10?). But it's ok because
-          // we have the server side validation fallback.
-          isFormValid = element.form.reportValidity();
+        // This will not work on IE (<10?). But it's ok because
+        // we have the server side validation fallback.
+        isFormValid = element.form.reportValidity();
 
-          if (isFormValid) {
-            // We need to submit the form via button click.
-            // Drupal's form submit handler needs it.
-            // TODO: Could we submit and passing the button reference to formState?
-            $(e.currentTarget).click();
-          } else {
-            // Not active anymore.
-            $(e.currentTarget).removeAttr('active');
-          }
+        if (!isFormValid) {
+          $(e.currentTarget).removeAttr('active');
+        } else {
+          element.form.requestSubmit(e.currentTarget);
+        }
 
-          // Then disable form validation again :(
-          $(element.form).attr('novalidate', true);
-        });
+        // Then disable form validation again :(
+        $(element.form).attr('novalidate', true);
 
         // No need to proceed to form validation,
         // it'll just throw a "not focusable" console
@@ -423,27 +415,35 @@
         // Update editor textarea with gutenberg content.
         $(element).val(data.select('core/editor').getEditedPostContent());
 
-        // We need to update the 'editor-value-is-changed' flag otherwise
-        // the content won't be updated.
+        // We need to update the 'editor-value-is-changed' flag
+        // otherwise the content won't be updated.
         $(element).data({ 'editor-value-is-changed': true });
         $(element).attr('data-editor-value-is-changed', true);
 
         // Clear content "dirty" state.
         if (!formSubmitted) {
+          // savePost() is async so we must cancel form submission
+          // to avoid to "changes not saved" alert.
+          e.preventDefault();
+          e.stopPropagation();
+
           (async () => {
-            await data.dispatch('core/editor').savePost({isAutosave: false});    
+            // Save selected reusable blocks.
+            const entitiesToSave = await data.select('drupal').getEntitiesToSave();
+            for (const [index, { kind, name, key, property }] of Object.entries(entitiesToSave)) {
+              await data.dispatch('core').saveEditedEntityRecord( kind, name, key, property );
+            }
+
+            await data.dispatch('core/editor').savePost({isAutosave: false});
+
             formSubmitted = true;
+
             // Submit again to save content on Drupal.
             // We need to submit the form via button click.
             // Drupal's form submit handler needs it.
             // TODO: Could we submit and passing the button reference to formState?
             $source.click();
           })();
-
-          // savePost() is async so we must cancel form submission
-          // to avoid to "changes not saved" alert.
-          e.preventDefault();
-          e.stopPropagation();
         }
       });
 
@@ -674,33 +674,37 @@
       if (!$form.length) {
         return;
       }
-      // Storing initial buttons to recover them when needed.
-      Drupal.gutenbergMediaLibraryButtons = Drupal.gutenbergMediaLibraryButtons || $dialog.dialog('option', 'buttons');
+
       // Altering new media entity form buttons.
       $form
         .find('[data-drupal-selector="edit-save-insert"]')
         .css('display', 'none');
 
-      const saveAndSelectButton = $form.find('[data-drupal-selector="edit-save-select"]');
-      if (saveAndSelectButton.length) {
-        // Hide button.
-        saveAndSelectButton.css({
-          display: 'none'
-        });
-        // Move button to buttonpane.
-        let buttons = [];
-        buttons.push({
-          text: saveAndSelectButton.html() || saveAndSelectButton.attr('value'),
-          class: saveAndSelectButton.attr('class'),
-          click: function click(e) {
-            saveAndSelectButton.trigger('mousedown').trigger('mouseup').trigger('click');
-            e.preventDefault();
-          }
-        });
-        $dialog.dialog('option', 'buttons', buttons);
-      }
-      else {
-        $dialog.dialog('option', 'buttons', Drupal.gutenbergMediaLibraryButtons);
+
+      // Applied only to the add media form modal context.
+      if (context && context.id === 'media-library-add-form-wrapper') {
+        const saveAndSelectButton = $form.find('[data-drupal-selector="edit-save-select"]');
+        if (saveAndSelectButton.length) {
+          // Hide button.
+          saveAndSelectButton.css({
+            display: 'none'
+          });
+
+          // Add button to buttonpane.
+          const originalButtons = $dialog.dialog('option', 'buttons');
+          const buttons = [];
+          buttons.push({
+            text: saveAndSelectButton.html() || saveAndSelectButton.attr('value'),
+            class: saveAndSelectButton.attr('class'),
+            click: function click(e) {
+              saveAndSelectButton.trigger('mousedown').trigger('mouseup').trigger('click');
+              // Restore buttons
+              $dialog.dialog('option', 'buttons', originalButtons);
+              e.preventDefault();
+            }
+          });
+          $dialog.dialog('option', 'buttons', buttons);
+        }
       }
     },
   };

@@ -87,10 +87,15 @@ class DrupalBlockProcessor implements GutenbergBlockProcessorInterface {
       $render = [
         'content' => $render_content,
       ];
-      // Render the css class if available.
+
+      // Add the CSS class if available.
       if (!empty($block_attributes['className'])) {
-        $render['#prefix'] = sprintf('<div class="%s">', Html::escape($block_attributes['className']));
-        $render['#suffix'] = '</div>';
+        $render['content']['#attributes']['class'][] = Html::escape($block_attributes['className']);
+      }
+
+      // Add the align CSS class if available.
+      if (!empty($block_attributes['align'])) {
+        $render['content']['#attributes']['class'][] = 'align' . $block_attributes['align'];
       }
 
       $block_content = $this->renderer->render($render);
@@ -106,7 +111,7 @@ class DrupalBlockProcessor implements GutenbergBlockProcessorInterface {
    * {@inheritdoc}
    */
   public function isSupported(array $block, $block_content = '') {
-    return substr($block['blockName'], 0, 12) === 'drupalblock/';
+    return substr($block['blockName'] ?? '', 0, 12) === 'drupalblock/';
   }
 
 }

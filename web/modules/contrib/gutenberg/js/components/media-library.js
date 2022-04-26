@@ -38,7 +38,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
     _createClass(MediaLibrary, [{
       key: 'closeDialog',
-      value: function closeDialog() {
+      value: function closeDialog(callback) {
+        console.log(this);
         if (this.frame) {
           this.frame.close();
           delete this.frame;
@@ -49,6 +50,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
           delete this.mediaBrowserWrapper;
         }
         this.props.onDialogClose && this.props.onDialogClose();
+        callback && callback();
       }
     }, {
       key: 'openDialog',
@@ -71,7 +73,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
         getDialog({
           allowedTypes: allowedTypes,
           allowedBundles: allowedBundles,
-          onSelect: this.closeDialog
+          onSelect: function onSelect() {
+            return _this2.closeDialog(onClose);
+          }
         }).then(function (result) {
           _this2.mediaBrowserWrapper = document.createElement('div');
           _this2.mediaBrowserWrapper.setAttribute('id', 'media-entity-browser-modal');
@@ -85,13 +89,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
               height: document.documentElement.clientHeight - 100,
               buttons: (_buttons = {}, _defineProperty(_buttons, __('Insert'), function () {
                 onDialogInsert && onDialogInsert(_this2.mediaBrowserWrapper, _this2.props);
-                _this2.closeDialog();
-              }), _defineProperty(_buttons, __('Cancel'), _this2.closeDialog), _buttons),
+                _this2.closeDialog(onClose);
+              }), _defineProperty(_buttons, __('Cancel'), function () {
+                return _this2.closeDialog(onClose);
+              }), _buttons),
               create: function create(event) {
                 return onDialogCreate(event.target, multiple);
-              },
-              close: function close() {
-                onClose();_this2.closeDialog();
               }
             });
 

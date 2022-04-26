@@ -419,16 +419,20 @@ function gutenberg_form_node_form_alter(&$form, FormStateInterface $form_state) 
   $module_definitions = $gutenberg_library_manager->getModuleDefinitions();
 
   foreach ($module_definitions as $module_definition) {
-    foreach ($module_definition['libraries-edit'] as $library) {
-      $form['#attached']['library'][] = $library;
+    if (isset($module_definition['libraries-edit'])) {
+      foreach ($module_definition['libraries-edit'] as $library) {
+        $form['#attached']['library'][] = $library;
+      }
     }
   }
 
   $theme_support = [];
   $theme_definitions = $gutenberg_library_manager->getActiveThemeDefinitions();
   foreach ($theme_definitions as $theme_definition) {
-    foreach ($theme_definition['libraries-edit'] as $library) {
-      $form['#attached']['library'][] = $library;
+    if (isset($theme_definition['libraries-edit'])) {
+      foreach ($theme_definition['libraries-edit'] as $library) {
+        $form['#attached']['library'][] = $library;
+      }
     }
     if (isset($theme_definition['theme-support'])) {
       // Merge only the top level configuration, with the child theme
@@ -467,11 +471,6 @@ function gutenberg_form_node_form_alter(&$form, FormStateInterface $form_state) 
   // Hide the field label.
   $form[$text_fields[0]]['widget'][0]['#title_display'] = 'hidden';
 
-  // Disable the summary field.
-  if (isset($form[$text_fields[0]]['widget'][0]['summary'])) {
-    $form[$text_fields[0]]['widget'][0]['summary']['#access'] = FALSE;
-  }
-
   foreach ($text_fields as $fieldname) {
     // For the rest of the text fields call after build to remove
     // Gutenberg from text format options.
@@ -491,6 +490,13 @@ function gutenberg_form_node_form_alter(&$form, FormStateInterface $form_state) 
     // Group fallback in case JS fails to move to metaboxes.
     '#group' => 'advanced',
   ];
+
+  // Move summary field to meta fields
+  if (isset($form[$text_fields[0]]['widget'][0]['summary'])) {
+    $form['metabox_fields']['summary'] = $form[$text_fields[0]]['widget'][0]['summary'];
+    $form['metabox_fields']['summary']['#parents'] = array_merge($form[$text_fields[0]]['widget']['#parents'], ['0', 'summary']);
+    unset($form[$text_fields[0]]['widget'][0]['summary']);
+  }
 
   // Some other module might have already init this container.
   if (!isset($form['additional_fields'])) {

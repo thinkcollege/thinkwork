@@ -6,3 +6,5 @@ package: Mail
 configure: mailgun.admin_settings_form
 dependencies:
   - mailsystem:mailsystem
+test_dependencies:
+  - key:key

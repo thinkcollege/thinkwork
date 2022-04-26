@@ -1,4 +1,6 @@
 api_endpoint: 'https://api.mailgun.net'
+api_key_storage: 'config'
+api_key_key: ''
 api_key: ''
 working_domain: '_sender'
 debug_mode: false

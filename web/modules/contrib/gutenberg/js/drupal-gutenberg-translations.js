@@ -33,6 +33,10 @@
 	Drupal.t("Write caption…");
 	Drupal.t("Welcome Guide");
 	Drupal.t("Help");
+	Drupal.t("Reusable blocks saved!");
+	Drupal.t("Saving reusable blocks will affect other places where they are being used. You can de-select to not save.");
+	Drupal.t("The selected reusable blocks will be saved when saving the content. Press \"Save now\" button to save immediately.");
+	Drupal.t("Save now");
 	Drupal.t("inserter");
 	Drupal.t("Welcome to the block editor");
 	Drupal.t("Get started");

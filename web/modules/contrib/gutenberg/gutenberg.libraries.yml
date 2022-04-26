@@ -136,6 +136,7 @@ edit-node:
     js/gutenberg.js: {  }
     js/admin.js: {  }
     js/welcome-guide.js: {  }
+    js/plugins/reusable-blocks-save.js: {  }
   dependencies:
     - gutenberg/init
     - core/drupal.dialog
