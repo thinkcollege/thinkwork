@@ -22,14 +22,11 @@ trait ContentAccessTestHelperTrait {
    * Change access permissions for a content type.
    */
   public function changeAccessContentType($accessSettings) {
-    $this->drupalPostForm(
-      'admin/structure/types/manage/' . $this->contentType->id() . '/access',
-      $accessSettings,
-      t('Submit')
-    );
+    $this->drupalGet('admin/structure/types/manage/' . $this->contentType->id() . '/access');
+    $this->submitForm($accessSettings, 'Submit');
     // Both these may be printed:
     // 'Permissions have been changed' || 'No change' => 'change'.
-    $this->assertSession()->pageTextContains(t('change'));
+    $this->assertSession()->pageTextContains('change');
   }
 
   /**
@@ -95,8 +92,9 @@ trait ContentAccessTestHelperTrait {
    * Change access permission for a node.
    */
   public function changeAccessNode(NodeInterface $node, $accessSettings) {
-    $this->drupalPostForm('node/' . $node->id() . '/access', $accessSettings, t('Submit'));
-    $this->assertSession()->pageTextContains(t('Your changes have been saved.'));
+    $this->drupalGet('node/' . $node->id() . '/access');
+    $this->submitForm($accessSettings, 'Submit');
+    $this->assertSession()->pageTextContains('Your changes have been saved.');
   }
 
 }

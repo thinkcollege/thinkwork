@@ -9,7 +9,8 @@ namespace Drupal\content_access\Plugin\RulesAction;
  *   id = "content_access_action_user_revoke",
  *   label = @Translation("Revoke access by user"),
  *   category = @Translation("Content Access User"),
- *   context = {
+ *   provider = "acl",
+ *   context_definitions = {
  *     "node" = @ContextDefinition("entity:node",
  *       label = @Translation("Content"),
  *       description = @Translation("Revoke access to the following content."),
@@ -28,9 +29,8 @@ namespace Drupal\content_access\Plugin\RulesAction;
  *       label = @Translation("Revoke delete access"),
  *       description = @Translation("Revoke delete access to the following user."),
  *       required = FALSE
- *     )
- *   },
- *   deriver = "\Drupal\content_access\Plugin\Deriver\RulesActionUserAclDeriver"
+ *     ),
+ *   }
  * )
  */
 class ActionUserRevoke extends ContentAccessUserRulesActionBase {

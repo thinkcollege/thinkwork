@@ -9,6 +9,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
@@ -33,6 +34,7 @@ class CheckCommand extends Command
             ->addOption('deprecations', 'd', InputOption::VALUE_NONE, 'Check for deprecations')
             ->addOption('analysis', 'a', InputOption::VALUE_NONE, 'Check code analysis')
             ->addOption('style', 's', InputOption::VALUE_NONE, 'Check code style')
+            ->addOption('php8', null, InputOption::VALUE_NONE, 'Set PHPStan phpVersion for 8.1 (Drupal 10 requirement)')
             ->addOption('memory-limit', null, InputOption::VALUE_OPTIONAL, 'Memory limit for analysis')
             ->addOption('exclude-dir', 'e', InputOption::VALUE_OPTIONAL, 'Directories to exclude. Separate multiple directories with a comma, no spaces.')
             ->addOption(
@@ -136,12 +138,18 @@ class CheckCommand extends Command
                     '*/settings*.php',
                     '*/node_modules/*'
                 ],
-                'ignoreErrors' => [],
+                'ignoreErrors' => [
+                    '#Unsafe usage of new static\(\)#'
+                ],
                 'drupal' => [
                     'drupal_root' => $this->drupalRoot,
                 ]
             ]
         ];
+
+        if ($input->getOption('php8')) {
+            $configuration_data['parameters']['phpVersion'] = 80100;
+        }
 
         if (!empty($this->excludeDirectory)) {
             // There may be more than one path passed in, comma separated.
@@ -150,14 +158,11 @@ class CheckCommand extends Command
         }
 
         if ($this->isAnalysisCheck) {
-            $configuration_data['parameters']['level'] = 4;
-
-            $ignored_analysis_errors = [
-                '#Unsafe usage of new static\(\)#'
-            ];
+            $configuration_data['parameters']['level'] = 6;
+            $ignored_analysis_errors = [];
             $configuration_data['parameters']['ignoreErrors'] = array_merge($ignored_analysis_errors, $configuration_data['parameters']['ignoreErrors']);
         } else {
-            $configuration_data['parameters']['customRulesetUsed'] = true;
+            $configuration_data['parameters']['level'] = 2;
         }
 
         if ($this->isDeprecationsCheck) {
@@ -262,14 +267,17 @@ class CheckCommand extends Command
 
         $output->writeln('<comment>Return PHPStan exit code</comment>', OutputInterface::VERBOSITY_DEBUG);
 
-        $output->writeln('Thanks for using <info>drupal-check</info>!');
-        $output->writeln('');
-        $output->writeln('Consider sponsoring the development of the maintainers which make <options=bold>drupal-check</> possible:');
-        $output->writeln('');
-        $output->writeln('- <options=bold>phpstan (ondrejmirtes)</>: https://github.com/sponsors/ondrejmirtes');
-        $output->writeln('- <options=bold>phpstan-deprecation-rules (ondrejmirtes))</>: https://github.com/sponsors/ondrejmirtes');
-        $output->writeln('- <options=bold>phpstan-drupal (mglaman))</>: https://github.com/sponsors/mglaman');
-        $output->writeln('- <options=bold>drupal-check (mglaman))</>: https://github.com/sponsors/mglaman');
+        if ($output instanceof ConsoleOutputInterface) {
+            $stderr = $output->getErrorOutput();
+            $stderr->writeln('Thanks for using <info>drupal-check</info>!');
+            $stderr->writeln('');
+            $stderr->writeln('Consider sponsoring the development of the maintainers which make <options=bold>drupal-check</> possible:');
+            $stderr->writeln('');
+            $stderr->writeln('- <options=bold>phpstan (ondrejmirtes)</>: https://github.com/sponsors/ondrejmirtes');
+            $stderr->writeln('- <options=bold>phpstan-deprecation-rules (ondrejmirtes))</>: https://github.com/sponsors/ondrejmirtes');
+            $stderr->writeln('- <options=bold>phpstan-drupal (mglaman))</>: https://github.com/sponsors/mglaman');
+            $stderr->writeln('- <options=bold>drupal-check (mglaman))</>: https://github.com/sponsors/mglaman');
+        }
 
         return $process->getExitCode();
     }

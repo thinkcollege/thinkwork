@@ -172,11 +172,11 @@ class ContentAccessPageForm extends FormBase {
     content_access_save_per_node_settings($node, $settings);
 
     if ($this->moduleHandler->moduleExists('acl')) {
+      $values = $form_state->getValues();
       foreach (['view', 'update', 'delete'] as $op) {
-        $values = $form_state->getValues();
         acl_save_form($values['acl'][$op]);
-        $this->moduleHandler->invokeAll('user_acl', $settings);
       }
+      $this->moduleHandler->invokeAll('user_acl', $settings);
     }
 
     // Apply new settings.
@@ -190,8 +190,8 @@ class ContentAccessPageForm extends FormBase {
     // xxxx
     // route: node.configure_rebuild_confirm:
     // path:  '/admin/reports/status/rebuild'.
-    $this->messenger()->addMessage($this->t('Your changes have been saved. You may have to <a href=":rebuild">rebuild permisions</a> for your changes to take effect.',
-      [':rebuild' => Url::FromRoute('node.configure_rebuild_confirm')->ToString()]));
+    $this->messenger()->addMessage($this->t('Your changes have been saved. You may have to <a href=":rebuild">rebuild permissions</a> for your changes to take effect.',
+      [':rebuild' => Url::fromRoute('node.configure_rebuild_confirm')->toString()]));
   }
 
   /**

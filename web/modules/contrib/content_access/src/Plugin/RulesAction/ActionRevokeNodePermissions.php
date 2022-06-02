@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   id = "content_access_action_revoke_node_permissions",
  *   label = @Translation("Revoke access by role"),
  *   category = @Translation("Content Access"),
- *   context = {
+ *   context_definitions = {
  *     "node" = @ContextDefinition("entity:node",
  *       label = @Translation("Content"),
  *       description = @Translation("Revoke access from the following content.")
@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  *
- * @todo: Add option_list parameter to permissions after it becomes available.
+ * @todo Add option_list parameter to permissions after it becomes available.
  */
 class ActionRevokeNodePermissions extends RulesActionBase implements ContainerFactoryPluginInterface {
   use ActionCommonTrait;

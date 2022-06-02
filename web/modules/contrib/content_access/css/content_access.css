@@ -11,7 +11,7 @@
   overflow: hidden;
 }
 
-form.content-access-page,
-form.content-access-admin-settings {
+.content-access-page,
+.content-access-admin-settings {
   position: static;
 }

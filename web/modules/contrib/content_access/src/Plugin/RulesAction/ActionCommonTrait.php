@@ -11,18 +11,10 @@ use Psr\Log\LogLevel;
 trait ActionCommonTrait {
 
   /**
-   * The entity type manager.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   *   The entity type manager.
-   */
-  protected $entityTypeManager;
-
-  /**
    * Verifies that per content settings are activated for the given node.
    */
   protected function checkSetting(NodeInterface $node) {
-    $config = $this->configFactory->getEditable('content_access.settings');
+    $config = \Drupal::configFactory()->getEditable('content_access.settings');
 
     $type = $node->getType();
     $settings = unserialize($config->get('content_access_node_type.' . $type));
@@ -56,7 +48,7 @@ trait ActionCommonTrait {
    * Apply the new grants to the affected node.
    */
   protected function aquireGrants(NodeInterface $node) {
-    $this->entityTypeManager->getAccessControlHandler('node')->writeGrants($node);
+    \Drupal::entityTypeManager()->getAccessControlHandler('node')->writeGrants($node);
   }
 
   /**

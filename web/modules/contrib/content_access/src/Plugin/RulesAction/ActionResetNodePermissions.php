@@ -11,7 +11,7 @@ use Drupal\rules\Core\RulesActionBase;
  *   id = "content_access_action_reset_node_permissions",
  *   label = @Translation("Reset access to content type defaults"),
  *   category = @Translation("Content Access"),
- *   context = {
+ *   context_definitions = {
  *     "node" = @ContextDefinition("entity:node",
  *       label = @Translation("Content"),
  *       description = @Translation("Reset node permissions to default permissions.")
