@@ -281,7 +281,7 @@ class EasyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
     $exclude['/user'] = TRUE;
 
     // See if we are doing a Custom Path override.
-    $path_crumb_row = preg_split('/[\r\n]+/', $this->config->get(EasyBreadcrumbConstants::CUSTOM_PATHS));
+    $path_crumb_row = preg_split('/[\r\n]+/', (string) $this->config->get(EasyBreadcrumbConstants::CUSTOM_PATHS));
     $path_crumb_row = array_filter($path_crumb_row);
     foreach ($path_crumb_row as $path_crumb) {
       $values = explode("::", $path_crumb);
@@ -344,8 +344,7 @@ class EasyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
           // If the custom title includes any regex match groups
           // (eg. "/foo/(\d*)/bar") then check if the urls for any segments
           // have matched group variables (eg. $1 or $3) and if they do
-          // substitute them out for the the corresponding
-          // matched strings.
+          // substitute them out for the corresponding matched strings.
           elseif ($is_regex) {
             foreach ($regex_group_matches as $group_num => $captured_str) {
               $title = str_replace('$' . ($group_num + 1), urlencode($captured_str), $title);
@@ -360,8 +359,7 @@ class EasyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
             // If the custom path includes any regex match groups
             // (eg. "/foo/(\d*)/bar") then check if the urls for any segments
             // have matched group variables (eg. $1 or $3) and if they do
-            // substitute them out for the the corresponding
-            // matched strings.
+            // substitute them out for the corresponding matched strings.
             if ($is_regex) {
               foreach ($regex_group_matches as $group_num => $captured_str) {
                 $url = str_replace('$' . ($group_num + 1), urlencode($captured_str), $url);
@@ -370,13 +368,19 @@ class EasyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
 
             // If URL is invalid, then display warning and disable the link.
             if (!UrlHelper::isValid($url)) {
-              $this->messenger->addWarning($this->t("EasyBreadcrumb: Custom crumb for @path URL '@url' is invalid.", ['@path' => $path, '@url' => $url]));
+              $this->messenger->addWarning($this->t(
+                "EasyBreadcrumb: Custom crumb for @path URL '@url' is invalid.",
+                ['@path' => $path, '@url' => $url]
+              ));
               $url = '';
             }
             // If URL is not start with slash then display warning
             // and disable the link.
             if ($url[0] != '/') {
-              $this->messenger->addWarning($this->t("EasyBreadcrumb: Custom crumb for @path URL '@url' should start with slash(/).", ['@path' => $path, '@url' => $url]));
+              $this->messenger->addWarning($this->t(
+                "EasyBreadcrumb: Custom crumb for @path URL '@url' should start with slash(/).",
+                ['@path' => $path, '@url' => $url]
+              ));
               $url = '';
             }
           }
@@ -477,13 +481,18 @@ class EasyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
         if ($access->isAllowed()) {
           if ($this->config->get(EasyBreadcrumbConstants::TITLE_FROM_PAGE_WHEN_AVAILABLE)) {
             // Get the title if the current route represents an entity.
+            $title = FALSE;
             if (($route = $route_match->getRouteObject()) && ($parameters = $route->getOption('parameters'))) {
               foreach ($parameters as $name => $options) {
                 if (isset($options['type']) && strpos($options['type'], 'entity:') === 0) {
                   $entity = $route_match->getParameter($name);
                   if ($entity instanceof EntityInterface && $entity->hasLinkTemplate('canonical')) {
                     $title = $entity->label();
-                    if ($this->config->get(EasyBreadcrumbConstants::TRUNCATOR_MODE)) {
+                    // If the title is to be replaced replaces the title.
+                    if (!empty($title) && array_key_exists($title, $replacedTitles)) {
+                      $title = $replacedTitles[(string) $title];
+                    }
+                    if ($title && $this->config->get(EasyBreadcrumbConstants::TRUNCATOR_MODE)) {
                       $title = $this->truncator($title);
                     }
                     break;
@@ -491,7 +500,8 @@ class EasyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
                 }
               }
             }
-            else {
+
+            if (!$title) {
               $title = $this->normalizeText($this->getTitleString($route_request, $route_match, $replacedTitles));
               if ($this->config->get(EasyBreadcrumbConstants::TRUNCATOR_MODE)) {
                 $title = $this->truncator($title);
@@ -836,7 +846,9 @@ class EasyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
 
     // @todo Use the RequestHelper once https://www.drupal.org/node/2090293 is
     // fixed.
-    $request = Request::create($path);
+    
+    // The path in the request should start with a slash.
+    $request = Request::create('/' . ltrim($path, '/'));
 
     // Performance optimization: set a short accept header to reduce overhead in
     // AcceptHeaderMatcher when matching the request.
@@ -876,13 +888,16 @@ class EasyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
    * E.g., transforms "about-us" to "About Us" or "About us", according to
    * parameters.
    *
-   * @param string $raw_text
+   * @param string|null $raw_text
    *   Text to be normalized.
    *
    * @return string
    *   Normalized title.
    */
   private function normalizeText($raw_text) {
+    if (empty($raw_text)) {
+      return '';
+    }
 
     // Transform '-hello--world_javascript-' to 'hello world javascript'.
     $normalized_text = str_replace(['-', '_'], ' ', $raw_text);

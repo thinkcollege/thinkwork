@@ -104,8 +104,8 @@ function easy_breadcrumb_update_8006() {
 
   // Change 'capitalizator_ignored_words' and 'capitalizator_forced_words' to be
   // lists rather than maps.
-  $config->set(EasyBreadcrumbConstants::CAPITALIZATOR_IGNORED_WORDS, array_values($config->get(EasyBreadcrumbConstants::CAPITALIZATOR_IGNORED_WORDS) ?: []));
-  $config->set(EasyBreadcrumbConstants::CAPITALIZATOR_FORCED_WORDS, array_values($config->get(EasyBreadcrumbConstants::CAPITALIZATOR_FORCED_WORDS) ?: []));
+  $config->set(EasyBreadcrumbConstants::CAPITALIZATOR_IGNORED_WORDS, array_values([$config->get(EasyBreadcrumbConstants::CAPITALIZATOR_IGNORED_WORDS)] ?: []));
+  $config->set(EasyBreadcrumbConstants::CAPITALIZATOR_FORCED_WORDS, array_values([$config->get(EasyBreadcrumbConstants::CAPITALIZATOR_FORCED_WORDS)] ?: []));
 
   $config->save(TRUE);
 }
