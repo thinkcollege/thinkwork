@@ -1,3 +1,26 @@
+### [2.2.17] 2022-07-13
+
+  * Fixed plugins from CWD/vendor being loaded in some cases like create-project or validate even though the target directory is outside of CWD (#10935)
+  * Fixed support for legacy (Composer 1.x, e.g. hirak/prestissimo) plugins which will not warn/error anymore if not in allow-plugins, as they are anyway not loaded (#10928)
+  * Fixed pre-install check for allowed plugins not taking --no-plugins into account (#10925)
+  * Fixed support for disable_functions containing disk_free_space (#10936)
+  * Fixed RootPackageRepository usages to always clone the root package to avoid interoperability issues with plugins (#10940)
+
+### [2.2.16] 2022-07-05
+
+  * Fixed non-interactive behavior of allow-plugins to throw instead of continue with a warning to avoid broken installs (#10920)
+  * Fixed allow-plugins BC mode to ensure old lock files created pre-2.2 can be installed with only a warning but plugins fully loaded (#10920)
+  * Fixed deprecation notice (#10921)
+
+### [2.2.15] 2022-07-01
+
+  * Fixed support for `cache-read-only` where the filesystem is not writable (#10906)
+  * Fixed type error when using `allow-plugins: true` (#10909)
+  * Fixed @putenv scripts receiving arguments passed to the command (#10846)
+  * Fixed support for spaces in paths with binary proxies on Windows (#10836)
+  * Fixed type error in GitDownloader if branches cannot be listed (#10888)
+  * Fixed RootPackageInterface issue on PHP 5.3.3 (#10895)
+
 ### [2.2.14] 2022-06-06
 
   * Fixed handling of broken symlinks when checking whether a package is still installed (#6708)
@@ -1446,6 +1469,9 @@
 
   * Initial release
 
+[2.2.17]: https://github.com/composer/composer/compare/2.2.16...2.2.17
+[2.2.16]: https://github.com/composer/composer/compare/2.2.15...2.2.16
+[2.2.15]: https://github.com/composer/composer/compare/2.2.14...2.2.15
 [2.2.14]: https://github.com/composer/composer/compare/2.2.13...2.2.14
 [2.2.13]: https://github.com/composer/composer/compare/2.2.12...2.2.13
 [2.2.12]: https://github.com/composer/composer/compare/2.2.11...2.2.12

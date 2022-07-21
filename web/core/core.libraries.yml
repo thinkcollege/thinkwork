@@ -11,6 +11,24 @@ backbone:
     assets/vendor/backbone/backbone-min.js: { weight: -19, minified: true }
   dependencies:
     - core/underscore
+  deprecated: The %library_id% asset library is deprecated in Drupal 9.4.0 and will be removed in Drupal 10.0.0.
+
+internal.backbone:
+  # Internal library. Do not depend on it outside core nor add new core usage.
+  # The library will be removed as soon as the following issues are fixed:
+  #  - https://www.drupal.org/project/drupal/issues/3203920
+  #  - https://www.drupal.org/project/drupal/issues/3204011
+  #  - https://www.drupal.org/project/drupal/issues/3204015
+  remote: https://github.com/jashkenas/backbone
+  version: "1.4.1"
+  license:
+    name: MIT
+    url: https://raw.githubusercontent.com/jashkenas/backbone/1.4.1/LICENSE
+    gpl-compatible: true
+  js:
+    assets/vendor/backbone/backbone-min.js: { weight: -19, minified: true }
+  dependencies:
+    - core/internal.underscore
 
 ckeditor:
   remote: https://github.com/ckeditor/ckeditor4
@@ -367,6 +385,7 @@ drupal.ajax:
     - core/jquery
     - core/drupal
     - core/drupalSettings
+    - core/drupal.nodelist.foreach
     - core/drupal.progress
     - core/once
     - core/jquery.once.bc
@@ -438,6 +457,11 @@ drupal.array.find:
   js:
     misc/polyfills/array.find.js: { weight: -20 }
 
+drupal.array.includes:
+  version: VERSION
+  js:
+    misc/polyfills/array.includes.js: { weight: -20 }
+
 drupal.batch:
   version: VERSION
   js:
@@ -478,6 +502,7 @@ drupal.customevent:
     misc/polyfills/customevent.js: { weight: -20 }
 
 drupal.date:
+  deprecated: The "%library_id%" asset library is deprecated in drupal:9.4.0 and is removed from drupal:10.0.0. There is no replacement. See https://www.drupal.org/node/3258267
   version: VERSION
   js:
     misc/date.js: {}
@@ -687,6 +712,7 @@ drupal.tabledrag:
     - core/drupalSettings
     - core/once
     - core/jquery.once.bc
+    - core/drupal.touchevents-test
 
 drupal.tableheader:
   version: VERSION
@@ -726,10 +752,22 @@ drupal.timezone:
   js:
     misc/timezone.js: {}
   dependencies:
+    - core/drupal.nodelist.foreach
     - core/jquery
     - core/once
     - core/jquery.once.bc
     - core/drupal
+
+drupal.touchevents-test:
+  header: true
+  version: VERSION
+  js:
+    # Set weight to -22 so it loads before the Modernizr test it is
+    # replacing, located in modernizr-additional-tests.js. If the deprecated
+    # Modernizr test sees either of the classes this test adds to <body>, the
+    # test will not be added to Modernizr and deprecation warnings will not be
+    # triggered.
+    misc/touchevents-test.js: { weight: -22 }
 
 drupal.vertical-tabs:
   version: VERSION
@@ -803,6 +841,20 @@ jquery.form:
     assets/vendor/jquery-form/jquery.form.min.js: { minified: true }
   dependencies:
     - core/jquery
+  deprecated: The %library_id% asset library is deprecated in Drupal 9.4.0 and will be removed in Drupal 10.0.0.
+
+internal.jquery.form:
+  # Internal library. Do not depend on it outside core nor add new core usage.
+  remote: https://github.com/jquery-form/form
+  version: "4.3.0"
+  license:
+    name: GNU-GPL-2.0-or-later
+    url: https://raw.githubusercontent.com/jquery-form/form/master/LICENSE
+    gpl-compatible: true
+  js:
+    assets/vendor/jquery-form/jquery.form.min.js: { minified: true }
+  dependencies:
+    - core/jquery
 
 jquery.joyride:
   remote: https://github.com/zurb/joyride
@@ -824,10 +876,10 @@ jquery.joyride:
 
 shepherd:
   remote: https://github.com/shipshapecode/shepherd
-  version: "8.3.1"
+  version: "9.1.0"
   license:
     name: MIT
-    url: https://raw.githubusercontent.com/shipshapecode/shepherd/v8.3.1/LICENSE
+    url: https://raw.githubusercontent.com/shipshapecode/shepherd/v9.1.0/LICENSE
     gpl-compatible: true
   js:
     assets/vendor/shepherd/shepherd.min.js: { minified: true }
@@ -1091,10 +1143,10 @@ picturefill:
     assets/vendor/picturefill/picturefill.min.js: { weight: -10, minified: true }
 
 popperjs:
-  version: "2.10.2"
+  version: "2.11.5"
   license:
     name: MIT
-    url: https://raw.githubusercontent.com/popperjs/popper-core/v2.10.2/LICENSE.md
+    url: https://raw.githubusercontent.com/popperjs/popper-core/v2.11.5/LICENSE.md
     gpl-compatible: true
   js:
     assets/vendor/popperjs/popper.min.js: { minified: true }
@@ -1105,20 +1157,20 @@ popperjs:
 
 sortable:
   remote: https://github.com/SortableJS/Sortable
-  version: "1.14.0"
+  version: "1.15.0"
   license:
     name: MIT
-    url: https://raw.githubusercontent.com/SortableJS/Sortable/1.14.0/LICENSE
+    url: https://raw.githubusercontent.com/SortableJS/Sortable/1.15.0/LICENSE
     gpl-compatible: true
   js:
     assets/vendor/sortable/Sortable.min.js: { minified: true }
 
 tabbable:
   remote: https://github.com/focus-trap/tabbable
-  version: "5.2.1"
+  version: "5.3.2"
   license:
     name: MIT
-    url: https://raw.githubusercontent.com/focus-trap/tabbable/v5.2.1/LICENSE
+    url: https://raw.githubusercontent.com/focus-trap/tabbable/v5.3.2/LICENSE
     gpl-compatible: true
   js:
     assets/vendor/tabbable/index.umd.min.js: { weight: -1, minified: true }
@@ -1143,6 +1195,24 @@ underscore:
     gpl-compatible: true
   js:
     assets/vendor/underscore/underscore-min.js: { weight: -20, minified: true }
+  deprecated: The %library_id% asset library is deprecated in Drupal 9.4.0 and will be removed in Drupal 10.0.0.
+
+internal.underscore:
+  # Internal library. Do not depend on it outside core nor add new core usage.
+  # The library will be removed as soon as the following issues are fixed:
+  #  - https://www.drupal.org/project/drupal/issues/3270395
+  #  - https://www.drupal.org/project/drupal/issues/3203920
+  #  - https://www.drupal.org/project/drupal/issues/3204011
+  #  - https://www.drupal.org/project/drupal/issues/3204015
+  remote: https://github.com/jashkenas/underscore
+  version: "1.13.3"
+  license:
+    name: MIT
+    url: https://raw.githubusercontent.com/jashkenas/underscore/1.13.3/LICENSE
+    gpl-compatible: true
+  js:
+    assets/vendor/underscore/underscore-min.js: { weight: -20, minified: true }
+
 
 drupal.dialog.off_canvas:
   version: VERSION
@@ -1174,6 +1244,7 @@ drupal.dialog.off_canvas:
     - core/drupal.announce
     - core/drupal.dialog
     - core/drupal.dialog.ajax
+    - core/drupal.touchevents-test
 
 js-cookie:
   remote: https://github.com/js-cookie/js-cookie

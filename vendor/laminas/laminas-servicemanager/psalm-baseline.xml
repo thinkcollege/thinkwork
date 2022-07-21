@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.23.0@f1fe6ff483bf325c803df9f510d09a03fd796f88">
+<files psalm-version="4.24.0@06dd975cb55d36af80f242561738f16c5f58264f">
   <file src="src/AbstractFactory/ConfigAbstractFactory.php">
     <InvalidStringClass occurrences="1">
       <code>new $requestedName(...$arguments)</code>
@@ -27,7 +27,6 @@
     </LessSpecificReturnStatement>
     <MissingClosureReturnType occurrences="1">
       <code>function (ReflectionParameter $parameter) use ($container, $requestedName) {</code>
-      <code>function (ReflectionParameter $parameter) use ($container, $requestedName) {</code>
     </MissingClosureReturnType>
     <MissingParamType occurrences="1">
       <code>$requestedName</code>
@@ -53,9 +52,15 @@
     </UndefinedDocblockClass>
   </file>
   <file src="src/AbstractPluginManager.php">
+    <ImplementedParamTypeMismatch occurrences="1">
+      <code>$service</code>
+    </ImplementedParamTypeMismatch>
     <MissingReturnType occurrences="1">
       <code>setService</code>
     </MissingReturnType>
+    <MixedArgumentTypeCoercion occurrences="1">
+      <code>$service</code>
+    </MixedArgumentTypeCoercion>
     <ParamNameMismatch occurrences="1">
       <code>$name</code>
     </ParamNameMismatch>
@@ -110,9 +115,7 @@
     <MixedArgument occurrences="5">
       <code>$abstractFactory</code>
       <code>$config['delegators']</code>
-      <code>$config['delegators']</code>
       <code>$config['initializers']</code>
-      <code>$config['invokables']</code>
       <code>$config['invokables']</code>
       <code>$config['lazy_services']</code>
     </MixedArgument>
@@ -274,10 +277,7 @@
     </UndefinedMethod>
   </file>
   <file src="src/Tool/FactoryCreatorCommand.php">
-    <MixedArgument occurrences="5">
-      <code>$arguments-&gt;class</code>
-      <code>$arguments-&gt;class</code>
-      <code>$arguments-&gt;message</code>
+    <MixedArgument occurrences="2">
       <code>$class</code>
       <code>$class</code>
     </MixedArgument>
@@ -325,7 +325,6 @@
     </MixedArgument>
     <MixedAssignment occurrences="1">
       <code>$instance</code>
-      <code>$instance</code>
     </MixedAssignment>
     <MixedFunctionCall occurrences="1">
       <code>$callback()</code>
@@ -360,21 +359,17 @@
     </InvalidArrayOffset>
     <MissingClosureParamType occurrences="10">
       <code>$callback</code>
-      <code>$callback</code>
       <code>$className</code>
       <code>$container</code>
       <code>$container</code>
       <code>$container</code>
       <code>$container</code>
-      <code>$container</code>
       <code>$instance</code>
       <code>$instance</code>
-      <code>$name</code>
       <code>$name</code>
       <code>$requestedName</code>
     </MissingClosureParamType>
     <MissingClosureReturnType occurrences="2">
-      <code>function ($container, $name, $callback) {</code>
       <code>function ($container, $name, $callback) {</code>
       <code>function ($container, $requestedName, ?array $options = null) {</code>
     </MissingClosureReturnType>
@@ -411,7 +406,6 @@
       <code>$idx1</code>
       <code>$idx2</code>
       <code>$instance</code>
-      <code>$instance</code>
       <code>$lazyServices</code>
       <code>$method</code>
       <code>$name</code>
@@ -423,8 +417,6 @@
       <code>$object1</code>
       <code>$object1</code>
       <code>$object1</code>
-      <code>$object1</code>
-      <code>$object2</code>
       <code>$object2</code>
       <code>$object2</code>
       <code>$object2</code>
@@ -436,7 +428,6 @@
     </MixedAssignment>
     <MixedFunctionCall occurrences="1">
       <code>$callback()</code>
-      <code>$callback()</code>
     </MixedFunctionCall>
     <MixedInferredReturnType occurrences="6">
       <code>array</code>
@@ -447,7 +438,6 @@
       <code>array</code>
     </MixedInferredReturnType>
     <MixedPropertyAssignment occurrences="1">
-      <code>$instance</code>
       <code>$instance</code>
     </MixedPropertyAssignment>
     <PossiblyUndefinedVariable occurrences="5">
@@ -536,7 +526,6 @@
       <code>$name</code>
       <code>$name</code>
       <code>$name</code>
-      <code>$name</code>
     </MissingClosureParamType>
     <MissingClosureReturnType occurrences="2">
       <code>function (</code>
@@ -553,7 +542,6 @@
       <code>$headAlias</code>
       <code>$inc</code>
       <code>$inc</code>
-      <code>$instance</code>
       <code>$instance</code>
       <code>$instance1</code>
       <code>$instance1</code>
