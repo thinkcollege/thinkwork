@@ -11,10 +11,18 @@
 function glossify_theme() {
   return [
     'glossify_tooltip' => [
-      'variables' => ['word' => NULL, 'tip' => NULL],
+      'variables' => [
+        'word' => NULL,
+        'tip' => NULL,
+        'langcode' => NULL,
+      ],
     ],
     'glossify_link' => [
-      'variables' => ['word' => NULL, 'tip' => NULL, 'tipurl' => NULL],
+      'variables' => [
+        'word' => NULL,
+        'tip' => NULL,
+        'tipurl' => NULL,
+      ],
     ],
   ];
 }

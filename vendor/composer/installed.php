@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'd1163c352e90c17a3b5d8ce4e518731a5c11b1ad',
+        'reference' => 'a090656c64d05fb974d435dd3275db72136dda74',
         'name' => 'drupal-composer/drupal-project',
         'dev' => true,
     ),
@@ -370,7 +370,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'd1163c352e90c17a3b5d8ce4e518731a5c11b1ad',
+            'reference' => 'a090656c64d05fb974d435dd3275db72136dda74',
             'dev_requirement' => false,
         ),
         'drupal/action' => array(
@@ -1006,12 +1006,12 @@
             ),
         ),
         'drupal/glossify' => array(
-            'pretty_version' => '1.1.0',
-            'version' => '1.1.0.0',
+            'pretty_version' => '2.0.4',
+            'version' => '2.0.4.0',
             'type' => 'drupal-module',
             'install_path' => __DIR__ . '/../../web/modules/contrib/glossify',
             'aliases' => array(),
-            'reference' => '8.x-1.1',
+            'reference' => '2.0.4',
             'dev_requirement' => false,
         ),
         'drupal/google_analytics' => array(

@@ -12,12 +12,13 @@ use Drupal\taxonomy\Entity\Vocabulary;
  *
  * @Filter(
  *   id = "glossify_taxonomy",
- *   title = @Translation("Tooltips with taxonomy"),
- *   type = Drupal\filter\Plugin\FilterInterface::TYPE_HTML_RESTRICTOR,
+ *   title = @Translation("Glossify: Tooltips with taxonomy"),
+ *   type = Drupal\filter\Plugin\FilterInterface::TYPE_TRANSFORM_IRREVERSIBLE,
  *   settings = {
  *     "glossify_taxonomy_case_sensitivity" = TRUE,
  *     "glossify_taxonomy_first_only" = TRUE,
  *     "glossify_taxonomy_type" = "tooltips",
+ *     "glossify_taxonomy_tooltip_truncate" = FALSE,
  *     "glossify_taxonomy_vocabs" = NULL,
  *     "glossify_taxonomy_urlpattern" = "/taxonomy/term/[id]",
  *   },
@@ -60,6 +61,21 @@ class TaxonomyTooltip extends GlossifyBase {
       '#description' => $this->t('How to show matches in content. Description as HTML5 tooltip (abbr element), link to description or both.'),
       '#default_value' => $this->settings['glossify_taxonomy_type'],
     ];
+    $form['glossify_taxonomy_tooltip_truncate'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Truncate tooltip'),
+      '#description' => $this->t('Whether to truncate tooltip after 300 characters.'),
+      '#default_value' => $this->settings['glossify_taxonomy_tooltip_truncate'],
+      '#states' => [
+        'visible' => [
+          ':input[name="filters[glossify_taxonomy][settings][glossify_taxonomy_type]"]' => [
+            ['value' => 'tooltips'],
+            'or',
+            ['value' => 'tooltips_links'],
+          ],
+        ],
+      ],
+    ];
     $form['glossify_taxonomy_vocabs'] = [
       '#type' => 'checkboxes',
       '#multiple' => TRUE,
@@ -70,9 +86,9 @@ class TaxonomyTooltip extends GlossifyBase {
         ],
       ],
       '#title' => $this->t('Taxonomy vocabularies'),
-      '#description' => $this->t('Select the taxonomy vocabularies you want to use term names from to link their term page.'),
+      '#description' => $this->t('Select the source taxonomy vocabularies you want to use term names from to link their term page.'),
       '#options' => $vocab_options,
-      '#default_value' => explode(';', $this->settings['glossify_taxonomy_vocabs']),
+      '#default_value' => explode(';', $this->settings['glossify_taxonomy_vocabs'] ?? ''),
     ];
     $form['glossify_taxonomy_urlpattern'] = [
       '#type' => 'textfield',
@@ -123,7 +139,7 @@ class TaxonomyTooltip extends GlossifyBase {
     if (count($vocabs)) {
       $terms = [];
 
-      // Get taxonomyterm data.
+      // Get taxonomy term data.
       $query = \Drupal::database()->select('taxonomy_term_field_data', 'tfd');
       $query->addfield('tfd', 'tid', 'id');
       $query->addfield('tfd', 'name');
@@ -139,10 +155,9 @@ class TaxonomyTooltip extends GlossifyBase {
       foreach ($results as $result) {
         // Make name_norm lowercase, it seems not possible in PDO query?
         if (!$this->settings['glossify_taxonomy_case_sensitivity']) {
-          $result->name_norm = strtolower($result->name_norm);
+          $result->name_norm = mb_strtolower($result->name_norm);
         }
         $terms[$result->name_norm] = $result;
-        $cacheTags[] = 'term:' . $result->id;
       }
 
       // Process text.
@@ -153,7 +168,9 @@ class TaxonomyTooltip extends GlossifyBase {
           $this->settings['glossify_taxonomy_case_sensitivity'],
           $this->settings['glossify_taxonomy_first_only'],
           $this->settings['glossify_taxonomy_type'],
-          $this->settings['glossify_taxonomy_urlpattern']
+          $this->settings['glossify_taxonomy_tooltip_truncate'],
+          $this->settings['glossify_taxonomy_urlpattern'],
+          $langcode
         );
       }
     }
@@ -162,6 +179,9 @@ class TaxonomyTooltip extends GlossifyBase {
     $result = new FilterProcessResult($text);
 
     // Add cache tag dependency.
+    foreach ($vocabs as $vid) {
+      $cacheTags[] = 'taxonomy_term_list:' . $vid;
+    }
     $result->setCacheTags($cacheTags);
     return $result;
   }

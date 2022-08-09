@@ -8,7 +8,7 @@ dependencies:
   - glossify:glossify
   - drupal:taxonomy
 
-# Information added by Drupal.org packaging script on 2021-11-15
-version: '8.x-1.1'
+# Information added by Drupal.org packaging script on 2022-06-26
+version: '2.0.4'
 project: 'glossify'
-datestamp: 1636991145
+datestamp: 1656249298

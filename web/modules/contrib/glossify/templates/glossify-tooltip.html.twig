@@ -6,8 +6,9 @@
  * Available variables:
  * - word: the text where the tooltips applies to.
  * - tip: the tooltip text.
+ * - langcode: the tooltip language code.
  *
  * @ingroup themeable
  */
 #}
-<abbr title="{{ tip }}" class="glossify-tooltip-tip" lang="{{ lang }}">{{ word }}</abbr>
+<abbr tabindex="0" {% if tip %}title="{{ tip }}"{% endif %} class="glossify-tooltip-tip" {% if langcode %}lang="{{ langcode }}"{% endif %}>{{ word }}</abbr>

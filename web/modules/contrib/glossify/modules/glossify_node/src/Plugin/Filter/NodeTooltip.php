@@ -12,12 +12,13 @@ use Drupal\node\Entity\NodeType;
  *
  * @Filter(
  *   id = "glossify_node",
- *   title = @Translation("Tooltips with nodes"),
- *   type = Drupal\filter\Plugin\FilterInterface::TYPE_HTML_RESTRICTOR,
+ *   title = @Translation("Glossify: Tooltips with nodes"),
+ *   type = Drupal\filter\Plugin\FilterInterface::TYPE_TRANSFORM_IRREVERSIBLE,
  *   settings = {
  *     "glossify_node_case_sensitivity" = TRUE,
  *     "glossify_node_first_only" = FALSE,
  *     "glossify_node_type" = "tooltips",
+ *     "glossify_node_tooltip_truncate" = FALSE,
  *     "glossify_node_bundles" = NULL,
  *     "glossify_node_urlpattern" = "/node/[id]",
  *   },
@@ -62,6 +63,21 @@ class NodeTooltip extends GlossifyBase {
       '#description' => $this->t('How to show matches in content. Description as HTML5 tooltip (abbr element), link to description or both.'),
       '#default_value' => $this->settings['glossify_node_type'],
     ];
+    $form['glossify_node_tooltip_truncate'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Truncate tooltip'),
+      '#description' => $this->t('Whether to truncate tooltip after 300 characters.'),
+      '#default_value' => $this->settings['glossify_node_tooltip_truncate'],
+      '#states' => [
+        'visible' => [
+          ':input[name="filters[glossify_node][settings][glossify_node_type]"]' => [
+            ['value' => 'tooltips'],
+            'or',
+            ['value' => 'tooltips_links'],
+          ],
+        ],
+      ],
+    ];
     $form['glossify_node_bundles'] = [
       '#type' => 'checkboxes',
       '#multiple' => TRUE,
@@ -72,9 +88,9 @@ class NodeTooltip extends GlossifyBase {
         ],
       ],
       '#title' => $this->t('Node types'),
-      '#description' => $this->t('Select the node types you want to use titles from to link to their node page.'),
+      '#description' => $this->t('Select the source node types you want to use titles from to link to their node page.'),
       '#options' => $ntype_options,
-      '#default_value' => explode(';', $this->settings['glossify_node_bundles']),
+      '#default_value' => explode(';', $this->settings['glossify_node_bundles'] ?? ''),
     ];
     $form['glossify_node_urlpattern'] = [
       '#type' => 'textfield',
@@ -139,7 +155,7 @@ class NodeTooltip extends GlossifyBase {
       foreach ($results as $result) {
         // Make name_norm lowercase, it seems not possible in PDO query?
         if (!$this->settings['glossify_node_case_sensitivity']) {
-          $result->name_norm = strtolower($result->name_norm);
+          $result->name_norm = mb_strtolower($result->name_norm);
         }
         $terms[$result->name_norm] = $result;
         $cacheTags[] = 'node:' . $result->id;
@@ -153,7 +169,9 @@ class NodeTooltip extends GlossifyBase {
           $this->settings['glossify_node_case_sensitivity'],
           $this->settings['glossify_node_first_only'],
           $this->settings['glossify_node_type'],
-          $this->settings['glossify_node_urlpattern']
+          $this->settings['glossify_node_tooltip_truncate'],
+          $this->settings['glossify_node_urlpattern'],
+          $langcode
         );
       }
     }

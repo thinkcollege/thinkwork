@@ -12,6 +12,9 @@ glossify_node.filters:
     glossify_node_type:
       type: string
       label: 'Type'
+    glossify_node_tooltip_truncate:
+      type: boolean
+      label: 'Truncate tooltip'
     glossify_node_bundles:
       type: string
       label: 'Node types'

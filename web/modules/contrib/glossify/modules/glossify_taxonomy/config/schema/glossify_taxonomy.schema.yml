@@ -12,6 +12,9 @@ glossify_taxonomy.filters:
     glossify_taxonomy_type:
       type: string
       label: 'Type'
+    glossify_taxonomy_tooltip_truncate:
+      type: boolean
+      label: 'Truncate tooltip'
     glossify_taxonomy_vocabs:
       type: string
       label: 'Taxonomy vocabularies'

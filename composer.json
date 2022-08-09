@@ -42,7 +42,7 @@
         "drupal/exclude_node_title": "^1.2",
         "drupal/field_group": "^3.2",
         "drupal/fontyourface": "^3.6",
-        "drupal/glossify": "^1.0@beta",
+        "drupal/glossify": "^2.0",
         "drupal/google_analytics": "^2.3",
         "drupal/google_tag": "^1.1",
         "drupal/gutenberg": "^2.2",
