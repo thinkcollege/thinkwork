@@ -20,18 +20,12 @@ function mailgun_test_form_mailgun_admin_settings_form_alter(&$form, FormStateIn
  * Overridden validate for test purposes.
  */
 function mailgun_test_settings_form_validate($form, FormStateInterface $form_state) {
-  if (($form_state->getValue('api_key_storage') == 'config'
-    && $form_state->getValue('api_key') === 'key-1234567890workingabcdefghijklmno')
-    || ($form_state->getValue('api_key_storage') == 'key'
-    && \Drupal::service('key.repository')->getKey($form_state->getValue('api_key_key'))->getKeyValue() === 'key-1234567890workingabcdefghijklmno')
-
-    ) {
+  /** @var \Drupal\mailgun\MailgunHandlerInterface $mailgun_handler */
+  $mailgun_handler = \Drupal::service('mailgun.mail_handler');
+  if ($form_state->getValue('api_key') === 'key-1234567890workingabcdefghijklmno') {
     // Do nothing. It's just to emulate correct API key.
   }
-  else {
-    // Replace settings form validate with the real one.
-    $index = array_search('mailgun_test_settings_form_validate', $form['#validate']);
-    $form['#validate'][$index] = '::validateForm';
-    \Drupal::formBuilder()->executeValidateHandlers($form, $form_state);
+  elseif ($mailgun_handler->validateMailgunApiKey($form_state->getValue('api_key')) === FALSE) {
+    $form_state->setErrorByName('api_key', "Couldn't connect to the Mailgun API. Please check your API settings.");
   }
 }

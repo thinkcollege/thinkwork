@@ -90,6 +90,13 @@
     errors ? 'has-error',
   ]
 %}
+{% if title_display == 'invisible' %}
+  {% if labelclass is defined %}
+    {% set labelclass = labelclass ~ ' visually-hidden' %}
+  {% else %}
+    {% set labelclass = 'visually-hidden' %}
+  {% endif %}
+{% endif %}
 {%
   set description_classes = [
     'description',

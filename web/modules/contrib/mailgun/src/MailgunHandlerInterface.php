@@ -10,16 +10,6 @@ interface MailgunHandlerInterface {
   const CONFIG_NAME = 'mailgun.settings';
 
   /**
-   * Gets the API key.
-   *
-   * This method is static to avoid circular service references.
-   *
-   * @return string
-   *   The Mailgun API key.
-   */
-  public static function getApiKey();
-
-  /**
    * Connects to Mailgun API and sends out the email.
    *
    * @param array $mailgunMessage

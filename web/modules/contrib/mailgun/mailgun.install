@@ -118,15 +118,3 @@ function mailgun_update_8003() {
     return t('Mailgun API endpoint was set to the default (US). Please visit the configuration page if you would like to switch to the European API endpoint.');
   }
 }
-
-/**
- * Implements hook_update_N().
- *
- * Set default values for 'api_key_storage' and 'api_key_key'.
- */
-function mailgun_update_8004() {
-  $mailgun_config = \Drupal::configFactory()->getEditable(MailgunHandlerInterface::CONFIG_NAME);
-  $mailgun_config->set('api_key_storage', 'config');
-  $mailgun_config->set('api_key_key', '');
-  $mailgun_config->save();
-}

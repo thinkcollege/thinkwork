@@ -34,8 +34,9 @@ class MailgunFactory {
    *   Mailgun PHP SDK Client.
    */
   public function create() {
-    $api_key = MailgunHandler::getApiKey();
-    if ($endpoint = $this->mailgunConfig->get('api_endpoint')) {
+    $api_key = (string) $this->mailgunConfig->get('api_key');
+    $endpoint = (string) $this->mailgunConfig->get('api_endpoint');
+    if ($endpoint) {
       return Mailgun::create($api_key, $endpoint);
     }
     else {

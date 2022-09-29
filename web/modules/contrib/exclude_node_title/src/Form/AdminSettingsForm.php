@@ -12,11 +12,19 @@ use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\exclude_node_title\ExcludeNodeTitleManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 
 /**
  * Form object class for Exclude Node Title settings.
  */
 class AdminSettingsForm extends ConfigFormBase {
+  /**
+   * The module handler service.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
 
   /**
    * The Exclude Node Title module settings manager.
@@ -50,13 +58,17 @@ class AdminSettingsForm extends ConfigFormBase {
    *   Discovery and retrieval of entity type bundles manager.
    * @param \Drupal\Core\Entity\EntityDisplayRepositoryInterface $entity_display_repository
    *   The entity display repository.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler service.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, ExcludeNodeTitleManagerInterface $exclude_node_title_manager, EntityTypeBundleInfoInterface $entity_bundle_info, EntityDisplayRepositoryInterface $entity_display_repository) {
+  public function __construct(ConfigFactoryInterface $config_factory, ExcludeNodeTitleManagerInterface $exclude_node_title_manager, EntityTypeBundleInfoInterface $entity_bundle_info, EntityDisplayRepositoryInterface $entity_display_repository, ModuleHandlerInterface $module_handler) {
     parent::__construct($config_factory);
 
     $this->excludeNodeTitleManager = $exclude_node_title_manager;
     $this->bundleInfo = $entity_bundle_info;
     $this->entityDisplayRepository = $entity_display_repository;
+    $this->configFactory = $config_factory;
+    $this->moduleHandler = $module_handler;
   }
 
   /**
@@ -67,7 +79,8 @@ class AdminSettingsForm extends ConfigFormBase {
       $container->get('config.factory'),
       $container->get('exclude_node_title.manager'),
       $container->get('entity_type.bundle.info'),
-      $container->get('entity_display.repository')
+      $container->get('entity_display.repository'),
+      $container->get('module_handler')
     );
   }
 
@@ -91,7 +104,7 @@ class AdminSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $enabled_link = Link::fromTextAndUrl(t('Search module'), Url::fromRoute('system.modules_list', [], ['fragment' => 'module-search']))->toString();
+    $enabled_link = Link::fromTextAndUrl($this->t('Search module'), Url::fromRoute('system.modules_list', [], ['fragment' => 'module-search']))->toString();
     $form['#attached']['library'][] = 'system/drupal.system';
 
     $form['exclude_node_title_search'] = [
@@ -101,7 +114,7 @@ class AdminSettingsForm extends ConfigFormBase {
         '@searchmodule' => $enabled_link,
       ]),
       '#default_value' => $this->excludeNodeTitleManager->isSearchExcluded(),
-      '#disabled' => !\Drupal::moduleHandler()->moduleExists('search'),
+      '#disabled' => !$this->moduleHandler->moduleExists('search'),
     ];
 
     $form['render_type'] = [
@@ -182,7 +195,7 @@ class AdminSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $config = \Drupal::configFactory()->getEditable('exclude_node_title.settings');
+    $config = $this->configFactory->getEditable('exclude_node_title.settings');
     $values = $form_state->getValues();
     foreach ($values['content_type'] as $node_type => $value) {
       $modes = array_filter($values['content_type'][$node_type]['content_type_modes']);
@@ -200,7 +213,7 @@ class AdminSettingsForm extends ConfigFormBase {
 
     parent::submitForm($form, $form_state);
 
-    foreach (Cache::getBins() as $service_id => $cache_backend) {
+    foreach (array_values(Cache::getBins()) as $cache_backend) {
       $cache_backend->deleteAll();
     }
   }

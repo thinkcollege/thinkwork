@@ -36,10 +36,7 @@
         "php-http/guzzle6-adapter": "~2.0",
         "nyholm/psr7": "~1.2",
         "drupal/mailsystem": "*",
-        "html2text/html2text": "~4.0.1"
-    },
-    "require-dev": {
-        "drupal/key": "^1.0"
+        "html2text/html2text": "^4.0.1"
     },
    "extra": {
      "drush": {

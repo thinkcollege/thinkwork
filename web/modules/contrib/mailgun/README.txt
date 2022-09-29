@@ -14,7 +14,6 @@ This module requires the following modules and libraries:
 * Recommended modules
 
  - Reroute Email (https://www.drupal.org/project/reroute_email)
- - Key (https://www.drupal.org/project/key)
 
 * Installation
 
@@ -27,11 +26,6 @@ Install this module as usual by Composer: composer require drupal/mailgun
   admin/config/services/mailgun/settings.
 3. Enable Mailgun as Default (or Module-specific) Mail System on the
   Mail System admin page (admin/config/system/mailsystem).
-
-** Key module integration
-
-With the Key module enabled, it is possible to store the Mailgun API key using
-the Key module. This is more secure that storing the API key in configuration.
 
 * Maintainers
 

@@ -90,7 +90,8 @@ class ExcludeNodeTitleManager implements ExcludeNodeTitleManagerInterface {
    * {@inheritdoc}
    */
   public function getExcludedNodes() {
-    return $this->settingsConfig->get('nid_list');
+    $nid_list = $this->settingsConfig->get('nid_list');
+    return (is_array($nid_list)) ? $nid_list : [];
   }
 
   /**
