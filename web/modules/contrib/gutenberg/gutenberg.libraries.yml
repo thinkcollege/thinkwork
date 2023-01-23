@@ -556,6 +556,7 @@ i18n:
   js:
     js/i18n.js: {  }
     js/drupal-gutenberg-translations.js: {  }
+    js/core-blocks-translations.js: {  }
   dependencies:
     - gutenberg/hooks
     - gutenberg/polyfill

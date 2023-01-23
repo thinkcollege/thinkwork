@@ -66,7 +66,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
   function openBlockSettings(id, settings) {
     var ajaxSettings = {
-      url: '/editor/blocks/settings/' + id,
+      url: Drupal.url('editor/blocks/settings/' + id),
       dialogType: 'modal',
       dialog: {
         width: 600,
@@ -82,10 +82,10 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
     node.innerHTML = html;
 
     var formElements = node.querySelectorAll('input, select, button, textarea, checkbox, radio');
-    formElements.forEach(function (element) {
-      element.setAttribute('readonly', true);
-      element.setAttribute('required', false);
-      element.setAttribute('disabled', true);
+    formElements.forEach(function (ele) {
+      ele.setAttribute('readonly', true);
+      ele.setAttribute('required', false);
+      ele.setAttribute('disabled', true);
     });
 
     return node.innerHTML;

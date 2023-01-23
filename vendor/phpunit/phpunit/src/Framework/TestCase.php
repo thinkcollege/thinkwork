@@ -554,7 +554,7 @@ abstract class TestCase extends Assert implements Reorderable, SelfDescribing, T
         } catch (ReflectionException $e) {
             throw new Exception(
                 $e->getMessage(),
-                (int) $e->getCode(),
+                $e->getCode(),
                 $e
             );
         }
@@ -776,7 +776,7 @@ abstract class TestCase extends Assert implements Reorderable, SelfDescribing, T
             } catch (ReflectionException $e) {
                 throw new Exception(
                     $e->getMessage(),
-                    (int) $e->getCode(),
+                    $e->getCode(),
                     $e
                 );
             }
@@ -1765,7 +1765,7 @@ abstract class TestCase extends Assert implements Reorderable, SelfDescribing, T
         } catch (ReflectionException $e) {
             throw new Exception(
                 $e->getMessage(),
-                (int) $e->getCode(),
+                $e->getCode(),
                 $e
             );
         }
@@ -1970,6 +1970,8 @@ abstract class TestCase extends Assert implements Reorderable, SelfDescribing, T
      * @throws \Prophecy\Exception\Doubler\InterfaceNotFoundException
      *
      * @psalm-param class-string|null $classOrInterface
+     *
+     * @deprecated https://github.com/sebastianbergmann/phpunit/issues/4141
      */
     protected function prophesize(?string $classOrInterface = null): ObjectProphecy
     {
@@ -2531,7 +2533,7 @@ abstract class TestCase extends Assert implements Reorderable, SelfDescribing, T
             } catch (ReflectionException $e) {
                 throw new Exception(
                     $e->getMessage(),
-                    (int) $e->getCode(),
+                    $e->getCode(),
                     $e
                 );
             }

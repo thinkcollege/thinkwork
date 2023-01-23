@@ -99,31 +99,16 @@ class BlockSettingsForm extends FormBase implements BaseFormIdInterface {
    *   The form array.
    */
   public function buildForm(array $form, FormStateInterface $form_state, $plugin_id = NULL, $config = []) {
-    function array_flatten($array = null) {
-      $result = array();
-  
-      if (!is_array($array)) {
-          $array = func_get_args();
-      }
-  
-      foreach ($array as $key => $value) {
-          if (is_array($value)) {
-              $result = array_merge($result, array_flatten($value));
-          } else {
-              $result = array_merge($result, array($key => $value));
-          }
-      }
-  
-      return $result;
-    }
-
     $form_state->set('block_theme', $this->config('system.theme')->get('default'));
     $user_input = $form_state->getUserInput();
-    $configuration = array_merge($user_input['settings'], array_flatten($user_input['settings']));
+
+    if (!empty($user_input['settings'])) {
+      $configuration = array_merge($user_input['settings'], $this->arrayFlatten($user_input['settings']));
+    }
 
     $plugin_block = $this->blocksRenderer->getBlockFromPluginId($plugin_id, $configuration ?? []);
     $block_form = $plugin_block->blockForm($form, $form_state);
- 
+
     // $form['#attached']['library'][] = 'gutenberg/drupal-block-settings';
 
     $form['#tree'] = TRUE;
@@ -159,6 +144,28 @@ class BlockSettingsForm extends FormBase implements BaseFormIdInterface {
     $form['#id'] = Html::getId($form_state->getBuildInfo()['form_id']);
 
     return $form;
+  }
+
+  /**
+   * Flattens arrays.
+   */
+  protected function arrayFlatten($array = NULL) {
+    $result = [];
+
+    if (!is_array($array)) {
+      $array = func_get_args();
+    }
+
+    foreach ($array as $key => $value) {
+      if (is_array($value)) {
+        $result = array_merge($result, $this->arrayFlatten($value));
+      }
+      else {
+        $result = array_merge($result, [$key => $value]);
+      }
+    }
+
+    return $result;
   }
 
   /**

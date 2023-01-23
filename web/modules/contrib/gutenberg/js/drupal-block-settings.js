@@ -71,7 +71,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
               values = values.filter(function (v) {
                 return v.name !== _this.name;
               });
-              values = values.concat({ name: this.name, value: 1 });
+              values = values.concat({ name: this.name, value: this.value });
             } else {
               values = values.concat({ name: this.name, value: 0 });
             }

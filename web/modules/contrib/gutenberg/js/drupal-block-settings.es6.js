@@ -67,7 +67,7 @@
             // If checked, replace array item. If not checked concat to values array.
             if (this.checked) {
               values = values.filter(v => v.name !== this.name);
-              values = values.concat({name: this.name, value: 1});
+              values = values.concat({name: this.name, value: this.value});
             }
             else {
               values = values.concat({name: this.name, value: 0});

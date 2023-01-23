@@ -62,7 +62,7 @@ class MediaTypeGuesser implements MediaTypeGuesserInterface {
     /** @var \Drupal\media\Entity\MediaType $media_type_entity */
     foreach ($media_type_entities as $media_type_entity) {
       $field_config = $media_type_entity->getSource()->getSourceFieldDefinition($media_type_entity);
-      $media_type_file_extensions = explode(' ', $field_config->getSetting('file_extensions'));
+      $media_type_file_extensions = explode(' ', $field_config->getSetting('file_extensions') ?? '');
       if (array_intersect($media_type_file_extensions, $file_extensions)) {
         $media_types[] = $media_type_entity->id();
       }

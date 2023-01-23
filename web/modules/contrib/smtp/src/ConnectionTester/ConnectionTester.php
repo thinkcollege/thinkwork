@@ -125,7 +125,7 @@ class ConnectionTester {
         $this->value = $this->t('SMTP module is enabled, turned on, and connection is valid.');
         return TRUE;
       }
-      $this->severity = REQUIREMENT_ERROR;
+      $this->severity = self::REQUIREMENT_ERROR;
       $this->value = $this->t('SMTP module is enabled, turned on, but SmtpConnect() returned FALSE.');
       return FALSE;
     }

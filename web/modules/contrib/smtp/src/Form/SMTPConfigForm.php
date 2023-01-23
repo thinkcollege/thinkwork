@@ -121,6 +121,10 @@ class SMTPConfigForm extends ConfigFormBase {
     else {
       $this->messenger->addMessage($this->t('SMTP module is INACTIVE.'));
     }
+    // Add Debugging warning
+    if ($config->get('smtp_debugging')) {
+      $this->messenger->addWarning($this->t('SMTP debugging is on, ensure it is <a href="#edit-smtp-debugging">disabled</a> before using in production.'));
+    }
 
     $this->messenger->addMessage($this->t('Disabled fields are overridden in site-specific configuration file.'), 'warning');
 
@@ -317,7 +321,8 @@ class SMTPConfigForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Enable debugging'),
       '#default_value' => $config->get('smtp_debugging'),
-      '#description' => $this->t('Checking this box will print SMTP messages from the server for every e-mail that is sent.'),
+      '#description' => $this->t('Checking this box will print SMTP messages from the server for every e-mail that is sent.
+      <br /><strong>Warning!</strong> Debugging interrupts the request and will cause AJAX, Batch, and other operations to fail. Use in test environments only.'),
       '#disabled' => $this->isOverridden('smtp_debugging'),
     ];
 

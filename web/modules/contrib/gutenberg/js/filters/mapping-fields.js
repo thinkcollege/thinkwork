@@ -5,6 +5,8 @@
 * @preserve
 **/'use strict';
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 (function () {
@@ -26,9 +28,22 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
             withInspectorControl = createHigherOrderComponent(function (BlockEdit) {
               return function (props) {
                 var isSelected = props.isSelected,
-                    attributes = props.attributes;
+                    attributes = props.attributes,
+                    setAttributes = props.setAttributes;
 
                 var hasMapping = hasMappingFields(attributes);
+                var mappingFields = attributes.mappingFields;
+                var ntFields = drupalSettings.gutenberg.nonTranslatableMappingFields;
+
+
+                hasMapping && mappingFields.map(function (field) {
+                  if (ntFields[field.field]) {
+                    var property = field.property || 'value';
+                    var value = _defineProperty({}, '' + field.attribute, ntFields[field.field][0][property]);
+                    setAttributes(value);
+                  }
+                });
+
                 if (hasMapping && isSelected) {
                   return [React.createElement(BlockEdit, props), React.createElement(
                     InspectorControls,

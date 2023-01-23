@@ -54,6 +54,7 @@ class ReusableBlocksController extends ControllerBase {
      */
     $ids = \Drupal::entityQuery('block_content')
       ->condition('type', 'reusable_block')
+      ->accessCheck(TRUE)
       ->execute();
 
     $blocks = BlockContent::loadMultiple($ids);

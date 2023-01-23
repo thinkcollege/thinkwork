@@ -119,8 +119,9 @@ function _disable_smtp() {
   $mail_config = $config->getEditable('system.mail');
   $current_default = $mail_config->get('interface.default');
   $system_default = 'php_mail';
+  $previous_mail_system = $smtp_config->get('prev_mail_system') ?? NULL;
   if ($current_default == 'SMTPMailSystem') {
-    $default_interface = (!$smtp_config->get('prev_mail_system')) ? $smtp_config->get('prev_mail_system') : $system_default;
+    $default_interface = ($previous_mail_system && $previous_mail_system !== 'SMTPMailSystem') ? $previous_mail_system : $system_default;
     $mail_config->set('interface.default', $default_interface)
       ->save();
   }

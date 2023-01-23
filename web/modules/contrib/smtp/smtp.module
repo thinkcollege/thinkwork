@@ -28,13 +28,6 @@ function smtp_modules_installed($modules, $is_syncing = FALSE) {
     \Drupal::moduleHandler()->loadInclude('smtp', 'install');
     _disable_smtp();
   }
-
-  // Show administrator a link to the configuration page upon installation.
-  $messenger = \Drupal::messenger();
-  $messenger->addMessage(t('Thanks for installing SMTP Authentication Support'));
-  $messenger->addMessage(t('Server settings on <a href="@url_settings">SMTP Authentication Support</a>', [
-    '@url_settings' => Url::fromRoute('smtp.config')->toString(),
-  ]));
 }
 
 /**
@@ -135,5 +128,7 @@ function _smtp_mailer_send(array $variables) {
  * Adds mapping for SmtpMailSystem in d7_system_mail.
  */
 function smtp_migration_plugins_alter(array &$migrations) {
-  $migrations["d7_system_mail"]['process']['interface/default']['map']['SmtpMailSystem'] = 'SMTPMailSystem';
+  if (isset($migrations['d7_system_mail'])) {
+    $migrations['d7_system_mail']['process']['interface/default']['map']['SmtpMailSystem'] = 'SMTPMailSystem';
+  }
 }

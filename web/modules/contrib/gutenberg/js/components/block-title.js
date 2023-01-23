@@ -33,9 +33,6 @@ Object.defineProperty(wp.blockEditor, 'BlockTitle', {
   get: withSelect(function (select, ownProps) {
     var _select = select('core/block-editor');
     var getBlockName = _select.getBlockName;
-
-    console.log('BlockTitle');
-
     var clientId = ownProps.clientId;
 
     return {

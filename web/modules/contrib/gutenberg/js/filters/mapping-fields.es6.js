@@ -15,8 +15,21 @@
 
   const withInspectorControl = createHigherOrderComponent(
     BlockEdit => props => {
-      const { isSelected, attributes } = props;
+      const { isSelected, attributes, setAttributes } = props;
       const hasMapping = hasMappingFields(attributes);
+      const { mappingFields } = attributes;
+      const { nonTranslatableMappingFields: ntFields } =  drupalSettings.gutenberg;
+
+      hasMapping && mappingFields.map(field => {
+        if (ntFields[field.field]) {
+          const property = field.property || 'value';
+          const value = {
+            [`${field.attribute}`]: ntFields[field.field][0][property],
+          };
+          setAttributes(value);
+        }
+      });
+  
       if (hasMapping && isSelected) {
         return [
           <BlockEdit {...props} />,

@@ -16,6 +16,8 @@ use Drupal\gutenberg\MediaTypeGuesserInterface;
 use Drupal\gutenberg\MediaUploaderInterface;
 use Drupal\gutenberg\Persistence\MediaTypePersistenceManager;
 use Drupal\media\MediaInterface;
+use Drupal\media\Plugin\media\Source\File;
+use Drupal\media\Plugin\media\Source\OEmbedInterface;
 use Drupal\media_library\MediaLibraryState;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -319,30 +321,43 @@ class MediaService {
    */
   public function loadMediaData(MediaInterface $media) {
     $data = [];
-    if (in_array($media->getSource()->getPluginId(), [
-      'file', 'image', 'video', 'audio',
-    ])) {
-      // We expect the sources of ['file', 'image', 'video', 'audio']
-      // to have a file connected to the media entity.
-      $file_entity = $media->get($media->getSource()->getConfiguration()['source_field'])->entity;
+    $media_source = $media->getSource();
+    if ($media_source instanceof File) {
+      $media_file = $media->get($media_source->getConfiguration()['source_field']);
+      $file_entity = $media_file->entity;
       $data = $this->entityDataProviderManager->getData('file', $file_entity);
+
+      if ($item = $media_file->first()) {
+        // Populate the default alt and title text properties.
+        $file_data = $item->getValue();
+        if (!empty($file_data['alt'])) {
+          if (empty($data['alt'])) {
+            $data['alt'] = $file_data['alt'];
+          }
+          if (empty($data['alt_text'])) {
+            $data['alt_text'] = $file_data['alt'];
+          }
+        }
+        if (!empty($file_data['title']) && empty($data['title'])) {
+          $data['title'] = $file_data['title'];
+        }
+      }
     }
-    elseif ($media->getSource()->getPluginId() === 'oembed:video') {
-      // We have to handle sources of oembed:video special
-      // since it does not have a file.
-      $mediaAttributes = $media->getSource()->getMetadataAttributes();
-      foreach (array_keys($mediaAttributes) as $attribute) {
-        $data[$attribute] = $media->getSource()->getMetadata($media, $attribute);
+    elseif ($media_source instanceof OEmbedInterface) {
+      // We have to handle oembeds specially since it does not have a file.
+      $media_attributes = $media_source->getMetadataAttributes();
+      foreach (array_keys($media_attributes) as $attribute) {
+        $data[$attribute] = $media_source->getMetadata($media, $attribute);
       }
     }
     else {
       // Handle everything else.
-      $data['value'] = $media->getSource()->getSourceFieldValue($media);
+      $data['value'] = $media_source->getSourceFieldValue($media);
     }
 
     $data['media_entity'] = [
       'bundle' => $media->bundle(),
-      'plugin' => $media->getSource()->getPluginId(),
+      'plugin' => $media_source->getPluginId(),
       'id' => $media->id(),
       'label' => $media->label(),
       'entity_uuid' => $media->uuid(),
@@ -383,6 +398,7 @@ class MediaService {
       $query->condition($group);
     }
     $query->sort('created', 'DESC');
+    $query->accessCheck(TRUE);
 
     $this->moduleHandler->invokeAll('gutenberg_media_search_query_alter', [
       $request,

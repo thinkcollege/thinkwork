@@ -145,7 +145,12 @@ class MappingFieldsHelper implements ContainerInjectionInterface {
 
     foreach ($fields as $key => $value) {
       try {
-        $entity->set($key, $value);
+        $field_definition = $entity->get($key)->getFieldDefinition();
+
+        // Deal with translatable fields and node translations.
+        if ($entity->isDefaultTranslation() || $field_definition->isTranslatable()) {
+          $entity->set($key, $value);
+        }
       }
       // The field/property might not exist.
       catch (\Exception $e) {

@@ -13,6 +13,9 @@ use Drupal\editor\Plugin\EditorBase;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\editor\Entity\Editor;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\gutenberg\GutenbergContentTypeManager;
+use Drupal\Core\Config\ConfigFactoryInterface;
 
 /**
  * Defines a Gutenberg-based text editor for Drupal.
@@ -59,6 +62,27 @@ class Gutenberg extends EditorBase implements ContainerFactoryPluginInterface {
   protected $renderer;
 
   /**
+   * The content type manager.
+   *
+   * @var \Drupal\gutenberg\GutenbergContentTypeManager
+   */
+  protected $contentTypeManager;
+
+  /**
+   * The route match.
+   *
+   * @var \Drupal\Core\Routing\RouteMatchInterface
+   */
+  protected $routeMatch;
+
+  /**
+   * The config factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
    * Constructs a Gutenberg object.
    *
    * @param array $configuration
@@ -75,13 +99,33 @@ class Gutenberg extends EditorBase implements ContainerFactoryPluginInterface {
    *   The language manager.
    * @param \Drupal\Core\Render\RendererInterface $renderer
    *   The renderer.
+   * @param \Drupal\gutenberg\GutenbergContentTypeManager $content_type_manager
+   *   The content type manager.
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   *   The route match.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The config factory.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, GutenbergPluginManager $gutenberg_plugin_manager, ModuleHandlerInterface $module_handler, LanguageManagerInterface $language_manager, RendererInterface $renderer) {
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    GutenbergPluginManager $gutenberg_plugin_manager,
+    ModuleHandlerInterface $module_handler,
+    LanguageManagerInterface $language_manager,
+    RendererInterface $renderer,
+    GutenbergContentTypeManager $content_type_manager,
+    RouteMatchInterface $route_match,
+    ConfigFactoryInterface $config_factory
+  ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->gutenbergPluginManager = $gutenberg_plugin_manager;
     $this->moduleHandler = $module_handler;
     $this->languageManager = $language_manager;
     $this->renderer = $renderer;
+    $this->contentTypeManager = $content_type_manager;
+    $this->routeMatch = $route_match;
+    $this->configFactory = $config_factory;
   }
 
   /**
@@ -95,7 +139,10 @@ class Gutenberg extends EditorBase implements ContainerFactoryPluginInterface {
       $container->get('plugin.manager.gutenberg.plugin'),
       $container->get('module_handler'),
       $container->get('language_manager'),
-      $container->get('renderer')
+      $container->get('renderer'),
+      $container->get('gutenberg.content_type_manager'),
+      $container->get('current_route_match'),
+      $container->get('config.factory')
     );
   }
 
@@ -146,28 +193,22 @@ class Gutenberg extends EditorBase implements ContainerFactoryPluginInterface {
    *
    * @param \Drupal\editor\Entity\Editor $editor
    *   A configured text editor object.
+   *
+   * @return array|null
+   *   The settings.
    */
   public function getJsSettings(Editor $editor) {
-    $config = \Drupal::service('config.factory')->getEditable('gutenberg.settings');
+    $node_type = $this->contentTypeManager->getGutenbergNodeTypeFromRoute($this->routeMatch);
 
-    $node = \Drupal::routeMatch()->getParameter('node');
-
-    if (!$node) {
-      $route_match = \Drupal::service('current_route_match');
-      if (!$route_match->getParameter('node_type')) {
-        return;
-      }
-      $node_type = $route_match->getParameter('node_type')->get('type');
-    }
-    else {
-      $node_type = $node->type->getString();
+    if (!$node_type) {
+      return NULL;
     }
 
     $blocks_settings = UtilsController::getBlocksSettings();
 
     $settings = [
       'contentType' => $node_type,
-      'allowedBlocks' => $config->get($node_type . '_allowed_blocks'),
+      'allowedBlocks' => $this->configFactory->get('gutenberg.settings')->get($node_type . '_allowed_blocks'),
       'blackList' => $blocks_settings['blacklist'],
     ];
 

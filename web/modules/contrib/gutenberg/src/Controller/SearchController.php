@@ -39,7 +39,8 @@ class SearchController extends ControllerBase {
     $query->condition('title', $search, 'CONTAINS')
       ->condition('status', 1)
       ->sort('created', 'DESC')
-      ->range(0, $limit);
+      ->range(0, $limit)
+      ->accessCheck(TRUE);
 
     $node_ids = $query->execute();
     $nodes = Node::loadMultiple($node_ids);

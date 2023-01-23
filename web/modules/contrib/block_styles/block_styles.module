@@ -62,7 +62,7 @@ function block_styles_form_block_form_alter(&$form, \Drupal\Core\Form\FormStateI
 	  }
   }
   else {
-    if (!empty($plugin_definitions[$style['theme']]['extras']['label'])) {
+    if (!empty($style) && !empty($plugin_definitions[$style['theme']]['extras']['label'])) {
       $disabled = FALSE;
       $type = 'textfield';
 	  }
@@ -78,7 +78,7 @@ function block_styles_form_block_form_alter(&$form, \Drupal\Core\Form\FormStateI
   $form['block_styles']['theme'] = [
     '#type' => 'select',
     '#title' => t('Select block style'),
-    '#default_value' => $style['theme'],
+    '#default_value' => !empty($style) ? $style['theme'] : '',
     '#empty_option' => t('None'),
     '#options' => $styles,
     '#description' => t('The selected layout template will be applied to block wrapper, replacing block.html.twig'),
@@ -95,7 +95,7 @@ function block_styles_form_block_form_alter(&$form, \Drupal\Core\Form\FormStateI
   $form['block_styles']['text'] = [
     '#type' => $type,
     '#title' => t('Text for button label'),
-    '#default_value' => $style['text'],
+    '#default_value' => !empty($style) ? $style['text'] : '',
     '#description' => t('Text to use on the button that show the block content.'),
     '#size' => 60,
     '#maxlength' => 64, 
@@ -106,7 +106,7 @@ function block_styles_form_block_form_alter(&$form, \Drupal\Core\Form\FormStateI
   $form['block_styles']['classes'] = [
     '#type' => 'textfield',
     '#title' => t('Add classes to block wrapper'),
-    '#default_value' => $style['classes'],
+    '#default_value' => !empty($style) ? $style['classes'] : '',
     '#description' => t('Add classes for block wrapper, separated by spaces.'),
     '#size' => 60,
     '#maxlength' => 128, 

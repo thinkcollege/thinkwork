@@ -24,7 +24,7 @@ class FileEntityDataProvider extends BaseDataProvider {
 
     /** @var \Drupal\file\FileInterface $entity */
     $uri = $entity->getFileUri();
-    $source_url = file_url_transform_relative(file_create_url($uri));
+    $source_url = \Drupal::service('file_url_generator')->generateString($uri);
     $image = $this->imageFactory->get($uri);
     $file_data = $this->getFileData($entity->id());
 
@@ -36,7 +36,7 @@ class FileEntityDataProvider extends BaseDataProvider {
       'title' => $file_data['title'] ?? '',
       'filename' => urldecode($entity->getFilename()),
       'url' => $source_url,
-      'link' => file_create_url($source_url),
+      'link' => \Drupal::service('file_url_generator')->generateAbsoluteString($source_url),
       'alt' => $file_data['alt_text'] ?? '',
       'author' => $entity->getOwnerId(),
       'description' => '',

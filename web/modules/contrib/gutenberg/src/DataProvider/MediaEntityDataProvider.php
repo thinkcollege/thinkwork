@@ -24,7 +24,7 @@ class MediaEntityDataProvider extends BaseDataProvider {
 
     /** @var \Drupal\file\FileInterface $entity */
     $uri = $entity->getFileUri();
-    $source_url = file_url_transform_relative(file_create_url($uri));
+    $source_url = \Drupal::service('file_url_generator')->generateString($uri);
     $file_data = $this->getFileData($entity->id());
 
     $result = [

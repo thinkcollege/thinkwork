@@ -51,9 +51,11 @@
       [],
     );
 
+    const isEditor = "editor" in drupalSettings;
+
     const { toggleFeature } = useDispatch('core/edit-post');
 
-    if (isDisabled) {
+    if (isDisabled || !isEditor) {
       return null;
     }
 

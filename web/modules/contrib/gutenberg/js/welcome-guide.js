@@ -60,10 +60,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       return select('core/edit-post').isFeatureActive('welcomeGuideDrupalDisabled');
     }, []);
 
+    var isEditor = "editor" in drupalSettings;
+
     var _useDispatch = useDispatch('core/edit-post'),
         toggleFeature = _useDispatch.toggleFeature;
 
-    if (isDisabled) {
+    if (isDisabled || !isEditor) {
       return null;
     }
 

@@ -10,7 +10,7 @@ services:
     arguments: ['@module_handler', '@theme_handler', '@theme.initialization', '@cache.discovery', '@logger.channel.gutenberg']
   plugin.manager.gutenberg.blocks_library:
     class: Drupal\gutenberg\BlocksLibraryManager
-    arguments: ['%app.root%', '@module_handler', '@theme_handler', '@theme.initialization', '@cache.discovery', '@logger.channel.gutenberg']
+    arguments: ['%app.root', '@module_handler', '@theme_handler', '@theme.initialization', '@cache.discovery', '@logger.channel.gutenberg']
   gutenberg.block_processor_manager:
     class: Drupal\gutenberg\BlockProcessor\GutenbergBlockProcessorManager
     tags:
@@ -101,3 +101,6 @@ services:
     arguments: ['@entity_type.manager']
     tags:
       - { name: media_selection_processor, processor_name: default }
+  gutenberg.content_type_manager:
+    class: Drupal\gutenberg\GutenbergContentTypeManager
+    arguments: ['@module_handler', '@config.factory', '@entity_field.manager']

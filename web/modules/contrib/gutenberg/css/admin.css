@@ -257,8 +257,20 @@
   margin: 0;
 }
 
+#media-entity-browser-modal .media-library-content {
+  box-shadow: none;
+}
+
 #media-entity-browser-modal .media-library-select.form-submit {
   display: none;
+}
+
+#media-entity-browser-modal #media-library-wrapper {
+  display: flex;
+}
+
+#media-entity-browser-modal #media-library-add-form-wrapper {
+  padding: 20px;
 }
 
 #views-form-reusable-blocks-page-1 {

@@ -12,7 +12,6 @@
     }
 
     closeDialog(callback) {
-      console.log(this);
       if (this.frame) {
         this.frame.close();
         delete this.frame;

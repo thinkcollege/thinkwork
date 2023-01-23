@@ -75,7 +75,7 @@ function gutenberg_theme() {
     $template_hooks = drupal_find_theme_templates(
       $templates,
       '.html.twig',
-      drupal_get_path('module', $module) . '/templates'
+      \Drupal::service('extension.list.module')->getPath($module) . '/templates'
     );
 
     foreach ($definition['dynamic-blocks'] as $block_name => $block_theme_definition) {
@@ -410,9 +410,21 @@ function gutenberg_form_node_form_alter(&$form, FormStateInterface $form_state) 
 
   $mapped_fields = $mapping_fields->getMappedFields($gutenberg_template);
 
+  $non_translatable_mapping_fields = [];
   foreach ($mapped_fields as $item) {
+    // We don't need these form field items because those fields will be
+    // handled on entity presave.
+    // unset($form[$item['field']]);
     $form[$item['field']]['#access'] = FALSE;
+
+    // If in a translated node, non-translated mapping fields get the node field value.
+    $field_definition = $node->get($item['field'])->getFieldDefinition();
+    if (!$node->isDefaultTranslation() && !$field_definition->isTranslatable()) {
+      unset($form[$item['field']]);
+      $non_translatable_mapping_fields[$item['field']] = $node->get($item['field'])->getValue();
+    }
   }
+  $form['#attached']['drupalSettings']['gutenberg']['nonTranslatableMappingFields'] = $non_translatable_mapping_fields;
 
   /** @var \Drupal\gutenberg\GutenbergLibraryManagerInterface $gutenberg_library_manager */
   $gutenberg_library_manager = \Drupal::service('plugin.manager.gutenberg.library');
@@ -557,6 +569,24 @@ function gutenberg_form_node_form_alter(&$form, FormStateInterface $form_state) 
       else {
         $form[$value]['#group'] = 'metabox_fields';
         $metabox_has_fields = TRUE;
+      }
+    }
+  }
+
+  $gutenberg_field = $text_fields[0];
+
+  // If any field groups do not have a parent then set the parent as metabox_fields.
+  if (!empty($form['#fieldgroups'])) {
+    foreach ($form['#fieldgroups'] as &$group) {
+      if (empty($group->parent_name)) {
+        $group->parent_name = 'metabox_fields';
+        $metabox_has_fields = TRUE;
+      }
+      // If the field with Gutenberg applied to it is in a field group then remove it.
+      foreach ($group->children as $key => $child) {
+        if ($child == $gutenberg_field) {
+          unset($group->children[$key]);
+        }
       }
     }
   }
@@ -707,21 +737,9 @@ function gutenberg_entity_presave($entity) {
  * Implements hook_theme_suggestions_HOOK_alter().
  */
 function gutenberg_theme_suggestions_node_edit_form_alter(array &$suggestions, array $variables) {
-  $config = \Drupal::service('config.factory')->getEditable('gutenberg.settings');
-  $node = \Drupal::routeMatch()->getParameter('node');
-
-  if (!$node) {
-    $route_match = \Drupal::service('current_route_match');
-    if (!$route_match->getParameter('node_type')) {
-      return;
-    }
-    $node_type = $route_match->getParameter('node_type')->get('type');
-  }
-  else {
-    $node_type = $node->type->getString();
-  }
-
-  $gutenberg_enabled = $config->get($node_type . '_enable_full');
+  $contentTypeManager = \Drupal::service('gutenberg.content_type_manager');
+  $node_type = $contentTypeManager->getGutenbergNodeTypeFromRoute(\Drupal::routeMatch());
+  $gutenberg_enabled = $contentTypeManager->isContentTypeSupported($node_type);
 
   if (!$gutenberg_enabled) {
     return;
@@ -739,29 +757,17 @@ function gutenberg_theme_suggestions_page_alter(array &$suggestions, array $vari
     return;
   }
 
-  $config = \Drupal::service('config.factory')->getEditable('gutenberg.settings');
-  $node = \Drupal::routeMatch()->getParameter('node');
-
-  if (!$node) {
-    $route_match = \Drupal::service('current_route_match');
-    if (!$route_match->getParameter('node_type')) {
-      return;
-    }
-    $node_type = $route_match->getParameter('node_type')->get('type');
-  }
-  else {
-    $node_type = $node->type->getString();
-  }
-
-  $gutenberg_enabled = $config->get($node_type . '_enable_full');
+  $contentTypeManager = \Drupal::service('gutenberg.content_type_manager');
+  $node_type = $contentTypeManager->getGutenbergNodeTypeFromRoute(\Drupal::routeMatch());
+  $gutenberg_enabled = $contentTypeManager->isContentTypeSupported($node_type);
 
   if ($gutenberg_enabled) {
     if (in_array('page__node__edit', $suggestions)) {
-      $suggestions = ['page__node__edit__gutenberg'];
+      $suggestions[] = 'page__node__edit__gutenberg';
     }
 
     if (in_array('page__node__add', $suggestions)) {
-      $suggestions = ['page__node__add__gutenberg'];
+      $suggestions[] = 'page__node__add__gutenberg';
     }
   }
 }
@@ -983,4 +989,18 @@ function _gutenberg_is_gutenberg_enabled(EntityInterface $entity = NULL) {
   $node_type = $entity->bundle();
 
   return (bool) $config->get($node_type . '_enable_full');
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function gutenberg_module_implements_alter(&$implementations, $hook) {
+  switch ($hook) {
+    // Move our hook_form_alter() implementation to the end of the list.
+    case 'form_alter':
+      $group = $implementations['gutenberg'];
+      unset($implementations['gutenberg']);
+      $implementations['gutenberg'] = $group;
+      break;
+  }
 }

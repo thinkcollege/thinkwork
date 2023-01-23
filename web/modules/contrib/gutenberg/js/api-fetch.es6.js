@@ -190,7 +190,6 @@
       method: 'POST',
       regex: /\/wp\/v2\/media\/((\d+)\/edit(.*))/,
       process(matches, data) {
-        console.log(matches);
         return new Promise((resolve, reject) => {
           Drupal.toggleGutenbergLoader('show');
           $.ajax({

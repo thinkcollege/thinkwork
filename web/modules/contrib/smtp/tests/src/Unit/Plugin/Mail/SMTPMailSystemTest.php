@@ -2,6 +2,9 @@
 
 namespace Drupal\Tests\smtp\Unit\Plugin\Mail;
 
+use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\Session\AccountProxyInterface;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Drupal\Component\Utility\EmailValidator;
 use Drupal\Component\Utility\EmailValidatorInterface;
 use Drupal\Core\File\FileSystem;
@@ -17,6 +20,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Mime\MimeTypeGuesserInterface;
 
 /**
  * Validate requirements for SMTPMailSystem.
@@ -25,6 +29,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class SMTPMailSystemTest extends UnitTestCase {
 
+  use ProphecyTrait;
   /**
    * The email validator.
    *
@@ -162,7 +167,7 @@ class SMTPMailSystemTest extends UnitTestCase {
       'cc' => 'xyz@example.com',
       'bcc' => 'ttt@example.com',
     ];
-    list($new_to, $new_headers) = $mailSystemRerouted->publicApplyRerouting($to, $headers);
+    [$new_to, $new_headers] = $mailSystemRerouted->publicApplyRerouting($to, $headers);
     $this->assertEquals($new_to, 'blackhole@galaxy.com', 'to address is set to the reroute address.');
     $this->assertEquals($new_headers, ['some' => 'header'], 'bcc and cc headers are unset when rerouting.');
 
@@ -173,7 +178,7 @@ class SMTPMailSystemTest extends UnitTestCase {
       'cc' => 'xyz@example.com',
       'bcc' => 'ttt@example.com',
     ];
-    list($new_to, $new_headers) = $mailSystemNotRerouted->publicApplyRerouting($to, $headers);
+    [$new_to, $new_headers] = $mailSystemNotRerouted->publicApplyRerouting($to, $headers);
     $this->assertEquals($new_to, $to, 'original to address is preserved when not rerouting.');
     $this->assertEquals($new_headers, $headers, 'bcc and cc headers are preserved when not rerouting.');
   }
@@ -312,6 +317,104 @@ class SMTPMailSystemTest extends UnitTestCase {
     $result = $mailSystem->mail($message);
 
     self::assertTrue($result);
+  }
+
+  /**
+   * Tests #3308653 and duplicated headers.
+   */
+  public function testFromHeaders_3308653() {
+    $mailer = new class (
+      [],
+      'SMTPMailSystem',
+      [],
+      $this->createMock(LoggerChannelFactoryInterface::class),
+      $this->createMock(MessengerInterface::class),
+      new EmailValidator(),
+      $this->getConfigFactoryStub([
+        'smtp.settings' => [
+          'smtp_timeout' => 30,
+          'smtp_reroute_address' => '',
+        ],
+        'system.site' => ['name' => 'Mock site name', 'mail' => 'noreply@testmock.mock'],
+      ]),
+      $this->createMock(AccountProxyInterface::class),
+      $this->createMock(FileSystemInterface::class),
+      $this->createMock(MimeTypeGuesserInterface::class)
+    ) extends SMTPMailSystem {
+
+      /**
+       * {@inheritdoc}
+       */
+      public function smtpMailerSend(array $mailerArr) {
+        return $mailerArr;
+      }
+
+      /**
+       * {@inheritdoc}
+       */
+      protected function getMailer() {
+        return new class (TRUE) extends PHPMailer {
+
+          /**
+           * Return the MIME header for testing.
+           *
+           * @return array
+           *   The MIMEHeader as an array.
+           */
+          public function getMIMEHeaders() {
+            return array_filter(explode(static::$LE, $this->MIMEHeader));
+          }
+
+        };
+      }
+
+    };
+
+    // Message as prepared by \Drupal\Core\Mail\MailManager::doMail().
+    $message = [
+      'id' => 'smtp_test',
+      'module' => 'smtp',
+      'key' => 'test',
+      'to' => 'test@drupal.org',
+      'from' => 'phpunit@localhost.com',
+      'reply-to' => 'phpunit@localhost.com',
+      'langcode' => 'en',
+      'params' => [],
+      'send' => TRUE,
+      'subject' => 'testMailHeaderDrupal',
+      'body' => ['Some test content for testMailHeaderDrupal'],
+    ];
+    $headers = [
+      'MIME-Version' => '1.0',
+      'Content-Type' => 'text/plain; charset=UTF-8; format=flowed; delsp=yes',
+      'Content-Transfer-Encoding' => '8Bit',
+      'X-Mailer' => 'Drupal',
+    ];
+    $headers['From'] = $headers['Sender'] = $headers['Return-Path'] = $message['from'];
+    $message['headers'] = $headers;
+
+    // Prevent passing `null` to preg_quote in
+    // \Drupal\Core\Mail\MailFormatHelper::htmlToMailUrls().
+    $GLOBALS['base_path'] = '/';
+    $message = $mailer->format($message);
+    $result = $mailer->mail($message);
+
+    self::assertArrayHasKey('to', $result);
+    self::assertEquals($message['to'], $result['to']);
+    self::assertArrayHasKey('from', $result);
+    self::assertEquals($message['from'], $result['from']);
+    self::assertArrayHasKey('mailer', $result);
+    $phpmailer = $result['mailer'];
+    self::assertInstanceOf(PHPMailer::class, $phpmailer);
+    // Pre-send constructs the email message.
+    self::assertTrue($phpmailer->preSend());
+
+    $mime_headers = [];
+    foreach ($phpmailer->getMIMEHeaders() as $header) {
+      [$name, $value] = explode(': ', $header, 2);
+      self::assertArrayNotHasKey(strtolower($name), $mime_headers);
+      $mime_headers[strtolower($name)] = $value;
+    }
   }
 
 }

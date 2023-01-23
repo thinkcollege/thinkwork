@@ -7,16 +7,13 @@
 	const { Placeholder, Toolbar, IconButton, Button, Spinner } = components;
 
   async function getBlock(item, settings) {
-    const response = await fetch(
-      Drupal.url(`editor/blocks/load/${item}`),
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(settings),
-      }
-    );
+    const response = await fetch(Drupal.url(`editor/blocks/load/${item}`), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(settings),
+    });
     const block = await response.json();
 
     return block;
@@ -24,9 +21,9 @@
 
   function openBlockSettings(id, settings) {
     const ajaxSettings = {
-      url: `/editor/blocks/settings/${id}`, //?settings=${JSON.stringify(settings)}
+      url: Drupal.url(`editor/blocks/settings/${id}`),
       dialogType: 'modal',
-      dialog: { 
+      dialog: {
         width: 600,
         position: { at: 'center center' },
       },
@@ -43,10 +40,10 @@
     const formElements = node.querySelectorAll(
       'input, select, button, textarea, checkbox, radio',
     );
-    formElements.forEach(element => {
-      element.setAttribute('readonly', true);
-      element.setAttribute('required', false);
-      element.setAttribute('disabled', true);
+    formElements.forEach(ele => {
+      ele.setAttribute('readonly', true);
+      ele.setAttribute('required', false);
+      ele.setAttribute('disabled', true);
     });
 
     return node.innerHTML;

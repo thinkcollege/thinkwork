@@ -21,8 +21,7 @@ abstract class ViewsBulkOperationsActionBase extends ActionBase implements Views
   /**
    * Action context.
    *
-   * @var array
-   *   Contains view data and optionally batch operation context.
+   * Contains view data and optionally batch operation context.
    */
   protected array $context;
 
@@ -35,6 +34,7 @@ abstract class ViewsBulkOperationsActionBase extends ActionBase implements Views
    * Configuration array.
    *
    * @var array
+   *   NOTE: Don't add a type hint due to parent declaration unless changed.
    */
   protected $configuration;
 

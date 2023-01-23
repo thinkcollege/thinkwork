@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\smtp\Unit;
 
+use Prophecy\PhpUnit\ProphecyTrait;
 use Drupal\Component\Utility\EmailValidatorInterface;
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -23,10 +24,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class SMTPConfigFormTest extends UnitTestCase {
 
+  use ProphecyTrait;
   /**
    * Test setup.
    */
-  public function setup() {
+  public function setup(): void {
     $this->mockConfigFactory = $this->prophesize(ConfigFactoryInterface::class);
     $this->mockConfig = $this->prophesize(Config::class);
     $this->mockConfigFactory->get('smtp.settings')->willReturn($this->mockConfig->reveal());

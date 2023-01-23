@@ -109,6 +109,12 @@
         setAttributes,
         isSelected,
         clientId,
+        title = __('Media'),
+        icon = <BlockIcon icon="admin-media" />,
+        isReadOnly,
+        readOnlyInstructions = __(
+          'Cannot edit this block. Probably mapped to a non-translatable field.'
+        ),
       } = this.props;
 
       const { value, loading } = this.state;
@@ -150,26 +156,45 @@
             <div dangerouslySetInnerHTML={{ __html: html }} />
             {inspectorControls}
             <BlockControls>
-              <Toolbar
-                controls={[
-                  {
-                    icon: 'edit',
-                    title: __('Edit media'),
-                    onClick: () => this.openMediaEdit(mediaEntityIds, clientId),
-                  },
-                  {
-                    icon: 'no',
-                    title: __('Clear media'),
-                    onClick: () => setAttributes({ mediaEntityIds: [] }),
-                  },
-                ]}
-              >
-                {loading && (
-                  <div className="ajax-progress ajax-progress-throbber">
-                    <div className="throbber">&nbsp;</div>
-                  </div>
-                )}
-              </Toolbar>
+              {!isReadOnly && (
+                <Toolbar
+                  controls={[
+                    {
+                      icon: 'edit',
+                      title: __('Edit media'),
+                      onClick: () => this.openMediaEdit(mediaEntityIds, clientId),
+                    },
+                    {
+                      icon: 'no',
+                      title: __('Clear media'),
+                      onClick: () => setAttributes({ mediaEntityIds: [] }),
+                    },
+                  ]}
+                >
+                  {loading && (
+                    <div className="ajax-progress ajax-progress-throbber">
+                      <div className="throbber">&nbsp;</div>
+                    </div>
+                  )}
+                </Toolbar>
+              )}
+              {isReadOnly && (
+                <Toolbar
+                  controls={[
+                    {
+                      icon: 'edit',
+                      title: __('Edit media'),
+                      onClick: () => this.openMediaEdit(mediaEntityIds, clientId),
+                    },
+                  ]}
+                >
+                  {loading && (
+                    <div className="ajax-progress ajax-progress-throbber">
+                      <div className="throbber">&nbsp;</div>
+                    </div>
+                  )}
+                </Toolbar>
+              )}
             </BlockControls>
           </Fragment>
         );
@@ -234,37 +259,49 @@
       );
 
       return (
-        <Placeholder
-          icon={<BlockIcon icon="admin-media" />}
-          label={__('Media')}
-          instructions={instructions}
-          className={placeholderClassName}
-        >
-          <FormFileUpload
-            onChange={this.onUpload}
-            accept={'image/*,video/*,audio/*,application/*'}
-            multiple={false}
-            render={({ openFileDialog }) => {
-              return (
-                <Fragment>
-                  <Button
-                    isLarge
-                    onClick={openFileDialog}
-                    className={[
-                      'block-editor-media-placeholder__button',
-                      'editor-media-placeholder__button',
-                      'block-editor-media-placeholder__upload-button',
-                    ].join(' ')}
-                    icon="upload"
-                  >
-                    {__('Upload')}
-                  </Button>
-                </Fragment>
-              );
-            }}
-          />
-          {content}
-        </Placeholder>
+        <Fragment>
+          {!isReadOnly && (
+            <Placeholder
+              icon={icon}
+              label={title}
+              instructions={instructions}
+              className={placeholderClassName}
+            >
+              <FormFileUpload
+                onChange={this.onUpload}
+                accept={'image/*,video/*,audio/*,application/*'}
+                multiple={false}
+                render={({ openFileDialog }) => {
+                  return (
+                    <Fragment>
+                      <Button
+                        isLarge
+                        onClick={openFileDialog}
+                        className={[
+                          'block-editor-media-placeholder__button',
+                          'editor-media-placeholder__button',
+                          'block-editor-media-placeholder__upload-button',
+                        ].join(' ')}
+                        icon="upload"
+                      >
+                        {__('Upload')}
+                      </Button>
+                    </Fragment>
+                  );
+                }}
+              />
+              {content}
+            </Placeholder>
+          )}
+          {isReadOnly && (
+            <Placeholder
+              icon={icon}
+              label={title}
+              instructions={readOnlyInstructions}
+              className={placeholderClassName}
+            />
+          )}
+        </Fragment>
       );
     }
   }

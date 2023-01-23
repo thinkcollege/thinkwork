@@ -98,7 +98,7 @@ abstract class BaseDataProvider implements DataProviderInterface {
     foreach ($styles as $style) {
       /** @var \Drupal\image\Entity\ImageStyle $style */
       $sizes[$style->getName()] = [
-        'source_url' => file_url_transform_relative($style->buildUrl($uri)),
+        'source_url' => \Drupal::service('file_url_generator')->transformRelative($style->buildUrl($uri)),
       ];
     }
 

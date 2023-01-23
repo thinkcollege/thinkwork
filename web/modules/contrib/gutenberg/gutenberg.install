@@ -138,6 +138,30 @@ function gutenberg_update_8203(&$sandbox) {
 }
 
 /**
+ * Change reusable blocks view body field format.
+ */
+function gutenberg_update_8204() {
+  $admin_reusable_view = \Drupal::service('config.factory')->getEditable('views.view.reusable_blocks');
+  // Replacing text module dependency.
+  $module_dependencies = $admin_reusable_view->get('dependencies.module');
+  $text_key = array_search('text', $module_dependencies);
+  if ($text_key !== FALSE) {
+    unset($module_dependencies[$text_key]);
+  }
+  $module_dependencies[] = 'gutenberg';
+  $admin_reusable_view->set('dependencies.module', $module_dependencies);
+  // Change field formatter to Gutenberg.
+  $admin_reusable_view->set('display.default.display_options.fields.body.type', 'gutenberg_text');
+  $formatter_settings = [
+    'format' => 'gutenberg',
+    'content_only' => FALSE,
+  ];
+  $admin_reusable_view->set('display.default.display_options.fields.body.settings', $formatter_settings);
+  // Saving changed config.
+  $admin_reusable_view->save();
+}
+
+/**
  * Implements hook_uninstall().
  */
 function gutenberg_uninstall() {
@@ -161,3 +185,4 @@ function gutenberg_uninstall() {
     $format_config->save();
   }
 }
+

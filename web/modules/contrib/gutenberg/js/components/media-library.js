@@ -39,7 +39,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
     _createClass(MediaLibrary, [{
       key: 'closeDialog',
       value: function closeDialog(callback) {
-        console.log(this);
         if (this.frame) {
           this.frame.close();
           delete this.frame;

@@ -21,6 +21,6 @@ class ValidateD7MigrationStateTest extends MigrateDrupal7TestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['smtp'];
+  protected static $modules = ['smtp'];
 
 }

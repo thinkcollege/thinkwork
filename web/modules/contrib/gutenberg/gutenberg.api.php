@@ -7,6 +7,7 @@
 
 use Drupal\Core\Entity\Query\Sql\Query;
 use Symfony\Component\HttpFoundation\Request;
+use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
  * @addtogroup hooks
@@ -132,6 +133,31 @@ function hook_gutenberg_block_view_alter(array &$build, &$block_content) {
 function hook_gutenberg_block_view_BASE_BLOCK_ID_alter(array &$build, &$block_content) {
   // Add block specific pre_render hook.
   $build['#pre_render'][] = 'hook_gutenberg_BASE_BLOCK_ID_pre_render';
+}
+
+/**
+ * Provide the appropriate Gutenberg content type for a given route.
+ *
+ * Gutenberg fetches the node type through route match. If for custom routes,
+ * it's necessary to resolve the content type.
+ * Below is an example to handle Group Node module (part of Group module).
+ *
+ * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+ *   The current route instance.
+ *
+ * @return string|null
+ *   The content type.
+ */
+function hook_gutenberg_node_type_route(RouteMatchInterface $route_match) {
+  $route_name = $route_match->getRouteName();
+
+  if ($route_name == 'entity.group_content.create_form') {
+    /** @var string @parameter */
+    $parameter = $route_match->getParameter('plugin_id');
+    return explode(':', $parameter)[1];
+  }
+
+  return NULL;
 }
 
 /**

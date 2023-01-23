@@ -14,7 +14,7 @@ use PHPMailer\PHPMailer\PHPMailer;
  */
 class ConnectionTesterTest extends KernelTestBase {
 
-  public static $modules = [
+  protected static $modules = [
     'smtp',
   ];
 

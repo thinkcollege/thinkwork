@@ -45,6 +45,17 @@ class MigrateD7SettingsTest extends MigrateDrupal7TestBase {
     $testAddress = $this->randomEmail();
     $username = $this->randomString();
 
+    Database::getConnection('default', 'migrate')
+      ->insert('system')
+      ->fields(['name', 'type', 'status', 'schema_version'])
+      ->values([
+        'name' => 'smtp',
+        'type' => 'module',
+        'status' => 1,
+        'schema_version' => '7000',
+      ])
+      ->execute();
+
     // Set D7 variables.
     $this->setUpD7Variable('smtp_allowhtml', $allowHtml);
     $this->setUpD7Variable('smtp_client_helo', $clientHelo);
@@ -63,7 +74,12 @@ class MigrateD7SettingsTest extends MigrateDrupal7TestBase {
     $this->setUpD7Variable('smtp_username', $username);
 
     // Run the migration.
-    $this->executeMigrations([self::MIGRATION_UNDER_TEST]);
+    try {
+      $this->executeMigrations([self::MIGRATION_UNDER_TEST]);
+    }
+    catch (\Throwable $e) {
+      $this->fail($e->getMessage());
+    }
 
     // Validate the D7 variable values made it into the destination structure.
     $destConfig = $this->config('smtp.settings');

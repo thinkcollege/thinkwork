@@ -19,12 +19,12 @@
             "homepage": "https://www.drupal.org/u/roborn"
         },
         {
-            "name": "Paweł Pregiel (ppregiel)",
-            "homepage": "https://www.drupal.org/u/ppregiel"
-        },
-        {
             "name": "codebymikey",
             "homepage": "https://www.drupal.org/u/codebymikey"
+        },
+        {
+            "name": "Stephan Zeidler (szeidler)",
+            "homepage": "https://www.drupal.org/u/szeidler"
         }
     ],
     "support": {
@@ -32,7 +32,8 @@
         "source": "https://git.drupalcode.org/project/gutenberg"
     },
     "require": {
-        "php": ">=7.0",
-        "ext-json": "*"
+        "php": ">=7.4",
+        "ext-json": "*",
+        "drupal/core": "^9 || ^10"
     }
 }
