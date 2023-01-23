@@ -1,7 +1,6 @@
 name: Bootstrap Barrio
 type: theme
 description: 'A flexible Booststrap based theme, with many regions and a responsive, mobile-first layout.'
-core: 8.x
 core_version_requirement: ^9.4 || ^10
 base theme: false
 
