@@ -1,5 +1,5 @@
 subpathauto.admin_settings:
-  path: '/admin/config/development/subpathauto'
+  path: '/admin/config/search/subpathauto'
   defaults:
     _form: '\Drupal\subpathauto\Form\SettingsForm'
     _title: 'Sub-path settings'

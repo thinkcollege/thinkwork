@@ -1,0 +1,14 @@
+{
+    "name": "drupal/subpathauto",
+    "description": "Provides support for extending sub-paths of URL aliases.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://www.drupal.org/project/subpathauto",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/subpathauto",
+        "source": "https://cgit.drupalcode.org/subpathauto"
+    },
+    "require-dev": {
+        "drupal/redirect": "*"
+    }
+}

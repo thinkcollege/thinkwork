@@ -47,7 +47,7 @@ class ViewfieldWidgetTest extends ViewfieldFunctionalTestBase {
     $viewfield_display = $session->fieldExists('field_view_test[0][display_id]');
     $viewfield_display->setValue('block_1');
 
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
 
     // Test response.
     $session->responseContains('content_test');

@@ -14,7 +14,7 @@ class SubPathautoSpecialCharacterTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'subpathauto',
     'path_alias',
     'node',
@@ -31,7 +31,7 @@ class SubPathautoSpecialCharacterTest extends BrowserTestBase {
   /**
    * Ensures that special character urls do not return 404 page.
    */
-  public function testSpecialCharacterPath() {
+  public function testSpecialCharacterPath(): void {
     $this->drupalCreateContentType(['type' => 'page', 'name' => 'Basic page']);
     $this->drupalCreateNode();
 

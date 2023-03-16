@@ -3,7 +3,7 @@
   Drupal.behaviors.viewfield = {
 
     attach: function(context, settings) {
-      $(Drupal.ajax.instances).once('disableFormElementsDuringAjaxCallback').each(function (index, instance) {
+      Drupal.ajax.instances.forEach(function (instance) {
         if ($.inArray('ajaxGetDisplayOptions', instance.callback) !== -1) {
           instance.options.beforeSubmit = $.fn.ajaxDisableElements;
         }

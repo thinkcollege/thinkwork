@@ -57,8 +57,8 @@
         "sort-packages": true
     },
     "suggest": {
-        "ext-soap": "*",
-        "ext-xdebug": "*"
+        "ext-soap": "To be able to generate mocks based on WSDL files",
+        "ext-xdebug": "PHP extension that provides line coverage as well as branch and path coverage"
     },
     "bin": [
         "phpunit"
@@ -83,7 +83,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "9.5-dev"
+            "dev-master": "9.6-dev"
         }
     }
 }

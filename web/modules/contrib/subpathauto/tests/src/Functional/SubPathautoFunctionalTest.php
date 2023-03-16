@@ -15,7 +15,7 @@ class SubPathautoFunctionalTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'subpathauto',
     'node',
     'user',
@@ -32,7 +32,7 @@ class SubPathautoFunctionalTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->drupalPlaceBlock('local_tasks_block');
@@ -67,7 +67,7 @@ class SubPathautoFunctionalTest extends BrowserTestBase {
   /**
    * Ensures that inbound and outbound paths are converted correctly.
    */
-  public function testBasicIntegration() {
+  public function testBasicIntegration(): void {
     $this->drupalGet('/kittens');
     $this->assertSession()->linkByHrefExists('/kittens/edit', 0, 'Local task link path that is subpath for an alias lead to correct URL.');
 
@@ -80,7 +80,7 @@ class SubPathautoFunctionalTest extends BrowserTestBase {
   /**
    * Ensures that language prefix is handled correctly.
    */
-  public function testWithLanguagePrefix() {
+  public function testWithLanguagePrefix(): void {
     $this->drupalGet('/fi/kittens');
     $this->assertSession()->linkByHrefExists('/fi/kittens/edit', 0, 'Local task link path that is subpath for an alias lead to correct URL when language prefix exists.');
 
@@ -93,7 +93,7 @@ class SubPathautoFunctionalTest extends BrowserTestBase {
   /**
    * Ensures that non-existing paths are returning 404 page.
    */
-  public function testNonExistingPath() {
+  public function testNonExistingPath(): void {
     $this->drupalGet('/kittens/are-faken');
     $this->assertSession()->statusCodeEquals(404);
   }

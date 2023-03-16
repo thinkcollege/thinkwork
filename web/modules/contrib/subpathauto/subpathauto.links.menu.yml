@@ -1,0 +1,6 @@
+subpathauto.settings.form:
+  title: 'Sub-path settings'
+  parent: system.admin_config_search
+  description: 'Configure the subpathauto module.'
+  route_name: subpathauto.admin_settings
+  weight: 25

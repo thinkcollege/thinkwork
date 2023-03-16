@@ -2,12 +2,12 @@ name: Viewfield
 type: module
 description: 'Defines an entity reference field type to display a view.'
 package: Field types
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^9.2 || ^10
 dependencies:
   - drupal:views
   - drupal:field
 
-# Information added by Drupal.org packaging script on 2020-08-13
-version: '8.x-3.0-beta6'
+# Information added by Drupal.org packaging script on 2023-02-07
+version: '8.x-3.0-beta7'
 project: 'viewfield'
-datestamp: 1597345183
+datestamp: 1675788961

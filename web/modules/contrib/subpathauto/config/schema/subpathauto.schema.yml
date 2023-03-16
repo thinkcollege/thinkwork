@@ -5,3 +5,6 @@ subpathauto.settings:
     depth:
       type: integer
       label: 'Maximum depth of sub-paths to alias'
+    redirect_support:
+      type: boolean
+      label: 'If set to TRUE, redirects will be taken into account when resolving sub aliases.'

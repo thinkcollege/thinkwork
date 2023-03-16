@@ -37,6 +37,13 @@
 
         $('input[name*="allowed_blocks_' + category + '[' + category + '"]').prop('checked', checked);
       });
+
+      $('#edit-allowed-custom-blocks-details input[name*="allowed_blocks_"][value*="/all"]').click(function (ev) {
+        var category = $(ev.currentTarget).val().split('/')[0];
+        var checked = $(ev.currentTarget).is(':checked');
+
+        $('input[name*="allowed_blocks_' + category + '[' + category + '"]').prop('checked', checked);
+      });
     }
   };
 })(jQuery, Drupal);

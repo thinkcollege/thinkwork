@@ -7,4 +7,3 @@ viewfield:
     - core/drupal
     - core/drupalSettings
     - core/drupal.progress
-    - core/jquery.once

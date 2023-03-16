@@ -15,6 +15,20 @@ use Psr\Log\LoggerInterface;
 class ReusableBlockProcessor implements GutenbergBlockProcessorInterface {
 
   /**
+   * The number of times this formatter allows rendering the same entity.
+   *
+   * @var int
+   */
+  const RECURSIVE_RENDER_LIMIT = 20;
+
+  /**
+   * An array of counters for the recursive rendering protection.
+   *
+   * @var array
+   */
+  protected static $recursiveRenderDepth = [];
+
+  /**
    * The entity type manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
@@ -76,7 +90,25 @@ class ReusableBlockProcessor implements GutenbergBlockProcessorInterface {
         ->getViewBuilder('block_content')
         ->view($block_entity, 'reusable_block');
 
+      $id = $block_entity->id();
+      if (isset(static::$recursiveRenderDepth[$id])) {
+        static::$recursiveRenderDepth[$id]++;
+      }
+      else {
+        static::$recursiveRenderDepth[$id] = 1;
+      }
+      if (static::$recursiveRenderDepth[$id] > static::RECURSIVE_RENDER_LIMIT) {
+        $this->logger->error('Recursive rendering detected with gutenberg reusable block id @id', [
+          '@id' => $id,
+        ]);
+        return;
+      }
+
       $block_content = $this->renderer->render($render);
+
+      // Reset the render counter for this block, as we allow it to appear many
+      // times of course, just not inside of itself.
+      unset(static::$recursiveRenderDepth[$id]);
 
       $bubbleable_metadata->addCacheableDependency(
         CacheableMetadata::createFromRenderArray($render)

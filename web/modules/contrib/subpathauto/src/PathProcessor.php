@@ -3,12 +3,15 @@
 namespace Drupal\subpathauto;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Path\PathValidatorInterface;
 use Drupal\Core\PathProcessor\InboundPathProcessorInterface;
 use Drupal\Core\PathProcessor\OutboundPathProcessorInterface;
 use Drupal\Core\Render\BubbleableMetadata;
+use Drupal\Core\Url;
+use Drupal\language\Plugin\LanguageNegotiation\LanguageNegotiationUrl;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -45,11 +48,25 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
   protected $pathValidator;
 
   /**
+   * The module handler service.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * Whether it is recursive call or not.
    *
    * @var bool
    */
   protected $recursiveCall;
+
+  /**
+   * A boolean to hold whether the redirect module is installed.
+   *
+   * @var bool
+   */
+  protected $hasRedirectModuleSupport;
 
   /**
    * Builds PathProcessor object.
@@ -60,11 +77,18 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
    *   The language manager.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler service.
    */
-  public function __construct(InboundPathProcessorInterface $path_processor, LanguageManagerInterface $language_manager, ConfigFactoryInterface $config_factory) {
+  public function __construct(InboundPathProcessorInterface $path_processor, LanguageManagerInterface $language_manager, ConfigFactoryInterface $config_factory, ModuleHandlerInterface $module_handler = NULL) {
     $this->pathProcessor = $path_processor;
     $this->languageManager = $language_manager;
     $this->configFactory = $config_factory;
+    $this->moduleHandler = $module_handler;
+    if (empty($this->moduleHandler)) {
+      @trigger_error('Calling PathProcessor::__construct() without the $module_handler argument is deprecated in subpathauto:8.x-1.2 and the $module_handler argument will be required in subpathauto:2.0. See https://www.drupal.org/project/subpathauto/issues/3175637', E_USER_DEPRECATED);
+      $this->moduleHandler = \Drupal::service('module_handler');
+    }
   }
 
   /**
@@ -72,6 +96,7 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
    */
   public function processInbound($path, Request $request) {
     $request_path = $this->getPath($request->getPathInfo());
+
     // The path won't be processed if the path has been already modified by
     // a path processor (including this one), or if this is a recursive call
     // caused by ::isValidPath.
@@ -79,6 +104,8 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
       return $path;
     }
 
+    // Verify that the full path is not a redirect before checking its parts.
+    $path = $this->checkRedirectedPath($request_path);
     $original_path = $path;
     $max_depth = $this->getMaxDepth();
     $subpath = [];
@@ -91,6 +118,17 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
       }
       $path = '/' . implode('/', $path_array);
       $processed_path = $this->pathProcessor->processInbound($path, $request);
+
+      // If the path did not change, it might be that the alias is outdated.
+      // Check if a redirect has been created in the meantime and if.
+      if ($processed_path === $path) {
+        $processed_path = $this->checkRedirectedPath($path);
+        if ($path !== $processed_path) {
+          // Path $path is a redirect.
+          $processed_path = $this->pathProcessor->processInbound($processed_path, $request);
+        }
+      }
+
       if ($processed_path !== $path) {
         $path = $processed_path . '/' . implode('/', array_reverse($subpath));
 
@@ -130,8 +168,7 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
       $path = '/' . implode('/', $path_array);
       $processed_path = $this->pathProcessor->processOutbound($path, $options, $request);
       if ($processed_path !== $path) {
-        $path = $processed_path . '/' . implode('/', array_reverse($subpath));
-        return $path;
+        return $processed_path . '/' . implode('/', array_reverse($subpath));
       }
     }
 
@@ -148,13 +185,56 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
    *   Path without language prefix.
    */
   protected function getPath($path_info) {
-    $language_prefix = '/' . $this->languageManager->getCurrentLanguage(LanguageInterface::TYPE_URL)->getId() . '/';
 
-    if (substr($path_info, 0, strlen($language_prefix)) == $language_prefix) {
-      $path_info = '/' . substr($path_info, strlen($language_prefix));
+    $prefixes = $this->getLanguageUrlPrefixes();
+    $current_language_id = $this->languageManager->getCurrentLanguage(LanguageInterface::TYPE_URL)
+      ->getId();
+
+    if (isset($prefixes[$current_language_id])) {
+      $language_prefix = $prefixes[$current_language_id];
+      $url_language_prefix = '/' . $language_prefix . '/';
+
+      if (substr($path_info, 0, strlen($url_language_prefix)) == $url_language_prefix) {
+        $path_info = '/' . substr($path_info, strlen($url_language_prefix));
+      }
     }
 
     return rtrim(urldecode($path_info), '/');
+  }
+
+  /**
+   * Checks if there is a redirect for the path and if so, returns the new path.
+   *
+   * @param string $path
+   *   The path to check.
+   *
+   * @return string
+   *   The new path.
+   */
+  protected function checkRedirectedPath(string $path) {
+    if (!isset($this->hasRedirectModuleSupport)) {
+      $this->hasRedirectModuleSupport = $this->moduleHandler->moduleExists('redirect') && $this->configFactory->get('subpathauto.settings')->get('redirect_support');
+    }
+    if ($this->hasRedirectModuleSupport) {
+      // Loads and check if the current path has a redirect.
+      $redirects = \Drupal::service('redirect.repository')->findBySourcePath(ltrim($path, '/'));
+
+      if (!empty($redirects)) {
+        $redirect = reset($redirects)->getRedirect();
+        $url = Url::fromUri($redirect['uri']);
+        // If there is a redirect towards an external or unrouted source, don't
+        // do anything as it's not relevant for constructing or deconstructing
+        // an alias.
+        if ($url->isExternal() || !$url->isRouted()) {
+          return $path;
+        }
+
+        // Return the internal path, the unaliased path of the URL.
+        return '/' . $url->getInternalPath();
+      }
+    }
+
+    return $path;
   }
 
   /**
@@ -216,6 +296,21 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
    */
   protected function getMaxDepth() {
     return $this->configFactory->get('subpathauto.settings')->get('depth');
+  }
+
+  /**
+   * Language URL prefixes.
+   *
+   * @return array
+   *   List of prefixes.
+   */
+  protected function getLanguageUrlPrefixes() {
+    $config = $this->configFactory->get('language.negotiation')->get('url');
+    if (isset($config['prefixes']) && $config['source'] == LanguageNegotiationUrl::CONFIG_PATH_PREFIX) {
+      return $config['prefixes'];
+    }
+
+    return [];
   }
 
 }

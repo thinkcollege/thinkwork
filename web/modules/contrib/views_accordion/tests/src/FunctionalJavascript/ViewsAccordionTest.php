@@ -21,7 +21,7 @@ class ViewsAccordionTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'views_accordion_test',
   ];
 
@@ -49,7 +49,7 @@ class ViewsAccordionTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     // Create a set of users and nodes for testing.
     $this->user1 = $this->createUser();

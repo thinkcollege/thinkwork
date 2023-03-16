@@ -56,6 +56,18 @@
           checked,
         );
       });
+
+      $('#edit-allowed-custom-blocks-details input[name*="allowed_blocks_"][value*="/all"]').click(ev => {
+        const category = $(ev.currentTarget)
+          .val()
+          .split('/')[0];
+        const checked = $(ev.currentTarget).is(':checked');
+
+        $(`input[name*="allowed_blocks_${category}[${category}"]`).prop(
+          'checked',
+          checked,
+        );
+      });
     },
   };
 })(jQuery, Drupal);

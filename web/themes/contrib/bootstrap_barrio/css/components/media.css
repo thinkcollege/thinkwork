@@ -65,7 +65,7 @@
   align-items: end;
 }
 
-.js-form-item {
+.media-library-widget-modal .js-form-item {
   margin: 5px;
 }
 
@@ -76,7 +76,7 @@
 
 
 /* Fix Form Insert Button to Bottom of Popup */
-.form-actions {
+.media-library-widget-modal .form-actions {
   position: sticky;
   bottom: 0;
   background: #fff;

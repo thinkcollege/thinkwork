@@ -48,6 +48,9 @@ categories:
       - id: "core/code"
         name: "Code"
         default: true
+      - id: "core/group"
+        name: "Group"
+        default: true
       - id: "core/columns"
         name: "Columns"
         default: true

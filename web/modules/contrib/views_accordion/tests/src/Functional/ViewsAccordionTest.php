@@ -19,7 +19,7 @@ class ViewsAccordionTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'views_accordion_test',
     'views_ui',
   ];
@@ -27,7 +27,7 @@ class ViewsAccordionTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $user = $this->drupalCreateUser([
@@ -54,11 +54,13 @@ class ViewsAccordionTest extends BrowserTestBase {
       'page[style][style_plugin]' => 'views_accordion',
       'page[style][row_plugin]' => 'teasers',
     ];
-    $this->drupalPostForm('admin/structure/views/add', $edit, 'Save and edit');
+    $this->drupalGet('admin/structure/views/add');
+    $this->submitForm($edit, 'Save and edit');
     $assert_session->pageTextContains('Views accordion requires Fields as row style');
 
     $edit['page[style][row_plugin]'] = 'fields';
-    $this->drupalPostForm('admin/structure/views/add', $edit, 'Save and edit');
+    $this->drupalGet('admin/structure/views/add');
+    $this->submitForm($edit, 'Save and edit');
     $assert_session->pageTextContains('The view test has been saved.');
 
     // Assert the options of our exported view display correctly.

@@ -4,6 +4,7 @@ namespace Drupal\Tests\subpathauto\Unit;
 
 use Drupal\Core\Language\Language;
 use Drupal\Core\Url;
+use Drupal\language\Plugin\LanguageNegotiation\LanguageNegotiationUrl;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Drupal\subpathauto\PathProcessor;
@@ -50,6 +51,25 @@ class SubPathautoTest extends UnitTestCase {
   protected $subPathautoSettings;
 
   /**
+   * The mocked configuration entity.
+   *
+   * @var \Drupal\Core\Config\ConfigBase|\PHPUnit_Framework_MockObject_MockObject
+   */
+  protected $languageNegotiation;
+
+  /**
+   * Language negotiation settings.
+   *
+   * @var array.
+   */
+  protected $languageNegotiationSettings = [
+    'source' => LanguageNegotiationUrl::CONFIG_PATH_PREFIX,
+    'prefixes' => [
+      'en' => 'default_language',
+    ],
+  ];
+
+  /**
    * The path processor service.
    *
    * @var \Drupal\subpathauto\PathProcessor
@@ -71,7 +91,7 @@ class SubPathautoTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->aliasProcessor = $this->getMockBuilder('Drupal\path_alias\PathProcessor\AliasPathProcessor')
@@ -84,23 +104,50 @@ class SubPathautoTest extends UnitTestCase {
       ->willReturn(new Language(Language::$defaultValues));
 
     $this->pathValidator = $this->createMock('Drupal\Core\Path\PathValidatorInterface');
+    $this->languageNegotiation = $this->createMock('Drupal\Core\Config\ConfigBase');
 
     $this->subPathautoSettings = $this->createMock('Drupal\Core\Config\ConfigBase');
 
     $this->configFactory = $this->createMock('Drupal\Core\Config\ConfigFactoryInterface');
     $this->configFactory->expects($this->any())
       ->method('get')
-      ->with('subpathauto.settings')
-      ->willReturn($this->subPathautoSettings);
+      ->with($this->logicalOr(
+        $this->equalTo('subpathauto.settings'),
+        $this->equalTo('language.negotiation')
+      ))
+      ->will($this->returnCallback(
+        function ($param) {
+          $config = func_get_arg(0);
+          if ($config == 'subpathauto.settings') {
+            return $this->subPathautoSettings;
+          }
+          elseif ($config == 'language.negotiation') {
+            return $this->languageNegotiation;
+          }
 
-    $this->pathProcessor = new PathProcessor($this->aliasProcessor, $this->languageManager, $this->configFactory);
+          return NULL;
+        }
+      ));
+
+    $this->languageNegotiation->expects($this->any())
+      ->method('get')
+      ->willReturn($this->languageNegotiationSettings);
+
+    $module_handler = $this->getMockBuilder('Drupal\Core\Extension\ModuleHandler')
+      ->disableOriginalConstructor()
+      ->getMock();
+    $module_handler->expects($this->any())
+      ->method('moduleExists')
+      ->willReturn(FALSE);
+
+    $this->pathProcessor = new PathProcessor($this->aliasProcessor, $this->languageManager, $this->configFactory, $module_handler);
     $this->pathProcessor->setPathValidator($this->pathValidator);
   }
 
   /**
    * @covers ::processInbound
    */
-  public function testInboundSubPath() {
+  public function testInboundSubPath(): void {
     $this->aliasProcessor->expects($this->any())
       ->method('processInbound')
       ->willReturnCallback([$this, 'pathAliasCallback']);
@@ -117,7 +164,7 @@ class SubPathautoTest extends UnitTestCase {
 
     // Look up a subpath of the 'content/first-node' alias when request has
     // language prefix.
-    $processed = $this->pathProcessor->processInbound('/content/first-node/a', Request::create('/en/content/first-node/a'));
+    $processed = $this->pathProcessor->processInbound('/content/first-node/a', Request::create('/default_language/content/first-node/a'));
     $this->assertEquals('/node/1/a', $processed);
 
     // Look up a multilevel subpath of the '/content/first-node' alias.
@@ -141,7 +188,7 @@ class SubPathautoTest extends UnitTestCase {
   /**
    * @covers ::processInbound
    */
-  public function testInboundPathProcessorMaxDepth() {
+  public function testInboundPathProcessorMaxDepth(): void {
     $this->pathValidator->expects($this->any())
       ->method('getUrlIfValidWithoutAccessCheck')
       ->willReturn(new Url('any_route'));
@@ -165,7 +212,7 @@ class SubPathautoTest extends UnitTestCase {
   /**
    * @covers ::processInbound
    */
-  public function testInboundAlreadyProcessed() {
+  public function testInboundAlreadyProcessed(): void {
     // The subpath processor should ignore this and not pass it on to the
     // alias processor.
     $processed = $this->pathProcessor->processInbound('node/1', Request::create('/content/first-node'));
@@ -175,7 +222,7 @@ class SubPathautoTest extends UnitTestCase {
   /**
    * @covers ::processOutbound
    */
-  public function testOutboundSubPath() {
+  public function testOutboundSubPath(): void {
     $this->aliasProcessor->expects($this->any())
       ->method('processOutbound')
       ->willReturnCallback([$this, 'aliasByPathCallback']);
@@ -208,7 +255,7 @@ class SubPathautoTest extends UnitTestCase {
   /**
    * @covers ::processOutbound
    */
-  public function testOutboundPathProcessorMaxDepth() {
+  public function testOutboundPathProcessorMaxDepth(): void {
     $this->pathValidator->expects($this->any())
       ->method('getUrlIfValidWithoutAccessCheck')
       ->willReturn(new Url('any_route'));
@@ -232,7 +279,7 @@ class SubPathautoTest extends UnitTestCase {
   /**
    * @covers ::processOutbound
    */
-  public function testOutboundAbsoluteUrl() {
+  public function testOutboundAbsoluteUrl(): void {
     // The subpath processor should ignore this and not pass it on to the
     // alias processor.
     $options = ['absolute' => TRUE];

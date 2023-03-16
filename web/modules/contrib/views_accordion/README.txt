@@ -28,7 +28,7 @@ You can configure the options provided by the jQuery UI plugin.
 REQUIREMENTS
 ------------
 
-This module requires no modules outside of Drupal core.
+This module requires the jQuery UI Accordion (https://www.drupal.org/project/jquery_ui_accordion) contrib.
 
 
 INSTALLATION

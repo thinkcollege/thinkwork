@@ -264,6 +264,58 @@ function gutenberg_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       ];
     }
 
+    $custom_settings = UtilsController::getAllowedCustomBlocks();
+
+    if ($custom_settings) {
+      $form['gutenberg']['allowed_custom_blocks_details'] = [
+        '#type' => 'details',
+        '#title' => t('Allowed Custom Gutenberg blocks'),
+        '#states' => [
+          'visible' => [
+            'input[name="enable_gutenberg_experience"]' => ['checked' => TRUE],
+          ],
+        ],
+      ];
+    }
+
+    foreach ($custom_settings['categories'] as $category) {
+      $category['reference'] = str_replace('/', '-', $category['reference']);
+      $form['gutenberg']['categories']['#default_value'][] = $category['reference'];
+
+      $form['gutenberg']['allowed_custom_blocks_details'][$category['reference']] = [
+        '#type' => 'fieldset',
+        '#title' => $category['name'],
+      ];
+
+      $options = [$category['reference'] . '/all' => t('All')];
+      foreach ($category['blocks'] as $block) {
+        $options[$block['id']] = $block['name'];
+      }
+
+      $default_values = array_combine(
+        array_map(
+          function ($block) {
+            return $block['id'];
+          },
+          $category['blocks']
+        ),
+        array_map(
+          function ($block) {
+            return $block['default'] ? $block['id'] : 0;
+          },
+          $category['blocks']
+        )
+      );
+
+      $config_values = $config->get($form['type']['#default_value'] . '_allowed_blocks');
+
+      $form['gutenberg']['allowed_custom_blocks_details'][$category['reference']]['allowed_blocks_' . $category['reference']] = [
+        '#type' => 'checkboxes',
+        '#options' => $options,
+        '#default_value' => array_merge($default_values, $config_values ? $config_values : []),
+      ];
+    }
+
     $form['gutenberg']['allowed_drupal_blocks_details'] = [
       '#type' => 'details',
       '#title' => t('Allowed Drupal blocks'),

@@ -69,9 +69,24 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       var attributes = _ref2.attributes;
       var text = attributes.text;
 
-      return text;
+      return React.createElement(
+        'span',
+        null,
+        text
+      );
     }
   };
+
+  settings.deprecated = [{
+    attributes: settings.attributes,
+    supports: settings.supports,
+    save: function save(_ref3) {
+      var attributes = _ref3.attributes;
+      var text = attributes.text;
+
+      return text;
+    }
+  }];
 
   registerBlockType('drupal/simple-text', _extends({ category: 'common' }, settings));
 })(Drupal, wp);

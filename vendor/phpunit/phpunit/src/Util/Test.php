@@ -331,7 +331,7 @@ final class Test
     /**
      * @psalm-param class-string $className
      */
-    public static function parseTestMethodAnnotations(string $className, ?string $methodName = ''): array
+    public static function parseTestMethodAnnotations(string $className, ?string $methodName = null): array
     {
         $registry = Registry::getInstance();
 
@@ -364,7 +364,7 @@ final class Test
     public static function getBackupSettings(string $className, string $methodName): array
     {
         return [
-            'backupGlobals'          => self::getBooleanAnnotationSetting(
+            'backupGlobals' => self::getBooleanAnnotationSetting(
                 $className,
                 $methodName,
                 'backupGlobals'

@@ -2,6 +2,7 @@
 
 namespace Drupal\viewfield\Plugin\Field\FieldFormatter;
 
+use Drupal\views\Plugin\views\pager\None;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -167,7 +168,7 @@ class ViewfieldFormatterDefault extends FormatterBase {
 
         // Disable pager, if items_to_display was set.
         if (!empty($items_to_display)) {
-          $view->pager = new \Drupal\views\Plugin\views\pager\None([], '', []);
+          $view->pager = new None([], '', []);
           $view->pager->init($view, $view->display_handler);
           $view->pager->setItemsPerPage($items_to_display);
         }

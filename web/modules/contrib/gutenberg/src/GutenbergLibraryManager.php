@@ -28,6 +28,7 @@ class GutenbergLibraryManager extends DefaultPluginManager implements GutenbergL
     'libraries-edit' => [],
     'libraries-view' => [],
     'dynamic-blocks' => [],
+    'custom-blocks' => []
   ];
 
   /**
@@ -216,6 +217,7 @@ class GutenbergLibraryManager extends DefaultPluginManager implements GutenbergL
       // TODO: A better way to do this?
       $module_path = $this->moduleHandler->getModule('gutenberg')->getPath();
       $config_file_path = $module_path . '/' . $theme_name . '.gutenberg.yml';
+
       if (file_exists($config_file_path)) {
         $default_theme_definitions = Yaml::parseFile($config_file_path);
       }
@@ -245,7 +247,7 @@ class GutenbergLibraryManager extends DefaultPluginManager implements GutenbergL
       ['gutenberg']
     );
     $this->activeThemeDefinitions = $theme_definitions;
-
+    
     return $this->activeThemeDefinitions;
   }
 

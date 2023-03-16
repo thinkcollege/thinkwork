@@ -19,7 +19,7 @@ abstract class ViewfieldFunctionalTestBase extends WebDriverTestBase {
    *
    * @var string[]
    */
-  public static $modules = [
+  protected static $modules = [
     'field',
     'node',
     'views',
@@ -56,7 +56,7 @@ abstract class ViewfieldFunctionalTestBase extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'article_test']);

@@ -54,6 +54,29 @@ class UtilsController extends ControllerBase {
   }
 
   /**
+   * Gets allowed custom blocks.
+   * It fetched from *gutenberg.yml file within the theme
+   *
+   */
+  public static function getAllowedCustomBlocks() {
+    $settings = &drupal_static(__FUNCTION__);
+
+    if (!isset($settings)) {
+      $gutenberg_library_manager = \Drupal::service('plugin.manager.gutenberg.library');
+      $theme_definitions = $gutenberg_library_manager->getThemeDefinitions();
+      foreach ($theme_definitions as $theme_definition) {
+        if (!empty( $theme_definition['custom-blocks'])) {
+          foreach ($theme_definition['custom-blocks']['categories'] as $category) {
+            $settings['categories'][$category['reference']] = $category;
+          }
+        }
+      }
+    }
+
+    return $settings;
+  }
+
+  /**
    * Get all the entity text fields.
    *
    * @param \Drupal\Core\Entity\FieldableEntityInterface $entity

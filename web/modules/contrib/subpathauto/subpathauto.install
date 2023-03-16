@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for Subpathauto.
+ */
+
+/**
+ * Sets a default value for the redirect_support setting.
+ */
+function subpathauto_update_8001() {
+  // Even though the default value is TRUE for this setting, we are setting this
+  // to FALSE in order to preserve the functionality of the existing websites.
+  \Drupal::configFactory()->getEditable('subpathauto.settings')->set('redirect_support', FALSE)->save();
+}
