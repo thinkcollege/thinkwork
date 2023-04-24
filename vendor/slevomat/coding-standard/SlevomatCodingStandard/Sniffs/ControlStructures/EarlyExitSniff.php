@@ -176,14 +176,6 @@ class EarlyExitSniff implements Sniff
 			return;
 		}
 
-		$pointerAfterElseCondition = TokenHelper::findNextEffective($phpcsFile, $tokens[$elsePointer]['scope_closer'] + 1);
-		if (
-			$pointerAfterElseCondition !== null
-			&& $tokens[$pointerAfterElseCondition]['code'] !== T_CLOSE_CURLY_BRACKET
-		) {
-			return;
-		}
-
 		$fix = $phpcsFile->addFixableError('Remove useless "else" to reduce code nesting.', $elsePointer, self::CODE_USELESS_ELSE);
 
 		if (!$fix) {
@@ -394,7 +386,7 @@ class EarlyExitSniff implements Sniff
 	}
 
 	/**
-	 * @return int[]
+	 * @return list<int>
 	 */
 	private function getScopeCodePointers(File $phpcsFile, int $scopePointer): array
 	{
@@ -448,7 +440,7 @@ class EarlyExitSniff implements Sniff
 	}
 
 	/**
-	 * @return int[]
+	 * @return list<int>
 	 */
 	private function getAllConditionsPointers(File $phpcsFile, int $conditionPointer): array
 	{

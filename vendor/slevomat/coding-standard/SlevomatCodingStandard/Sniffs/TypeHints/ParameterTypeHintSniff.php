@@ -12,6 +12,7 @@ use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\ObjectShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use SlevomatCodingStandard\Helpers\Annotation\ParameterAnnotation;
@@ -78,7 +79,7 @@ class ParameterTypeHintSniff implements Sniff
 	/** @var bool|null */
 	public $enableStandaloneNullTrueFalseTypeHints = null;
 
-	/** @var string[] */
+	/** @var list<string> */
 	public $traversableTypeHints = [];
 
 	/** @var array<int, string>|null */
@@ -133,7 +134,7 @@ class ParameterTypeHintSniff implements Sniff
 	}
 
 	/**
-	 * @param (TypeHint|null)[] $parametersTypeHints
+	 * @param array<string, TypeHint|null> $parametersTypeHints
 	 * @param array<string, ParameterAnnotation|VariableAnnotation> $parametersAnnotations
 	 * @param array<string, ParameterAnnotation|VariableAnnotation> $prefixedParametersAnnotations
 	 */
@@ -206,7 +207,7 @@ class ParameterTypeHintSniff implements Sniff
 			$nullableParameterTypeHint = false;
 
 			if (AnnotationTypeHelper::containsOneType($parameterTypeNode)) {
-				/** @var ArrayTypeNode|ArrayShapeNode|IdentifierTypeNode|ThisTypeNode|GenericTypeNode|CallableTypeNode|ConstTypeNode $parameterTypeNode */
+				/** @var ArrayTypeNode|ArrayShapeNode|ObjectShapeNode|IdentifierTypeNode|ThisTypeNode|GenericTypeNode|CallableTypeNode|ConstTypeNode $parameterTypeNode */
 				$parameterTypeNode = $parameterTypeNode;
 				$typeHints[] = AnnotationTypeHelper::getTypeHintFromOneType(
 					$parameterTypeNode,
@@ -224,7 +225,7 @@ class ParameterTypeHintSniff implements Sniff
 						continue 2;
 					}
 
-					/** @var ArrayTypeNode|ArrayShapeNode|IdentifierTypeNode|ThisTypeNode|GenericTypeNode|CallableTypeNode|ConstTypeNode $typeNode */
+					/** @var ArrayTypeNode|ArrayShapeNode|ObjectShapeNode|IdentifierTypeNode|ThisTypeNode|GenericTypeNode|CallableTypeNode|ConstTypeNode $typeNode */
 					$typeNode = $typeNode;
 
 					$typeHint = AnnotationTypeHelper::getTypeHintFromOneType($typeNode, $canTryUnionTypeHint);
@@ -413,7 +414,7 @@ class ParameterTypeHintSniff implements Sniff
 	}
 
 	/**
-	 * @param (TypeHint|null)[] $parametersTypeHints
+	 * @param array<string, TypeHint|null> $parametersTypeHints
 	 * @param array<string, ParameterAnnotation|VariableAnnotation> $parametersAnnotations
 	 * @param array<string, ParameterAnnotation|VariableAnnotation> $prefixedParametersAnnotations
 	 */
@@ -528,7 +529,7 @@ class ParameterTypeHintSniff implements Sniff
 	}
 
 	/**
-	 * @param (TypeHint|null)[] $parametersTypeHints
+	 * @param array<string, TypeHint|null> $parametersTypeHints
 	 * @param array<string, ParameterAnnotation|VariableAnnotation> $parametersAnnotations
 	 */
 	private function checkUselessAnnotations(
@@ -633,7 +634,7 @@ class ParameterTypeHintSniff implements Sniff
 	}
 
 	/**
-	 * @return array<int, string>
+	 * @return list<string>
 	 */
 	private function getTraversableTypeHints(): array
 	{

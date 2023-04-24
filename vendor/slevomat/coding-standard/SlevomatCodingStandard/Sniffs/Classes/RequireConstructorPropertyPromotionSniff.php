@@ -280,7 +280,7 @@ class RequireConstructorPropertyPromotionSniff implements Sniff
 	}
 
 	/**
-	 * @return int[]
+	 * @return list<int>
 	 */
 	private function getParameterPointers(File $phpcsFile, int $functionPointer): array
 	{
@@ -294,7 +294,7 @@ class RequireConstructorPropertyPromotionSniff implements Sniff
 	}
 
 	/**
-	 * @return int[]
+	 * @return list<int>
 	 */
 	private function getPropertyPointers(File $phpcsFile, int $classPointer): array
 	{
@@ -320,7 +320,7 @@ class RequireConstructorPropertyPromotionSniff implements Sniff
 		}
 
 		foreach (AnnotationHelper::getAnnotations($phpcsFile, $propertyPointer) as $annotationType => $annotations) {
-			if ($annotationType !== '@var') {
+			if (!in_array($annotationType, ['@var', '@phpstan-var', '@psalm-var'], true)) {
 				return true;
 			}
 

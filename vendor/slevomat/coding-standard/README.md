@@ -29,7 +29,9 @@ Slevomat Coding Standard for [PHP_CodeSniffer](https://github.com/squizlabs/PHP_
 
 🚧 = [Sniff check can be suppressed locally](#suppressing-sniffs-locally)
 
+ - [SlevomatCodingStandard.Arrays.AlphabeticallySortedByKeys](doc/arrays.md#slevomatcodingstandardarrayalphabeticallysortedbykeys) 🔧
  - [SlevomatCodingStandard.Arrays.DisallowImplicitArrayCreation](doc/arrays.md#slevomatcodingstandardarraysdisallowimplicitarraycreation)
+ - [SlevomatCodingStandard.Arrays.DisallowPartiallyKeyed](doc/arrays.md#slevomatcodingstandardarraysdisallowpartiallykeyed) 🚧
  - [SlevomatCodingStandard.Arrays.MultiLineArrayEndBracketPlacement](doc/arrays.md#slevomatcodingstandardarraysmultilinearrayendbracketplacement-) 🔧
  - [SlevomatCodingStandard.Arrays.SingleLineArrayWhitespace](doc/arrays.md#slevomatcodingstandardarrayssinglelinearraywhitespace-) 🔧
  - [SlevomatCodingStandard.Arrays.TrailingArrayComma](doc/arrays.md#slevomatcodingstandardarraystrailingarraycomma-) 🔧
@@ -48,7 +50,9 @@ Slevomat Coding Standard for [PHP_CodeSniffer](https://github.com/squizlabs/PHP_
  - [SlevomatCodingStandard.Classes.DisallowLateStaticBindingForConstants](doc/classes.md#slevomatcodingstandardclassesdisallowlatestaticbindingforconstants-) 🔧
  - [SlevomatCodingStandard.Classes.DisallowMultiConstantDefinition](doc/classes.md#slevomatcodingstandardclassesdisallowmulticonstantdefinition-) 🔧
  - [SlevomatCodingStandard.Classes.DisallowMultiPropertyDefinition](doc/classes.md#slevomatcodingstandardclassesdisallowmultipropertydefinition-) 🔧
+ - [SlevomatCodingStandard.Classes.DisallowStringExpressionPropertyFetch](doc/classes.md#slevomatcodingstandardclassesdisallowstringexpressionpropertyfetch-) 🔧
  - [SlevomatCodingStandard.Classes.EmptyLinesAroundClassBraces](doc/classes.md#slevomatcodingstandardclassesemptylinesaroundclassbraces-) 🔧
+ - [SlevomatCodingStandard.Classes.EnumCaseSpacing](doc/classes.md#slevomatcodingstandardclassesenumcasespacing-) 🔧
  - [SlevomatCodingStandard.Classes.ForbiddenPublicProperty](doc/classes.md#slevomatcodingstandardclassesforbiddenpublicproperty)
  - [SlevomatCodingStandard.Classes.MethodSpacing](doc/classes.md#slevomatcodingstandardclassesmethodspacing-) 🔧
  - [SlevomatCodingStandard.Classes.ModernClassNameReference](doc/classes.md#slevomatcodingstandardclassesmodernclassnamereference-) 🔧
@@ -58,6 +62,7 @@ Slevomat Coding Standard for [PHP_CodeSniffer](https://github.com/squizlabs/PHP_
  - [SlevomatCodingStandard.Classes.RequireAbstractOrFinal](doc/classes.md#slevomatcodingstandardclassesrequireabstractorfinal-) 🔧
  - [SlevomatCodingStandard.Classes.RequireConstructorPropertyPromotion](doc/classes.md#slevomatcodingstandardclassesrequireconstructorpropertypromotion-) 🔧
  - [SlevomatCodingStandard.Classes.RequireMultiLineMethodSignature](doc/classes.md#slevomatcodingstandardclassesrequiremultilinemethodsignature-) 🔧
+ - [SlevomatCodingStandard.Classes.RequireSelfReference](doc/classes.md#slevomatcodingstandardclassesrequireselfreference-) 🔧
  - [SlevomatCodingStandard.Classes.RequireSingleLineMethodSignature](doc/classes.md#slevomatcodingstandardclassesrequiresinglelinemethodsignature-) 🔧
  - [SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming](doc/classes.md#slevomatcodingstandardclassessuperfluousabstractclassnaming)
  - [SlevomatCodingStandard.Classes.SuperfluousErrorNaming](doc/classes.md#slevomatcodingstandardclassessuperfluouserrornaming)
@@ -67,6 +72,7 @@ Slevomat Coding Standard for [PHP_CodeSniffer](https://github.com/squizlabs/PHP_
  - [SlevomatCodingStandard.Classes.TraitUseDeclaration](doc/classes.md#slevomatcodingstandardclassestraitusedeclaration-) 🔧
  - [SlevomatCodingStandard.Classes.TraitUseSpacing](doc/classes.md#slevomatcodingstandardclassestraitusespacing-) 🔧
  - [SlevomatCodingStandard.Classes.UselessLateStaticBinding](doc/classes.md#slevomatcodingstandardclassesuselesslatestaticbinding-) 🔧
+ - [SlevomatCodingStandard.Commenting.AnnotationName](doc/commenting.md#slevomatcodingstandardcommentingannotationname-)
  - [SlevomatCodingStandard.Commenting.DeprecatedAnnotationDeclaration](doc/commenting.md#slevomatcodingstandardcommentingdeprecatedannotationdeclaration)
  - [SlevomatCodingStandard.Commenting.DisallowCommentAfterCode](doc/commenting.md#slevomatcodingstandardcommentingdisallowcommentaftercode-) 🔧
  - [SlevomatCodingStandard.Commenting.DisallowOneLinePropertyDocComment](doc/commenting.md#slevomatcodingstandardcommentingdisallowonelinepropertydoccomment-) 🔧
@@ -86,6 +92,7 @@ Slevomat Coding Standard for [PHP_CodeSniffer](https://github.com/squizlabs/PHP_
  - [SlevomatCodingStandard.ControlStructures.DisallowEmpty](doc/control-structures.md#slevomatcodingstandardcontrolstructuresdisallowempty)
  - [SlevomatCodingStandard.ControlStructures.DisallowNullSafeObjectOperator](doc/control-structures.md#slevomatcodingstandardcontrolstructuresdisallownullsafeobjectoperator)
  - [SlevomatCodingStandard.ControlStructures.DisallowShortTernaryOperator](doc/control-structures.md#slevomatcodingstandardcontrolstructuresdisallowshortternaryoperator-) 🔧
+ - [SlevomatCodingStandard.ControlStructures.DisallowTrailingMultiLineTernaryOperatorSniff](doc/control-structures.md#slevomatcodingstandardcontrolstructuresdisallowtrailingmultilineternaryoperator-) 🔧
  - [SlevomatCodingStandard.ControlStructures.DisallowYodaComparison](doc/control-structures.md#slevomatcodingstandardcontrolstructuresdisallowyodacomparison-) 🔧
  - [SlevomatCodingStandard.ControlStructures.EarlyExit](doc/control-structures.md#slevomatcodingstandardcontrolstructuresearlyexit-) 🔧
  - [SlevomatCodingStandard.ControlStructures.JumpStatementsSpacing](doc/control-structures.md#slevomatcodingstandardcontrolstructuresjumpstatementsspacing-) 🔧
@@ -165,6 +172,7 @@ Slevomat Coding Standard for [PHP_CodeSniffer](https://github.com/squizlabs/PHP_
  - [SlevomatCodingStandard.PHP.TypeCast](doc/php.md#slevomatcodingstandardphptypecast-) 🔧
  - [SlevomatCodingStandard.PHP.UselessParentheses](doc/php.md#slevomatcodingstandardphpuselessparentheses-) 🔧
  - [SlevomatCodingStandard.PHP.UselessSemicolon](doc/php.md#slevomatcodingstandardphpuselesssemicolon-) 🔧
+ - [SlevomatCodingStandard.Strings.DisallowVariableParsing](doc/strings.md#slevomatcodingstandardstringsdisallowvariableparsing)
  - [SlevomatCodingStandard.TypeHints.DeclareStrictTypes](doc/type-hints.md#slevomatcodingstandardtypehintsdeclarestricttypes-) 🔧
  - [SlevomatCodingStandard.TypeHints.DisallowArrayTypeHintSyntax](doc/type-hints.md#slevomatcodingstandardtypehintsdisallowarraytypehintsyntax-) 🔧
  - [SlevomatCodingStandard.TypeHints.DisallowMixedTypeHint](doc/type-hints.md#slevomatcodingstandardtypehintsdisallowmixedtypehint)
@@ -178,6 +186,7 @@ Slevomat Coding Standard for [PHP_CodeSniffer](https://github.com/squizlabs/PHP_
  - [SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing](doc/type-hints.md#slevomatcodingstandardtypehintsreturntypehintspacing-) 🔧
  - [SlevomatCodingStandard.TypeHints.UnionTypeHintFormat](doc/type-hints.md#slevomatcodingstandardtypehintsuniontypehintformat-) 🔧
  - [SlevomatCodingStandard.TypeHints.UselessConstantTypeHint](doc/type-hints.md#slevomatcodingstandardtypehintsuselessconstanttypehint-) 🔧
+ - [SlevomatCodingStandard.Variables.DisallowVariableVariable](doc/variables.md#slevomatcodingstandardvariablesdisallowvariablevariable)
  - [SlevomatCodingStandard.Variables.DisallowSuperGlobalVariable](doc/variables.md#slevomatcodingstandardvariablesdisallowsuperglobalvariable)
  - [SlevomatCodingStandard.Variables.DuplicateAssignmentToVariable](doc/variables.md#slevomatcodingstandardvariablesduplicateassignmenttovariable)
  - [SlevomatCodingStandard.Variables.UnusedVariable](doc/variables.md#slevomatcodingstandardvariablesunusedvariable)

@@ -16,6 +16,7 @@ use PHPStan\PhpDocParser\Ast\Type\ConstTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\ObjectShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
@@ -65,71 +66,39 @@ use const T_DOC_COMMENT_WHITESPACE;
 class AnnotationHelper
 {
 
-	public const PREFIXES = ['psalm', 'phpstan'];
+	public const STATIC_ANALYSIS_PREFIXES = ['psalm', 'phpstan'];
 
 	private const MAPPING = [
 		'@param' => ParameterAnnotation::class,
-		'@psalm-param' => ParameterAnnotation::class,
-		'@phpstan-param' => ParameterAnnotation::class,
 		'@return' => ReturnAnnotation::class,
-		'@psalm-return' => ReturnAnnotation::class,
-		'@phpstan-return' => ReturnAnnotation::class,
 		'@var' => VariableAnnotation::class,
-		'@psalm-var' => VariableAnnotation::class,
-		'@phpstan-var' => VariableAnnotation::class,
 		'@throws' => ThrowsAnnotation::class,
-		'@phpstan-throws' => ThrowsAnnotation::class,
 		'@property' => PropertyAnnotation::class,
-		'@psalm-property' => PropertyAnnotation::class,
-		'@phpstan-property' => PropertyAnnotation::class,
 		'@property-read' => PropertyAnnotation::class,
-		'@psalm-property-read' => PropertyAnnotation::class,
-		'@phpstan-property-read' => PropertyAnnotation::class,
 		'@property-write' => PropertyAnnotation::class,
-		'@psalm-property-write' => PropertyAnnotation::class,
-		'@phpstan-property-write' => PropertyAnnotation::class,
 		'@method' => MethodAnnotation::class,
-		'@psalm-method' => MethodAnnotation::class,
-		'@phpstan-method' => MethodAnnotation::class,
 		'@template' => TemplateAnnotation::class,
-		'@psalm-template' => TemplateAnnotation::class,
-		'@phpstan-template' => TemplateAnnotation::class,
 		'@template-covariant' => TemplateAnnotation::class,
-		'@psalm-template-covariant' => TemplateAnnotation::class,
-		'@phpstan-template-covariant' => TemplateAnnotation::class,
 		'@extends' => ExtendsAnnotation::class,
 		'@template-extends' => ExtendsAnnotation::class,
-		'@phpstan-extends' => ExtendsAnnotation::class,
 		'@implements' => ImplementsAnnotation::class,
 		'@template-implements' => ImplementsAnnotation::class,
-		'@phpstan-implements' => ImplementsAnnotation::class,
 		'@use' => UseAnnotation::class,
 		'@template-use' => UseAnnotation::class,
-		'@phpstan-use' => UseAnnotation::class,
-		'@psalm-type' => TypeAliasAnnotation::class,
-		'@phpstan-type' => TypeAliasAnnotation::class,
-		'@psalm-import-type' => TypeImportAnnotation::class,
-		'@phpstan-import-type' => TypeImportAnnotation::class,
+		'@type' => TypeAliasAnnotation::class,
+		'@import-type' => TypeImportAnnotation::class,
 		'@mixin' => MixinAnnotation::class,
-		'@phpstan-assert' => AssertAnnotation::class,
-		'@phpstan-assert-if-true' => AssertAnnotation::class,
-		'@phpstan-assert-if-false' => AssertAnnotation::class,
-		'@psalm-assert' => AssertAnnotation::class,
-		'@psalm-assert-if-true' => AssertAnnotation::class,
-		'@psalm-assert-if-false' => AssertAnnotation::class,
+		'@assert' => AssertAnnotation::class,
+		'@assert-if-true' => AssertAnnotation::class,
+		'@assert-if-false' => AssertAnnotation::class,
 		'@param-out' => ParameterOutAnnotation::class,
-		'@psalm-param-out' => ParameterOutAnnotation::class,
-		'@phpstan-param-out' => ParameterOutAnnotation::class,
-		'@psalm-self-out' => SelfOutAnnotation::class,
-		'@phpstan-self-out' => SelfOutAnnotation::class,
-		'@psalm-this-out' => SelfOutAnnotation::class,
-		'@phpstan-this-out' => SelfOutAnnotation::class,
+		'@self-out' => SelfOutAnnotation::class,
+		'@this-out' => SelfOutAnnotation::class,
 	];
 
 	/**
-	 * @internal
 	 * @param VariableAnnotation|ParameterAnnotation|ReturnAnnotation|ThrowsAnnotation|PropertyAnnotation|MethodAnnotation|TemplateAnnotation|ExtendsAnnotation|ImplementsAnnotation|UseAnnotation|MixinAnnotation|TypeAliasAnnotation|TypeImportAnnotation|AssertAnnotation|ParameterOutAnnotation|SelfOutAnnotation $annotation
-	 * @return TypeNode[]
+	 * @return list<TypeNode>
 	 */
 	public static function getAnnotationTypes(Annotation $annotation): array
 	{
@@ -171,9 +140,8 @@ class AnnotationHelper
 	}
 
 	/**
-	 * @internal
 	 * @param VariableAnnotation|ParameterAnnotation|ReturnAnnotation|ThrowsAnnotation|PropertyAnnotation|MethodAnnotation|TemplateAnnotation|ExtendsAnnotation|ImplementsAnnotation|UseAnnotation|MixinAnnotation|AssertAnnotation|ParameterOutAnnotation|SelfOutAnnotation $annotation
-	 * @return ConstExprNode[]
+	 * @return list<ConstExprNode>
 	 */
 	public static function getAnnotationConstantExpressions(Annotation $annotation): array
 	{
@@ -199,7 +167,6 @@ class AnnotationHelper
 	}
 
 	/**
-	 * @internal
 	 * @param VariableAnnotation|ParameterAnnotation|ReturnAnnotation|ThrowsAnnotation|PropertyAnnotation|MethodAnnotation|TemplateAnnotation|ExtendsAnnotation|ImplementsAnnotation|UseAnnotation|MixinAnnotation|AssertAnnotation|ParameterOutAnnotation|SelfOutAnnotation $annotation
 	 */
 	public static function fixAnnotationType(File $phpcsFile, Annotation $annotation, TypeNode $typeNode, TypeNode $fixedTypeNode): string
@@ -210,7 +177,6 @@ class AnnotationHelper
 	}
 
 	/**
-	 * @internal
 	 * @param VariableAnnotation|ParameterAnnotation|ReturnAnnotation|ThrowsAnnotation|PropertyAnnotation|MethodAnnotation|TemplateAnnotation|ExtendsAnnotation|ImplementsAnnotation|UseAnnotation|MixinAnnotation|AssertAnnotation|ParameterOutAnnotation|SelfOutAnnotation $annotation
 	 */
 	public static function fixAnnotationConstantFetchNode(
@@ -267,7 +233,7 @@ class AnnotationHelper
 	}
 
 	/**
-	 * @return (VariableAnnotation|ParameterAnnotation|ReturnAnnotation|ThrowsAnnotation|PropertyAnnotation|MethodAnnotation|TemplateAnnotation|ExtendsAnnotation|ImplementsAnnotation|UseAnnotation|MixinAnnotation|AssertAnnotation|GenericAnnotation|ParameterOutAnnotation|SelfOutAnnotation)[]
+	 * @return list<VariableAnnotation|ParameterAnnotation|ReturnAnnotation|ThrowsAnnotation|PropertyAnnotation|MethodAnnotation|TemplateAnnotation|ExtendsAnnotation|ImplementsAnnotation|UseAnnotation|MixinAnnotation|AssertAnnotation|GenericAnnotation|ParameterOutAnnotation|SelfOutAnnotation>
 	 */
 	public static function getAnnotationsByName(File $phpcsFile, int $pointer, string $annotationName): array
 	{
@@ -277,7 +243,7 @@ class AnnotationHelper
 	}
 
 	/**
-	 * @return (VariableAnnotation|ParameterAnnotation|ReturnAnnotation|ThrowsAnnotation|PropertyAnnotation|MethodAnnotation|TemplateAnnotation|ExtendsAnnotation|ImplementsAnnotation|UseAnnotation|MixinAnnotation|AssertAnnotation|GenericAnnotation|ParameterOutAnnotation|SelfOutAnnotation)[][]
+	 * @return array<string, list<VariableAnnotation|ParameterAnnotation|ReturnAnnotation|ThrowsAnnotation|PropertyAnnotation|MethodAnnotation|TemplateAnnotation|ExtendsAnnotation|ImplementsAnnotation|UseAnnotation|MixinAnnotation|AssertAnnotation|GenericAnnotation|ParameterOutAnnotation|SelfOutAnnotation>>
 	 */
 	public static function getAnnotations(File $phpcsFile, int $pointer): array
 	{
@@ -365,9 +331,23 @@ class AnnotationHelper
 						}
 					}
 
+					$className = null;
 					if (array_key_exists($annotationName, self::MAPPING)) {
 						$className = self::MAPPING[$annotationName];
+					} else {
+						foreach (self::STATIC_ANALYSIS_PREFIXES as $prefix) {
+							$annotationNameWithoutPrefix = preg_replace('~^@' . $prefix . '-~', '@', $annotationName);
 
+							if (!array_key_exists($annotationNameWithoutPrefix, self::MAPPING)) {
+								continue;
+							}
+
+							$className = self::MAPPING[$annotationNameWithoutPrefix];
+							break;
+						}
+					}
+
+					if ($className !== null) {
 						$parsedContent = null;
 						if ($annotationContent !== null) {
 							$parsedContent = self::parseAnnotationContent($annotationName, $annotationContent);
@@ -463,6 +443,10 @@ class AnnotationHelper
 			);
 		}
 
+		if ($annotation->getType() instanceof ObjectShapeNode) {
+			return false;
+		}
+
 		if ($annotation->getType() instanceof ConstTypeNode) {
 			return false;
 		}
@@ -497,7 +481,7 @@ class AnnotationHelper
 
 			if (in_array(
 				strtolower($annotationTypeNode->name),
-				['class-string', 'trait-string', 'callable-string', 'numeric-string', 'non-empty-string', 'literal-string', 'positive-int', 'negative-int'],
+				['class-string', 'trait-string', 'callable-string', 'numeric-string', 'non-empty-string', 'non-falsy-string', 'literal-string', 'positive-int', 'negative-int'],
 				true
 			)) {
 				return false;
@@ -634,7 +618,7 @@ class AnnotationHelper
 
 		if ($phpDocParser === null) {
 			$constantExpressionParser = new ConstExprParser();
-			$phpDocParser = new PhpDocParser(new TypeParser($constantExpressionParser), $constantExpressionParser);
+			$phpDocParser = new PhpDocParser(new TypeParser($constantExpressionParser, true), $constantExpressionParser);
 		}
 
 		return $phpDocParser;
