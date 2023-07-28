@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '15e63d7e9627e30ebe7f4ed87e00f1a945dbb230',
+        'reference' => 'c8d5640f878dbac4455799c575a72ed4132ffdf3',
         'name' => 'drupal-composer/drupal-project',
         'dev' => true,
     ),
@@ -379,7 +379,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '15e63d7e9627e30ebe7f4ed87e00f1a945dbb230',
+            'reference' => 'c8d5640f878dbac4455799c575a72ed4132ffdf3',
             'dev_requirement' => false,
         ),
         'drupal/admin_toolbar' => array(
@@ -859,14 +859,12 @@
             'dev_requirement' => false,
         ),
         'drupal/mailgun' => array(
-            'pretty_version' => 'dev-1.x',
-            'version' => 'dev-1.x',
+            'pretty_version' => '2.0.0',
+            'version' => '2.0.0.0',
             'type' => 'drupal-module',
             'install_path' => __DIR__ . '/../../web/modules/contrib/mailgun',
-            'aliases' => array(
-                0 => '1.x-dev',
-            ),
-            'reference' => '087590ab94c22851d1599f76f3106fa80d37c43d',
+            'aliases' => array(),
+            'reference' => '2.0.0',
             'dev_requirement' => false,
         ),
         'drupal/mailsystem' => array(

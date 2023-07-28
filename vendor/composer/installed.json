@@ -5428,32 +5428,37 @@
         },
         {
             "name": "drupal/mailgun",
-            "version": "dev-1.x",
-            "version_normalized": "dev-1.x",
+            "version": "2.0.0",
+            "version_normalized": "2.0.0.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/mailgun.git",
-                "reference": "087590ab94c22851d1599f76f3106fa80d37c43d"
+                "reference": "2.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/mailgun-2.0.0.zip",
+                "reference": "2.0.0",
+                "shasum": "091710be90cb39fe6ecef5b8ffa6ba0f96e11e2c"
             },
             "require": {
-                "drupal/core": "^8.8 || ^9",
+                "drupal/core": "^9.3 || ^10",
                 "drupal/mailsystem": "*",
                 "html2text/html2text": "^4.0.1",
                 "mailgun/mailgun-php": "~3.0",
-                "nyholm/psr7": "~1.2",
-                "php-http/guzzle6-adapter": "~2.0"
+                "nyholm/psr7": "~1.2"
+            },
+            "suggest": {
+                "php-http/guzzle6-adapter": "Required for working with Guzzle 6 e.g. Drupal 9.3.x or earlier"
             },
             "type": "drupal-module",
             "extra": {
-                "branch-alias": {
-                    "dev-1.x": "1.x-dev"
-                },
                 "drupal": {
-                    "version": "8.x-1.0+12-dev",
-                    "datestamp": "1658591657",
+                    "version": "2.0.0",
+                    "datestamp": "1689181420",
                     "security-coverage": {
-                        "status": "not-covered",
-                        "message": "Dev releases are not covered by Drupal security advisories."
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
                     }
                 },
                 "drush": {

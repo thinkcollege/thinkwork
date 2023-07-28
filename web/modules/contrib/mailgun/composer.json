@@ -33,16 +33,18 @@
     "minimum-stability": "dev",
     "require": {
         "mailgun/mailgun-php": "~3.0",
-        "php-http/guzzle6-adapter": "~2.0",
         "nyholm/psr7": "~1.2",
         "drupal/mailsystem": "*",
         "html2text/html2text": "^4.0.1"
     },
-   "extra": {
-     "drush": {
-      "services": {
-        "drush.services.yml": "^9 || ^10"
-      }
+    "suggest": {
+        "php-http/guzzle6-adapter": "Required for working with Guzzle 6 e.g. Drupal 9.3.x or earlier"
+    },
+    "extra": {
+        "drush": {
+            "services": {
+                "drush.services.yml": "^9 || ^10"
+            }
+        }
     }
-  }
 }
