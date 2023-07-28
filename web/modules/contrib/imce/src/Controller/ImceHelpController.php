@@ -69,16 +69,16 @@ class ImceHelpController extends ControllerBase {
    */
   public static function htmlHelp() {
     return '
-      <h3>' . t('About') . '</h3>
-      <p>' . t('IMCE is an image/file uploader and browser that supports personal directories and quota.') . '</p>
+      <h3>About</h3>
+      <p>IMCE is an image/file uploader and browser that supports personal directories and quota.</p>
 
       <h3>Menu Integration</h3>
       <p>Create a custom menu item with /imce path.</p>
 
-      <h3>CKEditor Iintegration</h3>
+      <h3>CKEditor Integration</h3>
       <ol>
-        <li type="1">' . t('Go to Administration > Configuration > Content Authoring > Text formats and editors > and <b>edit</b> a text format that uses CKEditor.') . '</li>
-        <li type="1">' . t('Enable CKEditor image button without image uploads.') . '</li>
+        <li type="1">Go to Administration > Configuration > Content Authoring > Text formats and editors > and <b>edit</b> a text format that uses CKEditor.</li>
+        <li type="1">Enable CKEditor image button without image uploads.</li>
       </ol>
       <p><b>Note:</b> Image uploads must be disabled in order for IMCE link appear in the image
   dialog. There is also an image button provided by Imce but it can\'t be used for
@@ -86,18 +86,18 @@ class ImceHelpController extends ControllerBase {
 
       <h3>BUEditor Integration</h3>
       <ol>
-        <li type="1">' . t('Edit your editor at /admin/config/content/bueditor') . '</li>
-        <li type="1">' . t('Select Imce File Manager as the File browser under Settings.') . '</li>
+        <li type="1">Edit your editor at /admin/config/content/bueditor</li>
+        <li type="1">Select Imce File Manager as the File browser under Settings.</li>
       </ol>
 
       <h3>File/Image Field Integration</h3>
       <ol>
-        <li type="1">' . t('Go to form settings of your content type.') . '<br/>Ex: /admin/structure/types/manage/article/form-display.</li>
-        <li type="1">' . t('Edit widget settings of a file/image field.') . '</li>
-        <li type="1">' . t('Check the box saying "Allow users to select files from Imce File Manager
-          for this field." and save.') . '</li>
-        <li type="1">' . t('You should now see the "Open File Browser" link above the upload widget
-          in the content form.') . '</li>
+        <li type="1">Go to form settings of your content type.<br/>Ex: /admin/structure/types/manage/article/form-display.</li>
+        <li type="1">Edit widget settings of a file/image field.</li>
+        <li type="1">Check the box saying "Allow users to select files from Imce File Manager
+          for this field." and save.</li>
+        <li type="1">You should now see the "Open File Browser" link above the upload widget
+          in the content form.</li>
       </ol>';
   }
 

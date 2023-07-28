@@ -59,7 +59,7 @@ abstract class KernelTestBasePlugin extends KernelTestBase {
    * @return \Drupal\imce\ImceFM
    *   Return the file manager.
    */
-  public function getImceFM() {
+  public function getImceFm() {
     $imceFM = Imce::userFM(
       $this->container->get('current_user'), NULL, $this->getRequest()
     );
@@ -132,7 +132,7 @@ abstract class KernelTestBasePlugin extends KernelTestBase {
    *   uri.
    */
   protected function getTestFileUri() {
-    \Drupal::service('file_system')->copy(drupal_get_path('module', 'imce') . '/tests/files/ciandt.jpg', PublicStream::basePath());
+    \Drupal::service('file_system')->copy(\Drupal::service('extension.list.module')->getPath('imce') . '/tests/files/ciandt.jpg', PublicStream::basePath());
     return 'public://ciandt.jpg';
   }
 

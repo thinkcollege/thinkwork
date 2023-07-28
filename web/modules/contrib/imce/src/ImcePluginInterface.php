@@ -44,4 +44,9 @@ interface ImcePluginInterface extends PluginInspectionInterface {
    */
   public function buildPage(array &$page, ImceFM $fm);
 
+  /**
+   * Alters js response.
+   */
+  public function alterJsResponse(array &$data, ImceFM $fm);
+
 }

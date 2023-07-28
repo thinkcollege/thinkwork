@@ -193,7 +193,15 @@ class ImceSettingsForm extends ConfigFormBase {
 
     // Add description.
     $rp_table['#prefix'] = '<h3>' . $this->t('Role-profile assignments') . '</h3>';
-    $rp_table['#suffix'] = '<div class="description">' . $this->t('Assign configuration profiles to user roles for available file systems. Users with multiple roles get the bottom most profile.') . ' ' . $this->t('The default file system %name is accessible at :url path.', ['%name' => $wrappers[$this->configSystemFile->get('default_scheme')], ':url' => $imce_url]) . '</div>';
+    $desc = $this->t('Assign configuration profiles to user roles for available file systems. Users with multiple roles get the bottom most profile.');
+    $desc .= ' ' . $this->t(
+      'The default file system %name is accessible at :url path.',
+      [
+        '%name' => $wrappers[$this->configSystemFile->get('default_scheme')],
+        ':url' => $imce_url,
+      ]
+    );
+    $rp_table['#suffix'] = '<div class="description">' . $desc . '</div>';
     return $rp_table;
   }
 

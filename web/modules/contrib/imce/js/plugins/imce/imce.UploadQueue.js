@@ -339,7 +339,7 @@
     this.Uq.selectFiles(this.files);
     imce.uploadResetInput(this);
     if (imce.getConf('upload_auto_start', 1)) {
-      $('.imce-upload-button', this.form).click();
+      $('.imce-upload-button', this.form).trigger('click');
     }
   };
 

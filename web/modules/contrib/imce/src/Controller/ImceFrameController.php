@@ -8,7 +8,7 @@ use Drupal\Core\Url;
 use Drupal\imce\Imce;
 
 /**
- * Class ImceFrameController.
+ * Controller for /user/{user}/imce page.
  */
 class ImceFrameController extends ControllerBase {
 

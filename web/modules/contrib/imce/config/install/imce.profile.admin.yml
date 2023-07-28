@@ -13,6 +13,7 @@ conf:
   thumbnail_style: ''
   thumbnail_grid_style: false
   ignore_usage: false
+  url_alter: false
   folders:
     -
       path: '.'

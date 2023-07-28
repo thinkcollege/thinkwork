@@ -45,7 +45,7 @@
    */
   imceFileField.createWidget = function (url) {
     var $link = $('<a class="imce-filefield-link">' + Drupal.t('Open File Browser') + '</a>');
-    $link.attr('href', url).click(imceFileField.eLinkClick);
+    $link.attr('href', url).on('click', imceFileField.eLinkClick);
     return $('<div class="imce-filefield-widget"></div>').append($link)[0];
   };
 
@@ -89,7 +89,7 @@
    */
   imceFileField.submit = function (fieldId, paths) {
     $('[data-drupal-selector="' + fieldId + '-imce-paths"]').val(paths.join(':'));
-    $('[data-drupal-selector="' + fieldId + '-upload-button"]').mousedown();
+    $('[data-drupal-selector="' + fieldId + '-upload-button"]').trigger('mousedown');
   };
 
 })(jQuery, Drupal);

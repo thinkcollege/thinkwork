@@ -325,7 +325,11 @@ class ImceFM {
    * Returns value of a posted parameter.
    */
   public function getPost($key, $default = NULL) {
-    return $this->request ? $this->request->request->get($key, $default) : $default;
+    if ($this->request) {
+      $params = $this->request->request->all();
+      return $params[$key] ?? $default;
+    }
+    return $default;
   }
 
   /**
@@ -462,7 +466,11 @@ class ImceFM {
       'date' => @filemtime($uri) ?: 0,
       'size' => @filesize($uri) ?: 0,
     ];
-    // Get image properties
+    // Some file systems need url altering for each file.
+    if (!empty($this->conf['url_alter'])) {
+      $properties['url'] = \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+    }
+    // Get image properties.
     $regexp = isset($this->conf['image_extensions_regexp']) ? $this->conf['image_extensions_regexp'] : $this->imageExtensionsRegexp();
     if ($regexp && preg_match($regexp, $uri) && $info = getimagesize($uri)) {
       $properties['width'] = $info[0];
@@ -477,6 +485,9 @@ class ImceFM {
 
   /**
    * Returns thumbnail style.
+   *
+   * @return false|Drupal\image\ImageStyleInterface
+   *   Drupal ImageStyle entity.
    */
   public function getThumbnailStyle() {
     if (!isset($this->thumbnailStyle)) {
@@ -644,7 +655,7 @@ class ImceFM {
    * Builds and returns image extension regular expression.
    */
   public function imageExtensionsRegexp() {
-    // Build only once
+    // Build only once.
     $regexp = &$this->conf['image_extensions_regexp'];
     if (!isset($regexp)) {
       $exts = trim($this->getConf('image_extensions', 'jpg jpeg png gif webp'));
@@ -716,6 +727,7 @@ class ImceFM {
       if ($request->request->has('jsop')) {
         $this->run();
         $data = $this->getResponse();
+        \Drupal::service('plugin.manager.imce.plugin')->alterJsResponse($data, $this);
         // Return html response if the flag is set.
         if ($request->request->get('return_html')) {
           return new Response('<html><body><textarea>' . Json::encode($data) . '</textarea></body></html>');

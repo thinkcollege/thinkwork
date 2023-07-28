@@ -27,7 +27,7 @@ class Imce extends CKEditorPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    return drupal_get_path('module', 'imce') . '/js/plugins/ckeditor/imce.ckeditor.js';
+    return \Drupal::service('extension.list.module')->getPath('imce') . '/js/plugins/ckeditor/imce.ckeditor.js';
   }
 
   /**
@@ -51,8 +51,8 @@ class Imce extends CKEditorPluginBase {
    */
   public function getConfig(Editor $editor) {
     return [
-      'ImceImageIcon' => file_create_url($this->imageIcon()),
-      'ImceLinkIcon' => file_create_url($this->linkIcon()),
+      'ImceImageIcon' => \Drupal::service('file_url_generator')->generateAbsoluteString($this->imageIcon()),
+      'ImceLinkIcon' => \Drupal::service('file_url_generator')->generateAbsoluteString($this->linkIcon()),
     ];
   }
 
@@ -62,7 +62,7 @@ class Imce extends CKEditorPluginBase {
    * Uses the icon from drupalimage plugin.
    */
   public function imageIcon() {
-    return drupal_get_path('module', 'imce') . '/js/plugins/ckeditor/icons/imceimage.png';
+    return \Drupal::service('extension.list.module')->getPath('imce') . '/css/images/image.png';
   }
 
   /**
@@ -71,7 +71,7 @@ class Imce extends CKEditorPluginBase {
    * Uses the icon from drupallink plugin.
    */
   public function linkIcon() {
-    return drupal_get_path('module', 'imce') . '/js/plugins/ckeditor/icons/imcelink.png';
+    return \Drupal::service('extension.list.module')->getPath('imce') . '/css/images/link.png';
   }
 
 }

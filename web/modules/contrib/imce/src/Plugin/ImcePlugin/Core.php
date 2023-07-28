@@ -68,6 +68,7 @@ class Core extends ImcePluginBase {
       }
     }
     if ($uris) {
+      /** @var \Drupal\file\FileInterface[] */
       $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => array_keys($uris)]);
       $uuids = [];
       foreach ($files as $file) {

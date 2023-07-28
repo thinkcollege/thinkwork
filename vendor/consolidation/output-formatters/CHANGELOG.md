@@ -1,5 +1,15 @@
 # Change Log
 
+### 4.3.2 - 5 Jul 2023
+
+- Make var-dump and var-export usable for non-arrays (#109)
+- Wordwrap fix for tables (#107)
+
+### 4.3.1, 4.3.0 - 19 May 2023
+
+- Add an accessor to get selected fields from the formatter object. (#104)
+- Add convenience function FormatterOptions::fieldsContain() (#105)
+
 ### 4.2.4 - 23 Feb 2023
 
 - Minor dynamic property fix for PHP 8.2.

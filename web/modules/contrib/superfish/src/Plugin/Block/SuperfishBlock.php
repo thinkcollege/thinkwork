@@ -2,12 +2,12 @@
 
 namespace Drupal\superfish\Plugin\Block;
 
-use Drupal\system\Plugin\Block\SystemMenuBlock;
-use Drupal\Core\Menu\MenuTreeParameters;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Menu\MenuActiveTrailInterface;
 use Drupal\Core\Menu\MenuLinkTreeInterface;
+use Drupal\Core\Menu\MenuTreeParameters;
+use Drupal\system\Plugin\Block\SystemMenuBlock;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -67,7 +67,6 @@ class SuperfishBlock extends SystemMenuBlock {
    */
   public function blockForm($form, FormStateInterface $form_state) {
     $form = parent::blockForm($form, $form_state);
-    $defaults = $this->defaultConfiguration();
     $form['sf'] = [
       '#type' => 'details',
       '#title' => $this->t('Block settings'),
@@ -833,41 +832,41 @@ class SuperfishBlock extends SystemMenuBlock {
     ]);
 
     if (!is_numeric($speed) && !in_array($speed, ['slow', 'normal', 'fast'])) {
-      $form_state->setErrorByName('superfish_speed', t('Unacceptable value entered for the "Animation speed" option.'));
+      $form_state->setErrorByName('superfish_speed', $this->t('Unacceptable value entered for the "Animation speed" option.'));
     }
     if (!is_numeric($delay)) {
-      $form_state->setErrorByName('superfish_delay', t('Unacceptable value entered for the "Mouse delay" option.'));
+      $form_state->setErrorByName('superfish_delay', $this->t('Unacceptable value entered for the "Mouse delay" option.'));
     }
     if ($touch == 2 && $touchbp == '') {
-      $form_state->setErrorByName('superfish_touchbp', t('"sfTouchscreen Breakpoint" option cannot be empty.'));
+      $form_state->setErrorByName('superfish_touchbp', $this->t('"sfTouchscreen Breakpoint" option cannot be empty.'));
     }
     if (!is_numeric($touchbp)) {
-      $form_state->setErrorByName('superfish_touchbp', t('Unacceptable value enterd for the "sfTouchscreen Breakpoint" option.'));
+      $form_state->setErrorByName('superfish_touchbp', $this->t('Unacceptable value enterd for the "sfTouchscreen Breakpoint" option.'));
     }
     if ($touch == 3 && $touchua == 1 && $touchual == '') {
-      $form_state->setErrorByName('superfish_touchual', t('List of the touch-screen user agents cannot be empty.'));
+      $form_state->setErrorByName('superfish_touchual', $this->t('List of the touch-screen user agents cannot be empty.'));
     }
     if ($small == 2 && $smallbp == '') {
-      $form_state->setErrorByName('superfish_smallbp', t('"sfSmallscreen Breakpoint" option cannot be empty.'));
+      $form_state->setErrorByName('superfish_smallbp', $this->t('"sfSmallscreen Breakpoint" option cannot be empty.'));
     }
     if (!is_numeric($smallbp)) {
-      $form_state->setErrorByName('superfish_smallbp', t('Unacceptable value entered for the "sfSmallscreen Breakpoint" option.'));
+      $form_state->setErrorByName('superfish_smallbp', $this->t('Unacceptable value entered for the "sfSmallscreen Breakpoint" option.'));
     }
     if ($small == 3 && $smallua == 1 && $smallual == '') {
-      $form_state->setErrorByName('superfish_smallual', t('List of the small-screen user agents cannot be empty.'));
+      $form_state->setErrorByName('superfish_smallual', $this->t('List of the small-screen user agents cannot be empty.'));
     }
 
     $supersubs_error = FALSE;
     if (!is_numeric($minwidth)) {
-      $form_state->setErrorByName('superfish_minwidth', t('Unacceptable value entered for the "Supersubs minimum width" option.'));
+      $form_state->setErrorByName('superfish_minwidth', $this->t('Unacceptable value entered for the "Supersubs minimum width" option.'));
       $supersubs_error = TRUE;
     }
     if (!is_numeric($maxwidth)) {
-      $form_state->setErrorByName('superfish_maxwidth', t('Unacceptable value entered for the "Supersubs maximum width" option.'));
+      $form_state->setErrorByName('superfish_maxwidth', $this->t('Unacceptable value entered for the "Supersubs maximum width" option.'));
       $supersubs_error = TRUE;
     }
     if ($supersubs_error !== TRUE && $minwidth > $maxwidth) {
-      $form_state->setErrorByName('superfish_maxwidth', t('Supersubs "maximum width" has to be bigger than the "minimum width".'));
+      $form_state->setErrorByName('superfish_maxwidth', $this->t('Supersubs "maximum width" has to be bigger than the "minimum width".'));
     }
   }
 

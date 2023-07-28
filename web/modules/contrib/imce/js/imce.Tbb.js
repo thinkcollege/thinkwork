@@ -95,9 +95,9 @@
       $(popupEl).css(css).fadeIn();
       imce.fixPosition(popupEl);
       // Focus on first input
-      $('form').find('input,select,textarea').filter(':visible').eq(0).focus();
+      $('form').find('input,select,textarea').filter(':visible').eq(0).trigger('focus');
       if (autoclose) {
-        $(document).bind('mousedown', {Tbb: Tbb}, imce.eTbbDocMousedown);
+        $(document).on('mousedown', {Tbb: Tbb}, imce.eTbbDocMousedown);
       }
       if (Tbb.onopen) {
         Tbb.onopen.apply(Tbb, arguments);
@@ -193,7 +193,7 @@
     var el = Tbb.popupEl;
     if (el !== e.target && !$.contains(el, e.target)) {
       Tbb.closePopup();
-      $(document).unbind('mousedown', imce.eTbbDocMousedown);
+      $(document).off('mousedown', imce.eTbbDocMousedown);
     }
   };
 

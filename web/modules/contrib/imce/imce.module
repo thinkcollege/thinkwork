@@ -36,7 +36,7 @@ function imce_theme() {
 function imce_file_download($uri) {
   if (Imce::accessFileUri($uri, \Drupal::currentUser())) {
     return [
-      'Content-type' => \Drupal::service('file.mime_type.guesser')->guess($uri),
+      'Content-type' => \Drupal::service('file.mime_type.guesser')->guessMimeType($uri),
       'Content-Length' => filesize($uri),
     ];
   }
@@ -61,11 +61,11 @@ function imce_field_widget_settings_summary_alter(&$summary, $context) {
 }
 
 /**
- * Implements hook_field_widget_form_alter().
+ * Implements hook_field_widget_single_element_form_alter().
  *
  * Alters widget forms that have imce enabled.
  */
-function imce_field_widget_form_alter(&$element, FormStateInterface $form_state, $context) {
+function imce_field_widget_single_element_form_alter(&$element, FormStateInterface $form_state, $context) {
   if ($context['widget']->getThirdPartySetting('imce', 'enabled')) {
     $scheme = $context['items'][$context['delta']]->getFieldDefinition()->getSetting('uri_scheme');
     if (Imce::access(\Drupal::currentUser(), $scheme)) {
@@ -113,8 +113,15 @@ function imce_process_url_element(&$element, $type = 'link') {
  * Implements hook_form_FORM_ID_alter() for filter_format_form.
  */
 function imce_form_filter_format_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // CKEditor 4.
   if (isset($form['editor']['settings']['subform']['plugins']['drupalimage']['image_upload']['status'])) {
     $desc = &$form['editor']['settings']['subform']['plugins']['drupalimage']['image_upload']['status']['#description'];
+    $str = t('Disable to use IMCE file browser.');
+    $desc = $desc ? $desc . ' ' . $str : $str;
+  }
+  // CKEditor 5.
+  if (isset($form['editor']['settings']['subform']['plugins']['ckeditor5_image']['status'])) {
+    $desc = &$form['editor']['settings']['subform']['plugins']['ckeditor5_image']['status']['#description'];
     $str = t('Disable to use IMCE file browser.');
     $desc = $desc ? $desc . ' ' . $str : $str;
   }
@@ -126,5 +133,22 @@ function imce_form_filter_format_form_alter(&$form, FormStateInterface $form_sta
 function imce_help($route_name, RouteMatchInterface $route_match) {
   if ($route_name === 'help.page.imce') {
     return ImceHelpController::htmlHelp();
+  }
+}
+
+/**
+ * Implements hook_editor_js_settings_alter().
+ */
+function imce_editor_js_settings_alter(&$settings) {
+  if (!empty($settings['editor']['formats'])) {
+    foreach ($settings['editor']['formats'] as &$conf) {
+      if ($conf['editor'] === 'ckeditor5') {
+        // Disable ImceSelector integration if the user has no Imce access.
+        $index = array_search('imce.ImceSelector', $conf['editorSettings']['plugins']);
+        if ($index !== FALSE && !Imce::access()) {
+          array_splice($conf['editorSettings']['plugins'], $index, 1);
+        }
+      }
+    }
   }
 }

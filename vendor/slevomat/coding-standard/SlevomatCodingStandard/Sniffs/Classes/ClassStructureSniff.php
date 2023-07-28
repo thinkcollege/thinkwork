@@ -448,7 +448,7 @@ class ClassStructureSniff implements Sniff
 			return false;
 		}
 
-		return in_array($returnAnnotation->getContent(), ['static', 'self', $parentClassName], true);
+		return in_array((string) $returnAnnotation->getValue()->type, ['static', 'self', $parentClassName], true);
 	}
 
 	private function getParentClassName(File $phpcsFile, int $pointer): string
@@ -517,6 +517,8 @@ class ClassStructureSniff implements Sniff
 		$tokens = $phpcsFile->getTokens();
 
 		if ($tokens[$memberPointer]['code'] === T_FUNCTION && !FunctionHelper::isAbstract($phpcsFile, $memberPointer)) {
+			$endPointer = $tokens[$memberPointer]['scope_closer'];
+		} elseif ($tokens[$memberPointer]['code'] === T_USE && array_key_exists('scope_closer', $tokens[$memberPointer])) {
 			$endPointer = $tokens[$memberPointer]['scope_closer'];
 		} else {
 			$endPointer = TokenHelper::findNext($phpcsFile, T_SEMICOLON, $memberPointer + 1);

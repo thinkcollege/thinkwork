@@ -80,7 +80,7 @@ class ImceSettingsFormTest extends KernelTestBase {
    */
   public function testBuildRolesProfilesTable() {
     $this->assertIsArray(
-      $this->imceSettingsForm->buildRolesProfilesTable($this->imceConfig->get('roles_profiles')  ?: [])
+      $this->imceSettingsForm->buildRolesProfilesTable($this->imceConfig->get('roles_profiles') ?: [])
     );
   }
 

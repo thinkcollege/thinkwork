@@ -64,6 +64,14 @@ drupal.imce.ckeditor:
   dependencies:
     - ckeditor/drupal.ckeditor
 
+drupal.imce.ckeditor5:
+  version: VERSION
+  js:
+    js/plugins/ckeditor5/imce.ckeditor5.js: {}
+  dependencies:
+    - ckeditor5/internal.drupal.ckeditor5
+    - imce/drupal.imce.input
+
 drupal.imce.filefield:
   version: VERSION
   js:

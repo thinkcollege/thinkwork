@@ -1,6 +1,12 @@
 # Change Log
 
 The change log describes what is "Added", "Removed", "Changed" or "Fixed" between each release.
+## 3.5.9
+- Fixed: bug when params `to` and `reply-to` have the same address
+
+## 3.5.6
+ - Changed: support bool value for method `createMultiple`
+
 ## 3.5.5
 
 ### Fixed

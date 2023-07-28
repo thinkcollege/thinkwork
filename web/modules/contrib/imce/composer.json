@@ -12,12 +12,14 @@
         }
     ],
     "support": {
-        "issues": "https://www.drupal.org/project/issues/imce?version=8.x",
+        "issues": "https://www.drupal.org/project/issues/imce",
         "source": "https://git.drupalcode.org/project/imce"
     },
     "require": {
-        "drupal/core": "^8.8 || ^9"
+        "drupal/core": "^9.3 || ^10"
+    },
+    "require-dev": {
+        "drupal/ckeditor": "^1.0"
     },
     "license": "GPL-2.0-or-later"
-
 }

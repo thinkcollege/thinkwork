@@ -39,13 +39,14 @@
     'block-' ~ configuration.provider|clean_class,
     'block-' ~ plugin_id|clean_class,
     'block-bootstrap-dropdown',
+    'dropdown',
   ]
 %}
 {%
  set dropdownid = 'drop-' ~ attributes.id
 %}
 <div{{ attributes.addClass(classes) }}>
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="{{ dropdownid }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="{{ dropdownid }}" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
     {{ configuration.button_text }}
   </button> 
   <div class="dropdown-menu" aria-labelledby="{{ dropdownid }}">

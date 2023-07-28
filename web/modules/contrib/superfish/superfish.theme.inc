@@ -5,12 +5,12 @@
  * Preprocessors and theme functions of the Superfish module.
  */
 
-use Drupal\Core\Url;
-use Drupal\Core\Menu\InaccessibleMenuLink;
-use Drupal\Core\Language\LanguageInterface;
-use Drupal\Component\Utility\Html;
 use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Menu\InaccessibleMenuLink;
 use Drupal\Core\Template\Attribute;
+use Drupal\Core\Url;
 
 /**
  * Prepares variables for the Superfish menu template.
@@ -85,7 +85,6 @@ function template_preprocess_superfish_menu_items(array &$variables) {
 
   // Keep $sfsettings untouched as we need to pass it to the child menus.
   $settings = $sfsettings = $element['#settings'];
-  $multicolumn = $multicolumn_below = $settings['multicolumn'];
 
   $variables['menu_items'] = [];
 
@@ -213,25 +212,10 @@ function template_preprocess_superfish_menu_items(array &$variables) {
 
         // Multi-column sub-menus.
         if ($settings['multicolumn']) {
-          if ($item['depth'] == $settings['multicolumn_depth']) {
-            $multicolumn_wrapper = TRUE;
-          }
-          else {
-            $multicolumn_wrapper = FALSE;
-          }
-          if ($item['depth'] == $settings['multicolumn_depth'] + 1) {
-            $multicolumn_column = TRUE;
-          }
-          else {
-            $multicolumn_column = FALSE;
-          }
-          if ($item['depth'] >= $settings['multicolumn_depth'] &&
-              $item['depth'] <= $settings['multicolumn_levels']) {
-            $multicolumn_content = TRUE;
-          }
-          else {
-            $multicolumn_content = FALSE;
-          }
+          $multicolumn_wrapper = $item['depth'] == $settings['multicolumn_depth'];
+          $multicolumn_column = $item['depth'] == $settings['multicolumn_depth'] + 1;
+          $multicolumn_content = $item['depth'] >= $settings['multicolumn_depth'] &&
+            $item['depth'] <= $settings['multicolumn_levels'];
         }
 
         // sfTouchscreen.

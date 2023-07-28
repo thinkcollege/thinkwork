@@ -27,7 +27,6 @@ class ImceProfileForm extends EntityForm {
    *
    * @param \Drupal\imce\ImcePluginManager $plugin_manager_imce
    *   Plugin manager for Imce Plugins.
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    */
   public function __construct(ImcePluginManager $plugin_manager_imce) {
     $this->pluginManagerImce = $plugin_manager_imce;
@@ -168,8 +167,8 @@ class ImceProfileForm extends EntityForm {
     $conf['dimensions']['description'] = [
       '#markup' => '<div class="description">' . $this->t('Images exceeding the limit will be scaled down.') . '</div>',
     ];
-    
-    // Advanced settings
+
+    // Advanced settings.
     $conf['advanced'] = [
       '#type' => 'details',
       '#title' => $this->t('Advanced settings'),
@@ -212,7 +211,13 @@ class ImceProfileForm extends EntityForm {
       '#default_value' => $imce_profile->getConf('ignore_usage'),
       '#description' => $this->t('IMCE avoids deletion or overwriting of files that are in use by other Drupal modules. Enabling this option skips the file usage check. Not recommended!'),
     ];
-    
+    $conf['advanced']['url_alter'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable URL altering'),
+      '#default_value' => $imce_profile->getConf('url_alter'),
+      '#description' => $this->t('IMCE builds file URLs on js side by combining the root URL and file paths. This might result in incorrect URLs for some file systems like s3. This option should fix the URLs at the cost of some performance degredation.'),
+    ];
+
     // Folders.
     $conf['folders'] = [
       '#type' => 'fieldset',

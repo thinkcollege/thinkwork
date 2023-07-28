@@ -85,28 +85,12 @@
         return;
       }
       var selection = imce.getSelection();
-      var is_img = imce.getQuery('type') === 'image';
+      var type = imce.getQuery('type');
+      var is_img = type === 'image';
       var process = function() {
-        var i;
-        var text;
-        var lines = [];
-        for (i in selection) {
-          if (!imce.owns(selection, i)) {
-            continue;
-          }
-          File = selection[i];
-          // Image
-          if (is_img && File.isImageSource()) {
-            lines.push('<img src="' + File.getUrl() + '"' + (File.width ? ' width="' + File.width + '"' : '') + (File.height ? ' height="' + File.height + '"' : '') + ' data-entity-type="file" data-entity-uuid="' + (File.uuid || '') + '" alt="" />');
-          }
-          // Link
-          else {
-            // Use the selected text/image for the first link
-            text = !lines.length && CKEDITOR.imce.getSelectedHtml(editor) || File.formatName();
-            lines.push('<a href="' + File.getUrl() + '">' + text + '</a>');
-          }
-        }
-        editor.insertHtml(lines.join('<br />'));
+        var inner = is_img ? '' : CKEDITOR.imce.getSelectedHtml(editor);
+        var html = imce.itemsHtml(selection, type, inner);
+        editor.insertHtml(html);
         win.close();
       };
       // Process after loading the uuids.

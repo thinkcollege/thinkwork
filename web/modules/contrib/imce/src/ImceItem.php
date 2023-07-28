@@ -89,6 +89,13 @@ abstract class ImceItem {
   }
 
   /**
+   * Sets the item path.
+   */
+  public function setPath($path) {
+    $this->path = $path;
+  }
+
+  /**
    * Returns the item uri.
    */
   public function getUri() {

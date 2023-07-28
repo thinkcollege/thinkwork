@@ -5,7 +5,9 @@
  * The jQuery Superfish plugin for Drupal menus.
  */
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Block\BlockPluginInterface;
+use Drupal\Core\Config\BootstrapConfigStorageFactory;
 use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
@@ -71,7 +73,7 @@ function superfish_library_info_build() {
           'core/jquery',
           'core/drupal',
           'core/drupalSettings',
-          'core/jquery.once',
+          'core/once',
         ],
       ],
       'init' => [
@@ -197,16 +199,10 @@ function superfish_library_info_build() {
 function superfish_library_path($library = 'superfish') {
   $directory = FALSE;
   // Ensure the Libraries API module is installed and working.
-  if (function_exists('libraries_get_path')) {
-    $directory = libraries_get_path($library);
+  if (\Drupal::hasService('library.libraries_directory_file_finder')) {
+    $directory = \Drupal::service('library.libraries_directory_file_finder')->find($library);
     if ($directory) {
       return $directory;
-    }
-    elseif (ucfirst($library) !== $library) {
-      $directory = libraries_get_path(ucfirst($library));
-      if ($directory) {
-        return $directory;
-      }
     }
   }
   // Otherwise use the default directory.
@@ -234,8 +230,8 @@ function superfish_library_path($library = 'superfish') {
   elseif (file_exists('sites/default/libraries/' . $library)) {
     $directory = 'sites/default/libraries/' . $library;
   }
-  if (!$directory && ucfirst($library) !== $library) {
-    $directory = superfish_library_path(ucfirst($library));
+  if (!$directory && Unicode::ucfirst($library) !== $library) {
+    $directory = superfish_library_path(Unicode::ucfirst($library));
   }
   return $directory;
 }
@@ -244,17 +240,9 @@ function superfish_library_path($library = 'superfish') {
  * Verifies Superfish library is present.
  */
 function superfish_library_check() {
-  if (function_exists('libraries_get_libraries')) {
-    $library = libraries_get_libraries();
-    if (isset($library['superfish']) || isset($library['Superfish'])) {
-      return TRUE;
-    }
-  }
-  else {
-    $directory = superfish_library_path();
-    if ($directory && file_exists($directory . '/superfish.js')) {
-      return TRUE;
-    }
+  $directory = superfish_library_path();
+  if ($directory && file_exists($directory . '/superfish.js')) {
+    return TRUE;
   }
   return FALSE;
 }

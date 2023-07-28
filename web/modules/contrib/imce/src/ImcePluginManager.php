@@ -56,7 +56,10 @@ class ImcePluginManager extends DefaultPluginManager {
   protected function findDefinitions() {
     $definitions = parent::findDefinitions();
     // Sort definitions by weight.
-    uasort($definitions, ['Drupal\Component\Utility\SortArray', 'sortByWeightElement']);
+    uasort($definitions, [
+      'Drupal\Component\Utility\SortArray',
+      'sortByWeightElement',
+    ]);
     return $definitions;
   }
 
@@ -153,6 +156,13 @@ class ImcePluginManager extends DefaultPluginManager {
    */
   public function buildPage(array &$page, ImceFM $fm) {
     return $this->invokeAll('buildPage', $page, $fm);
+  }
+
+  /**
+   * Alters js response.
+   */
+  public function alterJsResponse(array &$data, ImceFM $fm) {
+    return $this->invokeAll('alterJsResponse', $data, $fm);
   }
 
   /**
