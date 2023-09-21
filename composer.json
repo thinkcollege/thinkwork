@@ -26,7 +26,7 @@
         "drupal/bootstrap_paragraphs": "^2.0@beta",
         "drupal/console": "~1.0",
         "drupal/content_access": "^1.0@alpha",
-        "drupal/core": "^9.5.10",
+        "drupal/core": "^9.5.11",
         "drupal/core-composer-scaffold": "^9.2",
         "drupal/csv_serialization": "^1.5",
         "drupal/ctools": "^3.7",
@@ -96,7 +96,16 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/installers": true,
+            "php-http/discovery": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "drupal/console-extend-plugin": true,
+            "cweagans/composer-patches": true,
+            "drupal/core-composer-scaffold": true,
+            "zaporylie/composer-drupal-optimizations": true
+        }
     },
     "autoload": {
         "classmap": [

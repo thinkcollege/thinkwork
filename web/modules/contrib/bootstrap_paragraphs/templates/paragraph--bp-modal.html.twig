@@ -176,14 +176,14 @@ view_mode ? 'paragraph--view-mode--' ~ view_mode|clean_class,
       </div>
       {% if content.bp_modal_body|render %}
         <div class="modal-body">
-          {% for key, item in content.bp_modal_body if key|first != '#' %}
+          {% for key, item in content.bp_modal_body|filter((value, key) => key|first != '#') %}
             {{ item }}
           {% endfor %}
         </div>
       {% endif %}
       {% if content.bp_modal_footer|render %}
         <div class="modal-footer">
-          {% for key, item in content.bp_modal_footer if key|first != '#' %}
+          {% for key, item in content.bp_modal_footer|filter((value, key) => key|first != '#') %}
             {{ item }}
           {% endfor %}
         </div>

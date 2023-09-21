@@ -101,9 +101,10 @@ class Imce {
     }
     // Set root uri and url.
     $conf['root_uri'] = $conf['scheme'] . '://';
-    // file_create_url requires a filepath for some schemes like private:// .
+    // We use a dumb path to generate an absolute url and remove the dumb part.
     $url_gen = \Drupal::service('file_url_generator');
-    $conf['root_url'] = preg_replace('@/(?:%2E|\.)$@i', '', $url_gen->generateAbsoluteString($conf['root_uri'] . '.'));
+    $abs_url = $url_gen->generateAbsoluteString($conf['root_uri'] . 'imce123');
+    $conf['root_url'] = preg_replace('/\/imce123.*$/', '', $abs_url);
     // Convert to relative.
     if (!\Drupal::config('imce.settings')->get('abs_urls')) {
       $conf['root_url'] = $url_gen->transformRelative($conf['root_url']);

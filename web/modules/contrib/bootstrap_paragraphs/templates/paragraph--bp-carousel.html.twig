@@ -170,12 +170,12 @@ view_mode ? 'paragraph--view-mode--' ~ view_mode|clean_class,
 {{ content|without('bp_slide_content','bp_slide_interval', 'bp_width', 'bp_background') }}
 <div{{ attributes.addClass(classes).setAttribute('id', paragraph_id).setAttribute('data-interval', slide_interval_classes).setAttribute('data-ride', 'carousel') }}>
   <ol class="carousel-indicators">
-    {% for key, item in content.bp_slide_content if key|first != '#' %}
+    {% for key, item in content.bp_slide_content|filter((value, key) => key|first != '#') %}
       <li class="{% if loop.first %}active{% endif %}" data-slide-to="{{ key }}" data-target="#{{ paragraph_id }}"></li>
     {% endfor %}
   </ol>
   <div class="carousel-inner" role="list">
-    {% for key, item in content.bp_slide_content if key|first != '#' %}
+    {% for key, item in content.bp_slide_content|filter((value, key) => key|first != '#') %}
       <div class="paragraph--layout-slideshow__slide-{{ key + 1 }} item carousel-item{% if loop.first %} active{% endif %}" role="listitem">{{ item }}</div>
     {% endfor %}
   </div>

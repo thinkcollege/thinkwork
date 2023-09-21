@@ -1,14 +1,13 @@
 name: Bootstrap Paragraphs Statistics
 type: module
 description: A reusable Statistics Paragraph bundle.
-core: 8.x
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^8 || ^9 || ^10
 package: Paragraphs
 dependencies:
   - paragraphs
   - bootstrap_paragraphs
 
-# Information added by Drupal.org packaging script on 2020-10-08
-version: '8.x-2.0-beta7'
+# Information added by Drupal.org packaging script on 2023-09-05
+version: '8.x-2.0-beta8'
 project: 'bootstrap_paragraphs'
-datestamp: 1602190349
+datestamp: 1693918049

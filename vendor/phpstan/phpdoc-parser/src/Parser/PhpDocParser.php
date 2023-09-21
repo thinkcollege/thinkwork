@@ -35,6 +35,9 @@ class PhpDocParser
 	/** @var ConstExprParser */
 	private $constantExprParser;
 
+	/** @var ConstExprParser */
+	private $doctrineConstantExprParser;
+
 	/** @var bool */
 	private $requireWhitespaceBeforeDescription;
 
@@ -68,6 +71,7 @@ class PhpDocParser
 	{
 		$this->typeParser = $typeParser;
 		$this->constantExprParser = $constantExprParser;
+		$this->doctrineConstantExprParser = $constantExprParser->toDoctrine();
 		$this->requireWhitespaceBeforeDescription = $requireWhitespaceBeforeDescription;
 		$this->preserveTypeAliasesWithInvalidTypes = $preserveTypeAliasesWithInvalidTypes;
 		$this->parseDoctrineAnnotations = $parseDoctrineAnnotations;
@@ -678,24 +682,34 @@ class PhpDocParser
 			$tokens->dropSavePoint(); // because of ConstFetchNode
 		}
 
-		$exception = new ParserException(
-			$tokens->currentTokenValue(),
-			$tokens->currentTokenType(),
-			$tokens->currentTokenOffset(),
-			Lexer::TOKEN_IDENTIFIER,
-			null,
-			$tokens->currentTokenLine()
-		);
+		$currentTokenValue = $tokens->currentTokenValue();
+		$currentTokenType = $tokens->currentTokenType();
+		$currentTokenOffset = $tokens->currentTokenOffset();
+		$currentTokenLine = $tokens->currentTokenLine();
 
 		try {
-			$constExpr = $this->constantExprParser->parse($tokens, true);
+			$constExpr = $this->doctrineConstantExprParser->parse($tokens, true);
 			if ($constExpr instanceof Ast\ConstExpr\ConstExprArrayNode) {
-				throw $exception;
+				throw new ParserException(
+					$currentTokenValue,
+					$currentTokenType,
+					$currentTokenOffset,
+					Lexer::TOKEN_IDENTIFIER,
+					null,
+					$currentTokenLine
+				);
 			}
 
 			return $constExpr;
 		} catch (LogicException $e) {
-			throw $exception;
+			throw new ParserException(
+				$currentTokenValue,
+				$currentTokenType,
+				$currentTokenOffset,
+				Lexer::TOKEN_IDENTIFIER,
+				null,
+				$currentTokenLine
+			);
 		}
 	}
 
@@ -750,14 +764,15 @@ class PhpDocParser
 			$key = new Ast\ConstExpr\ConstExprIntegerNode(str_replace('_', '', $tokens->currentTokenValue()));
 			$tokens->next();
 
-		} elseif ($tokens->isCurrentTokenType(Lexer::TOKEN_SINGLE_QUOTED_STRING)) {
-			$key = new Ast\ConstExpr\QuoteAwareConstExprStringNode(StringUnescaper::unescapeString($tokens->currentTokenValue()), Ast\ConstExpr\QuoteAwareConstExprStringNode::SINGLE_QUOTED);
+		} elseif ($tokens->isCurrentTokenType(Lexer::TOKEN_DOCTRINE_ANNOTATION_STRING)) {
+			$key = new Ast\ConstExpr\DoctrineConstExprStringNode(Ast\ConstExpr\DoctrineConstExprStringNode::unescape($tokens->currentTokenValue()));
+
 			$tokens->next();
 
 		} elseif ($tokens->isCurrentTokenType(Lexer::TOKEN_DOUBLE_QUOTED_STRING)) {
-			$key = new Ast\ConstExpr\QuoteAwareConstExprStringNode(StringUnescaper::unescapeString($tokens->currentTokenValue()), Ast\ConstExpr\QuoteAwareConstExprStringNode::DOUBLE_QUOTED);
-
+			$value = $tokens->currentTokenValue();
 			$tokens->next();
+			$key = $this->doctrineConstantExprParser->parseDoctrineString($value, $tokens);
 
 		} else {
 			$currentTokenValue = $tokens->currentTokenValue();
@@ -786,7 +801,7 @@ class PhpDocParser
 			}
 
 			$tokens->rollback();
-			$constExpr = $this->constantExprParser->parse($tokens, true);
+			$constExpr = $this->doctrineConstantExprParser->parse($tokens, true);
 			if (!$constExpr instanceof Ast\ConstExpr\ConstFetchNode) {
 				throw new ParserException(
 					$tokens->currentTokenValue(),
@@ -1112,15 +1127,13 @@ class PhpDocParser
 	{
 		if ($tokens->isCurrentTokenType(Lexer::TOKEN_THIS_VARIABLE)) {
 			$parameter = '$this';
-			$requirePropertyOrMethod = true;
 			$tokens->next();
 		} else {
 			$parameter = $tokens->currentTokenValue();
-			$requirePropertyOrMethod = false;
 			$tokens->consumeTokenType(Lexer::TOKEN_VARIABLE);
 		}
 
-		if ($requirePropertyOrMethod || $tokens->isCurrentTokenType(Lexer::TOKEN_ARROW)) {
+		if ($tokens->isCurrentTokenType(Lexer::TOKEN_ARROW)) {
 			$tokens->consumeTokenType(Lexer::TOKEN_ARROW);
 
 			$propertyOrMethod = $tokens->currentTokenValue();

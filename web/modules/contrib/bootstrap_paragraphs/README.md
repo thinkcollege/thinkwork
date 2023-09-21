@@ -13,7 +13,7 @@ CONTENTS OF THIS FILE
 INTRODUCTION
 ------------
 
-A suite of Paragraph bundles made with the Bootstrap framework.
+A suite of Paragraph bundles made with the Bootstrap (3.x or 4.x) framework.
 
 For content creators, attempts to use WYSIWYG editors to create structured
 layouts typically lead to frustration and compromise. With this module, you can
@@ -78,7 +78,7 @@ This module requires the following modules outside of Drupal core:
  * [Entity Reference Revisions](https://www.drupal.org/project/entity_reference_revisions)
  * [Paragraphs](https://www.drupal.org/project/paragraphs)
  * [Views Reference Field](https://www.drupal.org/project/viewsreference)
- * Bootstrap framework's CSS and JS included in your theme
+ * Bootstrap (3.x or 4.x) framework's CSS and JS included in your theme
 
 
 INSTALLATION
@@ -120,4 +120,3 @@ Current maintainers:
 This project has been sponsored by:
  * [Kanopi studios](https://www.drupal.org/kanopi-studios)
  * [Xeno Media, Inc.](http://www.xenomedia.com)
- * [Zoomdata, Inc.](http://www.zoomdata.com)

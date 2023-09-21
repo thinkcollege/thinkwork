@@ -36,6 +36,13 @@ abstract class ImceItem {
   public $parent;
 
   /**
+   * Item uuid.
+   *
+   * @var string
+   */
+  public $uuid;
+
+  /**
    * File manager.
    *
    * @var \Drupal\imce\ImceFM

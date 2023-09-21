@@ -39,7 +39,7 @@ function bootstrap_paragraphs_read_in_new_config($config_name, $bp_path) {
  *   config file, $sets would be ['content' => 'content'].
  */
 function bootstrap_paragraphs_update_configuration_from_yml($ymlFileName, array $sets) {
-  $bp_path = drupal_get_path('module', 'bootstrap_paragraphs');
+  $bp_path = \Drupal::service('extension.list.module')->getPath('bootstrap_paragraphs');
   $yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/' . $ymlFileName . '.yml'));
   $config = \Drupal::configFactory()->getEditable($ymlFileName);
   foreach ($sets as $key => $value) {
@@ -73,7 +73,7 @@ function bootstrap_paragraphs_update_configuration_from_yml($ymlFileName, array 
  *     . in string for array).
  */
 function bootstrap_paragraphs_update_entity_from_yml($ymlFileName, $entityType, $id, array $setComponents) {
-  $bp_path = drupal_get_path('module', 'bootstrap_paragraphs');
+  $bp_path = \Drupal::service('extension.list.module')->getPath('bootstrap_paragraphs');
   $yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/' . $ymlFileName . '.yml'));
 
   $entity = \Drupal::entityTypeManager()
@@ -98,7 +98,7 @@ function bootstrap_paragraphs_update_entity_from_yml($ymlFileName, $entityType, 
  */
 function bootstrap_paragraphs_update_8201() {
   // Sets variable for the path.
-  $bp_path = drupal_get_path('module', 'bootstrap_paragraphs');
+  $bp_path = \Drupal::service('extension.list.module')->getPath('bootstrap_paragraphs');
 
   // Create Paragraphs bundle.
   bootstrap_paragraphs_read_in_new_config('paragraphs.paragraphs_type.bp_column_wrapper', $bp_path);
@@ -129,7 +129,7 @@ function bootstrap_paragraphs_update_8201() {
  */
 function bootstrap_paragraphs_update_8202() {
   // Sets variable for the path.
-  $bp_path = drupal_get_path('module', 'bootstrap_paragraphs');
+  $bp_path = \Drupal::service('extension.list.module')->getPath('bootstrap_paragraphs');
 
   // Create field storage.
   $bp_accordion_expand_storage_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.storage.paragraph.bp_accordion_expand.yml'));
@@ -216,7 +216,7 @@ function bootstrap_paragraphs_update_8203() {
  */
 function bootstrap_paragraphs_update_8204() {
   // Sets variable for the path.
-  $bp_path = drupal_get_path('module', 'bootstrap_paragraphs');
+  $bp_path = \Drupal::service('extension.list.module')->getPath('bootstrap_paragraphs');
 
   // Creates field storage.
   $bp_header_storage_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.storage.paragraph.bp_header.yml'));
