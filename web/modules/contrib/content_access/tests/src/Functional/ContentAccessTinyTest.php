@@ -49,18 +49,13 @@ class ContentAccessTinyTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'classy';
+  protected $defaultTheme = 'stark';
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
-
-    if (!\Drupal::moduleHandler()->moduleExists('acl')) {
-      $this->pass('No ACL module present, skipping test');
-      return;
-    }
 
     // Create test user with separate role.
     $this->testUser = $this->drupalCreateUser();
@@ -100,12 +95,6 @@ class ContentAccessTinyTest extends BrowserTestBase {
    * Test Viewing accessibility with permissions for single users.
    */
   public function testViewAccess() {
-    // Exit test if ACL module could not be enabled.
-    if (!\Drupal::moduleHandler()->moduleExists('acl')) {
-      $this->pass('No ACL module present, skipping test');
-      return;
-    }
-
     // Restrict access to this content type.
     // Enable per node access control.
     $accessPermissions = [
@@ -117,7 +106,7 @@ class ContentAccessTinyTest extends BrowserTestBase {
 
     // Allow access for test user.
     $edit = [
-      'acl[view][add]' => $this->testUser->getAccountName(),
+      'acl[view][add]' => $this->getAutocompleteInputString($this->testUser),
     ];
     $this->drupalGet('node/' . $this->node1->id() . '/access');
     $this->submitForm($edit, 'Add User');

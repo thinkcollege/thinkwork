@@ -1,4 +1,6 @@
-# CONTENTS OF THIS FILE
+# Content Access
+
+## Contents of this file
 
 * Introduction
 * Requirements
@@ -8,8 +10,7 @@
 * Maintainers
 * Notes
 
-
-# INTRODUCTION
+## Introduction
 
 The **Content Access** module let you content manage access permission
 in a flexible and transparant way.
@@ -47,8 +48,6 @@ Features:
 * It reuses existing functionality instead of reimplementing it. So
   one can install the **ACL** module and set per user access control
   settings per content node.
-* The project provides conditions and actions for the **Rules**
-  module, which allows one to configure rule-based access permissions.
 * It optimizes the written content node grants, so that only the
   necessary grants are written.  This is important for the
   performance of your site.
@@ -64,30 +63,24 @@ The module is designed to be simple to use, but can be configured to
 provide really fine-grained content access permissions.
 
 
-# REQUIREMENTS
+## Requirements
 
 None.
 
-# RECOMMENDED MODULES
+## Recommended modules
 
-* [**ACL**][4]:
+* [**ACL**][4]:  
   To use Access Control Lists for per user access control.
-* [**Advanced Help Hint**][7]:
+* [**Advanced Help Hint**][7]:  
   Links help text provided by `hook_help` to online help and
   **Advanced Help**.
-* [**Advanced Help**][6]:
+* [**Advanced Help**][6]:  
   When this module is enabled, the project's `README.md` will be
   displayed when you visit `help/content_access/README.md`.
-* [**Markdown**][8]:
-  When this module is enabled, display of the project's `README.md`
-  will be rendered with the markdown filter.
-* [**Node Export**][N]
-  To export content access rules.
-* [**Rules**][5]:
-  To configure rule-based access permissions.
+* [**ECA Content Access**][8]:  
+  Provides integration with **ECA: Event - Condition - Action**.
 
-
-# INSTALLATION
+## Installation
 
 To install, do the following:
 
@@ -98,17 +91,12 @@ To install, do the following:
 3. If you want to use access control lists, download, install and
    configure the **ACL** module.
 
-To install with *composer*, do the following in the CLI:
-
-    composer require 'drupal/content_access:^1.0'
-
 There is `composer.json` in the project's top directory.  You can
 safely delete this.  This project has no third party dependencies. The
 sole purpose of this file is to keep the Drupal.org **SimpleTest**
 testbot happy.
 
-
-# CONFIGURATION
+## Configuration
 
 Note that users need at least the permission "View published content"
 to be able to access published content. Furthermore note that content
@@ -120,7 +108,7 @@ access to unpublished content.
 To inspect and change those permissions, navigate to *Administration »
 People » Permisions* and scroll down to the "Node" section.
 
-## Role based access control
+### Role based access control
 
 To set up access control for a content type, navigate to
 *Administration » Structure* and click on "edit" for the content type
@@ -135,7 +123,7 @@ you navigate to *Administration » People » Permisions*.  They are
 shown here to provide the full picture of what permission is set for
 the content type and role. It does not matter where you change these.
 
-## Per content node access control
+### Per content node access control
 
 There is a a checkbox to enable per content node access control
 settings.  If enabled, a new tab for the content access settings
@@ -145,7 +133,7 @@ To configure permission to access these settings, navigate to
 *Administration » People » Permisions* and set the "Grant content
 access" permission for the relevant roles.
 
-## Advanced access control
+### Advanced access control
 
 The "Advanced" settings are only relevant if you are running multiple
 node access modules on a site.
@@ -162,16 +150,14 @@ highest priority. So if content access has the highest priority
 
 By default node access modules should use priority 0 (zero).
 
-
-## Using access control lists
+### Using access control lists
 
 To make use of access control lists you'll need to enable per content
 node access control settings for the content type. At the access control
 tab of such a content node you are able to grant view, edit or delete
 permission for specific users..
 
-
-# MAINTAINERS
+## Maintainers
 
 **Content Access** was created by [fago][10] (Wolfgang Ziegler).  
 It contains a lot of contributions from  [good_man][11] (Khaled Al Hourani).  
@@ -181,7 +167,7 @@ Development and maintenance is sponsored by [Hannemyr Nye Medier AS][13].
 
 Any help with development (patches, reviews, comments) are welcome.
 
-# NOTES
+## Notes
 
 **Note 1**<a id="ACL"></a>: ACL integration is not yet working right.
 
@@ -195,11 +181,9 @@ about "Advanced access control".
 [2]: https://drupal.org/node/1194974
 [3]: https://drupal.org/project/issues/content_access
 [4]: https://www.drupal.org/project/acl
-[5]: https://www.drupal.org/project/rules
 [6]: https://www.drupal.org/project/advanced_help
 [7]: https://www.drupal.org/project/advanced_help_hint
-[8]: https://www.drupal.org/project/markdown
-[N]: https://www.drupal.org/project/node_export
+[8]: https://www.drupal.org/project/eca_content_access
 [9]: https://www.drupal.org/docs/extending-drupal/installing-drupal-modules
 [10]: https://www.drupal.org/u/fago
 [11]: https://www.drupal.org/u/good_man

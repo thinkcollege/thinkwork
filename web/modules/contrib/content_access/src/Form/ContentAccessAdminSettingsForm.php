@@ -6,6 +6,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\user\Entity\Role;
 use Drupal\user\PermissionHandlerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -80,9 +81,9 @@ class ContentAccessAdminSettingsForm extends FormBase {
 
     // Per node:
     $form['node'] = [
-      '#type' => 'fieldset',
+      '#type' => 'details',
       '#title' => $this->t('Per content node access control settings'),
-      '#collapsible' => TRUE,
+      '#open' => FALSE,
       '#description' => $this->t('Optionally you can enable per content node access control settings. If enabled, a new tab for the content access settings appears when viewing content. You have to configure permission to access these settings at the <a href=":url">permissions</a> page.', [
         ':url' => Url::fromRoute('user.admin_permissions')->toString(),
       ]),
@@ -94,10 +95,9 @@ class ContentAccessAdminSettingsForm extends FormBase {
     ];
 
     $form['advanced'] = [
-      '#type' => 'fieldset',
+      '#type' => 'details',
       '#title' => $this->t('Advanced'),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
+      '#open' => FALSE,
     ];
     $form['advanced']['priority'] = [
       '#type' => 'weight',
@@ -120,8 +120,13 @@ class ContentAccessAdminSettingsForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
     $storage = $form_state->getStorage();
-    $roles = array_keys(user_roles());
-    $roles_permissions = user_role_permissions($roles);
+    /** @var \Drupal\user\Entity\Role $roles */
+    $roles = Role::loadMultiple();
+    $roles_permissions = [];
+    foreach ($roles as $rid => $role) {
+      $roles_permissions[$rid] = $role->getPermissions();
+    }
+
     $permissions = $this->permissionHandler->getPermissions();
     $node_type = $storage['node_type'];
 

@@ -49,18 +49,13 @@ class ContentAccessAclTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'classy';
+  protected $defaultTheme = 'stark';
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
-
-    if (!\Drupal::moduleHandler()->moduleExists('acl')) {
-      $this->pass('No ACL module present, skipping test');
-      return;
-    }
 
     // Create test user with separate role.
     $this->testUser = $this->drupalCreateUser();
@@ -100,12 +95,6 @@ class ContentAccessAclTest extends BrowserTestBase {
    * Test Viewing accessibility with permissions for single users.
    */
   public function testViewAccess() {
-    // Exit test if ACL module could not be enabled.
-    if (!\Drupal::moduleHandler()->moduleExists('acl')) {
-      $this->pass('No ACL module present, skipping test');
-      return;
-    }
-
     // Restrict access to this content type.
     // Enable per node access control.
     $accessPermissions = [
@@ -117,7 +106,7 @@ class ContentAccessAclTest extends BrowserTestBase {
 
     // Allow access for test user.
     $edit = [
-      'acl[view][add]' => $this->testUser->getAccountName(),
+      'acl[view][add]' => $this->getAutocompleteInputString($this->testUser),
     ];
     $this->drupalGet('node/' . $this->node1->id() . '/access');
     $this->submitForm($edit, 'edit-acl-view-add-button');
@@ -152,18 +141,12 @@ class ContentAccessAclTest extends BrowserTestBase {
    * Test Editing accessibility with permissions for single users.
    */
   public function testEditAccess() {
-    // Exit test if ACL module could not be enabled.
-    if (!\Drupal::moduleHandler()->moduleExists('acl')) {
-      $this->pass('No ACL module present, skipping test');
-      return;
-    }
-
     // Enable per node access control.
     $this->changeAccessPerNode();
 
     // Allow edit access for test user.
     $edit = [
-      'acl[update][add]' => $this->testUser->getAccountName(),
+      'acl[update][add]' => $this->getAutocompleteInputString($this->testUser),
     ];
     $this->drupalGet('node/' . $this->node1->id() . '/access');
     $this->submitForm($edit, 'edit-acl-update-add-button');
@@ -198,18 +181,12 @@ class ContentAccessAclTest extends BrowserTestBase {
    * Test Deleting accessibility with permissions for single users.
    */
   public function testDeleteAccess() {
-    // Exit test if ACL module could not be enabled.
-    if (!\Drupal::moduleHandler()->moduleExists('acl')) {
-      $this->pass('No ACL module present, skipping test');
-      return;
-    }
-
     // Enable per node access control.
     $this->changeAccessPerNode();
 
     // Allow delete access for test user.
     $edit = [
-      'acl[delete][add]' => $this->testUser->getAccountName(),
+      'acl[delete][add]' => $this->getAutocompleteInputString($this->testUser),
     ];
     $this->drupalGet('node/' . $this->node1->id() . '/access');
     $this->submitForm($edit, 'edit-acl-delete-add-button');

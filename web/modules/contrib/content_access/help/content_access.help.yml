@@ -1,11 +1,3 @@
-rules:
-  title: Rules
-  weight: -11
-
-nodeexport:
-  title: Node Export
-  weight: -10
-
 integration:
   title: Integration with other modules
-  weight: -9
+  weight: 1

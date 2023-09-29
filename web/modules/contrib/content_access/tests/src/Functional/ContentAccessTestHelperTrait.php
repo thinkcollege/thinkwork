@@ -4,6 +4,7 @@ namespace Drupal\Tests\content_access\Functional;
 
 use Drupal\Core\Session\AccountInterface;
 use Drupal\node\NodeInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\user\Entity\Role;
 
 /**
@@ -95,6 +96,19 @@ trait ContentAccessTestHelperTrait {
     $this->drupalGet('node/' . $node->id() . '/access');
     $this->submitForm($accessSettings, 'Submit');
     $this->assertSession()->pageTextContains('Your changes have been saved.');
+  }
+
+  /**
+   * Get the autocomplete input string that \Drupal\Core\Entity\Element\EntityAutocomplete::extractEntityIdFromAutocompleteInput expects.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity to get the autocomplete input string for.
+   *
+   * @return string
+   *   The autocomplete input string.
+   */
+  protected function getAutocompleteInputString(EntityInterface $entity) {
+    return $entity->label() . ' (' . $entity->id() . ')';
   }
 
 }

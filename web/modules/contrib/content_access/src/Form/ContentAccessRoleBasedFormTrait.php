@@ -35,7 +35,6 @@ trait ContentAccessRoleBasedFormTrait {
     $form['per_role'] = [
       '#type' => 'fieldset',
       '#title' => t('Role based access control settings'),
-      '#collapsible' => TRUE,
       '#description' => implode(' ', $description),
     ];
 

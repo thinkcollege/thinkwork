@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\content_access\Functional;
 
+use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\Tests\BrowserTestBase;
 
 /**
@@ -15,7 +16,11 @@ class ContentAccessModuleTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['content_access'];
+  protected static $modules = [
+    'content_access',
+    'content_translation',
+    'language',
+  ];
 
   /**
    * A user with permission to non administer.
@@ -55,13 +60,36 @@ class ContentAccessModuleTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'classy';
+  protected $defaultTheme = 'stark';
+
+  /**
+   * English title for nodes.
+   *
+   * @var string
+   */
+  protected string $englishTitle = 'English node';
+
+  /**
+   * English title for nodes.
+   *
+   * @var string
+   */
+  protected string $frenchTitle = 'French node';
+
+  /**
+   * English title for nodes.
+   *
+   * @var string
+   */
+  protected string $spanishTitle = 'Spanish node';
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
+    ConfigurableLanguage::createFromLangcode('fr')->save();
+    ConfigurableLanguage::createFromLangcode('es')->save();
 
     // Create test user with separate role.
     $this->testUser = $this->drupalCreateUser();
@@ -84,8 +112,18 @@ class ContentAccessModuleTest extends BrowserTestBase {
     $this->contentType = $this->drupalCreateContentType();
 
     // Create test nodes.
-    $this->node1 = $this->drupalCreateNode(['type' => $this->contentType->id()]);
-    $this->node2 = $this->drupalCreateNode(['type' => $this->contentType->id()]);
+    $this->node1 = $this->drupalCreateNode([
+      'type' => $this->contentType->id(),
+      'language' => 'en',
+      'status' => 1,
+      'title' => $this->englishTitle,
+    ]);
+    $this->node2 = $this->drupalCreateNode([
+      'type' => $this->contentType->id(),
+      'language' => 'en',
+      'status' => 1,
+      'title' => $this->englishTitle,
+    ]);
   }
 
   /**
@@ -397,6 +435,51 @@ class ContentAccessModuleTest extends BrowserTestBase {
     // View node2, access must be granted.
     $this->drupalGet('node/' . $this->node2->id());
     $this->assertSession()->pageTextNotContains('Access denied');
+  }
+
+  /**
+   * Test translations view access.
+   */
+  public function testTranslationsViewAccess() {
+    // Check access to the English node.
+    $this->drupalGet('node/' . $this->node1->id());
+    $this->assertSession()->pageTextContains($this->englishTitle);
+
+    // Create an unpublished French translation.
+    $this->drupalLogin($this->adminUser);
+    $nodeFr = $this->node1->addTranslation('fr');
+    $nodeFr->setTitle($this->frenchTitle);
+    $nodeFr->set('status', 0);
+    $nodeFr->save();
+
+    // Check access for admin.
+    $this->drupalGet('fr/node/' . $this->node1->id());
+    $this->assertSession()->pageTextContains($this->frenchTitle);
+
+    // Log out and check that anonymous can't access the node.
+    $this->drupalLogout();
+    $this->drupalGet('fr/node/' . $this->node1->id());
+    $this->assertSession()->pageTextContains('Access denied');
+
+    // Check that English translation is still visible.
+    $this->drupalGet('node/' . $this->node1->id());
+    $this->assertSession()->pageTextContains($this->englishTitle);
+
+    // Create a published Spanish translation.
+    $this->drupalLogin($this->adminUser);
+    $nodeEs = $this->node1->addTranslation('es');
+    $nodeEs->setTitle($this->spanishTitle);
+    $nodeEs->set('status', 1);
+    $nodeEs->save();
+
+    // Now anonymous should only get to the EN and ES translations.
+    $this->drupalLogout();
+    $this->drupalGet('node/' . $this->node1->id());
+    $this->assertSession()->pageTextContains($this->englishTitle);
+    $this->drupalGet('es/node/' . $this->node1->id());
+    $this->assertSession()->pageTextContains($this->spanishTitle);
+    $this->drupalGet('fr/node/' . $this->node1->id());
+    $this->assertSession()->pageTextContains('Access denied');
   }
 
 }

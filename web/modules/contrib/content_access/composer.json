@@ -6,6 +6,6 @@
     "license": "GPL-2.0",
     "minimum-stability": "dev",
     "require-dev": {
-        "drupal/acl": "~1.0"
+        "drupal/acl": "~1.0 || ~2.0"
     }
 }

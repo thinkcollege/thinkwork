@@ -56,3 +56,24 @@ function content_access_schema() {
 
   return $schema;
 }
+
+/**
+ * Convert settings from serialize to json_encode.
+ */
+function content_access_update_9201() {
+  // Get all current values from DB.
+  $database = \Drupal::database();
+  $settings = $database->select('content_access', 'c')
+    ->fields('c', ['nid', 'settings'])
+    ->execute();
+  // Unserialize all values and save json_encoded value to DB.
+  foreach ($settings as $setting) {
+    $setting_array = unserialize($setting->settings, ['allowed_classes' => FALSE]);
+    $database->update('content_access')
+      ->fields([
+        'settings' => json_encode($setting_array),
+      ])
+      ->condition('nid', $setting->nid, '=')
+      ->execute();
+  }
+}

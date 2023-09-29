@@ -16,6 +16,7 @@
 padding-left: 30px;
 margin: 0 auto;
 }
+
 @media (min-width: 768px) {
 #main.container {background-color: #fff; margin-top: 0px; padding: 0 10em 10em 10em;}
 #navbar-main {background-color:white; border-radius:0; border-bottom: 1px solid #006D99; }

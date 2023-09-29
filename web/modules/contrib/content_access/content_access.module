@@ -59,13 +59,32 @@ function content_access_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
+ * Implements hook__ENTITY_TYPE_update().
+ */
+function content_access_user_update(EntityInterface $account) {
+  // Act only if roles have changed.
+  $roles_added = array_diff($account->getRoles(), $account->original->getRoles());
+  $roles_removed = array_diff($account->original->getRoles(), $account->getRoles());
+
+  if (!empty($roles_added) || !empty($roles_removed)) {
+    \Drupal::messenger()->addMessage(t('Your changes have been saved. You may have to <a href=":rebuild">rebuild permissions</a> for your changes to take effect.',
+      [':rebuild' => Url::fromRoute('node.configure_rebuild_confirm')->toString()]));
+  }
+}
+
+/**
  * Implements hook_node_grants().
  */
 function content_access_node_grants(AccountInterface $account, $op) {
   $gids = [];
   $roles = $account->getRoles();
   foreach ($roles as $role) {
-    $gids[] = content_access_get_role_gid($role);
+    $gid = content_access_get_role_gid($role);
+    if (!$gid) {
+      continue;
+    }
+
+    $gids[] = $gid;
   }
 
   return [
@@ -78,52 +97,62 @@ function content_access_node_grants(AccountInterface $account, $op) {
  * Implements hook_node_access_records().
  */
 function content_access_node_access_records(NodeInterface $node) {
-  if (content_access_disabling() || !$node->isPublished()) {
-    return;
+  if (content_access_disabling()) {
+    return FALSE;
   }
+  $grants = [];
+  foreach ($node->getTranslationLanguages() as $langcode => $language) {
+    $translated_node = $node->getTranslation($langcode);
+    if ($translated_node->isPublished() === TRUE) {
+      $grants_translation = [];
+      // Apply per node settings if necessary.
+      if (content_access_get_settings('per_node', $translated_node->getType())) {
+        foreach (['view', 'update', 'delete'] as $op) {
+          foreach (content_access_get_rids_per_node_op($op, $translated_node) as $rid) {
+            $gid = content_access_get_role_gid($rid);
+            if (!$gid) {
+              continue;
+            }
+            $grants_translation[$gid]['grant_' . $op] = 1;
+          }
+        }
+        foreach ($grants_translation as $gid => $grant) {
+          $grants_translation[$gid] = content_access_proccess_grant($grant, $gid, $translated_node);
+        }
 
-  // Apply per node settings if necessary.
-  if (content_access_get_settings('per_node', $node->getType())) {
-    $grants = [];
-    foreach (['view', 'update', 'delete'] as $op) {
-      foreach (content_access_get_rids_per_node_op($op, $node) as $rid) {
-        $gid = content_access_get_role_gid($rid);
-        $grants[$gid]['grant_' . $op] = 1;
+        // Care for the author grant.
+        $grant = [];
+        foreach (['view', 'update', 'delete'] as $op) {
+          // Get all roles that have access to use $op on this node.
+          $per_node_settings = content_access_per_node_setting($op, $translated_node);
+          $any_roles = array_combine($per_node_settings, $per_node_settings);
+          $any_roles = $any_roles ? $any_roles : [];
+          $any_roles += ($op != 'view') ? content_access_get_settings($op, $translated_node->getType()) : [];
+          $grant['grant_' . $op] = content_access_own_op($translated_node, $any_roles, content_access_get_rids_per_node_op($op . '_own', $translated_node));
+        }
+        if (array_filter($grant)) {
+          $grant['realm'] = 'content_access_author';
+          $grants_translation[] = content_access_proccess_grant($grant, $translated_node->getOwnerId(), $translated_node);
+        }
+      }
+      else {
+        // Apply the content type defaults.
+        $grants_translation = content_access_get_type_grant($translated_node);
+      }
+
+      if (empty($grants_translation)) {
+        // This means we grant no access.
+        $grants[] = content_access_proccess_grant([], 0, $translated_node);
+      }
+      else {
+        content_access_optimize_grants($grants_translation, $translated_node);
+      }
+
+      foreach ($grants_translation as $grant) {
+        $grants[] = $grant;
       }
     }
-    foreach ($grants as $gid => $grant) {
-      $grants[$gid] = content_access_proccess_grant($grant, $gid, $node);
-    }
-
-    // Care for the author grant.
-    $grant = [];
-    foreach (['view', 'update', 'delete'] as $op) {
-      // Get all roles that have access to use $op on this node.
-      $per_node_settings = content_access_per_node_setting($op, $node);
-      $any_roles = array_combine($per_node_settings, $per_node_settings);
-      $any_roles = $any_roles ? $any_roles : [];
-      $any_roles += ($op != 'view') ? content_access_get_settings($op, $node->getType()) : [];
-      $grant['grant_' . $op] = content_access_own_op($node, $any_roles, content_access_get_rids_per_node_op($op . '_own', $node));
-    }
-
-    if (array_filter($grant)) {
-      $grant['realm'] = 'content_access_author';
-      $grants[] = content_access_proccess_grant($grant, $node->getOwnerId(), $node);
-    }
   }
-  else {
-    // Apply the content type defaults.
-    $grants = content_access_get_type_grant($node);
-  }
-
-  if (empty($grants)) {
-    // This means we grant no access.
-    $grants[] = content_access_proccess_grant([], 0, $node);
-  }
-  else {
-    content_access_optimize_grants($grants, $node);
-  }
-
   return $grants;
 }
 
@@ -143,7 +172,7 @@ function content_access_entity_insert(EntityInterface $entity) {
   $config = \Drupal::configFactory()->getEditable('content_access.settings');
 
   if ($entity instanceof RoleInterface) {
-    $roles_gids = array_flip($config->get('content_access_roles_gids'));
+    $roles_gids = array_flip((array) $config->get('content_access_roles_gids'));
     $roles_gids[] = $entity->id();
     $config->set('content_access_roles_gids', array_flip($roles_gids));
     $config->save();
@@ -222,7 +251,7 @@ function content_access_disabling($set = NULL) {
  */
 function content_access_get_settings($setting, $type_name) {
   $config = \Drupal::configFactory()->getEditable('content_access.settings');
-  $settings = unserialize($config->get('content_access_node_type.' . $type_name));
+  $settings = unserialize($config->get('content_access_node_type.' . $type_name) ?? '', ['allowed_classes' => FALSE]);
   if (empty($settings)) {
     $settings = [];
   }
@@ -232,7 +261,7 @@ function content_access_get_settings($setting, $type_name) {
     return $settings;
   }
 
-  return isset($settings[$setting]) ? $settings[$setting] : NULL;
+  return $settings[$setting] ?? NULL;
 }
 
 /**
@@ -304,7 +333,7 @@ function content_access_get_permission_access($perm, $reset = FALSE) {
       }
     }
   }
-  return isset($roles[$perm]) ? $roles[$perm] : [];
+  return $roles[$perm] ?? [];
 }
 
 /**
@@ -338,8 +367,9 @@ function content_access_get_type_grant(NodeInterface $node) {
   static $defaults = [];
 
   $node_type = $node->getType();
+  $node_lang = $node->language()->getId();
 
-  if (!isset($defaults[$node_type])) {
+  if (!isset($defaults[$node_type][$node_lang])) {
     $grants = [];
 
     // Only process the 'view' op as node_access() will take care of
@@ -349,7 +379,7 @@ function content_access_get_type_grant(NodeInterface $node) {
       $grant['grant_view'] = 1;
       $grants[] = content_access_proccess_grant($grant, $gid, $node);
     }
-    $defaults[$node_type] = $grants;
+    $defaults[$node_type][$node_lang] = $grants;
   }
 
   // Care for the author grant.
@@ -366,7 +396,7 @@ function content_access_get_type_grant(NodeInterface $node) {
     ];
   }
 
-  return $defaults[$node_type] + $grants;
+  return $defaults[$node_type][$node_lang] + $grants;
 }
 
 /**
@@ -378,6 +408,7 @@ function content_access_proccess_grant($grant, $gid, NodeInterface $node) {
     'grant_update' => 0,
     'grant_delete' => 0,
     'realm' => 'content_access_roles',
+    'langcode' => $node->language()->getId(),
   ];
   $grant['gid'] = $gid;
   $grant['priority'] = content_access_get_settings('priority', $node->getType());
@@ -485,7 +516,7 @@ function content_access_per_node_setting($op, NodeInterface $node, array $settin
   }
 
   // Return the content type defaults if no per node settings are available.
-  return isset($grants[$node->id()][$op]) ? $grants[$node->id()][$op] : content_access_get_settings($op, $node->getType());
+  return $grants[$node->id()][$op] ?? content_access_get_settings($op, $node->getType());
 }
 
 /**
@@ -502,7 +533,7 @@ function content_access_get_per_node_settings(NodeInterface $node) {
   $result = $query->fetch(PDO::FETCH_OBJ);
 
   if (!empty($result->settings)) {
-    return unserialize($result->settings);
+    return json_decode($result->settings, TRUE);
   }
 
   return [];
@@ -524,12 +555,12 @@ function content_access_save_per_node_settings(NodeInterface $node, $settings) {
   if ($count > 0) {
     $database->update('content_access')
       ->condition('nid', $node->id())
-      ->fields(['settings' => serialize($settings)])
+      ->fields(['settings' => json_encode($settings)])
       ->execute();
   }
   else {
     $database->insert('content_access')
-      ->fields(['nid' => $node->id(), 'settings' => serialize($settings)])
+      ->fields(['nid' => $node->id(), 'settings' => json_encode($settings)])
       ->execute();
   }
 
@@ -553,7 +584,7 @@ function content_access_delete_per_node_settings(NodeInterface $node) {
 
   // Delete possible acl settings.
   if (\Drupal::moduleHandler()->moduleExists('acl')) {
-    module_load_include('inc', 'content_access', 'content_access.admin');
+    \Drupal::modulehandler()->loadInclude('content_access', 'inc', 'content_access.admin');
     foreach (['view', 'update', 'delete'] as $op) {
       $acl_id = content_access_get_acl_id($node, $op);
       acl_delete_acl($acl_id);
@@ -592,6 +623,7 @@ function content_access_optimize_grants(&$grants, NodeInterface $node) {
       'grant_update' => 0,
       'grant_delete' => 0,
       'priority' => content_access_get_settings('priority', $node->getType()),
+      'langcode' => $node->language()->getId(),
     ];
   }
 
