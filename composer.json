@@ -32,7 +32,7 @@
         "drupal/ctools": "^3.7",
         "drupal/devel": "^5.1",
         "drupal/easy_breadcrumb": "^2.0",
-        "drupal/editor_advanced_link": "^1.9",
+        "drupal/editor_advanced_link": "^2.2",
         "drupal/editor_file": "^1.5",
         "drupal/email_registration": "^1.1",
         "drupal/entity_browser": "^2.0",
