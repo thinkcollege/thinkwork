@@ -28,14 +28,14 @@ function local_fonts_page_attachments(&$page) {
     if ($font->pid->value == 'local_fonts') {
       $metadata = $font->getMetadata();
       $font_id = $metadata['id'];
-      $directory = file_build_uri('fontyourface/local_fonts/' . $font_id);
+      $directory = \Drupal::config('system.file')->get('default_scheme') . '://' . 'fontyourface/local_fonts/' . $font_id;
       $page['#attached']['html_head'][] = [
         [
           '#type' => 'html_tag',
           '#tag' => 'link',
           '#attributes' => [
             'rel' => 'stylesheet',
-            'href' => file_create_url($directory . '/font.css'),
+            'href' => \Drupal::service('file_url_generator')->generateString($directory . '/font.css'),
             'media' => 'all',
           ],
         ], 'local-fonts-' . $font_id,
@@ -99,7 +99,7 @@ function local_fonts_entity_delete(EntityInterface $entity) {
  *   TRUE if files save successfully. Throw any errors otherwise.
  */
 function local_fonts_save_and_generate_css(LocalFontConfigEntity $font_entity) {
-  $directory = file_build_uri('fontyourface/local_fonts/' . $font_entity->id());
+  $directory = \Drupal::config('system.file')->get('default_scheme') . '://' . 'fontyourface/local_fonts/' . $font_entity->id();
   $css_file = $directory . '/font.css';
   $font_file = $directory . '/font.woff';
   \Drupal::service('file_system')->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
@@ -109,7 +109,7 @@ function local_fonts_save_and_generate_css(LocalFontConfigEntity $font_entity) {
   $css_file_data .= "font-weight: " . $font_entity->font_weight . ";\n";
   $css_file_data .= "font-style: " . $font_entity->font_style . ";\n";
   $css_file_data .= "src: url('font.woff') format('woff');\n";
-  $css_file_data .= "font-display: auto;\n";
+  $css_file_data .= "font-display: swap;\n";
   $css_file_data .= "}\n";
 
   \Drupal::service('file_system')->saveData(base64_decode($font_entity->getFontWoffData()), $font_file, FileSystemInterface::EXISTS_REPLACE);

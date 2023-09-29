@@ -2,19 +2,61 @@
 
 namespace Drupal\fontyourface\Form;
 
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\fontyourface\Entity\Font;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class FontSettingsForm.
+ * Form to define the fonts.
  *
  * @package Drupal\fontyourface\Form
  *
  * @ingroup fontyourface
  */
 class FontSettingsForm extends ConfigFormBase {
+
+  /*
+   * Default hook constants api.
+   */
+  const HOOK_API = 'fontyourface_api';
+  const HOOK_IMPORT = 'fontyourface_api';
+
+
+  /**
+   * The theme handler.
+   *
+   * @var \Drupal\Core\Extension\ThemeHandlerInterface
+   */
+  protected $themeHandler;
+
+  /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(ThemeHandlerInterface $theme_handler, ModuleHandlerInterface $module_handler) {
+    $this->themeHandler = $theme_handler;
+    $this->moduleHandler = $module_handler;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('theme_handler'),
+      $container->get('module_handler'),
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -54,7 +96,7 @@ class FontSettingsForm extends ConfigFormBase {
       '#description' => $this->t('This will load all fonts that have been enabled regardless of theme. Warning: this may add considerable download weight to your pages depending on the number of enabled fonts'),
     ];
     $themes = [];
-    foreach (\Drupal::service('theme_handler')->listInfo() as $name => $theme) {
+    foreach ($this->themeHandler->listInfo() as $name => $theme) {
       if ($theme->status === 1) {
         $themes[$name] = $theme->info['name'];
       }
@@ -80,13 +122,13 @@ class FontSettingsForm extends ConfigFormBase {
     // Set the module weight. There is some general Drupal funk around module
     // weights.
     module_set_weight('fontyourface', 1);
-    foreach (\Drupal::moduleHandler()->getImplementations('fontyourface_api') as $module_name) {
-      module_set_weight($module_name, 10);
-    }
-    foreach (\Drupal::moduleHandler()->getImplementations('fontyourface_import') as $module_name) {
-      $form['imports']['import_' . $module_name] = [
+    $this->moduleHandler->invokeAllWith(self::HOOK_API, function (callable $hook, string $module) {
+      module_set_weight($module, 10);
+    });
+    $this->moduleHandler->invokeAllWith(self::HOOK_IMPORT, function (callable $hook, string $module) use (&$form) {
+      $form['imports']['import_' . $module] = [
         '#type' => 'submit',
-        '#value' => $this->t('Import from @module', ['@module' => $module_name]),
+        '#value' => $this->t('Import from @module', ['@module' => $module]),
         '#attributes' => [
           'style' => 'margin: 10px;',
         ],
@@ -94,6 +136,7 @@ class FontSettingsForm extends ConfigFormBase {
         '#suffix' => '</div>',
       ];
     }
+    );
 
     $form['imports']['import'] = [
       '#type' => 'submit',
@@ -120,22 +163,22 @@ class FontSettingsForm extends ConfigFormBase {
       'operations' => [],
       'finished' => '\Drupal\fontyourface\Form\FontSettingsForm::importFinished',
     ];
-    foreach (\Drupal::moduleHandler()->getImplementations('fontyourface_import') as $module_name) {
-      if ($op == $this->t('Import all fonts') || $op == $this->t('Import from @module', ['@module' => $module_name])) {
+    $this->moduleHandler->invokeAllWith(self::HOOK_IMPORT, function (callable $hook, string $module) use ($op, &$batch) {
+      if ($op == $this->t('Import all fonts') || $op == $this->t('Import from @module', ['@module' => $module])) {
         $batch['operations'][] = [
           '\Drupal\fontyourface\Form\FontSettingsForm::importFromProvider',
           [
-            $module_name,
+            $module,
           ],
         ];
       }
-    }
+    });
     if (!empty($batch['operations'])) {
       batch_set($batch);
     }
 
     if ($op == $this->t('Save configuration')) {
-      $config = $this->config('fontyourface.settings')
+      $this->config('fontyourface.settings')
         ->set('load_all_enabled_fonts', $values['load_all_enabled_fonts'])
         ->set('load_on_themes', $values['load_on_themes'])
         ->save();

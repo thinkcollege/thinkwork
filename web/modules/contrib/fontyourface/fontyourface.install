@@ -8,8 +8,13 @@
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\fontyourface\Entity\Font;
+use Drupal\taxonomy\Entity\Vocabulary;
+
+/**
+ * Default hook constant.
+ */
+define('FONTYOURFACE_HOOK_API', 'fontyourface_api');
 
 /**
  * Implements hook_install().
@@ -213,10 +218,10 @@ function fontyourface_update_8002() {
 function fontyourface_update_8003() {
   // Set the module weight. There is some general Drupal funk around module
   // weights during install.
-  module_set_weight('fontyourface', 1);
-  foreach (\Drupal::moduleHandler()->getImplementations('fontyourface_api') as $module_name) {
-    module_set_weight($module_name, 10);
-  }
+  module_set_weight(FONTYOURFACE_HOOK_API, 1);
+  \Drupal::moduleHandler()->invokeAllWith(FONTYOURFACE_HOOK_API, function (callable $hook, string $module) {
+    module_set_weight($module, 10);
+  });
 }
 
 /**

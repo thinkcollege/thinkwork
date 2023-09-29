@@ -4,6 +4,8 @@ namespace Drupal\fontyourface\Form;
 
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Messenger\MessengerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Form controller for Font edit forms.
@@ -13,13 +15,33 @@ use Drupal\Core\Form\FormStateInterface;
 class FontForm extends ContentEntityForm {
 
   /**
+   * The messenger.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(MessengerInterface $messenger) {
+    $this->messenger = $messenger;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('messenger'),
+    );
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    /** @var \Drupal\fontyourface\Entity\Font $entity */
     $form = parent::buildForm($form, $form_state);
-    $entity = $this->entity;
-
     return $form;
   }
 
@@ -32,13 +54,13 @@ class FontForm extends ContentEntityForm {
 
     switch ($status) {
       case SAVED_NEW:
-        \Drupal::messenger()->addMessage($this->t('Created the %label Font.', [
+        $this->messenger->addMessage($this->t('Created the %label Font.', [
           '%label' => $entity->label(),
         ]));
         break;
 
       default:
-        \Drupal::messenger()->addMessage($this->t('Saved the %label Font.', [
+        $this->messenger->addMessage($this->t('Saved the %label Font.', [
           '%label' => $entity->label(),
         ]));
     }

@@ -3,16 +3,51 @@
 namespace Drupal\fontyourface\Form;
 
 use Drupal\Core\Entity\EntityForm;
+use Drupal\Core\Messenger\MessengerInterface;
+use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\fontyourface\FontDisplayInterface;
 use Drupal\fontyourface\Entity\Font;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class FontDisplayForm.
+ * Form to display fonts.
  *
  * @package Drupal\fontyourface\Form
  */
 class FontDisplayForm extends EntityForm {
+
+  /**
+   * The theme handler.
+   *
+   * @var \Drupal\Core\Extension\ThemeHandlerInterface
+   */
+  protected $themeHandler;
+
+  /**
+   * The messenger.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(ThemeHandlerInterface $theme_handler, MessengerInterface $messenger) {
+    $this->themeHandler = $theme_handler;
+    $this->messenger = $messenger;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('theme_handler'),
+      $container->get('messenger'),
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -43,7 +78,7 @@ class FontDisplayForm extends EntityForm {
 
     $fonts = Font::loadActivatedFonts();
     if (empty($fonts)) {
-      \Drupal::messenger()->addMessage($this->t('Please enable at least one font before creating/updating a font style.'), 'warning');
+      $this->messenger->addMessage($this->t('Please enable at least one font before creating/updating a font style.'), 'warning');
       $this->redirect('entity.font.collection')->send();
       exit();
     }
@@ -53,7 +88,7 @@ class FontDisplayForm extends EntityForm {
       $available_fonts[$font->url->value] = $font->name->value;
     }
 
-    $drupal_themes = \Drupal::service('theme_handler')->listInfo();
+    $drupal_themes = $this->themeHandler->listInfo();
     $themes = [];
     foreach ($drupal_themes as $key => $theme) {
       if (!empty($theme->info['hidden'])) {
@@ -170,13 +205,13 @@ class FontDisplayForm extends EntityForm {
 
     switch ($status) {
       case SAVED_NEW:
-        \Drupal::messenger()->addMessage($this->t('Created the %label Font display.', [
+        $this->messenger->addMessage($this->t('Created the %label Font display.', [
           '%label' => $font_display->label(),
         ]));
         break;
 
       default:
-        \Drupal::messenger()->addMessage($this->t('Saved the %label Font display.', [
+        $this->messenger->addMessage($this->t('Saved the %label Font display.', [
           '%label' => $font_display->label(),
         ]));
     }

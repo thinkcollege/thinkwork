@@ -5,10 +5,9 @@
  * Typekit API module file.
  */
 
-define('TYPEKIT_API_BASE_URL', 'https://typekit.com/api/v1/json/');
-
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
+use Drupal\typekit_api\TypeKitApiInterface;
 
 /**
  * Implements hook_fontyourface_api().
@@ -147,8 +146,11 @@ function typekit_api_fontyourface_import($font_context = []) {
  */
 function typekit_api_get_kits($token = NULL) {
   try {
-    $uri = TYPEKIT_API_BASE_URL . 'kits';
-    $response = \Drupal::httpClient()->get($uri, ['headers' => typekit_api_token_headers($token), 'verify' => FALSE]);
+    $uri = TypeKitApiInterface::TYPEKIT_API_BASE_URL . 'kits';
+    $response = \Drupal::httpClient()->get($uri, [
+      'headers' => typekit_api_token_headers($token),
+      'verify' => FALSE,
+    ]);
     $data = json_decode((string) $response->getBody());
   }
   catch (RequestException $e) {
@@ -171,8 +173,11 @@ function typekit_api_get_kits($token = NULL) {
  */
 function typekit_api_get_kit($kit_id, $token = NULL) {
   try {
-    $uri = TYPEKIT_API_BASE_URL . 'kits/' . $kit_id;
-    $response = \Drupal::httpClient()->get($uri, ['headers' => typekit_api_token_headers($token), 'verify' => FALSE]);
+    $uri = TypeKitApiInterface::TYPEKIT_API_BASE_URL . 'kits/' . $kit_id;
+    $response = \Drupal::httpClient()->get($uri, [
+      'headers' => typekit_api_token_headers($token),
+      'verify' => FALSE,
+    ]);
     $data = json_decode((string) $response->getBody());
   }
   catch (RequestException $e) {
@@ -197,8 +202,11 @@ function typekit_api_get_kit($kit_id, $token = NULL) {
  */
 function typekit_api_get_variant($family_id, $variant_id, $token = NULL) {
   try {
-    $uri = TYPEKIT_API_BASE_URL . 'families/' . $family_id . '/' . $variant_id;
-    $response = \Drupal::httpClient()->get($uri, ['headers' => typekit_api_token_headers($token), 'verify' => FALSE]);
+    $uri = TypeKitApiInterface::TYPEKIT_API_BASE_URL . 'families/' . $family_id . '/' . $variant_id;
+    $response = \Drupal::httpClient()->get($uri, [
+      'headers' => typekit_api_token_headers($token),
+      'verify' => FALSE,
+    ]);
     $data = json_decode((string) $response->getBody());
   }
   catch (RequestException $e) {

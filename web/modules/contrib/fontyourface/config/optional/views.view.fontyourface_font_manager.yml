@@ -17,7 +17,6 @@ description: ''
 tag: ''
 base_table: fontyourface_font
 base_field: fid
-core: 8.x
 display:
   default:
     display_plugin: default

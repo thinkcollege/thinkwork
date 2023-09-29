@@ -41,7 +41,8 @@ function fontsquirrel_api_entity_presave(EntityInterface $entity) {
       $metadata = $entity->getMetadata();
       $directory_location = _fontsquirrel_api_get_font_directory_location($entity);
       \Drupal::service('file_system')->prepareDirectory($directory_location, FileSystemInterface::CREATE_DIRECTORY);
-      $zip_location = file_build_uri('fontyourface/fontsquirrel/' . $metadata['path'] . '-fontfacekit.zip');
+      $zip_location = \Drupal::config('system.file')->get('default_scheme') . '://' . 'fontyourface/fontsquirrel/' . $metadata['path'] . '-fontfacekit.zip';
+
       // Throw an exception; make it hard if this fails.
       $uri = 'https://www.fontsquirrel.com/fontfacekit/' . $metadata['path'];
       $response = \Drupal::httpClient()->get($uri, ['headers' => ['Accept' => 'text/plain']]);
@@ -50,19 +51,20 @@ function fontsquirrel_api_entity_presave(EntityInterface $entity) {
       }
       $files = [];
       $font_pathinfo = pathinfo($metadata['font_filename']);
-      if ($zip = zip_open(\Drupal::service('file_system')->realpath($zip_location))) {
-        while ($entry = zip_read($zip)) {
-          $entry_name = zip_entry_name($entry);
+      $zipArchive = new ZipArchive();
+      if ($zip = $zipArchive->open(\Drupal::service('file_system')->realpath($zip_location))) {
+        while ($entry = $zipArchive->getFromName($zip)) {
+          $entry_name = $zipArchive->statIndex($entry);
           $path_info = pathinfo($entry_name);
           if (strpos($path_info['filename'], $font_pathinfo['filename'] . '-webfont') !== FALSE &&
               in_array($path_info['extension'], ['eot', 'ttf', 'woff', 'svg'])) {
             $files[$path_info['extension']] = $path_info['filename'] . '.' . $path_info['extension'];
-            $data = zip_entry_read($entry, zip_entry_filesize($entry));
+            $data = $zipArchive->getFromName($entry, $zipArchive->statIndex($entry));
             \Drupal::service('file_system')->saveData($data, $directory_location . '/' . $path_info['filename'] . '.' . $path_info['extension'], FileSystemInterface::EXISTS_REPLACE);
           }
-          zip_entry_close($entry);
+          $zipArchive->close();
         }
-        zip_close($zip);
+        $zipArchive->close();
       }
       if (!empty($files)) {
         $css_file = _fontsquirrel_api_generate_fontfamily_css_stylesheet($entity->css_family->value, $files);
@@ -86,7 +88,7 @@ function fontsquirrel_api_page_attachments(&$page) {
           '#tag' => 'link',
           '#attributes' => [
             'rel' => 'stylesheet',
-            'href' => file_create_url($directory_location . '/fontyourface-stylesheet.css'),
+            'href' => \Drupal::service('file_url_generator')->generateAbsoluteString($directory_location . '/fontyourface-stylesheet.css'),
             'media' => 'all',
           ],
         ], 'fontsquirrel-api-' . $font->id(),
@@ -261,7 +263,7 @@ function fontsquirrel_api_get_font_family_info($font_import) {
  *   File stream location to font package.
  */
 function _fontsquirrel_api_get_font_directory_location(Font $font) {
-  return file_build_uri('fontyourface/fontsquirrel/' . _fontsquirrel_api_get_sanitized_css_family($font->css_family->value) . '-fontfacekit');
+  return \Drupal::config('system.file')->get('default_scheme') . '://' . 'fontyourface/fontsquirrel/' . _fontsquirrel_api_get_sanitized_css_family($font->css_family->value) . '-fontfacekit';
 }
 
 /**

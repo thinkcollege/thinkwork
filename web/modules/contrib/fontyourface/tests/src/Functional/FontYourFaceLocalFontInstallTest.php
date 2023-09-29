@@ -49,9 +49,9 @@ class FontYourFaceLocalFontInstallTest extends BrowserTestBase {
   public function testFontYourFaceLocalFontsSection() {
     // Font settings page.
     $this->drupalGet(Url::fromRoute('entity.local_font_config_entity.collection'));
-    $this->assertText(t('There are no custom font entities yet.'));
+    $this->assertSession()->pageTextContains('There are no custom font entities yet.');
     $this->drupalGet(Url::fromRoute('entity.local_font_config_entity.add_form'));
-    $this->assertText(t('Name of the Custom Font'));
+    $this->assertSession()->pageTextContains('Name of the Custom Font');
   }
 
 }

@@ -4,15 +4,54 @@ namespace Drupal\local_fonts\Form;
 
 use Drupal\Component\Utility\Environment;
 use Drupal\Core\Entity\EntityForm;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\file\Entity\File;
+use Drupal\Core\Messenger\MessengerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class LocalFontConfigEntityForm.
+ * Config form to set the local fonts.
  *
  * @package Drupal\local_fonts\Form
  */
 class LocalFontConfigEntityForm extends EntityForm {
+
+  /**
+   * Load.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
+   * Messenger.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
+   * The class constructor.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger service.
+   */
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, MessengerInterface $messenger) {
+    $this->entityTypeManager = $entityTypeManager;
+    $this->messenger = $messenger;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('entity_type.manager'),
+      $container->get('messenger')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -128,7 +167,7 @@ class LocalFontConfigEntityForm extends EntityForm {
     $local_font_config_entity = $this->entity;
     if (!empty($values['font_file'])) {
       // Get contents of Font File.
-      $font_file = File::load($values['font_file'][0]);
+      $font_file = $this->entityTypeManager->getStorage('file')->load($values['font_file'][0]);
       $font_file_data = base64_encode(file_get_contents($font_file->getFileUri()));
       $local_font_config_entity->setFontWoffData($font_file_data);
     }
@@ -136,13 +175,13 @@ class LocalFontConfigEntityForm extends EntityForm {
 
     switch ($status) {
       case SAVED_NEW:
-        \Drupal::messenger()->addMessage($this->t('Created the %label Custom Font.', [
+        $this->messenger->addMessage($this->t('Created the %label Custom Font.', [
           '%label' => $local_font_config_entity->label(),
         ]));
         break;
 
       default:
-        \Drupal::messenger()->addMessage($this->t('Saved the %label Custom Font.', [
+        $this->messenger->addMessage($this->t('Saved the %label Custom Font.', [
           '%label' => $local_font_config_entity->label(),
         ]));
     }

@@ -111,7 +111,12 @@ function adobe_edge_fonts_generate_font_family_css(array $fonts) {
 function _adobe_edge_fonts_get_fonts_from_api() {
   try {
     $uri = 'https://edgewebfonts.adobe.com/data/fontData.json';
-    $response = \Drupal::httpClient()->get($uri, ['headers' => ['Accept' => 'text/plain'], 'verify' => FALSE]);
+    $response = \Drupal::httpClient()->get($uri, [
+      'headers' => [
+        'Accept' => 'text/plain',
+      ],
+      'verify' => FALSE,
+    ]);
     $data = (string) $response->getBody();
   }
   catch (RequestException $e) {

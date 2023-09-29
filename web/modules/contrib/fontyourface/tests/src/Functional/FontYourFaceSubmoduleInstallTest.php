@@ -49,8 +49,8 @@ class FontYourFaceSubmoduleInstallTest extends BrowserTestBase {
   public function testFontYourFaceSections() {
     // Font settings page.
     $this->drupalGet(Url::fromRoute('font.settings'));
-    $this->assertText(t('Settings form for @font-your-face. Support modules can use this form for settings or to import fonts.'));
-    $this->assertSession()->responseContains(t('Import from websafe_fonts_test'));
+    $this->assertSession()->pageTextContains('Settings form for @font-your-face. Support modules can use this form for settings or to import fonts.');
+    $this->assertSession()->responseContains('Import from websafe_fonts_test');
   }
 
   /**
@@ -59,19 +59,19 @@ class FontYourFaceSubmoduleInstallTest extends BrowserTestBase {
   public function testImportWebSafeFonts() {
     // Assert no fonts exist to start.
     $this->drupalGet(Url::fromRoute('entity.font.collection'));
-    $this->assertNoText('Arial');
+    $this->assertSession()->pageTextNotContains('Arial');
 
     $this->drupalGet(Url::fromRoute('font.settings'));
     $this->submitForm([], 'Import from websafe_fonts_test');
-    $this->assertResponse(200);
-    $this->assertText(t('Finished importing fonts.'));
+    $this->assertSession()->statusCodeEquals(200);
+    $this->assertSession()->pageTextContains('Finished importing fonts.');
 
     // Assert all fonts were imported.
     $this->drupalGet(Url::fromRoute('entity.font.collection'));
-    $this->assertText('Arial');
-    $this->assertText('Verdana');
-    $this->assertText('Courier New');
-    $this->assertText('Georgia');
+    $this->assertSession()->pageTextContains('Arial');
+    $this->assertSession()->pageTextContains('Verdana');
+    $this->assertSession()->pageTextContains('Courier New');
+    $this->assertSession()->pageTextContains('Georgia');
 
     // Assert fonts load on font collection page.
     $this->assertSession()->responseContains('<meta name="Websafe Font" content="Arial" />');
@@ -81,7 +81,7 @@ class FontYourFaceSubmoduleInstallTest extends BrowserTestBase {
 
     // ENsure font is not loaded on front page because font is not enabled.
     $this->drupalGet('<front>');
-    $this->assertNoRaw('<meta name="Websafe Font" content="Arial" />');
+    $this->assertSession()->pageTextNotContains('<meta name="Websafe Font" content="Arial" />');
   }
 
   /**
@@ -90,12 +90,15 @@ class FontYourFaceSubmoduleInstallTest extends BrowserTestBase {
   public function testEnableWebSafeFonts() {
     // Assert no fonts load to start.
     $this->drupalGet('/node');
-    $this->assertNoRaw('<meta name="Websafe Font" content="Arial" />');
+    $this->assertSession()->pageTextNotContains('<meta name="Websafe Font" content="Arial" />');
 
     $this->drupalGet(Url::fromRoute('font.settings'));
     $this->submitForm(['load_all_enabled_fonts' => 1], 'Import from websafe_fonts_test');
-    $this->drupalGet(url::fromRoute('entity.font.activate', ['font' => 1, 'js' => 'nojs']));
-    $this->assertText('Font Arial successfully enabled');
+    $this->drupalGet(url::fromRoute('entity.font.activate', [
+      'font' => 1,
+      'js' => 'nojs',
+    ]));
+    $this->assertSession()->pageTextContains('Font Arial successfully enabled');
 
     // Flush the caches. Not an issue in prod but seems to be in simpletest.
     // Will keep an eye on it.

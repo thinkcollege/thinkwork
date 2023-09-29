@@ -99,7 +99,7 @@ function google_fonts_api_generate_font_family_css(array $fonts) {
 
     $base = 'https://fonts.googleapis.com/css?family=';
 
-    $url = $base . implode('|', $families) . '&subset=' . implode(',', $all_subsets);
+    $url = $base . implode('|', $families) . '&subset=' . implode(',', $all_subsets) . '&display=swap';
 
   }
   return $url;
@@ -152,6 +152,7 @@ function _google_fonts_api_get_fonts_from_api($temp_key = '') {
     $response = \Drupal::httpClient()->get($uri, [
       'headers' => [
         'Accept' => 'text/plain',
+        'Referer' => \Drupal::request()->getHost(),
       ],
       'verify' => FALSE,
     ]);

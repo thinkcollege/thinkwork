@@ -43,7 +43,7 @@ class FontYourFaceFontDisplayTest extends BrowserTestBase {
     $this->drupalLogin($this->adminUser);
 
     // Set up default themes.
-    \Drupal::service('theme_handler')->install(['bartik', 'seven']);
+    \Drupal::service('theme_installer')->install(['bartik', 'seven']);
     $this->config('system.theme')
       ->set('default', 'bartik')
       ->set('admin', 'seven')
@@ -60,18 +60,24 @@ class FontYourFaceFontDisplayTest extends BrowserTestBase {
    * Tests font not displayed even when Arial is loaded.
    */
   public function testFontNotDisplayed() {
-    $this->drupalGet(url::fromRoute('entity.font.activate', ['font' => 1, 'js' => 'nojs']));
+    $this->drupalGet(url::fromRoute('entity.font.activate', [
+      'font' => 1,
+      'js' => 'nojs',
+    ]));
     $this->resetAll();
     // Assert no fonts load to start.
     $this->drupalGet('/node');
-    $this->assertNoRaw('<meta name="Websafe Font" content="Arial" />');
+    $this->assertSession()->responseNotContains('<meta name="Websafe Font" content="Arial" />');
   }
 
   /**
    * Tests font displayed once added in FontDisplay.
    */
   public function testFontDisplayedViaFontDisplayRule() {
-    $this->drupalGet(url::fromRoute('entity.font.activate', ['font' => 1, 'js' => 'nojs']));
+    $this->drupalGet(url::fromRoute('entity.font.activate', [
+      'font' => 1,
+      'js' => 'nojs',
+    ]));
 
     $edit = [
       'label' => 'Headers',

@@ -15,6 +15,12 @@ use Drupal\Core\Form\FormStateInterface;
 class FontYourFaceProviderFilter extends StringFilter {
 
   /**
+   * Default HOOK constant.
+   */
+  const HOOK = 'fontyourface_api';
+
+
+  /**
    * Exposed filter options.
    *
    * @var bool
@@ -40,14 +46,10 @@ class FontYourFaceProviderFilter extends StringFilter {
    */
   protected function valueForm(&$form, FormStateInterface $form_state) {
     $options = ['All' => '- Any -'];
-    foreach (\Drupal::moduleHandler()->getImplementations('fontyourface_api') as $module_name) {
-      $name = $module_name;
-      $module_info = \Drupal::moduleHandler()->invoke($module_name, 'fontyourface_api');
-      if ($module_info['name']) {
-        $name = $module_info['name'];
-      }
-      $options[$module_name] = $module_info['name'];
-    }
+    $this->moduleHandler->invokeAllWith(self::HOOK, function (callable $hook, string $module) use (&$options) {
+      $module_info = $hook();
+      $options[$module] = $module_info['name'];
+    });
 
     $form['value'] = [
       '#type' => 'select',
@@ -56,7 +58,7 @@ class FontYourFaceProviderFilter extends StringFilter {
       '#default_value' => $this->value,
     ];
 
-    if ($exposed = $form_state->get('exposed')) {
+    if ($form_state->get('exposed')) {
       $identifier = $this->options['expose']['identifier'];
       $user_input = $form_state->getUserInput();
       if (!isset($user_input[$identifier])) {

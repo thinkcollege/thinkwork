@@ -5,18 +5,19 @@
  * Contains fontyourface.module..
  */
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\Core\Url;
+use Drupal\Core\Link;
+use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Component\Utility\Html;
-use Drupal\Core\Link;
-use Drupal\taxonomy\Entity\Term;
-
-use Drupal\fontyourface\FontInterface;
-use Drupal\fontyourface\FontDisplayInterface;
+use Drupal\Core\Template\Attribute;
+use Drupal\Core\Url;
 use Drupal\fontyourface\Entity\Font;
 use Drupal\fontyourface\Entity\FontDisplay;
+use Drupal\fontyourface\FontDisplayInterface;
+use Drupal\fontyourface\FontInterface;
+use Drupal\taxonomy\Entity\Term;
 
 /**
  * Implements hook_module_implements_alter().
@@ -25,15 +26,19 @@ function fontyourface_module_implements_alter(&$implementations, $hook) {
   if ($hook == 'page_attachments') {
     // Move the fontyourface and submodules to be last to build on page.
     $list = ['fontyourface'];
-    foreach (\Drupal::moduleHandler()->getImplementations('fontyourface_api') as $module_name) {
-      if (isset($implementations[$module_name])) {
-        $list[] = $module_name;
+    $modules = \Drupal::moduleHandler()->hasImplementations('fontyourface_api');
+    if (is_array($modules) || is_object($modules)) {
+      foreach ($modules as $module_name) {
+        if (isset($implementations[$module_name])) {
+          $list[] = $module_name;
+        }
       }
-    }
-    foreach ($list as $module_name) {
-      $group = $implementations[$module_name];
-      unset($implementations[$module_name]);
-      $implementations[$module_name] = $group;
+
+      foreach ($list as $module_name) {
+        $group = $implementations[$module_name];
+        unset($implementations[$module_name]);
+        $implementations[$module_name] = $group;
+      }
     }
   }
 }
@@ -64,7 +69,8 @@ function fontyourface_library_info_build() {
     $styles = FontDisplay::loadByTheme($key);
     if (!empty($styles)) {
       foreach ($styles as $style) {
-        $file_url = file_build_uri('fontyourface/font_display/' . $style->id() . '.css');
+        $path = 'fontyourface/font_display/' . $style->id() . '.css';
+        $file_url = \Drupal::config('system.file')->get('default_scheme') . '://' . $path;
         $libraries['font_display_' . $key]['css']['base'][$file_url] = [
           'basename' => $file_url,
         ];
@@ -131,7 +137,12 @@ function fontyourface_page_attachments(&$page) {
  * Adds body classes if certain regions have content.
  */
 function fontyourface_preprocess_html(&$variables) {
-  $variables['attributes']['class'][] = 'fontyourface';
+  if ($variables['attributes'] instanceof Attribute) {
+    $variables['attributes']->addClass('fontyourface');
+  }
+  else {
+    $variables['attributes']['class'][] = 'fontyourface';
+  }
 }
 
 /**
@@ -180,7 +191,12 @@ function fontyourface_preprocess_font(array &$variables) {
 
   $variables['attributes']['class'] = ['font'];
   if ($font->isDeactivated()) {
-    $url = Url::fromRoute('entity.font.activate', ['js' => 'nojs', 'font' => $font->id()], ['query' => \Drupal::destination()->getAsArray()]);
+    $url = Url::fromRoute('entity.font.activate', [
+      'js' => 'nojs',
+      'font' => $font->id(),
+    ], [
+      'query' => \Drupal::destination()->getAsArray(),
+    ]);
     $url->setOptions(
       [
         'attributes' => [
@@ -197,7 +213,12 @@ function fontyourface_preprocess_font(array &$variables) {
     $variables['attributes']['class'][] = 'disabled';
   }
   if ($font->isActivated()) {
-    $url = Url::fromRoute('entity.font.deactivate', ['js' => 'nojs', 'font' => $font->id()], ['query' => \Drupal::destination()->getAsArray()]);
+    $url = Url::fromRoute('entity.font.deactivate', [
+      'js' => 'nojs',
+      'font' => $font->id(),
+    ], [
+      'query' => \Drupal::destination()->getAsArray(),
+    ]);
     $url->setOptions(
       [
         'attributes' => [
@@ -300,10 +321,7 @@ function fontyourface_save_font($font_data) {
     ];
   }
   $font->setMetadata(!empty($font_data->metadata) ? $font_data->metadata : []);
-  $font->status = FALSE;
-  if ($font->isActivated()) {
-    $font->status = TRUE;
-  }
+  $font->status = $font->isActivated();
   $font->save();
   return $font;
 }
@@ -367,6 +385,7 @@ function fontyourface_delete($provider) {
     $storage_handler = \Drupal::entityTypeManager()->getStorage('font');
     $fids = \Drupal::entityQuery('font')
       ->condition('pid', $provider)
+      ->accessCheck(FALSE)
       ->range(0, 50)
       ->execute();
     if (!empty($fids)) {
@@ -380,7 +399,7 @@ function fontyourface_delete($provider) {
 }
 
 /**
- * Logs to watchdog if logging is enabled.
+ * Logs if logging is enabled.
  *
  * @param string $message
  *   Log message. This should be a literal string; see
@@ -391,7 +410,10 @@ function fontyourface_delete($provider) {
 function fontyourface_log($message, array $arguments) {
   $config = \Drupal::config('fontyourface.settings');
   if ($config->get('fontyourface_detailed_logging')) {
-    watchdog('@font-your-face', $message, $arguments, WATCHDOG_INFO);
+    $type = '@font-your-face';
+    $severity = RfcLogLevel::INFO;
+    $logger = \Drupal::logger($type);
+    $logger->log($severity, $message, $arguments);
   }
 }
 
@@ -405,7 +427,7 @@ function fontyourface_log($message, array $arguments) {
  *   TRUE if files save successfully. Throw any errors otherwise.
  */
 function fontyourface_save_and_generate_font_display_css(FontDisplayInterface $style) {
-  $directory = file_build_uri('fontyourface/font_display');
+  $directory = \Drupal::config('system.file')->get('default_scheme') . '://fontyourface/font_display';
   \Drupal::service('file_system')->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
 
   $font = $style->getFont();
@@ -428,7 +450,13 @@ function fontyourface_save_and_generate_font_display_css(FontDisplayInterface $s
  *   The found/created taxonomy term id.
  */
 function _fontyourface_get_vocabulary_term($term_value, $vocabulary) {
-  if ($terms = taxonomy_term_load_multiple_by_name($term_value, $vocabulary)) {
+  $storage = \Drupal::entityTypeManager()
+    ->getStorage('taxonomy_term');
+  $terms = $storage->loadByProperties([
+    'name' => $term_value,
+    'vid' => $vocabulary,
+  ]);
+  if ($terms) {
     $term = reset($terms);
   }
   else {
