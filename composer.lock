@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e4ec3f2593fa88d4975b861ac9e9ba37",
+    "content-hash": "7c8a5f1b4d066ef632ea8e58afa9adc1",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2801,29 +2801,29 @@
         },
         {
             "name": "drupal/content_access",
-            "version": "1.0.0-alpha4",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/content_access.git",
-                "reference": "8.x-1.0-alpha4"
+                "reference": "2.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/content_access-8.x-1.0-alpha4.zip",
-                "reference": "8.x-1.0-alpha4",
-                "shasum": "4ccaeb432d39de2649ea5602b15429633b6385cc"
+                "url": "https://ftp.drupal.org/files/projects/content_access-2.0.0.zip",
+                "reference": "2.0.0",
+                "shasum": "01be4c9612d31b77f6117297b0bacaf78aeffd81"
             },
             "require": {
-                "drupal/core": "^8.8 || ^9"
+                "drupal/core": "^9.4 || ^10"
             },
             "require-dev": {
-                "drupal/acl": "~1.0"
+                "drupal/acl": "~1.0 || ~2.0"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.0-alpha4",
-                    "datestamp": "1654070349",
+                    "version": "2.0.0",
+                    "datestamp": "1694013168",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Project has not opted into security advisory coverage!"
@@ -16331,7 +16331,6 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "drupal/bootstrap_paragraphs": 10,
-        "drupal/content_access": 15,
         "drupal/typed_data": 15,
         "drupal/viewfield": 10,
         "drupal/views_bulk_operations": 5
