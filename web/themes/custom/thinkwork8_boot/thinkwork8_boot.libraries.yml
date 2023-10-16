@@ -2,6 +2,12 @@ global-styling:
   version: VERSION
   js:
     js/global.js: {}
+  dependencies:
+  - core/jquery
+  - core/drupal.ajax
+  - core/drupal
+  - core/drupalSettings
+  - core/once
   css:
     component:
       css/style.css: {}
