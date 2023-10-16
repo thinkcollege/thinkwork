@@ -5,7 +5,7 @@
     "homepage": "http://drupal.org/project/bootstrap_library",
     "license": "GPL-2.0+",
     "require": {
-        "twbs/bootstrap": "^4.4.1"
+        "twbs/bootstrap": "*"
     },
     "authors": [{
       "name": "Alberto Siles",

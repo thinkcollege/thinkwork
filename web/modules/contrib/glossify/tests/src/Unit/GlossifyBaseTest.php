@@ -157,7 +157,7 @@ class GlossifyBaseTest extends UnitTestCase {
         'case_sensitivity' => TRUE,
         'first_only' => FALSE,
         'displaytype' => 'tooltips',
-       'tooltip_truncate' => FALSE,
+        'tooltip_truncate' => FALSE,
         'urlpattern' => '',
         'output' => 'Simple plain text with some multi-byte words orð, சொற்கள் and <span title="' . $term3->tip . '">' . $term3->name . '</span> as replacement term',
       ],

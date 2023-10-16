@@ -3154,28 +3154,28 @@
         },
         {
             "name": "drupal/bootstrap_library",
-            "version": "1.15.0",
-            "version_normalized": "1.15.0.0",
+            "version": "2.0.2",
+            "version_normalized": "2.0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/bootstrap_library.git",
-                "reference": "8.x-1.15"
+                "reference": "2.0.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/bootstrap_library-8.x-1.15.zip",
-                "reference": "8.x-1.15",
-                "shasum": "5a29582377f1e0c62fddc50d848eb5cd98ee7596"
+                "url": "https://ftp.drupal.org/files/projects/bootstrap_library-2.0.2.zip",
+                "reference": "2.0.2",
+                "shasum": "c8843362cf457e6e7a797a629a28adb01b2217d5"
             },
             "require": {
-                "drupal/core": "^8 || ^9",
-                "twbs/bootstrap": "^4.4.1"
+                "drupal/core": "^9 || ^10",
+                "twbs/bootstrap": "*"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.15",
-                    "datestamp": "1633309259",
+                    "version": "2.0.2",
+                    "datestamp": "1674079185",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -4858,27 +4858,27 @@
         },
         {
             "name": "drupal/glossify",
-            "version": "2.0.4",
-            "version_normalized": "2.0.4.0",
+            "version": "3.0.0",
+            "version_normalized": "3.0.0.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/glossify.git",
-                "reference": "2.0.4"
+                "reference": "3.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/glossify-2.0.4.zip",
-                "reference": "2.0.4",
-                "shasum": "39392d5fcd6bb2839f992d5293035b7b596833cf"
+                "url": "https://ftp.drupal.org/files/projects/glossify-3.0.0.zip",
+                "reference": "3.0.0",
+                "shasum": "70b172252d29a0c33524d5eec8c2636cfc9b0940"
             },
             "require": {
-                "drupal/core": "^8 || ^9"
+                "drupal/core": "^8.9 || ^9 || ^10"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.0.4",
-                    "datestamp": "1656249296",
+                    "version": "3.0.0",
+                    "datestamp": "1683548185",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -4892,12 +4892,16 @@
             ],
             "authors": [
                 {
-                    "name": "WorldFallz",
-                    "homepage": "https://www.drupal.org/user/155304"
+                    "name": "Anybody",
+                    "homepage": "https://www.drupal.org/user/291091"
                 },
                 {
                     "name": "beljaako",
                     "homepage": "https://www.drupal.org/user/1031430"
+                },
+                {
+                    "name": "Grevil",
+                    "homepage": "https://www.drupal.org/user/3668491"
                 },
                 {
                     "name": "keesje",
@@ -4906,6 +4910,10 @@
                 {
                     "name": "sanduhrs",
                     "homepage": "https://www.drupal.org/user/28074"
+                },
+                {
+                    "name": "WorldFallz",
+                    "homepage": "https://www.drupal.org/user/155304"
                 }
             ],
             "description": "API module to automatically create links or tooltips based on other content or taxonomy terms.",
@@ -6756,65 +6764,42 @@
         },
         {
             "name": "drupal/viewsreference",
-            "version": "1.8.0",
-            "version_normalized": "1.8.0.0",
+            "version": "2.0.0-beta6",
+            "version_normalized": "2.0.0.0-beta6",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/viewsreference.git",
-                "reference": "8.x-1.8"
+                "reference": "8.x-2.0-beta6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/viewsreference-8.x-1.8.zip",
-                "reference": "8.x-1.8",
-                "shasum": "8dd6b3828d40f4da413f73f956da528941e2ef52"
+                "url": "https://ftp.drupal.org/files/projects/viewsreference-8.x-2.0-beta6.zip",
+                "reference": "8.x-2.0-beta6",
+                "shasum": "1b094ccb10f4adc0b968a51650c0e2612ee184dd"
             },
             "require": {
-                "drupal/core": "^8.6|^9.0",
-                "php": "^7.0|^8.0",
-                "squizlabs/php_codesniffer": "*"
+                "drupal/core": "^9.3 || ^10"
             },
             "conflict": {
                 "drupal/viewsreferennce": "*"
             },
-            "require-dev": {
-                "composer/installers": "^1.2",
-                "drupal/coder": "^8.2",
-                "drupal/core-composer-scaffold": "*",
-                "webflo/drupal-core-require-dev": "~8.5"
-            },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.8",
-                    "datestamp": "1652694596",
+                    "version": "8.x-2.0-beta6",
+                    "datestamp": "1691400463",
                     "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
+                        "status": "not-covered",
+                        "message": "Beta releases are not covered by Drupal security advisories."
                     }
-                },
-                "installer-paths": {
-                    "../build/core": [
-                        "type:drupal-core"
-                    ],
-                    "../build/modules/contrib/{$name}": [
-                        "type:drupal-module"
-                    ],
-                    "../build/themes/contrib/{$name}": [
-                        "type:drupal-theme"
-                    ]
                 }
             },
             "installation-source": "dist",
             "notification-url": "https://packages.drupal.org/8/downloads",
             "license": [
-                "GPL-2.0+"
+                "GPL-2.0-or-later"
             ],
             "authors": [
-                {
-                    "name": "New Zeal",
-                    "homepage": "https://www.drupal.org/user/93571"
-                },
                 {
                     "name": "jasonawant",
                     "homepage": "https://www.drupal.org/user/589890"
@@ -6824,18 +6809,22 @@
                     "homepage": "https://www.drupal.org/user/2229066"
                 },
                 {
+                    "name": "NewZeal",
+                    "homepage": "https://www.drupal.org/user/93571"
+                },
+                {
                     "name": "seanB",
                     "homepage": "https://www.drupal.org/user/545912"
                 }
             ],
-            "description": "Views Reference",
+            "description": "Views reference",
             "homepage": "http://drupal.org/project/viewsreference",
             "keywords": [
                 "Drupal"
             ],
             "support": {
-                "source": "http://cgit.drupalcode.org/viewsreference",
-                "issues": "http://drupal.org/project/issues/viewsreference"
+                "source": "https://git.drupalcode.org/project/viewsreference",
+                "issues": "https://www.drupal.org/project/issues/viewsreference"
             },
             "install-path": "../../web/modules/contrib/viewsreference"
         },
@@ -17019,6 +17008,7 @@
         "seld/phar-utils",
         "sirbrillig/phpcs-variable-analysis",
         "slevomat/coding-standard",
+        "squizlabs/php_codesniffer",
         "symfony/browser-kit",
         "symfony/lock",
         "symfony/phpunit-bridge",

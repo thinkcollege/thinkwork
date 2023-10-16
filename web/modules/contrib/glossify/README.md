@@ -10,23 +10,27 @@ CONTENTS OF THIS FILE
 INTRODUCTION
 ------------
 
-The Glossify module provides filters that scan and parse content and adhance terms in the text with tooltips and optionally add links to their pages. Currently it consists of 2 filters:
+  The Glossify module provides filters that scan and parse content and adhance
+  terms in the text with tooltips and optionally add links to their pages.
+  Currently it consists of 2 filters:
 
 Glossify with taxonomy
 
   links taxonomy terms appearing in content to their taxonomy term page.
   select which taxonomy vocabularies to use as the source for the terms.
   indicate whether or not matching is case sensitive.
-  indicate whether or not every match should be linked or just the first occurrence.
-  display the term definition as a tooltip while hovering the glossified link.
+  indicate whether or not every match should be linked or just the first
+  occurrence. display the term definition as a tooltip while hovering the
+  glossified link.
 
 Glossify with content
 
   links node titles of content appearing in other content to their node page.
   select which content types to use as the source for the terms.
   indicate whether or not matching is case sensitive.
-  indicate whether or not every match should be linked or just the first occurrence.
-  display the text from a selected field on the linked node as a tooltip while hovering the glossified link.
+  indicate whether or not every match should be linked or just the first
+  occurrence. display the text from a selected field on the linked node as a
+  tooltip while hovering the glossified link.
 
 * For a full description of the module, visit the project page:
   https://www.drupal.org/project/glossify
@@ -48,7 +52,8 @@ INSTALLATION
 CONFIGURATION
 -------------
 
-* Configure the user permissions in Administration » Configuration » Text formats and editors:
+* Configure the user permissions in Administration » Configuration »
+  Text formats and editors:
 
   Configure the text format and enable the desired filter.
 

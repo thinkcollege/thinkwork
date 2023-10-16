@@ -152,7 +152,7 @@ abstract class GlossifyBase extends FilterBase {
 
               // Insert the matched term instance as link.
               if ($displaytype == 'tooltips_links') {
-                $tip = $this->sanitizeTip($term->tip, $tooltip_truncate);
+                $tip = $this->sanitizeTip((string) $term->tip, $tooltip_truncate);
               }
               if (\Drupal::hasContainer()) {
                 $tipurl = Url::fromUri('internal:' . str_replace('[id]', $term->id, $urlpattern));
@@ -203,14 +203,14 @@ abstract class GlossifyBase extends FilterBase {
    * Render tip for found match.
    */
   protected function renderTip($word_tip) {
-    return trim(render($word_tip));
+    return trim(\Drupal::service('renderer')->render($word_tip));
   }
 
   /**
    * Render link for found match.
    */
   protected function renderLink($word_link) {
-    return trim(render($word_link));
+    return trim(\Drupal::service('renderer')->render($word_link));
   }
 
   /**
@@ -232,6 +232,9 @@ abstract class GlossifyBase extends FilterBase {
    *   The prepared tooltip string.
    */
   private function sanitizeTip($tip, $truncate = TRUE) {
+    if ($tip === NULL) {
+      return '';
+    }
     // Get rid of HTML.
     $tip = strip_tags($tip);
 

@@ -171,6 +171,20 @@ function _bootstrap_library_data() {
   return '{
   "timestamp": "2015-11-09T18:54:50.335Z",
   "bootstrap": {
+    "5.2.3": {
+      "css": "//cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css",
+      "js": [
+        "//cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js",
+        "//cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+      ]
+    },
+    "5.1.3": {
+      "css": "//cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css",
+      "js": [
+        "//cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js",
+        "//cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+      ]
+    },
     "5.1.1": {
       "css": "//cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css",
       "js": [
