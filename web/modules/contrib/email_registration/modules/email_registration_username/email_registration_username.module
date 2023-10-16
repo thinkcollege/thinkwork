@@ -1,0 +1,127 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Email Registration Username module.
+ */
+
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\user\UserInterface;
+
+/**
+ * Implements hook_help().
+ */
+function email_registration_username_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.email_registration_username':
+      $text = file_get_contents(__DIR__ . '/README.md');
+      if (!\Drupal::moduleHandler()->moduleExists('markdown')) {
+        return '<pre>' . Html::escape($text) . '</pre>';
+      }
+      else {
+        // Use the Markdown filter to render the README.
+        $filter_manager = \Drupal::service('plugin.manager.filter');
+        $settings = \Drupal::configFactory()->get('markdown.settings')->getRawData();
+        $config = ['settings' => $settings];
+        $filter = $filter_manager->createInstance('markdown', $config);
+        return $filter->process($text, 'en');
+      }
+  }
+  return NULL;
+}
+
+/**
+ * Implements hook_email_registration_name().
+ */
+function email_registration_username_email_registration_name(UserInterface $account) {
+  // Use the accounts mail address as the username:
+  return $account->getEmail();
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function email_registration_username_user_presave(UserInterface $user) {
+  // Return early if the user is new:
+  if ($user->isNew()) {
+    return;
+  }
+  // If the mail got modified:
+  if (($currentMail = $user->getEmail()) !== $user->original->getEmail()) {
+    // If the mail address was already synced with the account name:
+    if ($user->original->getEmail() === $user->original->getAccountName()) {
+      // Re-sync the changed mail address with the account name:
+      $user->setUsername($currentMail);
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function email_registration_username_form_user_admin_settings_alter(&$form, FormStateInterface $form_state) {
+  $config = \Drupal::config('email_registration_username.settings');
+  $token_tree = [
+    '#theme' => 'token_tree_link',
+    '#token_types' => ['user'],
+  ];
+  $rendered_token_tree = \Drupal::service('renderer')->render($token_tree);
+  $form['registration_cancellation']['obfuscation_value'] = [
+    '#type' => 'textfield',
+    '#title' => t('Obfuscation value'),
+    '#description' => t('Enter text to obfuscate a users display name with. Leave empty to obfuscate the display name with your email username (everything before the "@"). This field supports token. @browse_tokens_link', [
+      '@browse_tokens_link' => $rendered_token_tree,
+    ]),
+    '#default_value' => $config->get('obfuscation_value'),
+  ];
+
+  $form['#submit'][] = 'email_registration_username_form_user_admin_settings_submit';
+}
+
+/**
+ * Submit function for user_admin_settings to save our variable.
+ *
+ * @see email_registration_username_form_user_admin_settings_alter()
+ */
+function email_registration_username_form_user_admin_settings_submit(array &$form, FormStateInterface $form_state) {
+  \Drupal::configFactory()->getEditable('email_registration_username.settings')
+    ->set('obfuscation_value', trim($form_state->getValue('obfuscation_value')))
+    ->save();
+}
+
+/**
+ * Implements hook_user_format_name_alter().
+ *
+ * @todo Discuss how we could (partially) cache the name obfuscation.
+ */
+function email_registration_username_user_format_name_alter(&$name, AccountInterface $account) {
+  // If the current user has the "View user email addresses" permission, do not
+  // obfuscate and return early:
+  if (\Drupal::currentUser()->hasPermission('view user email addresses')) {
+    return;
+  }
+  // Obfuscate the display name, with the obfuscation value given:
+  $obfuscationValue = \Drupal::config('email_registration_username.settings')->get('obfuscation_value');
+  if (empty($obfuscationValue)) {
+    // If the obfuscation value is empty, use the logic of the main module:
+    $name = email_registration_strip_mail_and_cleanup($account->getEmail());
+  }
+  else {
+    $name = \Drupal::token()->replace($obfuscationValue, ['user' => $account]);
+  }
+}
+
+/**
+ * Implements hook_action_info_alter().
+ */
+function email_registration_username_action_info_alter(&$definitions) {
+  // Overwrite "UpdateUsernameAction" with "UpdateUsernameWithMailAction":
+  foreach ($definitions as &$definition) {
+    if ($definition['id'] === 'email_registration_update_username' && $definition['class'] == UpdateUsernameAction::class) {
+      $definition['class'] = UpdateUsernameWithMailAction::class;
+    }
+  }
+}

@@ -16,7 +16,10 @@ function email_registration_requirements() {
     $requirements['email_registration'] = [
       'title' => t('Email Registration / LoginToboggan Conflict'),
       'value' => t('Conflict'),
-      'description' => t('There is a conflict between %email_registration and %logintoboggan. You should disable the "Allow users to login using their email address" option from %logintoboggan.', ['%email_registration' => 'Email registration', '%logintoboggan' => 'Login Toboggan']),
+      'description' => t('There is a conflict between %email_registration and %logintoboggan. You should disable the "Allow users to login using their email address" option from %logintoboggan.', [
+        '%email_registration' => 'Email registration',
+        '%logintoboggan' => 'Login Toboggan',
+      ]),
       'severity' => REQUIREMENT_ERROR,
     ];
   }

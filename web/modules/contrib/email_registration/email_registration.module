@@ -5,10 +5,34 @@
  * Allows users to register with an email address as their username.
  */
 
-use Drupal\user\UserInterface;
-use Drupal\Core\Render\Element\Email;
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element\Email;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
+use Drupal\user\UserInterface;
+
+/**
+ * Implements hook_help().
+ */
+function email_registration_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.email_registration':
+      $text = file_get_contents(__DIR__ . '/README.md');
+      if (!\Drupal::moduleHandler()->moduleExists('markdown')) {
+        return '<pre>' . Html::escape($text) . '</pre>';
+      }
+      else {
+        // Use the Markdown filter to render the README.
+        $filter_manager = \Drupal::service('plugin.manager.filter');
+        $settings = \Drupal::configFactory()->get('markdown.settings')->getRawData();
+        $config = ['settings' => $settings];
+        $filter = $filter_manager->createInstance('markdown', $config);
+        return $filter->process($text, 'en');
+      }
+  }
+  return NULL;
+}
 
 /**
  * Implements hook_ENTITY_TYPE_insert().
@@ -30,10 +54,8 @@ function email_registration_user_insert(UserInterface $account) {
   $names = array_filter($names);
 
   if (empty($names)) {
-    // Strip off everything after the @ sign.
-    $new_name = preg_replace('/@.*$/', '', $account->getEmail());
-    // Clean up the username.
-    $new_name = email_registration_cleanup_username($new_name);
+    // Convert and cleanup user mail:
+    $new_name = email_registration_strip_mail_and_cleanup($account->getEmail());
   }
   else {
     // One would expect a single implementation of the hook, but if there
@@ -80,7 +102,10 @@ function email_registration_unique_username($name, $uid = 0) {
   $database = \Drupal::database();
   do {
     $new_name = empty($i) ? $name : $name . '_' . $i;
-    $found = $database->queryRange("SELECT uid from {users_field_data} WHERE uid <> :uid AND name = :name", 0, 1, [':uid' => $uid, ':name' => $new_name])->fetchAssoc();
+    $found = $database->queryRange("SELECT uid from {users_field_data} WHERE uid <> :uid AND name = :name", 0, 1, [
+      ':uid' => $uid,
+      ':name' => $new_name,
+    ])->fetchAssoc();
     $i++;
   } while (!empty($found));
 
@@ -119,10 +144,29 @@ function email_registration_cleanup_username($name) {
 }
 
 /**
+ * Strips down the email-address to a username and cleans it up.
+ *
+ * Strips everything after and including the '@' and cleans the username (e.g.
+ * stripping illegal characters, spaces, etc.).
+ *
+ * @param string $mail
+ *   The email-address to be stripped and cleaned up.
+ *
+ * @return string
+ *   A username converted from an email-address.
+ */
+function email_registration_strip_mail_and_cleanup($mail) {
+  // Strip the email:
+  $username = preg_replace('/@.*$/', '', $mail);
+  // Clean up the resulting username:
+  return email_registration_cleanup_username($username);
+}
+
+/**
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function email_registration_form_user_form_alter(&$form, FormStateInterface $form_state) {
-  if (!\Drupal::config('email_registration.settings')->get('require_username_on_registration')) {
+  if (isset($form['account']['name']) && !\Drupal::config('email_registration.settings')->get('require_username_on_registration')) {
     $account = \Drupal::currentUser();
     // Allow users to edit their own username or admins to do it if appropriate.
     if (!$account->hasPermission('change own username') &&
@@ -138,7 +182,9 @@ function email_registration_form_user_form_alter(&$form, FormStateInterface $for
       $form['account']['name']['#default_value'] = 'email_registration_' . \Drupal::service('password_generator')->generate();
     }
   }
-  $form['account']['mail']['#title'] = t('Email');
+  if (isset($form['account']['mail'])) {
+    $form['account']['mail']['#title'] = t('Email');
+  }
 }
 
 /**

@@ -2,8 +2,8 @@
 
 namespace Drupal\email_registration\Plugin\migrate\process;
 
-use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\MigrateExecutableInterface;
+use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\Row;
 
 /**
@@ -45,10 +45,8 @@ class EmailRegistrationUserName extends ProcessPluginBase {
    * {@inheritdoc}
    */
   public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
-    // Strip off everything after the @ sign.
-    $new_name = preg_replace('/@.*$/', '', $value);
-    // Clean up the username.
-    return email_registration_cleanup_username($new_name);
+    // Clean and convert mail to username:
+    return email_registration_strip_mail_and_cleanup($value);
   }
 
 }

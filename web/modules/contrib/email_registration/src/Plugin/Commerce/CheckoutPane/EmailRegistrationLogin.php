@@ -5,6 +5,7 @@ namespace Drupal\email_registration\Plugin\Commerce\CheckoutPane;
 use Drupal\commerce\CredentialsCheckFloodInterface;
 use Drupal\commerce_checkout\Plugin\Commerce\CheckoutFlow\CheckoutFlowInterface;
 use Drupal\commerce_checkout\Plugin\Commerce\CheckoutPane\Login;
+use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element\Email;
@@ -13,7 +14,6 @@ use Drupal\Core\Url;
 use Drupal\user\UserAuthInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Drupal\Core\Config\ImmutableConfig;
 
 /**
  * Provides the email registration login pane.
@@ -25,6 +25,13 @@ use Drupal\Core\Config\ImmutableConfig;
  * )
  */
 class EmailRegistrationLogin extends Login {
+
+  /**
+   * The "email_registration.settings" config object.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected $config;
 
   /**
    * Constructs a new EmailRegistrationLogin object.
@@ -52,7 +59,6 @@ class EmailRegistrationLogin extends Login {
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, CheckoutFlowInterface $checkout_flow, EntityTypeManagerInterface $entity_type_manager, CredentialsCheckFloodInterface $credentials_check_flood, AccountInterface $current_user, UserAuthInterface $user_auth, RequestStack $request_stack, ImmutableConfig $config) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $checkout_flow, $entity_type_manager, $credentials_check_flood, $current_user, $user_auth, $request_stack);
-
     $this->config = $config;
   }
 
@@ -166,6 +172,18 @@ class EmailRegistrationLogin extends Login {
     }
 
     parent::validatePaneForm($pane_form, $form_state, $complete_form);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  protected function canRegisterAfterCheckout() {
+    // If the parent pane is enabled, return early:
+    if (parent::canRegisterAfterCheckout()) {
+      return TRUE;
+    }
+    $emailRegisterPane = $this->checkoutFlow->getPane('email_registration_completion_registration');
+    return $emailRegisterPane->getStepId() != '_disabled';
   }
 
 }

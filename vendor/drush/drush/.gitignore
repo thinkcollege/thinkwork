@@ -1,4 +1,5 @@
 tests/phpunit.xml
+.ddev/config.personal.yaml
 vendor
 box.phar
 drush.phar
@@ -8,6 +9,7 @@ gh-pages
 mkdocs.yml
 #The Commands site output directory.
 docs/commands
+docs/generators
 #The Doctum output directories
 api
 .doctum-cache
@@ -16,6 +18,8 @@ api
 sut/*
 !sut/drush
 sut/drush/sites/*test.site.yml
+!sut/modules
+sut/modules/contrib
 /sandbox/
 .env
 # Test fixtures
