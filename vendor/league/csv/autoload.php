@@ -1,21 +1,16 @@
 <?php
 
-spl_autoload_register(function ($class) {
+require __DIR__ . '/src/functions_include.php';
+
+spl_autoload_register(static function (string $class_name): void {
 
     $prefix = 'League\Csv\\';
-    if (0 !== strpos($class, $prefix)) {
+    if (!str_starts_with($class_name, $prefix)) {
         return;
     }
 
-    $file = __DIR__
-        .DIRECTORY_SEPARATOR
-        .'src'
-        .DIRECTORY_SEPARATOR
-        .str_replace('\\', DIRECTORY_SEPARATOR, substr($class, strlen($prefix)))
-        .'.php';
-    if (!is_readable($file)) {
-        return;
+    $file = __DIR__ . '/src/' . str_replace('\\', '/', substr($class_name, 11)) . '.php';
+    if (is_readable($file)) {
+        require $file;
     }
-
-    require $file;
 });

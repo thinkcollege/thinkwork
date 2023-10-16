@@ -3,12 +3,12 @@ description: Filter to create tooltips based on taxonomy term descriptions.
 type: module
 package: "Input filters"
 configure: 'admin/config/content/formats'
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^8.9 || ^9 || ^10
 dependencies:
   - glossify:glossify
   - drupal:taxonomy
 
-# Information added by Drupal.org packaging script on 2022-06-26
-version: '2.0.4'
+# Information added by Drupal.org packaging script on 2023-05-08
+version: '3.0.0'
 project: 'glossify'
-datestamp: 1656249298
+datestamp: 1683548122

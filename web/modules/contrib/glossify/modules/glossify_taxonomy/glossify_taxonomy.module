@@ -38,7 +38,7 @@ function glossify_taxonomies_help($route_name, RouteMatchInterface $route_match)
 
       foreach ($items as $item) {
         $list = array_merge($list_settings, $item);
-        $output .= render($list);
+        $output .= \Drupal::service('renderer')->render($list);
       }
 
       // Configuration/Usage section.
@@ -54,7 +54,7 @@ function glossify_taxonomies_help($route_name, RouteMatchInterface $route_match)
 
       $list_settings['#list_type'] = 'ol';
       $list = array_merge($list_settings, $items);
-      $output .= render($list);
+      $output .= \Drupal::service('renderer')->render($list);
 
       $output .= '<h3>' . t('Theming') . '</h3>';
       $output .= '<p>' . t('The module provides a theme function (theme_taxonomy_tooltip_links) to format the links. Override and customize as desired. See <a href="!url">Beginners guide to overriding themable output</a> for more detailed instructions.', ['!url' => 'https://drupal.org/node/457740']) . '</p>';

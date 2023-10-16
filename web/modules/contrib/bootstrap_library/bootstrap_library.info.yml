@@ -2,15 +2,14 @@ name: Bootstrap Library
 description: Register Boostrap as a library by installing files in /libraries/bootstrap.
 type: module
 package: Bootstrap
-core: 8.x
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^9 || ^10 
 configure: bootstrap_library.admin
 libraries:
   - bootstrap_library/bootstrap
   - bootstrap_library/bootstrap-dev
   - bootstrap_library/bootstrap-cdn
 
-# Information added by Drupal.org packaging script on 2021-10-04
-version: '8.x-1.15'
+# Information added by Drupal.org packaging script on 2023-01-18
+version: '2.0.2'
 project: 'bootstrap_library'
-datestamp: 1633309263
+datestamp: 1674079187

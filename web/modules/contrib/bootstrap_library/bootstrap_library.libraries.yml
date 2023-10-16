@@ -17,7 +17,7 @@ bootstrap-composer:
     name: MIT
     gpl-compatible: false
   js:
-    /libraries/bootstrap/dist/js/bootstrap.js: { }
+    /libraries/bootstrap/dist/js/bootstrap.js: {}
   css:
     theme:
       /libraries/bootstrap/dist/css/bootstrap.css: {}
@@ -30,7 +30,7 @@ bootstrap-dev:
     name: MIT
     gpl-compatible: false
   js:
-    /libraries/bootstrap/js/bootstrap.js: { }
+    /libraries/bootstrap/js/bootstrap.js: {}
   css:
     theme:
       /libraries/bootstrap/css/bootstrap.css: {}
