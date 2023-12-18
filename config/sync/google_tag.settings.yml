@@ -1,0 +1,41 @@
+uri: 'public:/'
+compact_snippet: true
+include_file: true
+rebuild_snippets: true
+flush_snippets: false
+debug_output: false
+_default_container:
+  container_id: ''
+  data_layer: dataLayer
+  include_classes: false
+  whitelist_classes: |-
+    google
+    nonGooglePixels
+    nonGoogleScripts
+    nonGoogleIframes
+  blacklist_classes: |-
+    customScripts
+    customPixels
+  include_environment: false
+  environment_id: ''
+  environment_token: ''
+  path_toggle: 'exclude listed'
+  path_list: |-
+    /admin*
+    /batch*
+    /node/add*
+    /node/*/edit
+    /node/*/delete
+    /user/*/edit*
+    /user/*/cancel*
+  role_toggle: 'exclude listed'
+  role_list:
+    administrator: administrator
+    anonymous: '0'
+    authenticated: '0'
+    person_w_disability: '0'
+    family_member: '0'
+  status_toggle: 'exclude listed'
+  status_list: |-
+    403
+    404

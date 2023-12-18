@@ -1,0 +1,21 @@
+uuid: a9f4f4de-55c3-4f10-92fc-2320096354e1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_project
+    - node.type.webinar
+id: node.webinar.field_project
+field_name: field_project
+entity_type: node
+bundle: webinar
+label: 'Parent Project'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

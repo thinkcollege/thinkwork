@@ -1,0 +1,30 @@
+uuid: 8142862f-b858-413a-a4bd-0f43909bd80f
+langcode: en
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:1834aa78-7649-49a5-84ea-f7281c8503d8'
+  module:
+    - block_content
+    - system
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_thinkwork_boot_block_8
+theme: thinkwork8_boot
+region: content
+weight: -12
+provider: null
+plugin: 'block_content:1834aa78-7649-49a5-84ea-f7281c8503d8'
+settings:
+  id: 'block_content:1834aa78-7649-49a5-84ea-f7281c8503d8'
+  label: ''
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: /considering-community-service-building-self-determination-skills-youth-autism-spectrum-disorder

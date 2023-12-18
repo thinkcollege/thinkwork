@@ -1,0 +1,8 @@
+uuid: 1f354684-c62c-4dec-9aaf-65e952c7bd02
+langcode: en
+status: true
+dependencies: {  }
+id: bootstrap_barrio_subtheme_thinkwork_boot_search_form
+theme: block__clean
+text: ''
+classes: ''

@@ -1,0 +1,8 @@
+uuid: 630e4a2e-bcb4-4e7b-b1e7-9a1f3998c7a2
+langcode: en
+status: true
+dependencies: {  }
+id: covidbanner
+theme: block__clean
+text: ''
+classes: ''

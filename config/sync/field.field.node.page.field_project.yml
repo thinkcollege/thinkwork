@@ -1,0 +1,29 @@
+uuid: e84ac3db-9a94-4474-8e0d-ec62c38d324c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_project
+    - node.type.page
+    - taxonomy.vocabulary.project
+id: node.page.field_project
+field_name: field_project
+entity_type: node
+bundle: page
+label: Project
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      project: project
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

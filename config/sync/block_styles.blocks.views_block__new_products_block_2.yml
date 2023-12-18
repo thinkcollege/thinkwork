@@ -1,0 +1,8 @@
+uuid: bc45c4dd-2b10-476b-8910-2a760d7912cc
+langcode: en
+status: true
+dependencies: {  }
+id: views_block__new_products_block_2
+theme: block__bootstrap__card
+text: ''
+classes: ''

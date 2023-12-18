@@ -1,0 +1,22 @@
+uuid: 97ad0f1b-c6a4-41b5-812a-300ffd4a0f6b
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - thinkwork8_boot
+_core:
+  default_config_hash: 9EoWV2Lot6FVSr50t4hoKgiz1LIXYWNG-IIPYsWxBqo
+id: thinkwork8_boot_thinkwork_boot_system_main
+theme: thinkwork8_boot
+region: content
+weight: -14
+provider: null
+plugin: system_main_block
+settings:
+  id: system_main_block
+  label: 'Main page content'
+  label_display: '0'
+  provider: system
+visibility: {  }

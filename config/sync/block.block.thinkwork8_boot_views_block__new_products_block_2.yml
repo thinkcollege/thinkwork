@@ -1,0 +1,30 @@
+uuid: b2cdf195-9c1d-4b7f-a330-98e023e9e85e
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.new_products
+  module:
+    - system
+    - views
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_views_block__new_products_block_2
+theme: thinkwork8_boot
+region: content
+weight: -13
+provider: null
+plugin: 'views_block:new_products-block_2'
+settings:
+  id: 'views_block:new_products-block_2'
+  label: ''
+  label_display: visible
+  provider: views
+  views_label: ''
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    context_mapping: {  }
+    pages: "<front>\r\n/thinkwork-advancing-employment-and-opportunity-people-intellectual-and-developmental-disabilities\r\n/node/59"

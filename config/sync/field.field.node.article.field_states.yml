@@ -1,0 +1,21 @@
+uuid: be6e99e5-6063-4a1e-ac25-eccd098cb08b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_states
+    - node.type.article
+id: node.article.field_states
+field_name: field_states
+entity_type: node
+bundle: article
+label: States
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

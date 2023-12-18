@@ -1,0 +1,30 @@
+uuid: ff983c45-b612-4f1f-9fc3-27f41cf0bbc1
+langcode: en
+status: false
+dependencies:
+  config:
+    - views.view.real_work_stories_categories
+  module:
+    - system
+    - views
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_views_block__real_work_stories_categories_block_1
+theme: thinkwork8_boot
+region: sidebar_first
+weight: -20
+provider: null
+plugin: 'views_block:real_work_stories_categories-block_1'
+settings:
+  id: 'views_block:real_work_stories_categories-block_1'
+  label: ''
+  label_display: visible
+  provider: views
+  views_label: ''
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    context_mapping: {  }
+    pages: "/project/real-work-stories\r\n/project/volunteering-and-internships\r\n/project/transition\r\n/project/self-employment\r\n/project/job-supports\r\n/project/networking\r\n/project/job-negotiation\r\n/project/job-matching\r\n/project/job-creation\r\n/project/interagency-collaboration\r\n/project/funding-strategies\r\n/project/family-engagementinvolvement\r\n/project/career-planning\r\n/project/career-advancement\r\n"

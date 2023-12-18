@@ -1,0 +1,25 @@
+uuid: 5a846e00-1028-477e-984c-ecd8ce653fc2
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - thinkwork8_boot
+_core:
+  default_config_hash: NDwadleLD3YVSbDUaakxyYZyINYtkFtOVGShfq4kWy8
+id: thinkwork8_boot_branding
+theme: thinkwork8_boot
+region: header
+weight: -17
+provider: null
+plugin: system_branding_block
+settings:
+  id: system_branding_block
+  label: 'Site branding'
+  label_display: '0'
+  provider: system
+  use_site_logo: true
+  use_site_name: false
+  use_site_slogan: false
+visibility: {  }

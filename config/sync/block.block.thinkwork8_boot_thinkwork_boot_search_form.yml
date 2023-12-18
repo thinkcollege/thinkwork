@@ -1,0 +1,33 @@
+uuid: d7cfbc1d-6eba-42dc-82f5-4f1bf9a6117d
+langcode: en
+status: false
+dependencies:
+  module:
+    - search
+    - user
+  theme:
+    - thinkwork8_boot
+_core:
+  default_config_hash: za-39d5WDUg6XvbyqSnuVYEeq6QM4qKJxW8MnoAha5A
+id: thinkwork8_boot_thinkwork_boot_search_form
+theme: thinkwork8_boot
+region: header_form
+weight: -16
+provider: null
+plugin: search_form_block
+settings:
+  id: search_form_block
+  label: 'Search form'
+  label_display: '0'
+  provider: search
+  page_id: ''
+visibility:
+  user_role:
+    id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+    roles:
+      anonymous: anonymous
+      authenticated: authenticated
+      administrator: administrator

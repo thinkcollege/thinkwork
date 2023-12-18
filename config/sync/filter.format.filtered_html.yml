@@ -1,0 +1,40 @@
+uuid: 9e4c86a5-b48a-414c-8b9c-b41a28ea7bfe
+langcode: en
+status: true
+dependencies:
+  module:
+    - glossify_taxonomy
+name: 'Filtered HTML'
+format: filtered_html
+weight: -9
+filters:
+  filter_autop:
+    id: filter_autop
+    provider: filter
+    status: true
+    weight: 2
+    settings: {  }
+  filter_htmlcorrector:
+    id: filter_htmlcorrector
+    provider: filter
+    status: true
+    weight: 10
+    settings: {  }
+  filter_url:
+    id: filter_url
+    provider: filter
+    status: true
+    weight: 0
+    settings:
+      filter_url_length: 72
+  glossify_taxonomy:
+    id: glossify_taxonomy
+    provider: glossify_taxonomy
+    status: true
+    weight: -10
+    settings:
+      glossify_taxonomy_case_sensitivity: '0'
+      glossify_taxonomy_first_only: '1'
+      glossify_taxonomy_type: tooltips_links
+      glossify_taxonomy_vocabs: glossary
+      glossify_taxonomy_urlpattern: '/taxonomy/term/[id]'

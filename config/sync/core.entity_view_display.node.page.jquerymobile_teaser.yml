@@ -1,0 +1,42 @@
+uuid: d071dadd-250c-4654-9f7c-d8b433de3c28
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.jquerymobile_teaser
+    - field.field.node.page.body
+    - field.field.node.page.field_authors
+    - field.field.node.page.field_features
+    - field.field.node.page.field_link_to_resource
+    - field.field.node.page.field_page_order_on_page
+    - field.field.node.page.field_paragraphs
+    - field.field.node.page.field_product_type
+    - field.field.node.page.field_project
+    - field.field.node.page.field_states
+    - field.field.node.page.field_tags
+    - field.field.node.page.field_topics
+    - node.type.page
+  module:
+    - user
+id: node.page.jquerymobile_teaser
+targetEntityType: node
+bundle: page
+mode: jquerymobile_teaser
+content:
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  body: true
+  field_authors: true
+  field_features: true
+  field_link_to_resource: true
+  field_page_order_on_page: true
+  field_paragraphs: true
+  field_product_type: true
+  field_project: true
+  field_states: true
+  field_tags: true
+  field_topics: true

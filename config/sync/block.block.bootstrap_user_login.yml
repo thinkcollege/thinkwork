@@ -1,0 +1,27 @@
+uuid: c831fe85-83fd-4793-98e8-bc0520cacfa6
+langcode: en
+status: false
+dependencies:
+  module:
+    - system
+    - user
+  theme:
+    - bootstrap
+id: bootstrap_user_login
+theme: bootstrap
+region: ''
+weight: 0
+provider: null
+plugin: user_login_block
+settings:
+  id: user_login_block
+  label: '<none>'
+  label_display: visible
+  provider: user
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: |-
+      <front>
+      /forum-home

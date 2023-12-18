@@ -1,0 +1,8 @@
+uuid: 06244840-39fb-4e89-88a5-1f6deca9bec0
+langcode: en
+status: true
+dependencies: {  }
+name: Status
+vid: status
+description: 'The status of a webinar'
+weight: 0

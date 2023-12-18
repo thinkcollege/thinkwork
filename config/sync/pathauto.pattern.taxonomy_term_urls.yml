@@ -1,0 +1,30 @@
+uuid: fb1941e3-c1db-4864-b488-4a7d15bb37ba
+langcode: en
+status: true
+dependencies:
+  module:
+    - ctools
+    - taxonomy
+id: taxonomy_term_urls
+label: 'Taxonomy term URLs'
+type: 'canonical_entities:taxonomy_term'
+pattern: '[term:vocabulary][term:parents]/[term:name]'
+selection_criteria:
+  584f2acd-a229-416f-949b-8798675b3a66:
+    id: 'entity_bundle:taxonomy_term'
+    negate: false
+    uuid: 584f2acd-a229-416f-949b-8798675b3a66
+    context_mapping:
+      taxonomy_term: taxonomy_term
+    bundles:
+      project: project
+      authors: authors
+      feature: feature
+      font_classification: font_classification
+      region: region
+      states: states
+      tags: tags
+      topics: topics
+selection_logic: and
+weight: -5
+relationships: {  }

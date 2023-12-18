@@ -1,0 +1,25 @@
+uuid: 00ab05f5-7790-4436-827b-f777d988eb8d
+langcode: en
+status: false
+dependencies:
+  content:
+    - 'block_content:basic:e59a1c8c-0e04-4656-b45c-1943f77e2a6b'
+  module:
+    - block_content
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_bottomblock3
+theme: thinkwork8_boot
+region: featured_bottom_third
+weight: 0
+provider: null
+plugin: 'block_content:e59a1c8c-0e04-4656-b45c-1943f77e2a6b'
+settings:
+  id: 'block_content:e59a1c8c-0e04-4656-b45c-1943f77e2a6b'
+  label: 'bottom block 3'
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility: {  }

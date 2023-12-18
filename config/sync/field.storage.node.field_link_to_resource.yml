@@ -1,0 +1,19 @@
+uuid: c6bb00f4-f198-4189-b8d6-5c2ab73bb7ac
+langcode: und
+status: true
+dependencies:
+  module:
+    - link
+    - node
+id: node.field_link_to_resource
+field_name: field_link_to_resource
+entity_type: node
+type: link
+settings: {  }
+module: link
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -1,0 +1,21 @@
+uuid: 14b25ec0-510e-4de6-beda-ca1f390a933d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_authors
+    - node.type.article
+id: node.article.field_authors
+field_name: field_authors
+entity_type: node
+bundle: article
+label: Authors
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

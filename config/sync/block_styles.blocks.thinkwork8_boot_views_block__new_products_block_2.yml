@@ -1,0 +1,8 @@
+uuid: 8fd128fe-4c9c-43ce-b0e9-87fd9d047f53
+langcode: en
+status: true
+dependencies: {  }
+id: thinkwork8_boot_views_block__new_products_block_2
+theme: block__bootstrap__card
+text: ''
+classes: ''

@@ -1,0 +1,31 @@
+uuid: a846d385-3b34-446a-a8fc-7b2dafb3cf90
+langcode: en
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:aed36ae2-e37b-41ae-acaf-d5d6fbc3b397'
+  module:
+    - block_content
+    - system
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_videoblockonrwspage
+theme: thinkwork8_boot
+region: sidebar_first
+weight: -18
+provider: null
+plugin: 'block_content:aed36ae2-e37b-41ae-acaf-d5d6fbc3b397'
+settings:
+  id: 'block_content:aed36ae2-e37b-41ae-acaf-d5d6fbc3b397'
+  label: 'Video block on RWS page'
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    context_mapping: {  }
+    pages: "/think-work-stories\r\n/project/think-work-stories\r\n/project/think-work-stories/*\r\n/project/volunteering-and-internships\r\n/project/transition\r\n/project/self-employment\r\n/project/job-supports\r\n/project/networking\r\n/project/job-negotiation\r\n/project/job-matching\r\n/project/job-creation\r\n/project/interagency-collaboration\r\n/project/funding-strategies\r\n/project/family-engagementinvolvement\r\n/project/career-planning\r\n/project/career-advancement\r\n/project/community-life-engagement"

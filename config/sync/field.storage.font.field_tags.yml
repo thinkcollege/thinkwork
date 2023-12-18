@@ -1,0 +1,22 @@
+uuid: 566a5283-bc51-441b-8f41-88430b9743c9
+langcode: en
+status: true
+dependencies:
+  module:
+    - fontyourface
+    - taxonomy
+_core:
+  default_config_hash: kEXAWX8HgcTM3RtpMvfkU8QeDoOGCOSh4EXqHe_u-LQ
+id: font.field_tags
+field_name: field_tags
+entity_type: font
+type: entity_reference
+settings:
+  target_type: taxonomy_term
+module: core
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

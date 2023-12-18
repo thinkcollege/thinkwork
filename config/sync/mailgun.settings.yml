@@ -1,0 +1,16 @@
+_core:
+  default_config_hash: bMOl3jD7ZuzZMuaUYzyqadr56G486ldo28NYIkK_54g
+api_endpoint: 'https://api.mailgun.net'
+api_key_storage: config
+api_key_key: ''
+api_key: key-1xtreeejvdjeodvwei4fljv2zg74rgg9
+working_domain: rsmail.communityinclusion.org
+debug_mode: false
+test_mode: false
+tracking_opens: ''
+tracking_clicks: ''
+tracking_exception: ''
+format_filter: ''
+use_queue: false
+use_theme: false
+tagging_mailkey: false

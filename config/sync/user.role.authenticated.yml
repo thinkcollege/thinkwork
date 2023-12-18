@@ -1,0 +1,35 @@
+uuid: fbf2faf6-b6a3-412e-ad07-20ec63a3bc17
+langcode: en
+status: true
+dependencies:
+  config:
+    - filter.format.filtered_html
+    - node.type.blog
+    - node.type.forum
+  module:
+    - comment
+    - exclude_node_title
+    - filter
+    - node
+    - system
+_core:
+  default_config_hash: dJ0L2DNSj5q6XVZAGsuVDpJTh5UeYkIPwKrUOOpr8YI
+id: authenticated
+label: 'authenticated user'
+weight: 1
+is_admin: false
+permissions:
+  - 'access comments'
+  - 'access content'
+  - 'create blog content'
+  - 'create forum content'
+  - 'delete own forum content'
+  - 'edit any blog content'
+  - 'edit own blog content'
+  - 'edit own comments'
+  - 'edit own forum content'
+  - 'post comments'
+  - 'skip comment approval'
+  - 'use exclude node title'
+  - 'use text format filtered_html'
+  - 'view own unpublished content'

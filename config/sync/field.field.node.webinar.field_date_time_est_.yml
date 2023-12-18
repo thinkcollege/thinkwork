@@ -1,0 +1,21 @@
+uuid: f419881f-3500-42d0-bade-1876576d0e30
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_date_time_est_
+    - node.type.webinar
+  module:
+    - datetime
+id: node.webinar.field_date_time_est_
+field_name: field_date_time_est_
+entity_type: node
+bundle: webinar
+label: 'Date/Time [EST]'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

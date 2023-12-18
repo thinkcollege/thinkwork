@@ -1,0 +1,8 @@
+uuid: 94b47778-52be-4078-8b11-361c3e766cfa
+langcode: en
+status: true
+dependencies: {  }
+id: bootstrap_barrio_subtheme_main_menu
+theme: block__bootstrap__modal
+text: ''
+classes: ''

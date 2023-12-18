@@ -1,0 +1,52 @@
+uuid: 0d192ea8-868a-47dc-adc2-9169cb085ae5
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.bp_carousel.bp_background
+    - field.field.paragraph.bp_carousel.bp_slide_content
+    - field.field.paragraph.bp_carousel.bp_slide_interval
+    - field.field.paragraph.bp_carousel.bp_width
+    - paragraphs.paragraphs_type.bp_carousel
+  module:
+    - paragraphs
+_core:
+  default_config_hash: VM2-v4lCqhNA7pfcql-iEyt7O9WwxXkSgTd8cvTR51o
+id: paragraph.bp_carousel.default
+targetEntityType: paragraph
+bundle: bp_carousel
+mode: default
+content:
+  bp_background:
+    type: options_select
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  bp_slide_content:
+    type: entity_reference_paragraphs
+    weight: 3
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: closed
+      add_mode: dropdown
+      form_display_mode: default
+    third_party_settings: {  }
+  bp_slide_interval:
+    type: options_select
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  bp_width:
+    type: options_select
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

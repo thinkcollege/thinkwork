@@ -1,0 +1,30 @@
+uuid: 2178c2f5-3933-49ad-a65f-abd3f23679db
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.elc_taxonomy_term
+  module:
+    - system
+    - views
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_views_block__elc_taxonomy_term_block_1
+theme: thinkwork8_boot
+region: content
+weight: 0
+provider: null
+plugin: 'views_block:elc_taxonomy_term-block_1'
+settings:
+  id: 'views_block:elc_taxonomy_term-block_1'
+  label: ''
+  label_display: visible
+  provider: views
+  views_label: ''
+  items_per_page: '10'
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    context_mapping: {  }
+    pages: /elc

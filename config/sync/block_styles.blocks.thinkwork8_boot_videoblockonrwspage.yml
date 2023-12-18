@@ -1,0 +1,8 @@
+uuid: cdf747ca-d99b-4cf6-b0cc-1856f23b8688
+langcode: en
+status: true
+dependencies: {  }
+id: thinkwork8_boot_videoblockonrwspage
+theme: ''
+text: ''
+classes: rws-box

@@ -1,0 +1,96 @@
+uuid: 48c3d08d-80f3-4c10-86a5-7daa5a7c3ea4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.bp_column_content_w
+    - paragraphs.paragraphs_type.bp_accordion
+    - paragraphs.paragraphs_type.bp_blank
+    - paragraphs.paragraphs_type.bp_block
+    - paragraphs.paragraphs_type.bp_carousel
+    - paragraphs.paragraphs_type.bp_column_wrapper
+    - paragraphs.paragraphs_type.bp_columns
+    - paragraphs.paragraphs_type.bp_columns_three_uneven
+    - paragraphs.paragraphs_type.bp_columns_two_uneven
+    - paragraphs.paragraphs_type.bp_image
+    - paragraphs.paragraphs_type.bp_modal
+    - paragraphs.paragraphs_type.bp_simple
+    - paragraphs.paragraphs_type.bp_tabs
+    - paragraphs.paragraphs_type.bp_view
+  module:
+    - entity_reference_revisions
+_core:
+  default_config_hash: 1trHxRhso7AY31XeFDEXmAdyLaNXlLmAzftQyDsG5KI
+id: paragraph.bp_column_wrapper.bp_column_content_w
+field_name: bp_column_content_w
+entity_type: paragraph
+bundle: bp_column_wrapper
+label: 'Column Wrapper Content'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      bp_simple: bp_simple
+      bp_image: bp_image
+      bp_accordion: bp_accordion
+      bp_blank: bp_blank
+      bp_carousel: bp_carousel
+      bp_columns: bp_columns
+      bp_columns_three_uneven: bp_columns_three_uneven
+      bp_columns_two_uneven: bp_columns_two_uneven
+      bp_block: bp_block
+      bp_modal: bp_modal
+      bp_tabs: bp_tabs
+      bp_view: bp_view
+    target_bundles_drag_drop:
+      bp_accordion:
+        weight: -33
+        enabled: true
+      bp_accordion_section:
+        weight: -32
+        enabled: false
+      bp_blank:
+        weight: -31
+        enabled: true
+      bp_block:
+        weight: -26
+        enabled: true
+      bp_carousel:
+        weight: -30
+        enabled: true
+      bp_column_wrapper:
+        weight: -21
+        enabled: false
+      bp_columns:
+        weight: -29
+        enabled: true
+      bp_columns_three_uneven:
+        weight: -28
+        enabled: true
+      bp_columns_two_uneven:
+        weight: -27
+        enabled: true
+      bp_image:
+        weight: -34
+        enabled: true
+      bp_modal:
+        weight: -25
+        enabled: true
+      bp_simple:
+        weight: -35
+        enabled: true
+      bp_tab_section:
+        weight: -24
+        enabled: false
+      bp_tabs:
+        weight: -23
+        enabled: true
+      bp_view:
+        weight: -22
+        enabled: true
+field_type: entity_reference_revisions

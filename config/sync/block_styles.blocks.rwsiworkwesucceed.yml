@@ -1,0 +1,8 @@
+uuid: 9cc92ac7-5216-4c7c-bda3-40bc4989ff87
+langcode: en
+status: true
+dependencies: {  }
+id: rwsiworkwesucceed
+theme: ''
+text: ''
+classes: rws-alert

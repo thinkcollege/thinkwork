@@ -1,0 +1,8 @@
+uuid: 95b11f07-e01e-49b4-8bc1-d5cf954ab8d0
+langcode: en
+status: true
+dependencies: {  }
+id: re
+label: 'Real Work Stories Categories'
+description: ''
+locked: false

@@ -1,0 +1,8 @@
+uuid: 054650bf-c0e3-43d3-9966-4662d207d28d
+langcode: en
+status: true
+dependencies: {  }
+id: footercopywrite
+theme: block__clean
+text: ''
+classes: ''

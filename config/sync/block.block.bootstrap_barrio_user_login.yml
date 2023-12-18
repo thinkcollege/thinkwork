@@ -1,0 +1,27 @@
+uuid: 38505233-521e-417f-b42d-a6d5539ee4c3
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+    - user
+  theme:
+    - bootstrap_barrio
+id: bootstrap_barrio_user_login
+theme: bootstrap_barrio
+region: sidebar_first
+weight: 0
+provider: null
+plugin: user_login_block
+settings:
+  id: user_login_block
+  label: '<none>'
+  label_display: visible
+  provider: user
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: |-
+      <front>
+      /forum-home

@@ -1,0 +1,29 @@
+uuid: c349e743-96c3-4c12-94c1-6d18bdf8c601
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_features
+    - node.type.page
+    - taxonomy.vocabulary.feature
+id: node.page.field_features
+field_name: field_features
+entity_type: node
+bundle: page
+label: Features
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      feature: feature
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

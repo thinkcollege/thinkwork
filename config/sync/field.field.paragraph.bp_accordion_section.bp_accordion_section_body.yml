@@ -1,0 +1,87 @@
+uuid: b1956aba-dd67-4357-998f-0a3650dd7b8b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.bp_accordion_section_body
+    - paragraphs.paragraphs_type.bp_accordion_section
+    - paragraphs.paragraphs_type.bp_blank
+    - paragraphs.paragraphs_type.bp_block
+    - paragraphs.paragraphs_type.bp_columns
+    - paragraphs.paragraphs_type.bp_columns_three_uneven
+    - paragraphs.paragraphs_type.bp_columns_two_uneven
+    - paragraphs.paragraphs_type.bp_image
+    - paragraphs.paragraphs_type.bp_modal
+    - paragraphs.paragraphs_type.bp_simple
+    - paragraphs.paragraphs_type.bp_view
+  module:
+    - entity_reference_revisions
+_core:
+  default_config_hash: 3alLeNHMVDXMxWShInYNi9TZe1FF61W8dIWYQT6a2I0
+id: paragraph.bp_accordion_section.bp_accordion_section_body
+field_name: bp_accordion_section_body
+entity_type: paragraph
+bundle: bp_accordion_section
+label: 'Accordion Section Body'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      bp_simple: bp_simple
+      bp_image: bp_image
+      bp_blank: bp_blank
+      bp_columns: bp_columns
+      bp_columns_three_uneven: bp_columns_three_uneven
+      bp_columns_two_uneven: bp_columns_two_uneven
+      bp_block: bp_block
+      bp_modal: bp_modal
+      bp_view: bp_view
+    target_bundles_drag_drop:
+      bp_accordion:
+        weight: -22
+        enabled: false
+      bp_accordion_section:
+        weight: -21
+        enabled: false
+      bp_blank:
+        weight: -29
+        enabled: true
+      bp_block:
+        weight: -25
+        enabled: true
+      bp_carousel:
+        weight: -20
+        enabled: false
+      bp_columns:
+        weight: -28
+        enabled: true
+      bp_columns_three_uneven:
+        weight: -27
+        enabled: true
+      bp_columns_two_uneven:
+        weight: -26
+        enabled: true
+      bp_image:
+        weight: -30
+        enabled: true
+      bp_modal:
+        weight: -24
+        enabled: true
+      bp_simple:
+        weight: -31
+        enabled: true
+      bp_tab_section:
+        weight: -18
+        enabled: false
+      bp_tabs:
+        weight: -19
+        enabled: false
+      bp_view:
+        weight: -23
+        enabled: true
+field_type: entity_reference_revisions

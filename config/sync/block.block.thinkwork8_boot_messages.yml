@@ -1,0 +1,22 @@
+uuid: 3897fc67-670c-4de4-94d1-9b0167420fd5
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - thinkwork8_boot
+_core:
+  default_config_hash: KHQIJ7Vfl25lTjzIc7qIvnuistt-Mw2O0kG4jCofmkI
+id: thinkwork8_boot_messages
+theme: thinkwork8_boot
+region: highlighted
+weight: 0
+provider: null
+plugin: system_messages_block
+settings:
+  id: system_messages_block
+  label: 'Status messages'
+  label_display: '0'
+  provider: system
+visibility: {  }

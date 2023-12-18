@@ -1,0 +1,31 @@
+uuid: b4e7aa41-2330-48ee-ae65-95b7e63406bc
+langcode: en
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:e10b8304-f7db-4fee-8360-a70498599660'
+  module:
+    - block_content
+    - system
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_thinkwork_boot_block_5
+theme: thinkwork8_boot
+region: sidebar_second
+weight: -13
+provider: null
+plugin: 'block_content:e10b8304-f7db-4fee-8360-a70498599660'
+settings:
+  id: 'block_content:e10b8304-f7db-4fee-8360-a70498599660'
+  label: SOCIAL
+  label_display: visible
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    context_mapping: {  }
+    pages: '<front>'

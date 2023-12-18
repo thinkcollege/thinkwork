@@ -1,0 +1,14 @@
+uuid: 16ee06bc-5358-45ea-a5ba-4f4973d6df60
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.person_w_disability
+  module:
+    - user
+id: user_add_role_action.person_w_disability
+label: 'Add the person w disability role to the selected user(s)'
+type: user
+plugin: user_add_role_action
+configuration:
+  rid: person_w_disability

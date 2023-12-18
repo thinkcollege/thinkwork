@@ -1,0 +1,11 @@
+uuid: f3268069-e7ab-4fac-9b33-9cb7018a43f7
+langcode: en
+status: true
+dependencies: {  }
+name: 'Blog entry'
+type: blog
+description: 'Use for multi-user blogs. Every user gets a personal blog.'
+help: ''
+new_revision: false
+preview_mode: 1
+display_submitted: true

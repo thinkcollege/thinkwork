@@ -1,0 +1,8 @@
+uuid: 20dbe123-d146-433f-8f1e-bdb5b969f3ac
+langcode: en
+status: true
+dependencies: {  }
+id: bootstrap_barrio_subtheme_breadcrumbs
+theme: block__clean
+text: ''
+classes: ''

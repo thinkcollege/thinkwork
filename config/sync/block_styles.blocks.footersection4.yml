@@ -1,0 +1,8 @@
+uuid: fbbd4a91-4740-4e4f-8b20-886cec244f1a
+langcode: en
+status: true
+dependencies: {  }
+id: footersection4
+theme: block__clean
+text: ''
+classes: 'col my-auto'

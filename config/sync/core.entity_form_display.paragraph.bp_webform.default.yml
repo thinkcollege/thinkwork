@@ -1,0 +1,31 @@
+uuid: 4c8b2544-0b8a-4760-b9d7-30b838f49065
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.bp_webform.bp_background
+    - field.field.paragraph.bp_webform.bp_width
+    - paragraphs.paragraphs_type.bp_webform
+_core:
+  default_config_hash: 0lW8D0u1K7nD1jtHF9ZjYUweSzi7k1imRtQvoJDeH14
+id: paragraph.bp_webform.default
+targetEntityType: paragraph
+bundle: bp_webform
+mode: default
+content:
+  bp_background:
+    type: options_select
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  bp_width:
+    type: options_select
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

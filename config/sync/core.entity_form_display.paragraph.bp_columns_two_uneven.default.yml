@@ -1,0 +1,62 @@
+uuid: 0bebbbf1-4f2c-41a2-b541-cdb071d2eaa3
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.bp_columns_two_uneven.bp_background
+    - field.field.paragraph.bp_columns_two_uneven.bp_column_content_2
+    - field.field.paragraph.bp_columns_two_uneven.bp_column_style_2
+    - field.field.paragraph.bp_columns_two_uneven.bp_header
+    - field.field.paragraph.bp_columns_two_uneven.bp_width
+    - paragraphs.paragraphs_type.bp_columns_two_uneven
+  module:
+    - paragraphs
+_core:
+  default_config_hash: 1mRkKHSc-UHn2x9b0jpMEi-avsBvuyTgxp6aCYxWcSg
+id: paragraph.bp_columns_two_uneven.default
+targetEntityType: paragraph
+bundle: bp_columns_two_uneven
+mode: default
+content:
+  bp_background:
+    type: options_select
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  bp_column_content_2:
+    type: entity_reference_paragraphs
+    weight: 3
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: closed
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+    third_party_settings: {  }
+  bp_column_style_2:
+    type: options_select
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  bp_header:
+    type: string_textfield
+    weight: 4
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  bp_width:
+    type: options_select
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

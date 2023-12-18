@@ -1,0 +1,31 @@
+uuid: 7bac9302-a414-4cd5-850e-08ce9b986036
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.bp_column_wrapper.bp_column_content_w
+    - paragraphs.paragraphs_type.bp_column_wrapper
+  module:
+    - paragraphs
+_core:
+  default_config_hash: wK-BPkwFH8QxQfRE09q4U3USipjad-jYZ3npZF69F5w
+id: paragraph.bp_column_wrapper.default
+targetEntityType: paragraph
+bundle: bp_column_wrapper
+mode: default
+content:
+  bp_column_content_w:
+    type: entity_reference_paragraphs
+    weight: 0
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: closed
+      add_mode: dropdown
+      form_display_mode: default
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

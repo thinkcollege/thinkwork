@@ -1,0 +1,8 @@
+uuid: d86c8794-0372-40d8-97ff-2acae68c4671
+langcode: en
+status: true
+dependencies: {  }
+name: pub_type
+vid: pub_type
+description: ''
+weight: 0

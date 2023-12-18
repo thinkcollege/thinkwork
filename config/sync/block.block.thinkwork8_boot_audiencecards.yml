@@ -1,0 +1,31 @@
+uuid: b194d322-cf99-451e-92e1-c2add6bec556
+langcode: en
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:5436dba2-2763-45a5-ae8d-8d23d994295d'
+  module:
+    - block_content
+    - system
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_audiencecards
+theme: thinkwork8_boot
+region: breadcrumb
+weight: -18
+provider: null
+plugin: 'block_content:5436dba2-2763-45a5-ae8d-8d23d994295d'
+settings:
+  id: 'block_content:5436dba2-2763-45a5-ae8d-8d23d994295d'
+  label: 'Audience Cards'
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    context_mapping: {  }
+    pages: '<front>'

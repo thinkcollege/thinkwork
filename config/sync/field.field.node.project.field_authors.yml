@@ -1,0 +1,21 @@
+uuid: 9624d00b-453f-4c57-946c-fa3265bd708f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_authors
+    - node.type.project
+id: node.project.field_authors
+field_name: field_authors
+entity_type: node
+bundle: project
+label: Contacts
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

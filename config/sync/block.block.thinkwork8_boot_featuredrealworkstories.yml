@@ -1,0 +1,31 @@
+uuid: bb2d2718-e42f-42e9-a588-2ca209e0490f
+langcode: en
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:dcd11a5c-06b2-4d94-976f-86018b2bab32'
+  module:
+    - block_content
+    - system
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_featuredrealworkstories
+theme: thinkwork8_boot
+region: content
+weight: 0
+provider: null
+plugin: 'block_content:dcd11a5c-06b2-4d94-976f-86018b2bab32'
+settings:
+  id: 'block_content:dcd11a5c-06b2-4d94-976f-86018b2bab32'
+  label: 'Featured Stories'
+  label_display: visible
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    context_mapping: {  }
+    pages: /think-work-stories

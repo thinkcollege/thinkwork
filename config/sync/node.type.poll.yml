@@ -1,0 +1,11 @@
+uuid: db80854e-4522-465d-879f-40381dea560b
+langcode: en
+status: true
+dependencies: {  }
+name: Poll
+type: poll
+description: 'A <em>poll</em> is a question with a set of possible responses. A <em>poll</em>, once created, automatically provides a simple running count of the number of votes received for each response.'
+help: ''
+new_revision: false
+preview_mode: 1
+display_submitted: true

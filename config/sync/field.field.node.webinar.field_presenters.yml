@@ -1,0 +1,19 @@
+uuid: 867fa5d2-bd81-41ea-8f6f-85147a214aac
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_presenters
+    - node.type.webinar
+id: node.webinar.field_presenters
+field_name: field_presenters
+entity_type: node
+bundle: webinar
+label: Presenters
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,52 @@
+uuid: b583e64d-98bd-4b72-b8ec-ea84fdb9cb99
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.page.body
+    - field.field.node.page.field_authors
+    - field.field.node.page.field_features
+    - field.field.node.page.field_link_to_resource
+    - field.field.node.page.field_page_order_on_page
+    - field.field.node.page.field_paragraphs
+    - field.field.node.page.field_product_type
+    - field.field.node.page.field_project
+    - field.field.node.page.field_states
+    - field.field.node.page.field_tags
+    - field.field.node.page.field_topics
+    - node.type.page
+  module:
+    - text
+    - user
+_core:
+  default_config_hash: cSv5lDnbIgDug475Hdz3woED2XMqYv3awI-J9u1JLbY
+id: node.page.teaser
+targetEntityType: node
+bundle: page
+mode: teaser
+content:
+  body:
+    type: text_summary_or_trimmed
+    label: hidden
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 101
+    region: content
+hidden:
+  field_authors: true
+  field_features: true
+  field_link_to_resource: true
+  field_page_order_on_page: true
+  field_paragraphs: true
+  field_product_type: true
+  field_project: true
+  field_states: true
+  field_tags: true
+  field_topics: true

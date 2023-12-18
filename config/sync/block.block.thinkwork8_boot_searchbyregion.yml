@@ -1,0 +1,31 @@
+uuid: 67ca5706-47b9-474d-8214-3644dca92697
+langcode: en
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:12bcbaaf-da0c-43ea-97ad-56c35f8bc09b'
+  module:
+    - block_content
+    - system
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_searchbyregion
+theme: thinkwork8_boot
+region: content
+weight: 0
+provider: null
+plugin: 'block_content:12bcbaaf-da0c-43ea-97ad-56c35f8bc09b'
+settings:
+  id: 'block_content:12bcbaaf-da0c-43ea-97ad-56c35f8bc09b'
+  label: 'Search by Region'
+  label_display: visible
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    context_mapping: {  }
+    pages: /think-work-stories

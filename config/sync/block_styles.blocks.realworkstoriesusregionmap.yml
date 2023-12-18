@@ -1,0 +1,8 @@
+uuid: a6b0d247-b661-4c17-8943-c4e8cfa452b4
+langcode: en
+status: true
+dependencies: {  }
+id: realworkstoriesusregionmap
+theme: ''
+text: ''
+classes: rws-sidebar

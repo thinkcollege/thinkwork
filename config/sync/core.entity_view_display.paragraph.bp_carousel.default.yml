@@ -1,0 +1,53 @@
+uuid: e1baa3ca-d1cb-45bf-b247-1dcc10e98a66
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.bp_carousel.bp_background
+    - field.field.paragraph.bp_carousel.bp_slide_content
+    - field.field.paragraph.bp_carousel.bp_slide_interval
+    - field.field.paragraph.bp_carousel.bp_width
+    - paragraphs.paragraphs_type.bp_carousel
+  module:
+    - entity_reference_revisions
+    - options
+_core:
+  default_config_hash: '-64ufU5i6z27pD4G22OwkhCO4dkJicpngb1gNsGLwtw'
+id: paragraph.bp_carousel.default
+targetEntityType: paragraph
+bundle: bp_carousel
+mode: default
+content:
+  bp_background:
+    type: list_key
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  bp_slide_content:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  bp_slide_interval:
+    type: list_key
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  bp_width:
+    type: list_key
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  created: true
+  uid: true

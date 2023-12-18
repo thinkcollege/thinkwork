@@ -1,0 +1,219 @@
+theme:
+  visibility: '1'
+  themes:
+    adminimal_theme: adminimal_theme
+    bootstrap_barrio: bootstrap_barrio
+    bootstrap_barrio_subtheme: bootstrap_barrio_subtheme
+    thinkwork8_boot: thinkwork8_boot
+url:
+  visibility: '0'
+  pages:
+    - 'admin*'
+    - 'imagebrowser*'
+    - 'img_assist*'
+    - 'imce*'
+    - 'node/add/*'
+    - 'node/*/edit'
+    - 'print/*'
+    - 'printpdf/*'
+    - system/ajax
+    - 'system/ajax/*'
+minimized:
+  options: '0'
+cdn:
+  bootstrap: 4.1.1
+  options: |-
+    {
+      "timestamp": "2015-11-09T18:54:50.335Z",
+      "bootstrap": {
+        "5.1.1": {
+          "css": "//cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css",
+          "js": [
+            "//cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js",
+            "//cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"
+          ]
+        },
+        "5.0.2": {
+          "css": "//cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css",
+          "js": [
+            "//cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js",
+            "//cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"
+          ]
+        },
+        "4.6.0": {
+          "css": "//stackpath.bootstrapcdn.com/bootstrap/4.6.0/css/bootstrap.min.css",
+          "js": [
+            "//cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js",
+            "//stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"
+          ]
+        },
+        "4.5.2": {
+          "css": "//stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css",
+          "js": [
+            "//cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js",
+            "//stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+          ]
+        },
+        "4.4.1": {
+          "css": "//stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css",
+          "js": [
+            "//cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js",
+            "//stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+          ]
+        },
+        "4.3.1": {
+          "css": "//stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
+          "js": [
+            "//cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js",
+            "//stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+          ]
+        },
+        "4.2.1": {
+          "css": "//stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css",
+          "js": [
+            "//cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js",
+            "//stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+          ]
+        },
+        "4.1.1": {
+          "css": "//stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css",
+          "js": [
+            "//cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js",
+            "//stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+          ]
+        },
+        "4.0.0": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css",
+          "js": [
+            "//cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js",
+            "//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+          ]
+        },
+        "3.3.7": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        },
+        "3.3.6": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+        },
+        "3.3.5": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+        },
+        "3.3.4": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"
+        },
+        "3.3.3": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.3/css/bootstrap.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.3/js/bootstrap.min.js"
+        },
+        "3.3.2": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"
+        },
+        "3.3.1": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"
+        },
+        "3.3.0": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"
+        },
+        "3.2.0": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"
+        },
+        "3.1.1": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"
+        },
+        "3.1.0": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"
+        },
+        "3.0.3": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"
+        },
+        "3.0.2": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"
+        },
+        "3.0.1": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"
+        },
+        "3.0.0": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"
+        },
+        "3.0.0-noicons": {
+          "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.no-icons.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"
+        },
+        "2.3.2": {
+          "css": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"
+        },
+        "2.3.2-noicons": {
+          "css": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"
+        },
+        "2.3.1": {
+          "css": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"
+        },
+        "2.3.0": {
+          "css": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.3.0/js/bootstrap.min.js"
+        },
+        "2.2.2": {
+          "css": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"
+        },
+        "2.2.2-noresponsible": {
+          "css": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap.min.nr.css",
+          "js": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"
+        },
+
+        "2.2.1": {
+          "css": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"
+        },
+        "2.2.0": {
+          "css": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.2.0/css/bootstrap-combined.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.2.0/js/bootstrap.min.js"
+        },
+        "2.1.1": {
+          "css": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap-combined.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.1.1/js/bootstrap.min.js"
+        },
+        "2.1.0": {
+          "css": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.1.0/css/bootstrap-combined.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.1.0/js/bootstrap.min.js"
+        },
+        "2.0.4": {
+          "css": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.0.4/css/bootstrap-combined.min.css",
+          "js": "//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.0.4/js/bootstrap.min.js"
+        }
+      },
+      "fontawesome": {
+        "5.13.0": "//cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css",
+        "4.4.0": "//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css",
+        "4.2.0": "//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css",
+        "4.1.0": "//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css",
+        "4.0.3": "//maxcdn.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css",
+        "4.0.2": "//maxcdn.bootstrapcdn.com/font-awesome/4.0.2/css/font-awesome.min.css",
+        "4.0.1": "//maxcdn.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.min.css",
+        "4.0.0": "//maxcdn.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.min.css",
+        "3.2.1": "//maxcdn.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css"
+      }
+    }
+files:
+  types:
+    css: css
+    js: js
+_core:
+  default_config_hash: 0wP77QJJ-FGfoojEB4LVzh1A12H1WftBcTYRm18uXwo

@@ -1,0 +1,22 @@
+uuid: 2cf31a90-abac-48a9-aa88-4a5e95f5369f
+langcode: en
+status: true
+dependencies:
+  module:
+    - help
+  theme:
+    - thinkwork8_boot
+_core:
+  default_config_hash: 8I8iACSa0sKO3k3jlvUG1ge52rfcKX7USJAQYnzuBgg
+id: thinkwork8_boot_help
+theme: thinkwork8_boot
+region: content
+weight: -16
+provider: null
+plugin: help_block
+settings:
+  id: help_block
+  label: Help
+  label_display: '0'
+  provider: help
+visibility: {  }

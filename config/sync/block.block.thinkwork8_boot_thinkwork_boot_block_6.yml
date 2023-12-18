@@ -1,0 +1,32 @@
+uuid: 22b58b24-bbad-4e03-8053-6a91417aefc6
+langcode: en
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:6061b7af-35f7-431e-9734-998043bdfc42'
+  module:
+    - block_content
+    - system
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_thinkwork_boot_block_6
+theme: thinkwork8_boot
+region: content
+weight: -10
+provider: null
+plugin: 'block_content:6061b7af-35f7-431e-9734-998043bdfc42'
+settings:
+  id: 'block_content:6061b7af-35f7-431e-9734-998043bdfc42'
+  label: ''
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: |-
+      /considering-community-service-career-development-youth-autism-spectrum-disorder
+      /youthwithautism

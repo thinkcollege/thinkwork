@@ -1,0 +1,14 @@
+uuid: 053dd31b-c84a-470b-9e30-208e7ee46328
+langcode: en
+status: true
+dependencies:
+  config:
+    - system.menu.re
+    - taxonomy.vocabulary.project
+id: real_work_stories_categories
+label: 'Real Work Stories Categories'
+vocabulary: project
+menu: re
+expanded: true
+depth: 0
+menu_parent: 'main:menu_link_content:c992b879-cb29-48c5-8169-56347f93ea2b'

@@ -1,0 +1,10 @@
+uuid: 667ec34a-2107-4fd2-ae80-d48c90fcea20
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.jquerymobile_teaser
+label: jquerymobile_teaser
+targetEntityType: node
+cache: true

@@ -1,0 +1,31 @@
+uuid: 41beeec0-dc97-4996-9c85-1181d72e4bac
+langcode: en
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:b09baaea-20cd-48db-8f7e-dae2b910c43d'
+  module:
+    - block_content
+    - system
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_rwsiworkwesucceed
+theme: thinkwork8_boot
+region: sidebar_first
+weight: -21
+provider: null
+plugin: 'block_content:b09baaea-20cd-48db-8f7e-dae2b910c43d'
+settings:
+  id: 'block_content:b09baaea-20cd-48db-8f7e-dae2b910c43d'
+  label: 'RWS-I Work We Succeed'
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    context_mapping: {  }
+    pages: "/think-work-stories\r\n/project/think-work-stories\r\n/project/volunteering-and-internships\r\n/project/transition\r\n/project/self-employment\r\n/project/job-supports\r\n/project/networking\r\n/project/job-negotiation\r\n/project/job-matching\r\n/project/job-creation\r\n/project/interagency-collaboration\r\n/project/funding-strategies\r\n/project/family-engagementinvolvement\r\n/project/career-planning\r\n/project/career-advancement\r\n/project/community-life-engagement"

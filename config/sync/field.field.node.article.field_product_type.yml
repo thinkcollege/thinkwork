@@ -1,0 +1,21 @@
+uuid: fedb62d5-f93f-4705-8bed-dec8538c7b03
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_product_type
+    - node.type.article
+id: node.article.field_product_type
+field_name: field_product_type
+entity_type: node
+bundle: article
+label: 'Product Type'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

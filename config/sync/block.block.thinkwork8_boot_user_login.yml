@@ -1,0 +1,27 @@
+uuid: b8413e9a-70ec-46ba-9f6c-2de6038abc10
+langcode: en
+status: false
+dependencies:
+  module:
+    - system
+    - user
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_user_login
+theme: thinkwork8_boot
+region: sidebar_first
+weight: -19
+provider: null
+plugin: user_login_block
+settings:
+  id: user_login_block
+  label: '<none>'
+  label_display: visible
+  provider: user
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: |-
+      <front>
+      /forum-home

@@ -1,0 +1,8 @@
+uuid: ebf517ad-ef48-4c23-98e8-8123dda81e4f
+langcode: en
+status: true
+dependencies: {  }
+id: rwscategories
+theme: ''
+text: ''
+classes: rws-sidebar

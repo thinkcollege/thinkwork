@@ -1,0 +1,12 @@
+uuid: 0d77c831-8db1-486b-a541-31cd4a8c0fd8
+langcode: en
+status: true
+dependencies:
+  module:
+    - exclude_node_title
+id: family_member
+label: 'family member'
+weight: 4
+is_admin: null
+permissions:
+  - 'use exclude node title'

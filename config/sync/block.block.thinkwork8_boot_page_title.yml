@@ -1,0 +1,27 @@
+uuid: 4bf3e6ab-2beb-43f7-8083-0003ac532080
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - thinkwork8_boot
+_core:
+  default_config_hash: 7rR9chwXvdM2H8OYMAYx9Zj3GGlPMrZp_M3ZA4thYTk
+id: thinkwork8_boot_page_title
+theme: thinkwork8_boot
+region: content
+weight: -20
+provider: null
+plugin: page_title_block
+settings:
+  id: page_title_block
+  label: 'Page title'
+  label_display: '0'
+  provider: core
+visibility:
+  request_path:
+    id: request_path
+    negate: true
+    context_mapping: {  }
+    pages: "<front>\r\n/taxonomy/term/306"

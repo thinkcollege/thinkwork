@@ -1,0 +1,23 @@
+uuid: ae41d115-0a9b-41a7-9d13-41dfbe7a68ca
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.taxonomy_forums
+    - node.type.forum
+_core:
+  default_config_hash: n0THs2iyQuOn2Iz8VTb6TgdPrniPS352uPVlCADxnn4
+id: node.forum.taxonomy_forums
+field_name: taxonomy_forums
+entity_type: node
+bundle: forum
+label: Forums
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

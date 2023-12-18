@@ -1,0 +1,8 @@
+uuid: 234d34f8-19cf-4620-b7ec-f1d62db83e00
+langcode: en
+status: true
+dependencies: {  }
+name: Region
+vid: region
+description: ''
+weight: 0

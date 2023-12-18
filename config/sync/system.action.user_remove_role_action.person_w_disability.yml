@@ -1,0 +1,14 @@
+uuid: 196914b8-a4da-466c-b643-02cc06d7dce0
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.person_w_disability
+  module:
+    - user
+id: user_remove_role_action.person_w_disability
+label: 'Remove the person w disability role from the selected user(s)'
+type: user
+plugin: user_remove_role_action
+configuration:
+  rid: person_w_disability

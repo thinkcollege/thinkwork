@@ -1,0 +1,20 @@
+uuid: 9d7c1e4e-15d6-4fad-bffa-534ec9d21935
+langcode: en
+status: true
+dependencies:
+  theme:
+    - thinkwork8_boot
+_core:
+  default_config_hash: 13GQpeITIJsp1kyPniXtWZfyFH87vb1xxJCHifL4UeE
+id: thinkwork8_boot_local_actions
+theme: thinkwork8_boot
+region: content
+weight: -15
+provider: null
+plugin: local_actions_block
+settings:
+  id: local_actions_block
+  label: 'Primary admin actions'
+  label_display: '0'
+  provider: core
+visibility: {  }

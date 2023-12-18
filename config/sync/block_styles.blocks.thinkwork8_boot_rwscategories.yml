@@ -1,0 +1,8 @@
+uuid: a5f31fc1-9865-40c0-86f9-546cae0f6b8c
+langcode: en
+status: true
+dependencies: {  }
+id: thinkwork8_boot_rwscategories
+theme: ''
+text: ''
+classes: rws-box

@@ -1,0 +1,27 @@
+uuid: fbb13acb-54b1-4a74-86fe-e2e0cc396054
+langcode: en
+status: true
+dependencies:
+  config:
+    - comment.type.comment_node_webinar
+    - field.field.comment.comment_node_webinar.comment_body
+  module:
+    - text
+id: comment.comment_node_webinar.default
+targetEntityType: comment
+bundle: comment_node_webinar
+mode: default
+content:
+  comment_body:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden: {  }

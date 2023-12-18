@@ -1,0 +1,18 @@
+uuid: 75a96317-c092-408b-a10d-4325777ea8f2
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.poll
+id: node.poll.title
+field_name: title
+entity_type: node
+bundle: poll
+label: Question
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

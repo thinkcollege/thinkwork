@@ -1,0 +1,8 @@
+uuid: 66fc7a23-d2b8-4ccb-afb8-c22557719879
+langcode: en
+status: true
+dependencies: {  }
+id: audiencecards
+theme: block__clean
+text: ''
+classes: ''

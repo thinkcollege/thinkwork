@@ -1,0 +1,12 @@
+uuid: 53413647-e3a6-4d1e-98d6-190e4b6fb02e
+langcode: en
+status: true
+dependencies:
+  module:
+    - exclude_node_title
+id: person_w_disability
+label: 'person w disability'
+weight: 3
+is_admin: null
+permissions:
+  - 'use exclude node title'

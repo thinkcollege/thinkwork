@@ -1,0 +1,21 @@
+uuid: a4d7d86f-0ff5-43e7-b17d-f1fa6319228f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_page_order_on_page
+    - node.type.article
+  module:
+    - options
+id: node.article.field_page_order_on_page
+field_name: field_page_order_on_page
+entity_type: node
+bundle: article
+label: 'Order on page'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_integer

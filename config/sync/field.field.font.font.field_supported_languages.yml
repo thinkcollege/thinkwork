@@ -1,0 +1,31 @@
+uuid: 4c2d2e5c-4111-455b-830f-ac26f49f9c0f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.font.field_supported_languages
+    - taxonomy.vocabulary.languages_supported
+  module:
+    - fontyourface
+_core:
+  default_config_hash: J4-E4ka4YSO-U8k25RPslraI-MBBGx8u_lZ5MMmA6VI
+id: font.font.field_supported_languages
+field_name: field_supported_languages
+entity_type: font
+bundle: font
+label: 'Supported Languages'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      languages_supported: languages_supported
+    sort:
+      field: _none
+    auto_create: true
+    auto_create_bundle: ''
+field_type: entity_reference

@@ -1,0 +1,8 @@
+uuid: 0e0c8c8a-299c-4e41-8ba2-b42f14408465
+langcode: en
+status: true
+dependencies: {  }
+id: views_block__new_products_block_1
+theme: ''
+text: ''
+classes: ''

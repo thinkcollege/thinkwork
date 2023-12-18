@@ -1,0 +1,25 @@
+uuid: 3b9f24f3-27b6-40bb-be33-9ac1dfefd384
+langcode: en
+status: false
+dependencies:
+  config:
+    - system.menu.tools
+  module:
+    - system
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_navigation
+theme: thinkwork8_boot
+region: header
+weight: -16
+provider: null
+plugin: 'system_menu_block:tools'
+settings:
+  id: 'system_menu_block:tools'
+  label: Navigation
+  label_display: '0'
+  provider: system
+  level: 1
+  depth: 0
+  expand_all_items: false
+visibility: {  }

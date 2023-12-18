@@ -1,0 +1,31 @@
+uuid: 3d0c3a05-d0b3-4e4a-b5f2-ca54140bff3c
+langcode: en
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:e98d4ea7-212a-48b2-b73c-72d51a2ff6de'
+  module:
+    - block_content
+    - system
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_rwscategories
+theme: thinkwork8_boot
+region: sidebar_first
+weight: -22
+provider: null
+plugin: 'block_content:e98d4ea7-212a-48b2-b73c-72d51a2ff6de'
+settings:
+  id: 'block_content:e98d4ea7-212a-48b2-b73c-72d51a2ff6de'
+  label: 'Select a Story based on frontline practice'
+  label_display: visible
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    context_mapping: {  }
+    pages: "/think-work-stories\r\n/project/think-work-stories\r\n/project/volunteering-and-internships\r\n/project/transition\r\n/project/self-employment\r\n/project/job-supports\r\n/project/networking\r\n/project/job-negotiation\r\n/project/job-matching\r\n/project/job-creation\r\n/project/interagency-collaboration\r\n/project/funding-strategies\r\n/project/family-engagementinvolvement\r\n/project/career-planning\r\n/project/career-advancement\r\n/project/community-life-engagement"

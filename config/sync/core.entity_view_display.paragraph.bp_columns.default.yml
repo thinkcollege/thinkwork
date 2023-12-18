@@ -1,0 +1,47 @@
+uuid: a606cea9-46aa-4ae0-9d8d-44c547b5a9e1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.bp_columns.bp_background
+    - field.field.paragraph.bp_columns.bp_column_content
+    - field.field.paragraph.bp_columns.bp_header
+    - field.field.paragraph.bp_columns.bp_width
+    - paragraphs.paragraphs_type.bp_columns
+  module:
+    - entity_reference_revisions
+    - options
+_core:
+  default_config_hash: wIDWPSouhITkH6QV8vXzWJ-cbN-dEYeBvMGBS0jV4x0
+id: paragraph.bp_columns.default
+targetEntityType: paragraph
+bundle: bp_columns
+mode: default
+content:
+  bp_background:
+    type: list_key
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  bp_column_content:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  bp_width:
+    type: list_key
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  bp_header: true
+  created: true
+  uid: true

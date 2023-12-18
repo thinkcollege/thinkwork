@@ -1,0 +1,15 @@
+_core:
+  default_config_hash: yXadRE77Va-G6dxhd2kPYapAvbnSvTF6hO4oXiOEynI
+langcode: en
+uuid: e302b4e7-ec65-4960-98dd-4ea5ef94c80a
+name: 'Think Work'
+mail: thinkcollege@communityinclusion.org
+slogan: ''
+page:
+  403: /node/442
+  404: /node/441
+  front: /node/59
+admin_compact_mode: false
+weight_select_max: 100
+default_langcode: en
+mail_notification: ''

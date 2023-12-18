@@ -1,0 +1,8 @@
+uuid: 0be8d17b-ca03-44ba-ae3a-aae28da8847a
+langcode: en
+status: true
+dependencies: {  }
+name: Glossary
+vid: glossary
+description: ''
+weight: 0

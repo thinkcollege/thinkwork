@@ -1,0 +1,22 @@
+uuid: 317b2de3-85a4-4320-8aaa-f00783568301
+langcode: en
+status: true
+dependencies:
+  theme:
+    - thinkwork8_boot
+_core:
+  default_config_hash: X9I1OB0W3WlWtrK-CNcg6hNWwa8wficanpH8pYnDZDE
+id: thinkwork8_boot_local_tasks
+theme: thinkwork8_boot
+region: content
+weight: -17
+provider: null
+plugin: local_tasks_block
+settings:
+  id: local_tasks_block
+  label: Tabs
+  label_display: '0'
+  provider: core
+  primary: true
+  secondary: true
+visibility: {  }

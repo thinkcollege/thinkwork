@@ -1,0 +1,30 @@
+uuid: e56cf856-34b1-4b66-ab81-90744c5b8ebd
+langcode: en
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:96ce6279-351a-4d42-a72b-0657ff4ab008'
+  module:
+    - block_content
+    - system
+  theme:
+    - bootstrap_barrio
+id: bootstrap_barrio_thinkwork_boot_block_2
+theme: bootstrap_barrio
+region: content
+weight: 0
+provider: null
+plugin: 'block_content:96ce6279-351a-4d42-a72b-0657ff4ab008'
+settings:
+  id: 'block_content:96ce6279-351a-4d42-a72b-0657ff4ab008'
+  label: ''
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: '<front>'

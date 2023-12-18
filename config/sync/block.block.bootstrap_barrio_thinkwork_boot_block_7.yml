@@ -1,0 +1,30 @@
+uuid: ce8f7787-e09c-4869-bad8-17b9b4562b5d
+langcode: en
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:85cbae5f-e90b-4deb-bff2-bb3780e3bc37'
+  module:
+    - block_content
+    - system
+  theme:
+    - bootstrap_barrio
+id: bootstrap_barrio_thinkwork_boot_block_7
+theme: bootstrap_barrio
+region: content
+weight: 0
+provider: null
+plugin: 'block_content:85cbae5f-e90b-4deb-bff2-bb3780e3bc37'
+settings:
+  id: 'block_content:85cbae5f-e90b-4deb-bff2-bb3780e3bc37'
+  label: ''
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: /considering-community-service-building-social-skills-youth-autism-spectrum-disorder

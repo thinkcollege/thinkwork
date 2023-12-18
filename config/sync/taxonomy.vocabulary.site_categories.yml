@@ -1,0 +1,8 @@
+uuid: 5809b23e-92f7-4593-a28a-8e7ff91dc48a
+langcode: en
+status: true
+dependencies: {  }
+name: 'Site Categories'
+vid: site_categories
+description: ''
+weight: 1

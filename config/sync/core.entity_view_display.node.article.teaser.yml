@@ -1,0 +1,64 @@
+uuid: ea93a90f-b384-4ec0-9c01-1e9d44f59dd4
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.article.body
+    - field.field.node.article.field_article_teaser
+    - field.field.node.article.field_authors
+    - field.field.node.article.field_features
+    - field.field.node.article.field_image
+    - field.field.node.article.field_page_order_on_page
+    - field.field.node.article.field_product_type
+    - field.field.node.article.field_project
+    - field.field.node.article.field_region
+    - field.field.node.article.field_states
+    - field.field.node.article.field_tags
+    - field.field.node.article.field_topics
+    - node.type.article
+  module:
+    - image
+    - text
+    - user
+_core:
+  default_config_hash: 4NcL2hSQZBpJbYtNuh5jC6kyQTcAc1m5bQpTegEWEso
+id: node.article.teaser
+targetEntityType: node
+bundle: article
+mode: teaser
+content:
+  field_article_teaser:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_image:
+    type: image
+    label: hidden
+    settings:
+      image_link: ''
+      image_style: ''
+      image_loading:
+        attribute: lazy
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  body: true
+  field_authors: true
+  field_features: true
+  field_page_order_on_page: true
+  field_product_type: true
+  field_project: true
+  field_region: true
+  field_states: true
+  field_tags: true
+  field_topics: true

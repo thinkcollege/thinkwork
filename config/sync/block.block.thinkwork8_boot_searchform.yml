@@ -1,0 +1,21 @@
+uuid: df2bd788-18fb-415a-9cb0-68df17ec4722
+langcode: en
+status: false
+dependencies:
+  module:
+    - search
+  theme:
+    - thinkwork8_boot
+id: thinkwork8_boot_searchform
+theme: thinkwork8_boot
+region: primary_menu
+weight: -14
+provider: null
+plugin: search_form_block
+settings:
+  id: search_form_block
+  label: 'Search form'
+  label_display: '0'
+  provider: search
+  page_id: ''
+visibility: {  }

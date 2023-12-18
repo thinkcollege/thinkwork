@@ -1,0 +1,8 @@
+uuid: 2d41798e-6a7d-4128-afdc-222a57ae6193
+langcode: en
+status: true
+dependencies: {  }
+id: videoblockonrwspage
+theme: ''
+text: ''
+classes: 'border border-dark'

@@ -1,0 +1,8 @@
+uuid: adfcff80-59f7-4c93-8c38-9ca6876ae87e
+langcode: en
+status: true
+dependencies: {  }
+id: thinkwork8_boot_rwsiworkwesucceed
+theme: ''
+text: ''
+classes: rws-alert

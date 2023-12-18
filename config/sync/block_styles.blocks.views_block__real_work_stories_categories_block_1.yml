@@ -1,0 +1,8 @@
+uuid: 287c0766-cb36-4fb7-8ff9-cf978b6d3866
+langcode: en
+status: true
+dependencies: {  }
+id: views_block__real_work_stories_categories_block_1
+theme: ''
+text: ''
+classes: 'col rws-sidebar'

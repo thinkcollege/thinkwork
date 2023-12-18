@@ -1,0 +1,12 @@
+uuid: 149ec8f3-6d64-43f4-bcf7-df9f4e1b2bd7
+langcode: en
+status: false
+dependencies:
+  module:
+    - fontyourface
+_core:
+  default_config_hash: 5sNC12vR6kVFfRc3APtk2vM7XPbzJopPm2tgDWYwaaE
+id: font.full
+label: 'Full View Mode'
+targetEntityType: font
+cache: false

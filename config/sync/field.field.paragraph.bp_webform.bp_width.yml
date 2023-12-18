@@ -1,0 +1,23 @@
+uuid: ebafd3fc-0b37-41ba-870e-96e9ae9326b1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.bp_width
+    - paragraphs.paragraphs_type.bp_webform
+  module:
+    - options
+_core:
+  default_config_hash: 3H-lR6XZZxVKPxS7legkMPyU3DoXRCUP4CW5BB9nyU0
+id: paragraph.bp_webform.bp_width
+field_name: bp_width
+entity_type: paragraph
+bundle: bp_webform
+label: Width
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

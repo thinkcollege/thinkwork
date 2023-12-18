@@ -1,0 +1,20 @@
+uuid: 56d4b7d4-82fc-4d27-aae4-32fed17411fa
+langcode: und
+status: true
+dependencies:
+  module:
+    - node
+    - taxonomy
+id: node.field_authors
+field_name: field_authors
+entity_type: node
+type: entity_reference
+settings:
+  target_type: taxonomy_term
+module: core
+locked: false
+cardinality: 10
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
