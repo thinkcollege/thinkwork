@@ -512,7 +512,7 @@ a.is-active.sf-depth-1.menuparent.sf-with-ul {
 
 /* This seems to fix the issue of the sf menu disappearing in mobile view... probably a better way to fix-revisit later*/
  .navbar-toggler {display:none}
-.collapse:not(.show) {
+#block-thinkwork8-boot-mainmenu .collapse:not(.show) {
     display: block;
 }
 
