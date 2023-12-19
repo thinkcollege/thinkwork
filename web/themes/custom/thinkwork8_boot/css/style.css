@@ -637,25 +637,23 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
     padding: 5px;
     float: right;
 }
-*/ Styles for Blue book page with Bootstrap collapse */
+
 .block-bootstrap-collapse {
   margin-bottom: 10px;
 
 }
-.block-bootstrap-collapse .btn-secondary {background-color:#fff; color: #468cc8; font-size: 1.7em; font-family: 'Open Sans',sans-serif;
-
-  font-weight: 800;}
+.block-bootstrap-collapse .btn-secondary {background-color:#fff; color: #468cc8; font-size: 1.7em; font-family: 'Open Sans',sans-serif; font-weight: 800;}
 .block-bootstrap-collapse .btn-secondary::after {
-content: "\f0d7";
-color: #ccc;
-font-size: 1.2em;
-top: -2px;
-right: 8px;
-font-family: "FontAwesome"
+	content: "\f0d7";
+	color: #ccc;
+	font-size: 1.2em;
+	top: -2px;
+	right: 8px;
+	font-family: "FontAwesome"
 }
 
 .block-bootstrap-collapse .btn-secondary[aria-expanded="true"]::after {
-content: "\f0d8";
-color: #ccc;
-font-size: 1.2em;
+	content: "\f0d8";
+	color: #ccc;
+	font-size: 1.2em;
 }
