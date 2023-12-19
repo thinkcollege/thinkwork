@@ -1,0 +1,24 @@
+uuid: f75be156-c853-4ae5-8ca3-c6b38d37eef0
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.infographic
+  module:
+    - text
+id: node.infographic.body
+field_name: body
+entity_type: node
+bundle: infographic
+label: Body
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: true
+  required_summary: false
+  allowed_formats: {  }
+field_type: text_with_summary

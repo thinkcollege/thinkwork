@@ -1,0 +1,51 @@
+uuid: 4ba60b04-3a74-4d6d-971f-d9b316fbc797
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.infographic.body
+    - field.field.node.infographic.field_infographic_file
+    - field.field.node.infographic.field_infographic_thumbnail
+    - node.type.infographic
+  module:
+    - file
+    - image
+    - text
+    - user
+id: node.infographic.default
+targetEntityType: node
+bundle: infographic
+mode: default
+content:
+  body:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_infographic_file:
+    type: file_default
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_infographic_thumbnail:
+    type: image
+    label: hidden
+    settings:
+      image_link: ''
+      image_style: ''
+      image_loading:
+        attribute: lazy
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden: {  }

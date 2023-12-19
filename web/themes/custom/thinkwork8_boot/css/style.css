@@ -637,3 +637,7 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
     padding: 5px;
     float: right;
 }
+.block-bootstrap-collapse {
+  margin-bottom: 10px;
+
+}

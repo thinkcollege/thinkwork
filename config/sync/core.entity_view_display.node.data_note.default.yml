@@ -1,0 +1,51 @@
+uuid: 8aac2734-071e-48fa-b0f5-f525239aed54
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.data_note.body
+    - field.field.node.data_note.field_data_note_file
+    - field.field.node.data_note.field_thumbnail
+    - node.type.data_note
+  module:
+    - file
+    - image
+    - text
+    - user
+id: node.data_note.default
+targetEntityType: node
+bundle: data_note
+mode: default
+content:
+  body:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_data_note_file:
+    type: file_default
+    label: above
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_thumbnail:
+    type: image
+    label: above
+    settings:
+      image_link: ''
+      image_style: ''
+      image_loading:
+        attribute: lazy
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden: {  }

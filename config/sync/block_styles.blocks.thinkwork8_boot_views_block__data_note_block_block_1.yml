@@ -1,0 +1,8 @@
+uuid: cb8116a3-bdf4-4ba9-bec9-2bdc0ced1dba
+langcode: en
+status: true
+dependencies: {  }
+id: thinkwork8_boot_views_block__data_note_block_block_1
+theme: block__bootstrap__collapse
+text: 'Data Notes'
+classes: ''
