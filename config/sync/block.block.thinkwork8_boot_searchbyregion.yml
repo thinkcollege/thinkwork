@@ -12,7 +12,7 @@ dependencies:
 id: thinkwork8_boot_searchbyregion
 theme: thinkwork8_boot
 region: content
-weight: 0
+weight: -7
 provider: null
 plugin: 'block_content:12bcbaaf-da0c-43ea-97ad-56c35f8bc09b'
 settings:

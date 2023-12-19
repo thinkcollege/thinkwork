@@ -11,7 +11,7 @@ _core:
 id: thinkwork8_boot_page_title
 theme: thinkwork8_boot
 region: content
-weight: -20
+weight: -23
 provider: null
 plugin: page_title_block
 settings:

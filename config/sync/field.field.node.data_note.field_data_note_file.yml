@@ -1,0 +1,27 @@
+uuid: c68cc5ab-695c-4f3e-b8f1-29175ec27e75
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_data_note_file
+    - node.type.data_note
+  module:
+    - file
+id: node.data_note.field_data_note_file
+field_name: field_data_note_file
+entity_type: node
+bundle: data_note
+label: 'Data note file'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'txt doc docx pdf'
+  max_filesize: ''
+  description_field: true
+field_type: file

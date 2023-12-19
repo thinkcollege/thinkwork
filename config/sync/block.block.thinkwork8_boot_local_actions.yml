@@ -9,7 +9,7 @@ _core:
 id: thinkwork8_boot_local_actions
 theme: thinkwork8_boot
 region: content
-weight: -15
+weight: -20
 provider: null
 plugin: local_actions_block
 settings:

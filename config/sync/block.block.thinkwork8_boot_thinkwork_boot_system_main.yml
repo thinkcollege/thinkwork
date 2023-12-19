@@ -11,7 +11,7 @@ _core:
 id: thinkwork8_boot_thinkwork_boot_system_main
 theme: thinkwork8_boot
 region: content
-weight: -14
+weight: -19
 provider: null
 plugin: system_main_block
 settings:

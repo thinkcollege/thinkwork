@@ -12,7 +12,7 @@ dependencies:
 id: thinkwork8_boot_featuredrealworkstories
 theme: thinkwork8_boot
 region: content
-weight: 0
+weight: -9
 provider: null
 plugin: 'block_content:dcd11a5c-06b2-4d94-976f-86018b2bab32'
 settings:

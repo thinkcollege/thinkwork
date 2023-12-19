@@ -1,0 +1,8 @@
+uuid: 48459b11-a501-44bd-8502-b61abc758799
+langcode: en
+status: true
+dependencies: {  }
+id: thinkwork8_boot_views_block__infographic_block_block_1
+theme: block__bootstrap__collapse
+text: Infographics
+classes: ''
