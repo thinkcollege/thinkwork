@@ -649,7 +649,7 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
 	font-size: 1.2em;
 	top: -2px;
 	right: 8px;
-	font-family: "FontAwesome"
+	font-family: "FontAwesome";
 }
 
 .block-bootstrap-collapse .btn-secondary[aria-expanded="true"]::after {
