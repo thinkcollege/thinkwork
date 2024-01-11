@@ -38,6 +38,7 @@
         "drupal/entity_reference_revisions": "^1.9",
         "drupal/exclude_node_title": "^1.2",
         "drupal/field_group": "^3.2",
+        "drupal/fontawesome": "^2.26",
         "drupal/fontyourface": "^4.0",
         "drupal/glossify": "^3.0",
         "drupal/google_tag": "^1.1",
