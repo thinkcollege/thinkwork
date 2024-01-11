@@ -48,6 +48,7 @@
         "drupal/mailgun": "^2.0",
         "drupal/mailsystem": "^4.3",
         "drupal/memcache": "^2.3",
+        "drupal/node_export": "^1.0",
         "drupal/panels": "^4.6",
         "drupal/paragraphs": "^1.12",
         "drupal/pathauto": "^1.8",
