@@ -161,7 +161,7 @@ class NodeImport {
       }
     }
     else {
-      $message = $this->t('Finished with an error.');
+      $message = 'Finished with an error.';
     }
     \Drupal::messenger()->addStatus($message);
   }
