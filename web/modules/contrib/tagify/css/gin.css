@@ -1,0 +1,60 @@
+:root {
+  --tagify-dd-color-primary: var(--gin-bg-layer3);
+  --tagify-dd-bg-color: var(--gin-bg-layer2);
+}
+
+.tagify:focus-within {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--gin-color-focus-border), 0 0 0 4px var(--gin-color-focus);
+}
+
+.tagify__dropdown__item--active {
+  background: var(--gin-color-primary) !important;
+}
+
+.tagify__tag--editable .tagify__tag-entity-id {
+  background: var(--gin-color-primary-light-hover) !important;
+}
+
+.tagify__tag:focus div::before, .tagify__tag:hover:not([readonly]) div::before {
+  --tag-bg: var(--gin-color-primary-light-hover) !important;
+}
+
+.tagify__tag--editable>div::before{
+  box-shadow:0 0 0 2px var(--gin-color-primary-light-hover) inset !important
+}
+
+/* Gin dark mode */
+.gin--dark-mode .tagify {
+  --tag-text-color--edit: var(--gin-color-text);
+  --tag-remove-btn-color: var(--gin-color-text);
+  --tag-text-color: var(--gin-color-text);
+  --tag-bg: var(--gin-bg-layer);
+  --placeholder-color: var(--gin-color-text-light);
+  --placeholder-color-focus: var(--gin-color-text);
+}
+
+.gin--dark-mode .tagify__tag:hover > #tagify__tag-remove-button {
+  background: #dedfe4;
+  color: #55565b;
+}
+
+.gin--dark-mode .tagify__tag--editable #tagify__tag-remove-button {
+  background: none !important;
+}
+
+.gin--dark-mode .tagify__dropdown__item--active {
+  color: var(--gin-color-primary-hover) !important;
+  background-color: var(--gin-bg-item-hover) !important;
+}
+
+.gin--dark-mode  #tagify__tag-remove-button:hover {
+  background: #c77777 !important;
+}
+
+.gin--dark-mode .tagify__dropdown.users-list .tagify__dropdown__count {
+  border-bottom: 1px solid #55565b;
+  color: var(--gin-color-text);
+  background-color: var(--gin-bg-layer);
+}
+

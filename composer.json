@@ -58,6 +58,7 @@
         "drupal/styles_api": "^1.0",
         "drupal/subpathauto": "^1.1",
         "drupal/superfish": "^1.4",
+        "drupal/tagify": "^1.2",
         "drupal/taxonomy_menu": "^3.5",
         "drupal/token": "^1.9",
         "drupal/typed_data": "^1.0@alpha",
