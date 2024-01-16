@@ -1,0 +1,93 @@
+.tagify {
+  --tag-inset-shadow-size: 1.5em !important;
+  width: 100%;
+  padding: 0 !important;
+  align-items: center !important;
+}
+
+.tagify:focus-within {
+  box-shadow: 0 0 0 2px var(--color-white), 0 0 0 5px var(--color-focus);
+}
+
+.page-wrapper .tagify *:focus,
+.form-with-tagify-widget .tagify .ui-dialog *:focus {
+  box-shadow: none;
+}
+
+.tagify__tag {
+  height: 30px;
+  border-radius: 50px;
+  transition: none !important;
+}
+
+#tagify__tag-remove-button {
+  margin-right: 0.6rem;
+  margin-left: 0.3rem;
+  background: #55565b;
+  color: #dedfe4;
+}
+
+#tagify__tag-remove-button:hover {
+  color: #fff;
+  background: var(--tag-remove-btn-bg--hover);
+}
+
+.tagify__tag--editable #tagify__tag-remove-button {
+  background: none;
+  margin-right: 0.5rem;
+}
+
+.tagify__tag--editable .tagify__tag-entity-id {
+  background: #d3e2e2;
+  transition: .13s ease-out;
+}
+
+.tagify__tag__removeBtn:hover > .tagify__tag:hover {
+  background: #c77777;
+}
+
+.tagify__tag>div {
+  padding: 0.2em 0.5em;
+  display: flex;
+  align-items: center;
+}
+
+.tagify__tag__entity-id-wrap {
+  display: inline-block;
+  border-radius: 0.9rem;
+  background-color: white;
+  text-align: center;
+  line-height: 1.4rem;
+  color: #55565b;
+  font-size: .8rem;
+}
+
+#tagify__tag-items.tagify__tag_with-entity-id {
+  padding: 4px;
+}
+
+.tagify__tag_with-entity-id .tagify__tag-text,
+.tagify__tag--editable .tagify__tag_with-entity-id .tagify__tag-text {
+  margin-left: 0.5rem;
+}
+
+.tagify__tag-text,
+.tagify__tag--editable .tagify__tag-text {
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 151.523%;
+  margin-left: 0.25rem;
+}
+
+.tagify__tag-entity-id {
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+  padding: 0.5rem;
+}
+
+#tagify__tag-items {
+  border-radius: 50px;
+}

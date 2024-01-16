@@ -1,0 +1,25 @@
+:root {
+  --tagify-dd-color-primary: transparent;
+  --tagify-dd-bg-color:  #edeff5;
+}
+
+.tagify__dropdown {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.10);
+}
+
+.tagify__dropdown__item--active {
+  color: #fff;
+  background: #003ECCFF !important;
+}
+
+.tagify__tag:focus div::before, .tagify__tag:hover:not([readonly]) div::before {
+  --tag-bg: rgba(0, 62, 204, 0.15) !important;
+}
+
+.tagify__tag--editable>div::before{
+  box-shadow:0 0 0 2px rgba(0, 62, 204, 0.15) inset !important
+}
+
+.tagify__tag--editable .tagify__tag-entity-id {
+  background: rgba(0, 62, 204, 0.15);
+}

@@ -1,0 +1,23 @@
+field.widget.settings.tagify_entity_reference_autocomplete_widget:
+  type: field.widget.settings.tagify
+  label: 'Tagify entity reference widget'
+  mapping:
+    match_operator:
+      type: string
+      label: 'Autocomplete matching'
+    match_limit:
+      type: integer
+      label: 'Maximum number of autocomplete suggestions'
+    placeholder:
+      type: string
+      label: 'Placeholder'
+    suggestions_dropdown:
+      type: integer
+      label: 'Suggestions dropdown'
+    show_entity_id:
+      type: integer
+      label: 'Include entity Id'
+
+better_exposed_filters.filter.bef_tagify:
+  label: 'Tagify'
+  type: better_exposed_filters_filter_widget
