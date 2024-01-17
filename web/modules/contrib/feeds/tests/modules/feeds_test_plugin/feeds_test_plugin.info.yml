@@ -1,0 +1,6 @@
+name: 'Feeds test plugin'
+type: module
+description: 'Provides plugins for testing Feeds functionality.'
+package: Testing
+dependencies:
+  - feeds

@@ -1,0 +1,6 @@
+name: 'Feeds test files'
+type: module
+description: 'Generates source files.'
+package: Testing
+dependencies:
+  - feeds

@@ -1,0 +1,6 @@
+name: 'Feeds test multiple cron runs'
+type: module
+description: 'Ensures only a limited amount of items can get imported per cron run.'
+package: Testing
+dependencies:
+  - feeds

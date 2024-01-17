@@ -1,0 +1,6 @@
+name: Feeds
+description: 'Aggregates RSS/Atom/RDF feeds, imports CSV files and more.'
+package: Feeds
+type: module
+core_version_requirement: ^9.3 || ^10
+configure: entity.feeds_feed_type.collection

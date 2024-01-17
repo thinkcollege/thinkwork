@@ -1,0 +1,6 @@
+name: 'Feeds test events'
+type: module
+description: 'Provides subscribers to feeds events.'
+package: Testing
+dependencies:
+  - feeds

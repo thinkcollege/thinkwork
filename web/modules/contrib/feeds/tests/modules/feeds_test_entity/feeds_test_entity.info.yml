@@ -1,0 +1,7 @@
+name: 'Feeds test entity'
+type: module
+description: 'Provides an entity type where content can be imported for.'
+package: Testing
+dependencies:
+  - entity_test
+  - feeds
