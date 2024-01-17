@@ -37,6 +37,8 @@
         "drupal/entity_browser": "^2.0",
         "drupal/entity_reference_revisions": "^1.9",
         "drupal/exclude_node_title": "^1.2",
+        "drupal/feeds": "3.x-dev@dev",
+        "drupal/feeds_tamper": "^2.0@beta",
         "drupal/field_group": "^3.2",
         "drupal/fontawesome": "^2.26",
         "drupal/fontyourface": "^4.0",

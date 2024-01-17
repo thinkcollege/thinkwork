@@ -159,6 +159,8 @@ class ComposerStaticInit8d6a2daecf4fbb0853625831989fe627
             'Laminas\\Text\\' => 13,
             'Laminas\\Stdlib\\' => 15,
             'Laminas\\ServiceManager\\' => 23,
+            'Laminas\\Feed\\' => 13,
+            'Laminas\\Escaper\\' => 16,
         ),
         'J' => 
         array (
@@ -577,6 +579,14 @@ class ComposerStaticInit8d6a2daecf4fbb0853625831989fe627
         'Laminas\\ServiceManager\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-servicemanager/src',
+        ),
+        'Laminas\\Feed\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laminas/laminas-feed/src',
+        ),
+        'Laminas\\Escaper\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laminas/laminas-escaper/src',
         ),
         'JsonSchema\\' => 
         array (

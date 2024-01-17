@@ -89,6 +89,8 @@ return array(
     'Laminas\\Text\\' => array($vendorDir . '/laminas/laminas-text/src'),
     'Laminas\\Stdlib\\' => array($vendorDir . '/laminas/laminas-stdlib/src'),
     'Laminas\\ServiceManager\\' => array($vendorDir . '/laminas/laminas-servicemanager/src'),
+    'Laminas\\Feed\\' => array($vendorDir . '/laminas/laminas-feed/src'),
+    'Laminas\\Escaper\\' => array($vendorDir . '/laminas/laminas-escaper/src'),
     'JsonSchema\\' => array($vendorDir . '/justinrainbow/json-schema/src/JsonSchema'),
     'Jean85\\' => array($vendorDir . '/jean85/pretty-package-versions/src'),
     'Http\\Promise\\' => array($vendorDir . '/php-http/promise/src'),
