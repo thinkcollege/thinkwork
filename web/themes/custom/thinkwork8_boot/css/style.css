@@ -160,6 +160,8 @@ h1,h2,h3,h4,h5,h6 {
 	color:#fff;
 }
 
+
+
 .card {
 	margin-bottom:15px;
 }
@@ -679,3 +681,11 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
 .block-bootstrap-collapse .collapse {
      margin-top: 0; 
 }
+
+.lead {color:#212529}
+
+
+/*State Data Data source page*/
+
+div#accordion .card .card-header {background:#f8f9fa!important}
+div#accordion .card {margin-bottom:2px;padding:0}
