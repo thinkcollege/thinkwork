@@ -687,5 +687,16 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
 
 /*State Data Data source page*/
 
-div#accordion .card .card-header {background:#f8f9fa!important}
-div#accordion .card {margin-bottom:2px;padding:0}
+div#accordion .card .card-header {background:#f8f9fa!important;padding:0}
+div#accordion .card {margin-bottom:2px;}
+div#accordion [data-toggle="collapse"] .fa:before {  
+	font-size:30px;
+  content: "\f139";
+	color:#787878;
+}
+
+div#accordion [data-toggle="collapse"].collapsed .fa:before {
+  font-size:30px;
+  content: "\f13a";
+  color:#787878;
+}
