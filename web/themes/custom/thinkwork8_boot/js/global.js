@@ -5,6 +5,8 @@
  */
 (function ($, Drupal) {
 
+
+
   'use strict';
 
   Drupal.behaviors.thinkwork8_boot = {
@@ -43,6 +45,17 @@
         $(this).next().removeClass('sf-hidden');
         event.preventDefault();
         });
+        var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+        var eventer = window[eventMethod];
+        var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+        eventer(messageEvent,function(e) {
+          // If the message is a resize frame request
+          if (e.data.indexOf('resize::') != -1) {
+            var height = e.data.replace('resize::', '');
+            document.getElementById('chartBuilder').style.height = height+'px';
+          }
+        } ,false);
 
     }
   };

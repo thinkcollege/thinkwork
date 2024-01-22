@@ -644,16 +644,16 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
 }
 
 .block-bootstrap-collapse .btn-secondary {
-  background-color:#fff; 
-  color: #468cc8; 
-  font-size: 1.7em; 
-  font-family: 'Open Sans',sans-serif; 
+  background-color:#fff;
+  color: #468cc8;
+  font-size: 1.7em;
+  font-family: 'Open Sans',sans-serif;
   font-weight: 800;
 }
 
  .btn-secondary:not(:disabled):not(.disabled).active, .btn-secondary:not(:disabled):not(.disabled):active, .show>.btn-secondary.dropdown-toggle {
     color: #468cc8;
-    background-color: #fff; 
+    background-color: #fff;
     border-color: #4e555b;
 }
 
@@ -677,5 +677,8 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
 
 /* This gets rid of the annoying movement after expand */
 .block-bootstrap-collapse .collapse {
-     margin-top: 0; 
+     margin-top: 0;
 }
+
+/* iframe for temporary chart builder */
+.page-node-581 iframe {width: 1px; min-width: 100%;  }

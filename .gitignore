@@ -14,7 +14,7 @@
 /web/sites/thinkwork.org
 /web/sites/realworkstories.org
 /web/sites/*/settings.local.php
-#/web/sites/*/services.yml
+/web/sites/*/services.yml
 # Ignore Drupal's file directory
 /web/sites/*/files/
 /web/files/*
