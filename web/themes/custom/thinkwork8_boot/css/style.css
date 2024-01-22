@@ -679,14 +679,7 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
 
 /* This gets rid of the annoying movement after expand */
 .block-bootstrap-collapse .collapse {
-<<<<<<< HEAD
      margin-top: 0;
-}
-
-/* iframe for temporary chart builder */
-.page-node-581 iframe {width: 1px; min-width: 100%;  }
-=======
-     margin-top: 0; 
 }
 
 .lead {color:#212529}
@@ -696,7 +689,7 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
 
 div#accordion .card .card-header {background:#f8f9fa!important;padding:0}
 div#accordion .card {margin-bottom:2px;}
-div#accordion [data-toggle="collapse"] .fa:before {  
+div#accordion [data-toggle="collapse"] .fa:before {
 	font-size:30px;
   content: "\f139";
 	color:#787878;
@@ -707,4 +700,4 @@ div#accordion [data-toggle="collapse"].collapsed .fa:before {
   content: "\f13a";
   color:#787878;
 }
->>>>>>> 08d3dfa79cc19d60af9c7dafb48ad906093fed97
+.page-node-581 iframe, .page-node-582 iframe {width: 1px; min-width: 100%;  }
