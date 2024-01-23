@@ -701,4 +701,9 @@ div#accordion [data-toggle="collapse"].collapsed .fa:before {
   color:#787878;
 }
 
+#accordion .card-header .btn{
+	white-space:normal; /*make text break in accordian headers */
+    text-align:left
+}
+
 .page-node-581 iframe, .page-node-582 iframe {width: 1px; min-width: 100%;  }
