@@ -8,7 +8,7 @@ configure: imce.admin
 test_dependencies:
   - ckeditor:ckeditor
 
-# Information added by Drupal.org packaging script on 2023-08-04
-version: '3.0.9'
+# Information added by Drupal.org packaging script on 2024-01-03
+version: '3.0.11'
 project: 'imce'
-datestamp: 1691188109
+datestamp: 1704304901

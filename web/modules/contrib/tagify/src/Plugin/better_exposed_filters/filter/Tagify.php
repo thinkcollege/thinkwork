@@ -57,7 +57,7 @@ class Tagify extends FilterWidgetBase implements ContainerFactoryPluginInterface
 
     $field_id = $this->getExposedFilterFieldId();
     if (!isset($form[$field_id])) {
-        return;
+      return;
     }
 
     $selection_settings = $form[$field_id]['#selection_settings'] ?? [];

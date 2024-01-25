@@ -2464,4 +2464,5 @@
 	Drupal.t("Widget is missing.");
 	Drupal.t("Move to widget area");
 	Drupal.t("Move to");
+	Drupal.t("An error occured when loading the block.");
 */

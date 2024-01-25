@@ -179,7 +179,7 @@ function email_registration_form_user_form_alter(&$form, FormStateInterface $for
     /** @var \Drupal\Core\Entity\EntityFormInterface $form_object */
     $form_object = $form_state->getFormObject();
     if ($form_object->getEntity()->isNew()) {
-      $form['account']['name']['#default_value'] = 'email_registration_' . \Drupal::service('password_generator')->generate();
+      $form['account']['name']['#default_value'] = 'email_registration_' . \Drupal::service('uuid')->generate();
     }
   }
   if (isset($form['account']['mail'])) {

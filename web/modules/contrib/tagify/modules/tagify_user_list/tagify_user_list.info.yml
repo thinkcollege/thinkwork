@@ -4,9 +4,9 @@ description: Provides a user list component from <a href="https://yaireo.github.
 package: User interface
 core_version_requirement: ^8.8 || ^9 || ^10
 dependencies:
-  - drupal:tagify
+  - tagify:tagify
 
-# Information added by Drupal.org packaging script on 2024-01-14
-version: '1.2.3'
+# Information added by Drupal.org packaging script on 2024-01-20
+version: '1.2.4'
 project: 'tagify'
-datestamp: 1705259617
+datestamp: 1705752139

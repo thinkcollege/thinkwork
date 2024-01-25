@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-/* cspell:words insertdrupalmedia drupalmediaediting insertdrupalmediacommand drupalmediametadatarepository */
+/* cspell:ignore insertdrupalmedia drupalmediaediting insertdrupalmediacommand drupalmediametadatarepository */
 
 import { Plugin } from 'ckeditor5/src/core';
 import { toWidget, Widget } from 'ckeditor5/src/widget';
@@ -58,7 +58,7 @@ export default class DrupalMediaEditing extends Plugin {
       themeError ||
       `
       <p>${Drupal.t(
-        'An error occurred while trying to preview the media. Please save your work and reload this page.',
+        'An error occurred while trying to preview the media. Save your work and reload this page.',
       )}<p>
     `;
 

@@ -41,7 +41,7 @@ global-styling:
       css/print.css: { media: print }
   dependencies:
     - core/jquery
-    - core/jquery.once
+    - core/once
     - core/drupal
 
 affix:

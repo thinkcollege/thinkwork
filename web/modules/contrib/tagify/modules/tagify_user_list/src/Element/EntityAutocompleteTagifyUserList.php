@@ -220,17 +220,12 @@ class EntityAutocompleteTagifyUserList extends Textfield {
           : '';
       }
       $tagify_user_list_path = \Drupal::service('extension.list.module')->getPath('tagify_user_list');
-      $url_options = [
-        'absolute' => TRUE,
-        'language' => \Drupal::languageManager()->getCurrentLanguage(),
-      ];
-      $site_url = Url::fromRoute('<front>', [], $url_options)->toString();
 
       $default_value[] = [
         'value' => $label,
         'entity_id' => $entity->id(),
         'email' => is_null($entity->getEmail()) ? '' : $entity->getEmail(),
-        'avatar' => $image_url ?: $site_url . $tagify_user_list_path . '/images/no-user.svg',
+        'avatar' => $image_url ?: '/' . $tagify_user_list_path . '/images/no-user.svg',
       ];
     }
 

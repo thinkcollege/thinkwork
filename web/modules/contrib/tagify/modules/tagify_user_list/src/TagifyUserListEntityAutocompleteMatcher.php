@@ -6,8 +6,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Url;
-use Drupal\image\Entity\ImageStyle;
+use Drupal\Core\Language\LanguageManagerInterface;
 
 /**
  * Matcher class to get autocompletion results for entity reference.
@@ -36,6 +35,13 @@ class TagifyUserListEntityAutocompleteMatcher implements TagifyUserListEntityAut
   protected $entityTypeManager;
 
   /**
+   * The language manager.
+   *
+   * @var \Drupal\Core\Language\LanguageManagerInterface
+   */
+  protected $languageManager;
+
+  /**
    * Constructs a TagifyEntityAutocompleteMatcher object.
    *
    * @param \Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface $selection_manager
@@ -44,11 +50,14 @@ class TagifyUserListEntityAutocompleteMatcher implements TagifyUserListEntityAut
    *   The module handler service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
+   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
+   *   The language manager.
    */
-  public function __construct(SelectionPluginManagerInterface $selection_manager, ModuleHandlerInterface $module_handler, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(SelectionPluginManagerInterface $selection_manager, ModuleHandlerInterface $module_handler, EntityTypeManagerInterface $entity_type_manager, LanguageManagerInterface $language_manager) {
     $this->selectionManager = $selection_manager;
     $this->moduleHandler = $module_handler;
     $this->entityTypeManager = $entity_type_manager;
+    $this->languageManager = $language_manager;
   }
 
   /**
@@ -83,7 +92,7 @@ class TagifyUserListEntityAutocompleteMatcher implements TagifyUserListEntityAut
     ];
     $handler = $this->selectionManager->getInstance($options);
 
-    if (isset($string)) {
+    if (!empty($string)) {
       // Get an array of matching entities.
       $match_operator = !empty($selection_settings['match_operator']) ? $selection_settings['match_operator'] : 'CONTAINS';
       $match_limit = isset($selection_settings['match_limit']) ? (int) $selection_settings['match_limit'] : 10;
@@ -138,23 +147,18 @@ class TagifyUserListEntityAutocompleteMatcher implements TagifyUserListEntityAut
     ) {
       $user_image = $entity->get('user_picture')->entity;
       $image_style = 'thumbnail';
-      $style = ImageStyle::load($image_style);
+      $style = $this->entityTypeManager->getStorage('image_style')->load($image_style);
       $image_url = $style
         ? $style->buildUrl($user_image->getFileUri())
         : '';
     }
-    $tagify_user_list_path = \Drupal::service('extension.list.module')->getPath('tagify_user_list');
-    $url_options = [
-      'absolute' => TRUE,
-      'language' => \Drupal::languageManager()->getCurrentLanguage(),
-    ];
-    $site_url = Url::fromRoute('<front>', [], $url_options)->toString();
+    $tagify_user_list_path = $this->moduleHandler->getModuleList()['tagify_user_list']->getPath();
 
     return [
       'entity_id' => $entity_id,
       'label' => Html::decodeEntities($label),
       'type' => $bundle,
-      'avatar' => $image_url ?: $site_url . $tagify_user_list_path . '/images/no-user.svg',
+      'avatar' => $image_url ?: '/' . $tagify_user_list_path . '/images/no-user.svg',
       'email' => is_null($entity->getEmail()) ? '' : $entity->getEmail(),
     ];
   }

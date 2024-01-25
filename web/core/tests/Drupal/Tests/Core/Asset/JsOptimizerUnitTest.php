@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\Core\Asset;
 
 use Drupal\Core\Asset\JsOptimizer;
@@ -33,7 +35,7 @@ class JsOptimizerUnitTest extends UnitTestCase {
    *
    * @see \Drupal\Core\Asset\JsOptimizer::clean()
    *
-   * @returns array
+   * @return array
    *   An array of test data.
    */
   public function providerTestClean() {
@@ -80,7 +82,7 @@ class JsOptimizerUnitTest extends UnitTestCase {
    *
    * @see \Drupal\Core\Asset\JsOptimizer::optimize()
    *
-   * @returns array
+   * @return array
    *   An array of test data.
    */
   public function providerTestOptimize() {

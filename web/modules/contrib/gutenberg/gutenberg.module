@@ -276,44 +276,44 @@ function gutenberg_form_alter(&$form, FormStateInterface $form_state, $form_id) 
           ],
         ],
       ];
-    }
 
-    foreach ($custom_settings['categories'] as $category) {
-      $category['reference'] = str_replace('/', '-', $category['reference']);
-      $form['gutenberg']['categories']['#default_value'][] = $category['reference'];
+      foreach ($custom_settings['categories'] ?? [] as $category) {
+        $category['reference'] = str_replace('/', '-', $category['reference']);
+        $form['gutenberg']['categories']['#default_value'][] = $category['reference'];
 
-      $form['gutenberg']['allowed_custom_blocks_details'][$category['reference']] = [
-        '#type' => 'fieldset',
-        '#title' => $category['name'],
-      ];
+        $form['gutenberg']['allowed_custom_blocks_details'][$category['reference']] = [
+          '#type' => 'fieldset',
+          '#title' => $category['name'],
+        ];
 
-      $options = [$category['reference'] . '/all' => t('All')];
-      foreach ($category['blocks'] as $block) {
-        $options[$block['id']] = $block['name'];
+        $options = [$category['reference'] . '/all' => t('All')];
+        foreach ($category['blocks'] as $block) {
+          $options[$block['id']] = $block['name'];
+        }
+
+        $default_values = array_combine(
+          array_map(
+            function ($block) {
+              return $block['id'];
+            },
+            $category['blocks']
+          ),
+          array_map(
+            function ($block) {
+              return $block['default'] ? $block['id'] : 0;
+            },
+            $category['blocks']
+          )
+        );
+
+        $config_values = $config->get($form['type']['#default_value'] . '_allowed_blocks');
+
+        $form['gutenberg']['allowed_custom_blocks_details'][$category['reference']]['allowed_blocks_' . $category['reference']] = [
+          '#type' => 'checkboxes',
+          '#options' => $options,
+          '#default_value' => array_merge($default_values, $config_values ? $config_values : []),
+        ];
       }
-
-      $default_values = array_combine(
-        array_map(
-          function ($block) {
-            return $block['id'];
-          },
-          $category['blocks']
-        ),
-        array_map(
-          function ($block) {
-            return $block['default'] ? $block['id'] : 0;
-          },
-          $category['blocks']
-        )
-      );
-
-      $config_values = $config->get($form['type']['#default_value'] . '_allowed_blocks');
-
-      $form['gutenberg']['allowed_custom_blocks_details'][$category['reference']]['allowed_blocks_' . $category['reference']] = [
-        '#type' => 'checkboxes',
-        '#options' => $options,
-        '#default_value' => array_merge($default_values, $config_values ? $config_values : []),
-      ];
     }
 
     $form['gutenberg']['allowed_drupal_blocks_details'] = [
@@ -450,7 +450,7 @@ function gutenberg_form_node_form_alter(&$form, FormStateInterface $form_state) 
   $node_type_entity = $node->type[0]->entity;
 
   // Set template options to global var.
-  $gutenberg_template = json_decode($config->get($node_type . '_template'));
+  $gutenberg_template = $config->get($node_type . '_template') ? json_decode($config->get($node_type . '_template')) : NULL;
   $form['#attached']['drupalSettings']['gutenberg']['nodeType'] = $node_type;
   $form['#attached']['drupalSettings']['gutenberg']['nodeTypeLabel'] = $node_type_entity->label();
   $form['#attached']['drupalSettings']['gutenberg']['template'] = $gutenberg_template;
@@ -971,6 +971,20 @@ function gutenberg_library_info_alter(&$libraries, $extension) {
     foreach ($css_files_view as $file) {
       $libraries['blocks-edit']['css']['base'][$file] = [];
       $libraries['blocks-view']['css']['base'][$file] = [];
+    }
+
+    // Workaround for aggregation errors in Drupal core when applied on already
+    // minified files. Skipping all Gutenberg JS files from aggregation.
+    // See https://www.drupal.org/project/gutenberg/issues/3372307.
+    foreach ($libraries as $name => &$library) {
+      if (empty($library['js'])) {
+        continue;
+      }
+
+      foreach ($library['js'] as $file => &$properties) {
+        $properties['minified'] = TRUE;
+        $properties['preprocess'] = FALSE;
+      }
     }
   }
 }

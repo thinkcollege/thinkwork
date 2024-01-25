@@ -96,7 +96,7 @@ class EmailRegistrationLogin extends Login {
     $complete_form['#cache']['tags'][] = 'config:email_registration.settings';
 
     $pane_form['register']['name']['#type'] = 'value';
-    $pane_form['register']['name']['#value'] = 'email_registration_' . \Drupal::service('password_generator')->generate();
+    $pane_form['register']['name']['#value'] = 'email_registration_' . \Drupal::service('uuid')->generate();
     $pane_form['register']['mail']['#title'] = $this->t('Email');
 
     return $pane_form;

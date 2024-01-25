@@ -5,9 +5,9 @@
  * Administration functions for editor_file.module.
  */
 
+use Drupal\Component\Utility\Environment;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\editor\Entity\Editor;
-use Drupal\Component\Utility\Environment;
 
 /**
  * Subform constructor to configure the text editor's file upload settings.

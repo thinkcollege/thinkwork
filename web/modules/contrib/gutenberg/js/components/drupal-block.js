@@ -128,7 +128,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
         setAccess(block.access);
         setLoading(false);
       }).catch(function (r) {
-        setHtml(__t('An error occured when loading the block.') + r);
+        setHtml(__('An error occured when loading the block.') + r);
         setAccess(false);
         setLoading(false);
       });

@@ -71,7 +71,6 @@ abstract class TagifyJavascriptTestBase extends WebDriverTestBase {
    *   Horizontal offset for element drag in pixels.
    */
   protected function dragDropElement(NodeElement $element, $offsetX, $offsetY) {
-    $this->assertSession()->assertWaitOnAjaxRequest();
 
     $elemXpath = addslashes($element->getXpath());
 

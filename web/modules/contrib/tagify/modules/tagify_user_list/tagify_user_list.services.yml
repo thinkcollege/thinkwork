@@ -1,4 +1,4 @@
 services:
   tagify_user_list.autocomplete_matcher:
     class: Drupal\tagify_user_list\TagifyUserListEntityAutocompleteMatcher
-    arguments: ['@plugin.manager.entity_reference_selection', '@module_handler', '@entity_type.manager']
+    arguments: ['@plugin.manager.entity_reference_selection', '@module_handler', '@entity_type.manager', '@language_manager']

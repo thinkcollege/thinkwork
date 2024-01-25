@@ -3,6 +3,10 @@
 namespace Drupal\editor_file\Form;
 
 use Drupal\Component\Utility\Bytes;
+use Drupal\Component\Utility\Environment;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\CloseModalDialogCommand;
+use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\File\FileUrlGeneratorInterface;
@@ -10,13 +14,9 @@ use Drupal\Core\Form\BaseFormIdInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\RendererInterface;
-use Drupal\filter\Entity\FilterFormat;
-use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\editor\Ajax\EditorDialogSave;
-use Drupal\Core\Ajax\CloseModalDialogCommand;
+use Drupal\filter\Entity\FilterFormat;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Component\Utility\Environment;
 
 /**
  * Provides a link dialog for text editors.
@@ -165,7 +165,7 @@ class EditorFileDialog extends FormBase implements BaseFormIdInterface {
     $form['attributes']['href'] = [
       '#title' => $this->t('URL'),
       '#type' => 'textfield',
-      '#default_value' => $file_element['href'] ?: '',
+      '#default_value' => $file_element['href'] ?? '',
       '#maxlength' => 2048,
       '#required' => TRUE,
     ];
@@ -207,6 +207,11 @@ class EditorFileDialog extends FormBase implements BaseFormIdInterface {
     $fid = $form_state->getValue(['fid', 0]);
     if (!empty($fid)) {
       $file = $this->fileStorage->load($fid);
+
+      // Make sure the file is permanent.
+      $file->setPermanent();
+      $file->save();
+
       $file_url = $this->fileUrlGenerator->generateAbsoluteString($file->getFileUri());
       // Transform absolute file URLs to relative file URLs: prevent problems
       // on multisite set-ups and prevent mixed content errors.

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\Core\Entity;
 
 use Drupal\Core\Access\AccessResult;
@@ -489,8 +491,8 @@ class ContentEntityBaseUnitTest extends UnitTestCase {
     // that trying to save a non-validated entity when validation is required
     // results in an exception.
     $this->assertTrue($this->entity->isValidationRequired());
-    $this->expectException(\AssertionError::class);
-    $this->expectExceptionMessage('Entity validation was skipped.');
+    $this->expectException(\LogicException::class);
+    $this->expectExceptionMessage('Entity validation is required, but was skipped.');
     $this->entity->save();
   }
 
@@ -526,7 +528,7 @@ class ContentEntityBaseUnitTest extends UnitTestCase {
   /**
    * Data provider for testGet().
    *
-   * @returns
+   * @return array
    *   - Expected output from get().
    *   - Field name parameter to get().
    *   - Language code for $activeLanguage.
@@ -586,7 +588,7 @@ class ContentEntityBaseUnitTest extends UnitTestCase {
   /**
    * Data provider for testGetFields().
    *
-   * @returns array
+   * @return array
    *   - Expected output from getFields().
    *   - $include_computed value to pass to getFields().
    *   - Value to mock from all field definitions for isComputed().

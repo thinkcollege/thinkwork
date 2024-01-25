@@ -42,7 +42,9 @@ final class ComponentRenderTest extends ComponentKernelTestBase {
     $this->checkLibraryOverrides();
     $this->checkAttributeMerging();
     $this->checkRenderElementAlters();
+    $this->checkSlots();
     $this->checkInvalidSlot();
+    $this->checkEmptyProps();
   }
 
   /**
@@ -108,7 +110,7 @@ final class ComponentRenderTest extends ComponentKernelTestBase {
       '#component' => 'sdc_test:my-banner',
       '#props' => [
         'heading' => $this->t('I am a banner'),
-        'ctaText' => $this->t('Click me, please'),
+        'ctaText' => $this->t('Click me'),
         'ctaHref' => 'https://www.example.org',
         'ctaTarget' => '',
       ],
@@ -260,7 +262,7 @@ final class ComponentRenderTest extends ComponentKernelTestBase {
       '#component' => 'sdc_test:my-banner',
       '#props' => [
         'heading' => $this->t('I am a banner'),
-        'ctaText' => $this->t('Click me, please'),
+        'ctaText' => $this->t('Click me'),
         'ctaHref' => 'https://www.example.org',
         'ctaTarget' => '',
       ],
@@ -284,7 +286,36 @@ final class ComponentRenderTest extends ComponentKernelTestBase {
   }
 
   /**
-   * Ensure that the slots receive a render array when using the render element.
+   * Ensure that the slots allow a render array or a scalar when using the render element.
+   */
+  public function checkSlots(): void {
+    $slots = [
+      'This is the contents of the banner body.',
+      [
+        '#plain_text' => 'This is the contents of the banner body.',
+      ],
+    ];
+    foreach ($slots as $slot) {
+      $build = [
+        '#type' => 'component',
+        '#component' => 'sdc_test:my-banner',
+        '#props' => [
+          'heading' => $this->t('I am a banner'),
+          'ctaText' => $this->t('Click me'),
+          'ctaHref' => 'https://www.example.org',
+          'ctaTarget' => '',
+        ],
+        '#slots' => [
+          'banner_body' => $slot,
+        ],
+      ];
+      $crawler = $this->renderComponentRenderArray($build);
+      $this->assertNotEmpty($crawler->filter('#sdc-wrapper [data-component-id="sdc_test:my-banner"] .component--my-banner--body:contains("This is the contents of the banner body.")'));
+    }
+  }
+
+  /**
+   * Ensure that the slots throw an error for invalid slots.
    */
   public function checkInvalidSlot(): void {
     $build = [
@@ -292,17 +323,33 @@ final class ComponentRenderTest extends ComponentKernelTestBase {
       '#component' => 'sdc_test:my-banner',
       '#props' => [
         'heading' => $this->t('I am a banner'),
-        'ctaText' => $this->t('Click me, please'),
+        'ctaText' => $this->t('Click me'),
         'ctaHref' => 'https://www.example.org',
         'ctaTarget' => '',
       ],
       '#slots' => [
-        'banner_body' => 'I am an invalid render array.',
+        'banner_body' => new \stdClass(),
       ],
     ];
     $this->expectException(InvalidComponentDataException::class);
-    $this->expectExceptionMessage('Unable to render component "sdc_test:my-banner". A render array is expected for the slot "banner_body" when using the render element with the "#slots" property');
+    $this->expectExceptionMessage('Unable to render component "sdc_test:my-banner". A render array or a scalar is expected for the slot "banner_body" when using the render element with the "#slots" property');
     $this->renderComponentRenderArray($build);
+  }
+
+  /**
+   * Ensure that components can have 0 props.
+   */
+  public function checkEmptyProps(): void {
+    $build = [
+      '#type' => 'component',
+      '#component' => 'sdc_test:no-props',
+      '#props' => [],
+    ];
+    $crawler = $this->renderComponentRenderArray($build);
+    $this->assertEquals(
+      $crawler->filter('#sdc-wrapper')->innerText(),
+      'This is a test string.'
+    );
   }
 
   /**

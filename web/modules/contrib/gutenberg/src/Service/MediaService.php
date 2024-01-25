@@ -447,7 +447,9 @@ class MediaService {
    */
   public function getMediaEntityAutoCompleteData(string $search) {
     try {
-      $query = $this->entityTypeManager->getStorage('media')->getQuery();
+      $query = $this->entityTypeManager->getStorage('media')
+        ->getQuery()
+        ->accessCheck(TRUE);
       if (is_numeric($search)) {
         $query->condition('id', $search);
       }

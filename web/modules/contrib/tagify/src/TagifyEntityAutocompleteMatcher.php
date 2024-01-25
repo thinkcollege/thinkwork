@@ -81,28 +81,26 @@ class TagifyEntityAutocompleteMatcher implements TagifyEntityAutocompleteMatcher
     ];
     $handler = $this->selectionManager->getInstance($options);
 
-    if (isset($string)) {
-      // Get an array of matching entities.
-      $match_operator = !empty($selection_settings['match_operator']) ? $selection_settings['match_operator'] : 'CONTAINS';
-      $match_limit = isset($selection_settings['match_limit']) ? (int) $selection_settings['match_limit'] : 10;
-      $entity_labels = $handler->getReferenceableEntities($string, $match_operator, ($match_limit === 0) ? $match_limit : $match_limit + count($selected));
-      // Loop through the entities and convert them into autocomplete output.
-      foreach ($entity_labels as $bundle => $values) {
-        foreach ($values as $entity_id => $label) {
-          // Filter out already selected items.
-          if (in_array($entity_id, $selected)) {
-            continue;
-          }
-          $matches[$entity_id] = $this->buildTagifyItem($entity_id, $label, $bundle);
+    // Get an array of matching entities.
+    $match_operator = !empty($selection_settings['match_operator']) ? $selection_settings['match_operator'] : 'CONTAINS';
+    $match_limit = isset($selection_settings['match_limit']) ? (int) $selection_settings['match_limit'] : 10;
+    $entity_labels = $handler->getReferenceableEntities($string, $match_operator, ($match_limit === 0) ? $match_limit : $match_limit + count($selected));
+    // Loop through the entities and convert them into autocomplete output.
+    foreach ($entity_labels as $bundle => $values) {
+      foreach ($values as $entity_id => $label) {
+        // Filter out already selected items.
+        if (in_array($entity_id, $selected)) {
+          continue;
         }
+        $matches[$entity_id] = $this->buildTagifyItem($entity_id, $label, $bundle);
       }
-
-      if ($match_limit > 0) {
-        $matches = array_slice($matches, 0, $match_limit, TRUE);
-      }
-
-      $this->moduleHandler->alter('tagify_autocomplete_matches', $matches, $options);
     }
+
+    if ($match_limit > 0) {
+      $matches = array_slice($matches, 0, $match_limit, TRUE);
+    }
+
+    $this->moduleHandler->alter('tagify_autocomplete_matches', $matches, $options);
 
     return array_values($matches);
   }

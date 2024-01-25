@@ -6,6 +6,8 @@
  */
 
 use Drupal\Core\Database\Database;
+use Drupal\Core\Database\SchemaObjectExistsException;
+use Drupal\Core\Utility\UpdateException;
 
 /**
  * Implements hook_schema().
@@ -28,6 +30,7 @@ function gutenberg_schema() {
         'not null' => FALSE,
       ],
     ],
+    'primary key' => ['fid'],
   ];
 
   return $schema;
@@ -37,11 +40,27 @@ function gutenberg_schema() {
  * Add file_managed_data table to database when updating from RC1.
  */
 function gutenberg_update_8001() {
-  $spec = gutenberg_schema();
   $schema = Database::getConnection()->schema();
 
   if (!$schema->tableExists('file_managed_data')) {
-    $schema->createTable('file_managed_data', $spec['file_managed_data']);
+    $schema->createTable('file_managed_data', [
+      'description' => '',
+      'fields' => [
+        'fid' => [
+          'description' => 'The {file_managed}.fid this record affects.',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+        ],
+        'data' => [
+          'type' => 'blob',
+          'size' => 'big',
+          'description' => 'A serialized configuration object data.',
+          'not null' => FALSE,
+        ],
+      ],
+    ]);
   }
 }
 
@@ -162,6 +181,25 @@ function gutenberg_update_8204() {
 }
 
 /**
+ * Add a primary key to 'file_managed_data' table.
+ */
+function gutenberg_update_8205() {
+  try {
+    $schema = Database::getConnection()->schema();
+    $schema->addPrimaryKey('file_managed_data', ['fid']);
+    return t('Added a primary key to the {file_managed_data} table.');
+  }
+  catch (SchemaObjectExistsException $e) {
+    // Primary key was already added, maybe by a conscientious site admin.
+    // Nothing to do here in that case.
+  }
+  catch (\Exception $e) {
+    throw new UpdateException("Could not add a primary key to the {file_managed_data} table: " . $e->getMessage(), 0, $e);
+  }
+  return NULL;
+}
+
+/**
  * Implements hook_uninstall().
  */
 function gutenberg_uninstall() {
@@ -185,4 +223,3 @@ function gutenberg_uninstall() {
     $format_config->save();
   }
 }
-
