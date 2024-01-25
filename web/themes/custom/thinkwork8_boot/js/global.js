@@ -11,6 +11,7 @@
 
   Drupal.behaviors.thinkwork8_boot = {
     attach: function (context, settings) {
+
       $(function() {
         $(document).tooltip({ selector: '[data-toggle="tooltip"]' });
         $(document).popover({ selector: '[data-toggle="popover"]' });
@@ -50,10 +51,16 @@
         var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
 
         eventer(messageEvent,function(e) {
+
           // If the message is a resize frame request
-          if (e.data.indexOf('resize::') != -1) {
-            var height = e.data.replace('resize::', '');
-            document.getElementById('chartBuilder').style.height = height+'px';
+          if (e.data.indexOf('reheight::') != -1) {
+            var height = e.data.replace('reheight::', '');
+
+            document.getElementById('chartBuilder').style.height = height + 'px';
+          }
+          else if (e.data.indexOf('rewide::') != -1) {
+            var width = e.data.replace('rewide::', '');
+            document.getElementById('chartBuilder').style.width = width + 'px';
           }
         } ,false);
 
