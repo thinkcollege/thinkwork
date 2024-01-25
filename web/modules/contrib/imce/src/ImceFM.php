@@ -592,23 +592,12 @@ class ImceFM {
    * Validates a file name.
    */
   public function validateFileName($filename, $silent = FALSE) {
-    // Basic validation.
-    if ($filename === '.' || $filename === '..' || !($len = strlen($filename)) || $len > 240) {
-      return FALSE;
-    }
-    // Test name filters.
-    if ($name_filter = $this->getNameFilter()) {
-      if (preg_match($name_filter, $filename)) {
-        if (!$silent) {
-          $this->setMessage($this->t('%filename is not allowed.', ['%filename' => $filename]));
-        }
-        return FALSE;
-      }
-    }
-    // Test chars forbidden in various operating systems.
-    if (preg_match('@^\s|\s$|[/\\\\:\*\?"<>\|\x00-\x1F]@', $filename)) {
+    if (!Imce::validateFileName($filename, $this->getNameFilter())) {
       if (!$silent) {
-        $this->setMessage($this->t('%filename contains invalid characters. Use only alphanumeric characters for better portability.', ['%filename' => $filename]));
+        $msg = $this->t('%filename is not allowed.', [
+          '%filename' => $filename,
+        ]);
+        $this->setMessage($msg);
       }
       return FALSE;
     }

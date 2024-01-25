@@ -35,8 +35,8 @@
 }
 
 .gin--dark-mode .tagify__tag:hover > #tagify__tag-remove-button {
-  background: #dedfe4;
   color: #55565b;
+  background: #dedfe4;
 }
 
 .gin--dark-mode .tagify__tag--editable #tagify__tag-remove-button {
@@ -53,8 +53,8 @@
 }
 
 .gin--dark-mode .tagify__dropdown.users-list .tagify__dropdown__count {
-  border-bottom: 1px solid #55565b;
   color: var(--gin-color-text);
+  border-bottom: 1px solid #55565b;
   background-color: var(--gin-bg-layer);
 }
 

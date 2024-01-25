@@ -5,8 +5,8 @@ namespace Drupal\editor_file\Plugin\CKEditorPlugin;
 use Drupal\ckeditor\CKEditorPluginBase;
 use Drupal\ckeditor\CKEditorPluginConfigurableInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\editor\Entity\Editor;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\editor\Entity\Editor;
 
 /**
  * Defines the "drupalfile" plugin.

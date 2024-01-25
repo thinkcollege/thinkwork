@@ -4,6 +4,7 @@ namespace Drupal\Core\Asset;
 
 use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\NestedArray;
+use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
@@ -170,11 +171,13 @@ class AssetResolver implements AssetResolverInterface {
     $this->moduleHandler->alter('css', $css, $assets, $language);
     $this->themeManager->alter('css', $css, $assets, $language);
 
-    // Sort CSS items, so that they appear in the correct order.
-    uasort($css, [static::class, 'sort']);
+    if (!empty($css)) {
+      // Sort CSS items, so that they appear in the correct order.
+      uasort($css, [static::class, 'sort']);
 
-    if ($optimize) {
-      $css = \Drupal::service('asset.css.collection_optimizer')->optimize($css, $libraries_to_load, $language);
+      if ($optimize) {
+        $css = \Drupal::service('asset.css.collection_optimizer')->optimize($css, $libraries_to_load, $language);
+      }
     }
     $this->cache->set($cid, $css, CacheBackendInterface::CACHE_PERMANENT, ['library_info']);
 
@@ -335,6 +338,11 @@ class AssetResolver implements AssetResolverInterface {
       // Update the $assets object accordingly, so that it reflects the final
       // settings.
       $assets->setSettings($settings);
+      // Convert ajaxPageState to a compressed string from an array, since it is
+      // used by ajax.js to pass to AJAX requests as a query parameter.
+      if (isset($settings['ajaxPageState']['libraries'])) {
+        $settings['ajaxPageState']['libraries'] = UrlHelper::compressQueryParameter($settings['ajaxPageState']['libraries']);
+      }
       $settings_as_inline_javascript = [
         'type' => 'setting',
         'group' => JS_SETTING,

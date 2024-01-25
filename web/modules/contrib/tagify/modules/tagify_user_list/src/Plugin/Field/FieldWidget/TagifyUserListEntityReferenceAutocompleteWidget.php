@@ -79,7 +79,7 @@ class TagifyUserListEntityReferenceAutocompleteWidget extends TagifyEntityRefere
       $summary[] = $this->t('No placeholder');
     }
 
-    return $summary ?? [];
+    return $summary;
   }
 
   /**

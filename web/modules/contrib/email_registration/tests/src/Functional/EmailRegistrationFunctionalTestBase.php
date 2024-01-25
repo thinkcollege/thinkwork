@@ -10,7 +10,7 @@ use Drupal\Tests\email_registration\Traits\EmailRegistrationTestTrait;
  *
  * @group email_registration
  */
-class EmailRegistrationFunctionalTestBase extends BrowserTestBase {
+abstract class EmailRegistrationFunctionalTestBase extends BrowserTestBase {
   use EmailRegistrationTestTrait;
 
   /**

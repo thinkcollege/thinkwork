@@ -364,4 +364,26 @@ class Imce {
     return $scheme && $path && Imce::accessFilePaths([$path], $user, $scheme);
   }
 
+  /**
+   * Validates a file name.
+   */
+  public static function validateFileName($filename, $filter = '') {
+    if ($filename === '.' || $filename === '..') {
+      return FALSE;
+    }
+    $len = strlen($filename);
+    if (!$len || $len > 240) {
+      return FALSE;
+    }
+    // Chars forbidden in various operating systems.
+    if (preg_match('@^\s|\s$|[/\\\\:\*\?"<>\|\x00-\x1F]@', $filename)) {
+      return FALSE;
+    }
+    // Custom regex filter.
+    if ($filter && preg_match($filter, $filename)) {
+      return FALSE;
+    }
+    return TRUE;
+  }
+
 }

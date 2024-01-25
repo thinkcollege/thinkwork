@@ -18,7 +18,12 @@ class TagifyEntityReferenceAutocompleteWidgetTest extends TagifyJavascriptTestBa
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['entity_test', 'tagify'];
+  protected static $modules = [
+    'entity_test',
+    'tagify',
+    // Prevent tests from failing due to 'RuntimeException' with AJAX request.
+    'js_testing_ajax_request_test',
+  ];
 
   /**
    * Test a single value widget.
@@ -59,7 +64,6 @@ class TagifyEntityReferenceAutocompleteWidgetTest extends TagifyJavascriptTestBa
     $page->find('css', '.tagify__input')->setValue('foo');
     $assert_session->waitForElement('css', '.tagify__dropdown__item');
     $assert_session->waitForElementVisible('css', '.tagify__dropdown__item--active');
-    $assert_session->assertWaitOnAjaxRequest();
 
     // Output the new HTML.
     $this->htmlOutput($page->getHtml());

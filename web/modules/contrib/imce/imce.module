@@ -12,6 +12,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\imce\ImceFileField;
 use Drupal\imce\Imce;
 use Drupal\imce\Controller\ImceHelpController;
+use Drupal\file\FileInterface;
 
 /**
  * Implements hook_theme().
@@ -151,4 +152,18 @@ function imce_editor_js_settings_alter(&$settings) {
       }
     }
   }
+}
+
+/**
+ * Upload validator that checks invalid characters in file names.
+ */
+function imce_file_validate_name(FileInterface $file, $filter = '') {
+  $errors = [];
+  $filename = $file->getFileName();
+  if (!Imce::validateFileName($filename, $filter)) {
+    $errors[] = t('%filename contains invalid characters.', [
+      '%filename' => $filename,
+    ]);
+  }
+  return $errors;
 }

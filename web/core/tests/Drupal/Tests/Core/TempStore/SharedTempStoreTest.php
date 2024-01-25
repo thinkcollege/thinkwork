@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\Core\TempStore;
 
 use Drupal\Core\Session\AccountProxyInterface;
@@ -264,9 +266,9 @@ class SharedTempStoreTest extends UnitTestCase {
 
     $metadata = $this->tempStore->getMetadata('test');
     $this->assertInstanceOf(Lock::class, $metadata);
-    $this->assertObjectHasAttribute('updated', $metadata);
+    $this->assertObjectHasProperty('updated', $metadata);
     // Data should get removed.
-    $this->assertObjectNotHasAttribute('data', $metadata);
+    $this->assertObjectNotHasProperty('data', $metadata);
 
     $this->assertNull($this->tempStore->getMetadata('test'));
   }
@@ -379,9 +381,9 @@ class SharedTempStoreTest extends UnitTestCase {
 class UnserializableRequest extends Request {
 
   /**
-   * @return array
+   * Always throw an exception.
    */
-  public function __serialize(): array {
+  public function __serialize() {
     throw new \LogicException('Oops!');
   }
 

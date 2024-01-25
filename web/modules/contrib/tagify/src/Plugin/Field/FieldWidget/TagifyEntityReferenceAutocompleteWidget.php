@@ -188,7 +188,7 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
       $summary[] = $this->t('No placeholder');
     }
 
-    return $summary ?? [];
+    return $summary;
   }
 
   /**
@@ -327,7 +327,7 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
   }
 
   /**
-   * Returns the name of the bundle which will be used for auto-created entities.
+   * Returns the name of the bundle which are used for auto-created entities.
    *
    * @return string
    *   The bundle names. If autocreate is not active, NULL will be returned.

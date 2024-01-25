@@ -72,7 +72,7 @@
           setLoading(false);
         })
         .catch(r => {
-          setHtml(__t('An error occured when loading the block.') + r);
+          setHtml(__('An error occured when loading the block.') + r);
           setAccess(false);
           setLoading(false);
         });

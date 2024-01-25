@@ -5,10 +5,10 @@
 
 .tagify__dropdown.users-list .tagify__dropdown__item{
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0 1em;
   grid-template-areas: "avatar name"
                         "avatar email";
+  grid-template-columns: auto 1fr;
+  gap: 0 1em;
 }
 
 .tagify__dropdown.users-list .tagify__dropdown__item:hover .tagify__dropdown__item__avatar-wrap{
@@ -16,13 +16,13 @@
 }
 
 .tagify__dropdown.users-list .tagify__dropdown__item__avatar-wrap{
+  overflow: hidden;
   grid-area: avatar;
   width: 30px;
   height: 30px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: #EEE;
   transition: .1s ease-out;
+  border-radius: 50%;
+  background: #EEE;
 }
 
 .tagify__dropdown.users-list img{
@@ -33,23 +33,23 @@
 .tagify__dropdown.users-list header.tagify__dropdown__item > div,
 .tagify__dropdown.users-list .tagify__dropdown__item strong{
   grid-area: name;
-  width: 100%;
   align-self: center;
+  width: 100%;
 }
 
 .tagify__dropdown.users-list span{
   grid-area: email;
   width: 100%;
-  font-size: .9em;
   opacity: .6;
+  font-size: .9em;
 }
 
 .tagify__dropdown.users-list .tagify__dropdown__count {
-  border-bottom: 1px solid #DDD;
-  color: #000;
-  font-weight: 400;
-  background-color: #fff;
   padding: 0.5rem;
+  color: #000;
+  border-bottom: 1px solid #DDD;
+  background-color: #fff;
+  font-weight: 400;
 }
 
 /* Tags items */
@@ -70,11 +70,11 @@
 .tagify__tag .tagify__tag__avatar-wrap{
   width: 20px;
   height: 20px;
+  margin-right: 5px;
+  transition: .12s ease-out;
   white-space: normal;
   border-radius: 50%;
   background: silver;
-  margin-right: 5px;
-  transition: .12s ease-out;
 }
 
 .tagify__tag-text {
