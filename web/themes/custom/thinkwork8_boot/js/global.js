@@ -63,6 +63,14 @@
             document.getElementById('chartBuilder').style.width = width + 'px';
           }
         } ,false);
+        $('input#bbState').on('click', function() {
+           var stateSelect = $('#selectState option').filter(':selected').val();
+           downloadState(stateSelect);
+
+        });
+        function downloadState(d) {
+          window.location =  '/sites/default/files/bbstates/' + d + '.pdf';
+        }
 
     }
   };
