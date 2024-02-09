@@ -682,7 +682,8 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
      margin-top: 0;
 }
 
-.lead {color:#212529}
+.lead {color:#212529;
+font-weight: 400;}
 
 
 /*State Data Data source page*/
