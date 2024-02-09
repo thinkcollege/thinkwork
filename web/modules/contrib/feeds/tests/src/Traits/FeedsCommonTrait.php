@@ -3,6 +3,7 @@
 namespace Drupal\Tests\feeds\Traits;
 
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\feeds\FeedInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
@@ -102,6 +103,32 @@ trait FeedsCommonTrait {
       'field_name' => $field_name,
       'label' => $config['label'],
     ])->save();
+  }
+
+  /**
+   * Moves a file from the resources directory to a public or private directory.
+   *
+   * This method is useful in combination with the upload fetcher.
+   *
+   * @param string $file
+   *   The file to move.
+   * @param string $dir
+   *   (optional) The directory to move to. Defaults to 'public://feeds'.
+   *
+   * @return string
+   *   The location to where the file was saved.
+   */
+  protected function copyResourceFileToDir(string $file, string $dir = NULL): string {
+    $file_system = $this->container->get('file_system');
+
+    if (is_null($dir)) {
+      $dir = 'public://feeds';
+    }
+    $upload_destination = $dir . '/' . basename($file);
+
+    $file_system->prepareDirectory($dir, FileSystemInterface::CREATE_DIRECTORY);
+    $file_system->saveData(file_get_contents($this->resourcesPath() . '/' . $file), $upload_destination);
+    return $upload_destination;
   }
 
   /**

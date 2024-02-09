@@ -138,6 +138,9 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
    *   resource, path or a StreamInterface object.
    * @param string $cache_key
    *   (optional) The cache key to find cached headers. Defaults to false.
+   * @param array $options
+   *   (optional) Additional options to pass to the request.
+   *   See https://docs.guzzlephp.org/en/stable/request-options.html.
    *
    * @return \Guzzle\Http\Message\Response
    *   A Guzzle response.
@@ -147,26 +150,35 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
    *
    * @see \GuzzleHttp\RequestOptions
    */
-  protected function get($url, $sink, $cache_key = FALSE) {
+  protected function get($url, $sink, $cache_key = FALSE, array $options = []) {
     $url = Feed::translateSchemes($url);
 
-    $options = [RequestOptions::SINK => $sink];
+    $options += [
+      RequestOptions::SINK => $sink,
+      RequestOptions::TIMEOUT => $this->configuration['request_timeout'],
+      RequestOptions::HEADERS => [],
+    ];
+
+    $headers = [];
 
     // Adding User-Agent header from the default guzzle client config for feeds
     // that require that.
     if (isset($this->client->getConfig('headers')['User-Agent'])) {
-      $options[RequestOptions::HEADERS]['User-Agent'] = $this->client->getConfig('headers')['User-Agent'];
+      $headers['User-Agent'] = $this->client->getConfig('headers')['User-Agent'];
     }
 
     // Add cached headers if requested.
     if ($cache_key && ($cache = $this->cache->get($cache_key))) {
       if (isset($cache->data['etag'])) {
-        $options[RequestOptions::HEADERS]['If-None-Match'] = $cache->data['etag'];
+        $headers['If-None-Match'] = $cache->data['etag'];
       }
       if (isset($cache->data['last-modified'])) {
-        $options[RequestOptions::HEADERS]['If-Modified-Since'] = $cache->data['last-modified'];
+        $headers['If-Modified-Since'] = $cache->data['last-modified'];
       }
     }
+
+    // Add header options.
+    $options[RequestOptions::HEADERS] += $headers;
 
     try {
       $response = $this->client->getAsync($url, $options)->wait();

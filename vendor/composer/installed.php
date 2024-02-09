@@ -3,7 +3,7 @@
         'name' => 'drupal-composer/drupal-project',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '89b44ded5f3f433f5ebab8d35e12b6315ba495cc',
+        'reference' => '8cd037255d599007112bc04e87622b4a1218ebe9',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -334,7 +334,7 @@
         'drupal-composer/drupal-project' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '89b44ded5f3f433f5ebab8d35e12b6315ba495cc',
+            'reference' => '8cd037255d599007112bc04e87622b4a1218ebe9',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -676,12 +676,14 @@
             'dev_requirement' => false,
         ),
         'drupal/feeds' => array(
-            'pretty_version' => '3.0.0-beta4',
-            'version' => '3.0.0.0-beta4',
-            'reference' => '8.x-3.0-beta4',
+            'pretty_version' => 'dev-3.x',
+            'version' => 'dev-3.x',
+            'reference' => 'd47a7db666fb179e77c85507b98e21832106f16a',
             'type' => 'drupal-module',
             'install_path' => __DIR__ . '/../../web/modules/contrib/feeds',
-            'aliases' => array(),
+            'aliases' => array(
+                0 => '3.x-dev',
+            ),
             'dev_requirement' => false,
         ),
         'drupal/feeds_tamper' => array(

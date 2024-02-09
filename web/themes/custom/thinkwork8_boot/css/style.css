@@ -160,6 +160,8 @@ h1,h2,h3,h4,h5,h6 {
 	color:#fff;
 }
 
+
+
 .card {
 	margin-bottom:15px;
 }
@@ -644,16 +646,16 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
 }
 
 .block-bootstrap-collapse .btn-secondary {
-  background-color:#fff; 
-  color: #468cc8; 
-  font-size: 1.7em; 
-  font-family: 'Open Sans',sans-serif; 
+  background-color:#fff;
+  color: #468cc8;
+  font-size: 1.7em;
+  font-family: 'Open Sans',sans-serif;
   font-weight: 800;
 }
 
  .btn-secondary:not(:disabled):not(.disabled).active, .btn-secondary:not(:disabled):not(.disabled):active, .show>.btn-secondary.dropdown-toggle {
     color: #468cc8;
-    background-color: #fff; 
+    background-color: #fff;
     border-color: #4e555b;
 }
 
@@ -677,5 +679,26 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
 
 /* This gets rid of the annoying movement after expand */
 .block-bootstrap-collapse .collapse {
-     margin-top: 0; 
+     margin-top: 0;
 }
+
+.lead {color:#212529}
+
+
+/*State Data Data source page*/
+
+div#accordion .card .card-header {background:#f8f9fa!important;padding:0}
+div#accordion .card {margin-bottom:2px;}
+div#accordion [data-toggle="collapse"] .fa:before {
+	font-size:30px;
+  content: "\f139";
+	color:#787878;
+}
+
+div#accordion [data-toggle="collapse"].collapsed .fa:before {
+  font-size:30px;
+  content: "\f13a";
+  color:#787878;
+}
+
+.page-node-581 iframe, .page-node-582 iframe {width: 100%; overflow: scroll; text-align: center; }

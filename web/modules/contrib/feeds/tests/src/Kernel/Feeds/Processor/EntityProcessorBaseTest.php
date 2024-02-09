@@ -96,6 +96,7 @@ class EntityProcessorBaseTest extends FeedsKernelTestBase {
       \Drupal::service('renderer'),
       \Drupal::service('logger.factory')->get('feeds'),
       \Drupal::service('database'),
+      \Drupal::service('validation.constraint'),
     ]);
 
     $this->feed = $this->createMock(FeedInterface::class);

@@ -34,6 +34,7 @@ abstract class FeedsJavascriptTestBase extends WebDriverTestBase {
     'feeds',
     'node',
     'user',
+    'file',
   ];
 
   /**
@@ -52,9 +53,10 @@ abstract class FeedsJavascriptTestBase extends WebDriverTestBase {
     // Create a content type.
     $this->setUpNodeType();
 
-    // Create an user with Feeds admin privileges.
+    // Create a user with Feeds admin privileges.
     $this->adminUser = $this->drupalCreateUser([
       'administer feeds',
+      'administer users',
     ]);
     $this->drupalLogin($this->adminUser);
   }

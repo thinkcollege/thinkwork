@@ -193,6 +193,7 @@ class EntityReference extends FieldTargetBase implements ConfigurableTargetInter
       case 'path':
       case 'uuid':
       case 'feeds_item':
+      case 'email':
         return TRUE;
 
       default:

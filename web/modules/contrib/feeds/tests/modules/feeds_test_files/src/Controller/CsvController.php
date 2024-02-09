@@ -117,6 +117,12 @@ class CsvController extends ControllerBase {
    *   A HTTP response.
    */
   public function nodes() {
+    // Check if there needs to be a delay.
+    $delay = \Drupal::state()->get('feeds_timeout');
+    if (is_numeric($delay) && $delay > 0) {
+      sleep($delay);
+    }
+
     $last_modified = $this->state->get('feeds_test_nodes_last_modified');
     if (!$last_modified) {
       $file = 'nodes.csv';

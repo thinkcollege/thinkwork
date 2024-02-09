@@ -46,6 +46,24 @@ trait FeedsReflectionTrait {
   }
 
   /**
+   * Returns the value of a protected property.
+   *
+   * @param object $object
+   *   The object on which to get a value from.
+   * @param string $property_name
+   *   The property whose value to get.
+   *
+   * @return mixed
+   *   The value of the property.
+   */
+  protected function getProtectedProperty($object, $property_name) {
+    $ref_object = new ReflectionObject($object);
+    $property = $ref_object->getProperty($property_name);
+    $property->setAccessible(TRUE);
+    return $property->getValue($object);
+  }
+
+  /**
    * Returns a dynamically created closure for the object's method.
    *
    * @param object $object

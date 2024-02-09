@@ -25,6 +25,7 @@ class HttpFetcherTest extends FeedsBrowserTestBase {
     'file',
     'block',
     'taxonomy',
+    'feeds_test_files',
   ];
 
   /**
@@ -277,6 +278,44 @@ class HttpFetcherTest extends FeedsBrowserTestBase {
     // Now unlock the feed and assert that the file to import gets removed.
     $feed->unlock();
     $this->assertCountFilesInProgressDir(0, '', 'public');
+  }
+
+  /**
+   * Tests if the fetch fails when setting the request timeout to a low value.
+   */
+  public function testRequestTimeoutSetting() {
+    // Create a feed type.
+    $feed_type = $this->createFeedTypeForCsv([
+      'guid' => 'GUID',
+      'title' => 'Title',
+    ], [
+      'fetcher' => 'http',
+      'fetcher_configuration' => [
+        'request_timeout' => 1,
+      ],
+    ]);
+
+    // Set two seconds for a time for a fetch delay.
+    \Drupal::state()->set('feeds_timeout', 2);
+
+    // Create a feed that contains 9 items.
+    $feed = $this->createFeed($feed_type->id(), [
+      'source' => \Drupal::request()->getSchemeAndHttpHost() . '/testing/feeds/nodes.csv',
+    ]);
+
+    // Try to import the feed using the UI.
+    $this->batchImport($feed);
+    $this->assertSession()->pageTextContains('Operation timed out');
+
+    // Assert that no nodes were imported.
+    $this->assertNodeCount(0);
+
+    // Try via cron import too.
+    $feed->startCronImport();
+    $this->cronRun();
+
+    // Assert that still no nodes were imported.
+    $this->assertNodeCount(0);
   }
 
 }

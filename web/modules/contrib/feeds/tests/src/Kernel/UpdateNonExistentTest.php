@@ -223,4 +223,46 @@ class UpdateNonExistentTest extends FeedsKernelTestBase {
     $this->assertCleanListEmpty($feed);
   }
 
+  /**
+   * Tests cleaning an item when using a long action name.
+   */
+  public function testWithCustomActionPlugin() {
+    $this->installModule('feeds_test_plugin');
+    $this->feedType = $this->reloadEntity($this->feedType);
+
+    // Set 'update_non_existent' setting to an action plugin with a long name.
+    // The long name affects the hash that gets set when cleaning. The hash
+    // value can only be maximal 32 characters long. By using a long action name
+    // we can ensure that cleaning will continue to work as expected.
+    $config = $this->feedType->getProcessor()->getConfiguration();
+    $config['update_non_existent'] = 'entity:feeds_test_plugin_clean_action_long_name:node';
+    $this->feedType->getProcessor()->setConfiguration($config);
+    $this->feedType->save();
+
+    // Create a feed and import the first file.
+    $feed = $this->createFeed($this->feedType->id(), [
+      'source' => $this->resourcesPath() . '/rss/googlenewstz.rss2',
+    ]);
+    $feed->import();
+
+    // Assert that 6 nodes have been created.
+    static::assertEquals(6, $feed->getItemCount());
+    $this->assertNodeCount(6);
+
+    // Import an "updated" version of the file from which one item is removed.
+    $feed->setSource($this->resourcesPath() . '/rss/googlenewstz_missing.rss2');
+    $feed->save();
+    $feed->import();
+
+    // Assert that node 6 was one time flagged as "cleaned".
+    $cleaned = \Drupal::state()->get('feeds_cleaned', []);
+    $this->assertEquals(1, $cleaned[6]['feeds_test_plugin_clean_action'], 'Item should only be cleaned once.');
+
+    // Import the same file again to ensure that the node does not get cleaned
+    // again (since the node was already cleaned during the previous import).
+    $feed->import();
+    $cleaned = \Drupal::state()->get('feeds_cleaned', []);
+    $this->assertEquals(1, $cleaned[6]['feeds_test_plugin_clean_action'], 'Item should only be cleaned once.');
+  }
+
 }

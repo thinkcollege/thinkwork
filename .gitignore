@@ -10,12 +10,15 @@
 #*.lock
 # Ignore sensitive information
 /web/sites/*/settings.php
+/web/sites/statedata.info
+/web/sites/thinkwork.org
+/web/sites/realworkstories.org
 /web/sites/*/settings.local.php
-#/web/sites/*/services.yml
+/web/sites/*/services.yml
 # Ignore Drupal's file directory
 /web/sites/*/files/
 /web/files/*
-
+/config/sync
 # Ignore SimpleTest multi-site environment.
 /web/sites/simpletest
 #composer.lock
@@ -23,4 +26,4 @@
 /.idea/
 # Ignore .env files as they are personal
 /.env
-/config/sync
+/.ddev

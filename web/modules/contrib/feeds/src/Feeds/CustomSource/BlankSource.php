@@ -42,6 +42,7 @@ class BlankSource extends CustomSourceBase {
         '#title' => $this->t('Value'),
         '#type' => 'textfield',
         '#default_value' => $this->configuration['value'],
+        '#maxlength' => 1024,
       ];
 
       $form['machine_name'] = [
@@ -53,6 +54,7 @@ class BlankSource extends CustomSourceBase {
       $form['value'] = [
         '#type' => 'textfield',
         '#default_value' => $this->configuration['value'],
+        '#maxlength' => 1024,
         '#weight' => -2,
       ];
     }

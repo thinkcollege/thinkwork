@@ -266,6 +266,7 @@ class Book extends TargetBase implements ConfigurableTargetInterface, ContainerF
       case 'path':
       case 'uuid':
       case 'feeds_item':
+      case 'email':
         return TRUE;
 
       default:

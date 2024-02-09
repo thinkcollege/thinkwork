@@ -8,6 +8,41 @@
 use Drupal\Core\Url;
 
 /**
+ * Implements hook_requirements().
+ */
+function feeds_requirements($phase) {
+  $requirements = [];
+  if ($phase == 'install') {
+    // Check if laminas/laminas-feed has been installed.
+    if (!class_exists('\Laminas\Feed\Reader\Reader')) {
+      // Check if the Ludwig module has been installed. If so, the packages
+      // aren't downloaded yet.
+      if (\Drupal::moduleHandler()->moduleExists('ludwig')) {
+        $requirements['laminas-feed'] = [
+          'description' => t('Feeds requires the library "@library". It can be downloaded by the Ludwig module, which you appear to have installed. Go to <a href=":link">Packages list</a> to install the missing libraries.', [
+            '@library' => 'laminas/laminas-feed',
+            ':link' => Url::fromUri('internal:/admin/reports/packages')->toString(),
+          ]),
+          'severity' => REQUIREMENT_ERROR,
+        ];
+      }
+      // The Ludwig module has not been installed, so provide instructions of
+      // how to obtain the library.
+      else {
+        $requirements['laminas-feed'] = [
+          'description' => t('Feeds requires the library "@library". You can install it with Composer or by using the Ludwig module.', [
+            '@library' => 'laminas/laminas-feed',
+          ]),
+          'severity' => REQUIREMENT_ERROR,
+        ];
+      }
+    }
+  }
+
+  return $requirements;
+}
+
+/**
  * Implements hook_install().
  */
 function feeds_install() {
