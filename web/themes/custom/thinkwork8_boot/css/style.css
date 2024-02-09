@@ -685,6 +685,8 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
 .lead {color:#212529;
 font-weight: 400;}
 
+/* make all images on blue book page responsive */
+.page-node-475 .content img {max-width: 100%; height: auto;}
 
 /*State Data Data source page*/
 
