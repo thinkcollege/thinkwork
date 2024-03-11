@@ -15,5 +15,5 @@ features:
   slogan: true
 logo:
   path: 'public://thinkwork_no_tagline-500w.png'
-  url: ''
+  url: null
   use_default: false

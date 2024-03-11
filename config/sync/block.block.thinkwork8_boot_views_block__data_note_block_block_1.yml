@@ -12,7 +12,7 @@ dependencies:
 id: thinkwork8_boot_views_block__data_note_block_block_1
 theme: thinkwork8_boot
 region: content
-weight: -11
+weight: -13
 provider: null
 plugin: 'views_block:data_note_block-block_1'
 settings:
@@ -27,4 +27,4 @@ visibility:
   request_path:
     id: request_path
     negate: false
-    pages: /blue-book-2024
+    pages: /bluebook

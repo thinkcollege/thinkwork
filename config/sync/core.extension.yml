@@ -16,7 +16,6 @@ module:
   bootstrap_library: 0
   bootstrap_paragraphs: 0
   breakpoint: 0
-  ckeditor: 0
   ckeditor5: 0
   comment: 0
   config: 0
@@ -36,16 +35,18 @@ module:
   easy_breadcrumb: 0
   editor: 0
   editor_advanced_link: 0
-  editor_file: 0
   email_registration: 0
   entity_reference_revisions: 0
   exclude_node_title: 0
+  feeds: 0
+  feeds_tamper: 0
   field: 0
   field_group: 0
   field_group_migrate: 0
   field_ui: 0
   file: 0
   filter: 0
+  fontawesome: 0
   glossify: 0
   glossify_taxonomy: 0
   google_tag: 0
@@ -67,12 +68,14 @@ module:
   menu_ui: 0
   mysql: 0
   node: 0
+  node_export: 0
   options: 0
   page_cache: 0
   panels: 0
   panels_ipe: 0
   path: 0
   path_alias: 0
+  phpass: 0
   redirect: 0
   redirect_404: 0
   responsive_image: 0
@@ -86,6 +89,9 @@ module:
   subpathauto: 0
   superfish: 0
   system: 0
+  tagify: 0
+  tagify_user_list: 0
+  tamper: 0
   taxonomy: 0
   taxonomy_menu: 0
   text: 0

@@ -7,6 +7,9 @@ dependencies:
     - field.field.node.infographic.body
     - field.field.node.infographic.field_infographic_file
     - field.field.node.infographic.field_infographic_thumbnail
+    - field.field.node.infographic.field_product_type
+    - field.field.node.infographic.field_project
+    - field.field.node.infographic.field_topics
     - node.type.infographic
   module:
     - text
@@ -32,3 +35,6 @@ content:
 hidden:
   field_infographic_file: true
   field_infographic_thumbnail: true
+  field_product_type: true
+  field_project: true
+  field_topics: true

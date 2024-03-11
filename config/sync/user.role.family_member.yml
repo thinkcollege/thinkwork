@@ -4,9 +4,11 @@ status: true
 dependencies:
   module:
     - exclude_node_title
+    - file
 id: family_member
 label: 'family member'
 weight: 4
 is_admin: null
 permissions:
+  - 'delete own files'
   - 'use exclude node title'

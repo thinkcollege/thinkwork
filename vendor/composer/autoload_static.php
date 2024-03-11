@@ -68,6 +68,10 @@ class ComposerStaticInit8d6a2daecf4fbb0853625831989fe627
         array (
             'cweagans\\Composer\\' => 18,
         ),
+        'Z' => 
+        array (
+            'ZipStream\\' => 10,
+        ),
         'W' => 
         array (
             'Webmozart\\PathUtil\\' => 19,
@@ -125,6 +129,7 @@ class ComposerStaticInit8d6a2daecf4fbb0853625831989fe627
             'Symfony\\Component\\BrowserKit\\' => 29,
             'Symfony\\Bridge\\PsrHttpMessage\\' => 30,
             'Symfony\\Bridge\\PhpUnit\\' => 23,
+            'Solarium\\' => 9,
             'SlevomatCodingStandard\\' => 23,
             'SelfUpdate\\' => 11,
             'Seld\\Signal\\' => 12,
@@ -188,6 +193,7 @@ class ComposerStaticInit8d6a2daecf4fbb0853625831989fe627
         'J' => 
         array (
             'JsonSchema\\' => 11,
+            'JsonMachine\\' => 12,
             'Jean85\\' => 7,
         ),
         'H' => 
@@ -300,6 +306,10 @@ class ComposerStaticInit8d6a2daecf4fbb0853625831989fe627
         'cweagans\\Composer\\' => 
         array (
             0 => __DIR__ . '/..' . '/cweagans/composer-patches/src',
+        ),
+        'ZipStream\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
         ),
         'Webmozart\\PathUtil\\' => 
         array (
@@ -485,6 +495,10 @@ class ComposerStaticInit8d6a2daecf4fbb0853625831989fe627
         array (
             0 => __DIR__ . '/..' . '/symfony/phpunit-bridge',
         ),
+        'Solarium\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/solarium/solarium/src',
+        ),
         'SlevomatCodingStandard\\' => 
         array (
             0 => __DIR__ . '/..' . '/slevomat/coding-standard/SlevomatCodingStandard',
@@ -654,6 +668,10 @@ class ComposerStaticInit8d6a2daecf4fbb0853625831989fe627
         'JsonSchema\\' => 
         array (
             0 => __DIR__ . '/..' . '/justinrainbow/json-schema/src/JsonSchema',
+        ),
+        'JsonMachine\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/halaxa/json-machine/src',
         ),
         'Jean85\\' => 
         array (
@@ -879,8 +897,8 @@ class ComposerStaticInit8d6a2daecf4fbb0853625831989fe627
         ),
         'Behat\\Mink\\Driver\\' => 
         array (
-            0 => __DIR__ . '/..' . '/behat/mink-selenium2-driver/src',
-            1 => __DIR__ . '/..' . '/behat/mink-browserkit-driver/src',
+            0 => __DIR__ . '/..' . '/behat/mink-browserkit-driver/src',
+            1 => __DIR__ . '/..' . '/behat/mink-selenium2-driver/src',
         ),
         'Behat\\Mink\\' => 
         array (

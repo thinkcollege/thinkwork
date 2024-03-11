@@ -4,10 +4,16 @@ status: true
 dependencies:
   config:
     - field.field.node.data_note.body
+    - field.field.node.data_note.feeds_item
     - field.field.node.data_note.field_data_note_file
+    - field.field.node.data_note.field_product_type
+    - field.field.node.data_note.field_project
+    - field.field.node.data_note.field_publication_date
     - field.field.node.data_note.field_thumbnail
+    - field.field.node.data_note.field_topics
     - node.type.data_note
   module:
+    - datetime
     - file
     - image
     - text
@@ -26,15 +32,40 @@ content:
     region: content
   field_data_note_file:
     type: file_default
-    label: above
+    label: hidden
     settings:
       use_description_as_link_text: true
     third_party_settings: {  }
     weight: 3
     region: content
+  field_product_type:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 6
+    region: content
+  field_project:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 4
+    region: content
+  field_publication_date:
+    type: datetime_default
+    label: above
+    settings:
+      timezone_override: ''
+      format_type: month_day_and_year
+    third_party_settings: {  }
+    weight: 7
+    region: content
   field_thumbnail:
     type: image
-    label: above
+    label: hidden
     settings:
       image_link: ''
       image_style: ''
@@ -43,9 +74,18 @@ content:
     third_party_settings: {  }
     weight: 1
     region: content
+  field_topics:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 5
+    region: content
   links:
     settings: {  }
     third_party_settings: {  }
     weight: 0
     region: content
-hidden: {  }
+hidden:
+  feeds_item: true

@@ -6,5 +6,6 @@ dependencies:
     - node
 id: node.jquerymobile_teaser
 label: jquerymobile_teaser
+description: ''
 targetEntityType: node
 cache: true

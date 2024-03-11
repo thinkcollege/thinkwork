@@ -5,4 +5,4 @@ dependencies: {  }
 id: thinkwork8_boot_bluebookarchives
 theme: block__bootstrap__collapse
 text: 'Blue Book Archives'
-classes: ''
+classes: bluebook

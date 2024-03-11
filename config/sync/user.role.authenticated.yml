@@ -9,7 +9,9 @@ dependencies:
   module:
     - comment
     - exclude_node_title
+    - file
     - filter
+    - fontawesome
     - node
     - system
 _core:
@@ -21,8 +23,10 @@ is_admin: false
 permissions:
   - 'access comments'
   - 'access content'
+  - 'access fontawesome additional settings'
   - 'create blog content'
   - 'create forum content'
+  - 'delete own files'
   - 'delete own forum content'
   - 'edit any blog content'
   - 'edit own blog content'

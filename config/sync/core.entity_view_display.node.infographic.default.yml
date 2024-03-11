@@ -6,6 +6,9 @@ dependencies:
     - field.field.node.infographic.body
     - field.field.node.infographic.field_infographic_file
     - field.field.node.infographic.field_infographic_thumbnail
+    - field.field.node.infographic.field_product_type
+    - field.field.node.infographic.field_project
+    - field.field.node.infographic.field_topics
     - node.type.infographic
   module:
     - file
@@ -42,6 +45,30 @@ content:
         attribute: lazy
     third_party_settings: {  }
     weight: 1
+    region: content
+  field_product_type:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 6
+    region: content
+  field_project:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 4
+    region: content
+  field_topics:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 5
     region: content
   links:
     settings: {  }

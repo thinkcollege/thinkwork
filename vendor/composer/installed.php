@@ -3,7 +3,7 @@
         'name' => 'drupal-composer/drupal-project',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '8cd037255d599007112bc04e87622b4a1218ebe9',
+        'reference' => 'd58c66ab7ab7ef1716bff8c70adc7e85dadd916d',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -334,7 +334,7 @@
         'drupal-composer/drupal-project' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '8cd037255d599007112bc04e87622b4a1218ebe9',
+            'reference' => 'd58c66ab7ab7ef1716bff8c70adc7e85dadd916d',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -675,6 +675,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'drupal/facets' => array(
+            'pretty_version' => '2.0.7',
+            'version' => '2.0.7.0',
+            'reference' => '2.0.7',
+            'type' => 'drupal-module',
+            'install_path' => __DIR__ . '/../../web/modules/contrib/facets',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'drupal/feeds' => array(
             'pretty_version' => 'dev-3.x',
             'version' => 'dev-3.x',
@@ -794,6 +803,24 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'drupal/jquery_ui_slider' => array(
+            'pretty_version' => '2.0.0',
+            'version' => '2.0.0.0',
+            'reference' => '2.0.0',
+            'type' => 'drupal-module',
+            'install_path' => __DIR__ . '/../../web/modules/contrib/jquery_ui_slider',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'drupal/jquery_ui_touch_punch' => array(
+            'pretty_version' => '1.1.0',
+            'version' => '1.1.0.0',
+            'reference' => '1.1.0',
+            'type' => 'drupal-module',
+            'install_path' => __DIR__ . '/../../web/modules/contrib/jquery_ui_touch_punch',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'drupal/mailgun' => array(
             'pretty_version' => '2.0.0',
             'version' => '2.0.0.0',
@@ -872,6 +899,33 @@
             'reference' => '8.x-1.7',
             'type' => 'drupal-module',
             'install_path' => __DIR__ . '/../../web/modules/contrib/redis',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'drupal/search_api' => array(
+            'pretty_version' => '1.31.0',
+            'version' => '1.31.0.0',
+            'reference' => '8.x-1.31',
+            'type' => 'drupal-module',
+            'install_path' => __DIR__ . '/../../web/modules/contrib/search_api',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'drupal/search_api_page' => array(
+            'pretty_version' => '1.0.0',
+            'version' => '1.0.0.0',
+            'reference' => '8.x-1.0',
+            'type' => 'drupal-module',
+            'install_path' => __DIR__ . '/../../web/modules/contrib/search_api_page',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'drupal/search_api_solr' => array(
+            'pretty_version' => '4.3.2',
+            'version' => '4.3.2.0',
+            'reference' => '4.3.2',
+            'type' => 'drupal-module',
+            'install_path' => __DIR__ . '/../../web/modules/contrib/search_api_solr',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -1082,6 +1136,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'halaxa/json-machine' => array(
+            'pretty_version' => '1.1.4',
+            'version' => '1.1.4.0',
+            'reference' => '5147f38f74d7ab3e27733e3f3bdabbd2fd28e3fa',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../halaxa/json-machine',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'html2text/html2text' => array(
             'pretty_version' => '4.3.1',
             'version' => '4.3.1.0',
@@ -1187,6 +1250,15 @@
             'reference' => 'a2c677d0e4b09b455792db45f37cde8f5e45e2f6',
             'type' => 'drupal-library',
             'install_path' => __DIR__ . '/../../web/libraries/drupal-superfish',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'maennchen/zipstream-php' => array(
+            'pretty_version' => '3.1.0',
+            'version' => '3.1.0.0',
+            'reference' => 'b8174494eda667f7d13876b4a7bfef0f62a7c0d1',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../maennchen/zipstream-php',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -1433,8 +1505,8 @@
         'php-http/async-client-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '*',
-                1 => '1.0',
+                0 => '1.0',
+                1 => '*',
             ),
         ),
         'php-http/client-common' => array(
@@ -1449,8 +1521,8 @@
         'php-http/client-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '*',
-                1 => '1.0',
+                0 => '1.0',
+                1 => '*',
             ),
         ),
         'php-http/curl-client' => array(
@@ -1684,6 +1756,15 @@
             'aliases' => array(),
             'dev_requirement' => true,
         ),
+        'politsin/jquery-ui-touch-punch' => array(
+            'pretty_version' => '1.0',
+            'version' => '1.0.0.0',
+            'reference' => '2fe375e05821e267f0f3c0e063197f5c406896dd',
+            'type' => 'drupal-library',
+            'install_path' => __DIR__ . '/../../web/libraries/jquery-ui-touch-punch',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'psr/cache' => array(
             'pretty_version' => '3.0.0',
             'version' => '3.0.0.0',
@@ -1737,8 +1818,8 @@
         'psr/http-client-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '*',
-                1 => '1.0',
+                0 => '1.0',
+                1 => '*',
             ),
         ),
         'psr/http-factory' => array(
@@ -1753,8 +1834,8 @@
         'psr/http-factory-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '*',
-                1 => '1.0',
+                0 => '1.0',
+                1 => '*',
             ),
         ),
         'psr/http-message' => array(
@@ -1769,8 +1850,8 @@
         'psr/http-message-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '*',
-                1 => '1.0',
+                0 => '1.0',
+                1 => '*',
             ),
         ),
         'psr/log' => array(
@@ -1785,8 +1866,8 @@
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0|2.0|3.0',
-                1 => '1.0.0 || 2.0.0 || 3.0.0',
+                0 => '1.0.0 || 2.0.0 || 3.0.0',
+                1 => '1.0|2.0|3.0',
             ),
         ),
         'psy/psysh' => array(
@@ -2022,6 +2103,15 @@
             'install_path' => __DIR__ . '/../slevomat/coding-standard',
             'aliases' => array(),
             'dev_requirement' => true,
+        ),
+        'solarium/solarium' => array(
+            'pretty_version' => '6.3.5',
+            'version' => '6.3.5.0',
+            'reference' => 'ae4ea592dc92d2be4dfd0a329f1ffbe3cbd01cf3',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../solarium/solarium',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'squizlabs/php_codesniffer' => array(
             'pretty_version' => '3.8.1',

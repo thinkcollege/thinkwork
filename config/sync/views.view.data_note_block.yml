@@ -4,15 +4,17 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
-    - field.storage.node.body
     - field.storage.node.field_data_note_file
     - field.storage.node.field_thumbnail
     - node.type.data_note
+    - taxonomy.vocabulary.pub_type
+  content:
+    - 'taxonomy_term:pub_type:dceceea1-af68-4c02-adea-707fcdc2e485'
   module:
     - file
     - image
     - node
-    - text
+    - taxonomy
     - user
 id: data_note_block
 label: 'Data Note block'
@@ -223,68 +225,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        body:
-          id: body
-          table: node__body
-          field: body
-          relationship: none
-          group_type: group
-          admin_label: ''
-          plugin_id: field
-          label: ''
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: text_default
-          settings: {  }
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
       pager:
         type: mini
         options:
@@ -360,6 +300,52 @@ display:
           plugin_id: bundle
           value:
             data_note: data_note
+        field_product_type_target_id:
+          id: field_product_type_target_id
+          table: node__field_product_type
+          field: field_product_type_target_id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: taxonomy_index_tid
+          operator: or
+          value:
+            - 470
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          reduce_duplicates: false
+          vid: pub_type
+          type: textfield
+          hierarchy: false
+          limit: true
+          error_message: true
       style:
         type: default
       row:
@@ -375,7 +361,21 @@ display:
           replica: false
           query_tags: {  }
       relationships: {  }
-      header: {  }
+      css_class: pt-3
+      header:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: text
+          empty: false
+          content:
+            value: '<p class="h4 p-3">Each Data Note provides a more in-depth analysis of employment and day services and outcomes for people with IDD, by data source.  </p>'
+            format: full_html
+          tokenize: false
       footer: {  }
       display_extenders: {  }
     cache_metadata:
@@ -387,7 +387,6 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags:
-        - 'config:field.storage.node.body'
         - 'config:field.storage.node.field_data_note_file'
         - 'config:field.storage.node.field_thumbnail'
   block_1:
@@ -402,14 +401,16 @@ display:
           offset: 0
           items_per_page: 5
       style:
-        type: html_list
+        type: grid
         options:
           grouping: {  }
-          row_class: ''
-          default_row_class: true
-          type: ul
-          wrapper_class: item-list
-          class: ''
+          columns: 4
+          automatic_width: true
+          alignment: horizontal
+          row_class_custom: ''
+          row_class_default: true
+          col_class_custom: 'views-col, col-4'
+          col_class_default: false
       row:
         type: fields
       defaults:
@@ -426,7 +427,6 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags:
-        - 'config:field.storage.node.body'
         - 'config:field.storage.node.field_data_note_file'
         - 'config:field.storage.node.field_thumbnail'
   page_1:
@@ -446,6 +446,5 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags:
-        - 'config:field.storage.node.body'
         - 'config:field.storage.node.field_data_note_file'
         - 'config:field.storage.node.field_thumbnail'
