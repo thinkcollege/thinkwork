@@ -702,3 +702,22 @@ div#accordion [data-toggle="collapse"].collapsed .fa:before {
 }
 
 .page-node-581 iframe, .page-node-582 iframe {width: 100%; overflow: scroll; text-align: center; }
+
+
+/* TW Search Facets Page */
+
+
+.page-view-search-thinkwork .facets-widget-checkbox ul {
+  list-style-type: none;
+      padding-left: 0;
+}
+
+.page-view-search-thinkwork  span.facet-item__value {
+    padding-left: 3px;
+}
+
+.page-view-search-thinkwork .item-list ul li {
+    margin: 0;
+    padding: 1em 0.5em 1em 0;
+    border-bottom: 1px solid #d6d6d6;
+}
