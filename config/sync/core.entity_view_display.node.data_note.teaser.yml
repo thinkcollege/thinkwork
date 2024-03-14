@@ -42,3 +42,5 @@ hidden:
   field_publication_date: true
   field_thumbnail: true
   field_topics: true
+  langcode: true
+  search_api_excerpt: true

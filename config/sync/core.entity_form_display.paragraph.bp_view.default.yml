@@ -37,9 +37,9 @@ content:
     region: content
     settings:
       match_operator: CONTAINS
-      size: '60'
-      placeholder: ''
       match_limit: 10
+      size: 60
+      placeholder: ''
     third_party_settings: {  }
   bp_width:
     type: options_select

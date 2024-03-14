@@ -23,3 +23,5 @@ content:
     region: content
 hidden:
   forum_container: true
+  langcode: true
+  search_api_excerpt: true

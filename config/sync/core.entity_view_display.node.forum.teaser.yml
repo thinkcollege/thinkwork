@@ -43,3 +43,5 @@ content:
 hidden:
   comment_forum: true
   field_forum_image: true
+  langcode: true
+  search_api_excerpt: true

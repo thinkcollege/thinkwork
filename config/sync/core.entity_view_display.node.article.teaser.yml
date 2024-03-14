@@ -62,3 +62,5 @@ hidden:
   field_states: true
   field_tags: true
   field_topics: true
+  langcode: true
+  search_api_excerpt: true
