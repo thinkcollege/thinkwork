@@ -721,3 +721,14 @@ div#accordion [data-toggle="collapse"].collapsed .fa:before {
     padding: 1em 0.5em 1em 0;
     border-bottom: 1px solid #d6d6d6;
 }
+
+
+.page-view-search-thinkwork .sidebar .block  {
+     padding: 0;
+}
+
+
+
+.page-view-search-thinkwork .facet-item label {
+    display: inline;
+}
