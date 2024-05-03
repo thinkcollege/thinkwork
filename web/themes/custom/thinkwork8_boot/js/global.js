@@ -296,7 +296,7 @@
             
             });
             $(document).on('click','#sdChartForm input.checkAll',function() {
-                parentID = $(this).closest('div.formSub').attr('id');
+                var parentID = $(this).closest('div.formSub').attr('id');
                 //console.log(parentID);
             
                 var checked = $(this).prop('checked');
@@ -536,7 +536,7 @@
                 });
             
                 $('input.checkAll').click(function() {
-                    parentID = $(this).closest('div.collapse').attr('id');
+                    var parentID = $(this).closest('div.collapse').attr('id');
                     // console.log(parentID);
             
                     var checked = $(this).prop('checked');
