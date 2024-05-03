@@ -1020,7 +1020,7 @@
                 var reportType = reportURL.get('report') ? '&reportType=' + reportURL.get('report') : '&reporttype=comparison';
                 var singleType = reportURL.get('report') == 'single' ? '&singletype=num' : '';
             // var catType = totalPayers > 0 ? (totalPrograms > 0 ? '&category=catmixed':'&category=catpay'): (totalPrograms > 0 ? '&category=catprog' : '');
-                var url = './php/sd_chartcall.php?type=download' + reportType +singleType;
+                var url = './chartbuilder/sd_chartcall.php?type=download' + reportType +singleType;
                 $('#sdChartForm').attr('action', url);
                 var HiddenTtl = buildTableTitle('download');
                 console.log(HiddenTtl);
