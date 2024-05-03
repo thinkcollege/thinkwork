@@ -1211,7 +1211,7 @@
                 return joinTitle;
             }
             
-            $(document).on('click','.singletable tr', function() {
+            $(document).on('click','.singletable tbody tr', function() {
                 var reportType = reportURL.get('report');
                 var tableindex = $("tr", $(this).closest("tbody")).index(this);
                 var chartfind = $(this).closest('.singletable');
