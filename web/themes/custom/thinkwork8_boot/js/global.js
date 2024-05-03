@@ -107,10 +107,10 @@
             columnSelected = $('input[name="reportChoose"]:checked').val();
             
             $(document).ready(function() {
-            /* var urlLoc = window.location.href;  //get current url
+            var urlLoc = window.location.href;  //get current url
                 if(urlLoc.indexOf("?report=") == -1){ 
                 document.location = urlLoc+"?report=single"; // redirect it
-                } */
+                } 
                 var timeout;
                 if (reportURL.get('showchart') && reportURL.get('showchart') != '' ) {
                     google.charts.load('current', { 'packages': ['corechart', 'table','line','geochart']});
