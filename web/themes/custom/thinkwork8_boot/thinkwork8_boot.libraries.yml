@@ -11,3 +11,4 @@ global-styling:
   css:
     component:
       css/style.css: {}
+      css/dashboard.css: {}

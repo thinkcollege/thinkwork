@@ -228,13 +228,13 @@ input[type=radio] {
 	border: 0;
 	border-bottom: 1px solid #bbb;
 } */
-[data-toggle="collapse"] .fa:before {
+[data-toggle="collapse"] .fa:before, #sidebar div#accordion [data-toggle="collapse"] .fa:before {
 	content: "\f139";
 	margin-right: 0.15em;
 	font-size: 1em;
 	vertical-align: middle;
 }
-[data-toggle="collapse"].collapsed .fa:before {
+[data-toggle="collapse"] .fa:before, #sidebar div#accordion [data-toggle="collapse"].collapsed .fa:before {
 	content: "\f13a";
 	margin-right: 0.15em;
 	font-size: 1em;
@@ -540,7 +540,7 @@ display: block;
     border: 1px solid #5157AD;
         width: 80%;
 }
-h5 div#stateCountText, h5 div#yearCountText { float: left; width: 40%; font-size: 70%; padding-left:15px;margin-top: 12px;}
+h5 div#stateCountText, h5 div#yearCountText { float: left; width: 40%; font-size: 70%; padding-left:29px;margin-top: 12px;  font-weight: 300;}
 #headingSeven h5 button, #headingEight h5 button { float:left; width: 45%; }
 /*
 .accordionFloat .card-header,.accordionFloat .card-header .btn {
@@ -1074,7 +1074,6 @@ font-weight: 700; text-decoration: none;}
   #nationalActivitySelContainer li {display: none;}
   #nationalActivitySelContainer li.active { display: block; }
   #chart_div img.loadingImg, #mich_table_div_0 img.loadingImg { display: block; margin: 40px auto;}
-  #comparisonDiv {background-color: #E7F5EB; border: 1px solid #28a745;}
   #programDiv { border: 1px solid #ffc107; background-color: #FFF8E4;}
   #stateWide {background-color: #FEF0EC; border: 1px solid #fa7850;}
   #generDiv { border: 1px solid #8214a0; background-color: #F1D8E3;}
@@ -1128,3 +1127,10 @@ nav li a:hover {
 }
  .stateSection.natRemove, .chartsection .altSelect {display: none;} 
 .stateSection, .chartsection .altSelect.showVis {display: block;}
+.introText.hideIntro { display: none; }
+#sidebar .card-header {background-color: #fff; padding: .75rem .5rem;}
+.google-visualization-table tr th { color: #000; text-align: center;}
+h5 #chosenText { font-size: 70%; padding-left:15px;margin-top: 12px;}
+.fa-bar-chart::before, .fa-chart-bar::before {font-size: 120%;}
+.google-visualization-table td i.fa-chart-bar {margin-right: 10px; font-size: 200%;}
+.google-visualization-table tr.chartSelected { background-color: #000; color: #fff;}
