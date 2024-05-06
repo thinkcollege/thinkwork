@@ -661,7 +661,7 @@
             
                 if(!$('#singleDiv').hasClass('selectShow')) $('#singleDiv').addClass('selectShow');
                 $.ajax({
-                    url: '/chartbuilder/sd_chartcall.php?type=nonPop',
+                    url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?type=nonPop',
                     type: "POST",
                     dataType: "json",
                     cache: false,
@@ -699,7 +699,7 @@
             
             
                 if (slug == 'program') { $.ajax({
-                        url: '/chartbuilder/sd_chartcall.php?type=' + slug,
+                        url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?type=' + slug,
                         type: "POST",
                     //data: $('#sdChartForm').serialize(),
                         dataType: "json",
@@ -730,7 +730,7 @@
                     var grpSlug = reportURL.get('grp') ? reportURL.get('grp') : 'indst';
                     $("#programContainer").empty();
                     $.ajax({
-                    url: '/chartbuilder/sd_chartcall.php?type=' + slug + '&grp=' + grpSlug + '&view=' + viewSlug,
+                    url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?type=' + slug + '&grp=' + grpSlug + '&view=' + viewSlug,
                     type: "POST",
                     data: $('#sdChartForm').serialize(),
                     dataType: "json",
@@ -765,7 +765,7 @@
                     if(reportType == 'single') {
                         var returnedStuff1 =
                         $.ajax({
-                            url: '/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=table&singletype=num' + storedID,
+                            url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=table&singletype=num' + storedID,
                             beforeSend: function(){
                                 $("#sdchart_table_div_0").html('<img class="loadingImg" src="/themes/custom/thinkwork8_boot/img/spinner.gif">');
                             },
@@ -788,7 +788,7 @@
             
                         var returnedStuff2 =
                         $.ajax({
-                            url: '/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=table&singletype=perc' + storedID,
+                            url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=table&singletype=perc' + storedID,
                             beforeSend: function(){
                                 $("#sdchart_table_div_1").html('<img class="loadingImg" src="/themes/custom/thinkwork8_boot/img/spinner.gif">');
                             },
@@ -811,7 +811,7 @@
             
                         var returnedStuff3 =
                         $.ajax({
-                            url: '/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=table&singletype=dol' + storedID,
+                            url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=table&singletype=dol' + storedID,
                             beforeSend: function(){
                                 $("#sdchart_table_div_2").html('<img class="loadingImg" src="/themes/custom/thinkwork8_boot/img/spinner.gif">');
                             },
@@ -835,11 +835,11 @@
             
                         var returnedStuff = [returnedStuff1,returnedStuff2,returnedStuff3];
                     } else {
-                        console.log("Ajax table URL: " + '/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=table' + storedID);
+                        console.log("Ajax table URL: " + '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=table' + storedID);
             
                         var returnedStuff =
                         $.ajax({
-                            url: '/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=table' + storedID,
+                            url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=table' + storedID,
                             beforeSend: function(){
                                 $("#sdchart_table_div_0").html('<img class="loadingImg" src="/themes/custom/thinkwork8_boot/img/spinner.gif">');
                             },
@@ -881,7 +881,7 @@
             
                             var returnedStuff1 =
                             $.ajax({
-                                url: '/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=chart&singletype=' + numpercdol + changeChart + storedID,
+                                url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=chart&singletype=' + numpercdol + changeChart + storedID,
                                 beforeSend: function(){
                                     $(chartDivIndex).html('<img class="loadingImg" src="/themes/custom/thinkwork8_boot/img/spinner.gif">');
                                 },
@@ -906,7 +906,7 @@
                         {
                             var returnedStuff1 =
                             $.ajax({
-                                url: '/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=chart&singletype=num' + changeChart + storedID,
+                                url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=chart&singletype=num' + changeChart + storedID,
                                 beforeSend: function(){
                                     $("#chart_div_0").html('<img class="loadingImg" src="/themes/custom/thinkwork8_boot/img/spinner.gif">');
                                 },
@@ -929,7 +929,7 @@
             
                         var returnedStuff2 =
                             $.ajax({
-                                url: '/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=chart&singletype=perc' + storedID,
+                                url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=chart&singletype=perc' + storedID,
                                 beforeSend: function(){
                                     $("#chart_div_1").html('<img class="loadingImg" src="/themes/custom/thinkwork8_boot/img/spinner.gif">');
                                 },
@@ -952,7 +952,7 @@
             
                             var returnedStuff3 =
                             $.ajax({
-                                url: '/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=chart&singletype=dol' + storedID,
+                                url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=chart&singletype=dol' + storedID,
                                 beforeSend: function(){
                                     $("#chart_div_2").html('<img class="loadingImg" src="/themes/custom/thinkwork8_boot/img/spinner.gif">');
                                 },
@@ -978,12 +978,12 @@
                         console.log( 'in function chart: ' + returnedStuff);
                         var returnedStuff = tableindex && numpercdol ? [returnedStuff1] : [returnedStuff1,returnedStuff2,returnedStuff3];
                     } else {
-                        console.log("Ajax Chart URL: " + '/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=chart' + storedID);
+                        console.log("Ajax Chart URL: " + '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=chart' + storedID);
                         
             
                             var returnedStuff =
                             $.ajax({
-                                url: '/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=chart&' + storedID,
+                                url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=chart&' + storedID,
                                 beforeSend: function(){
                                     $('#chart_div_0').html('<img class="loadingImg" src="/themes/custom/thinkwork8_boot/img/spinner.gif">');
                                 },
@@ -1020,7 +1020,7 @@
                 var reportType = reportURL.get('report') ? '&reportType=' + reportURL.get('report') : '&reporttype=comparison';
                 var singleType = reportURL.get('report') == 'single' ? '&singletype=num' : '';
             // var catType = totalPayers > 0 ? (totalPrograms > 0 ? '&category=catmixed':'&category=catpay'): (totalPrograms > 0 ? '&category=catprog' : '');
-                var url = '/chartbuilder/sd_chartcall.php?type=download' + reportType +singleType;
+                var url = '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?type=download' + reportType +singleType;
                 $('#sdChartForm').attr('action', url);
                 var HiddenTtl = buildTableTitle('download');
                 console.log(HiddenTtl);
@@ -1226,7 +1226,7 @@
                 console.log("URL segment: " + urlid);
                 
             return $.ajax({
-                    url: '/chartbuilder/sd_chartcall.php?getstoredvar=' + calltype + '&urlid=' + urlid,
+                    url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?getstoredvar=' + calltype + '&urlid=' + urlid,
                     beforeSend: function(){
                         $('#chart_div_0').html('<img class="loadingImg" src="/themes/custom/thinkwork8_boot/img/spinner.gif">');
                     },
