@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\easy_email\Functional;
 
 use Drupal\Core\Serialization\Yaml;

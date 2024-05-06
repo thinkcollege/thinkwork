@@ -44,5 +44,7 @@ bp-tabs:
   css:
     component:
       css/bootstrap-paragraphs-tabs.min.css: { preprocess: false, minified: true }
+  js:
+    js/bootstrap-paragraphs-tabs.js: { preprocess: false }
   dependencies:
     - core/jquery

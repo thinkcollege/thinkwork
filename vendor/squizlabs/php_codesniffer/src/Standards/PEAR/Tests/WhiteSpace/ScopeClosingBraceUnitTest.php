@@ -16,7 +16,7 @@ use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
  *
  * @covers \PHP_CodeSniffer\Standards\PEAR\Sniffs\WhiteSpace\ScopeClosingBraceSniff
  */
-class ScopeClosingBraceUnitTest extends AbstractSniffUnitTest
+final class ScopeClosingBraceUnitTest extends AbstractSniffUnitTest
 {
 
 
@@ -49,6 +49,7 @@ class ScopeClosingBraceUnitTest extends AbstractSniffUnitTest
             154 => 1,
             160 => 1,
             164 => 1,
+            170 => 1,
         ];
 
     }//end getErrorList()

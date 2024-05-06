@@ -92,11 +92,32 @@ fn(array $a) : array => $a;
 /* testStaticReturnType */
 fn(array $a) : static => $a;
 
+/* testFalseReturnType */
+fn(array $a) : false => $a;
+
+/* testTrueReturnType */
+fn(array $a) : True => $a;
+
+/* testNullReturnType */
+fn(array $a) : null => $a;
+
 /* testUnionParamType */
 $arrowWithUnionParam = fn(int|float $param) : SomeClass => new SomeClass($param);
 
 /* testUnionReturnType */
 $arrowWithUnionReturn = fn($param) : int|float => $param | 10;
+
+/* testUnionReturnTypeWithTrue */
+$arrowWithUnionReturn = fn($param) : int|true => $param | 10;
+
+/* testUnionReturnTypeWithFalse */
+$arrowWithUnionReturn = fn($param) : string|FALSE => $param | 10;
+
+/* testIntersectionParamType */
+$arrowWithUnionParam = fn(Traversable&Countable $param) : int => (new SomeClass($param))->getValue();
+
+/* testIntersectionReturnType */
+$arrowWithUnionReturn = fn($param) : \MyFoo&SomeInterface => new SomeClass($param);
 
 /* testTernary */
 $fn = fn($a) => $a ? /* testTernaryThen */ fn() : string => 'a' : /* testTernaryElse */ fn() : string => 'b';

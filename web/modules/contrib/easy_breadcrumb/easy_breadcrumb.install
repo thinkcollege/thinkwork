@@ -120,6 +120,27 @@ function easy_breadcrumb_update_8007() {
 }
 
 /**
+ * Re-save string-formatted settings as arrays.
+ */
+function easy_breadcrumb_update_8008() {
+  $config = \Drupal::configFactory()->getEditable('easy_breadcrumb.settings');
+  $settings_to_update = [
+    'capitalizator_ignored_words',
+    'capitalizator_forced_words',
+  ];
+  foreach ($settings_to_update as $setting) {
+    $config_setting = $config->get($setting);
+    if ($config_setting === NULL || $config_setting === '') {
+      $config->set($setting, []);
+    }
+    elseif (is_string($config_setting)) {
+      $config->set($setting, explode(' ', $config_setting));
+    }
+  }
+  $config->save(TRUE);
+}
+
+/**
  * Implements hook_install().
  *
  * Help users get started with the module.

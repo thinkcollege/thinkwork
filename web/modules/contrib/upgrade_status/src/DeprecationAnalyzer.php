@@ -335,7 +335,8 @@ final class DeprecationAnalyzer {
    * @param \Drupal\Core\Extension\Extension $extension
    *   The extension to analyze.
    * @param array $options
-   *   Options for the analysis.
+   *   Options for the analysis. Only the phpstan-memory-limit key is used
+   *   with a default value of 1500M.
    *
    * @return null
    *   Errors are logged to the logger, data is stored to keyvalue storage.
@@ -374,29 +375,39 @@ final class DeprecationAnalyzer {
     if (json_last_error() !== JSON_ERROR_NONE) {
       $stdout = trim($process->getOutput()) ?: 'Empty.';
       $stderr = trim($process->getErrorOutput()) ?: 'Empty.';
-       $formatted_error =
-         "<h6>PHPStan command failed:</h6> <p>" . implode(" ", $command) .
-         "</p> <h6>Command output:</h6> <p>" . $stdout .
-         "</p> <h6>Command error:</h6> <p>" . $stderr . '</p>';
-       $this->logger->error('%phpstan_fail', ['%phpstan_fail' => strip_tags($formatted_error)]);
-       $json = [
-         'files' => [
-           // Add a failure message with the nonexistent 'PHPStan failed'
-           // filename, so the error conforms to the expected format.
-           'PHPStan failed' => [
-             'messages' => [
-               [
-                 'message' => $formatted_error,
-                 'line' => 0,
-               ],
-             ],
-           ]
-         ],
-         'totals' => [
-           'errors' => 1,
-           'file_errors' => 1,
-         ],
-       ];
+      $json = [
+        'files' => [],
+        'totals' => [
+          'errors' => 0,
+          'file_errors' => 0,
+        ],
+      ];
+      if (strpos($stderr, 'No files found to analyse.') === FALSE) {
+        // 'No files found to analyse,' is reported as an error, but for us it is a valid
+        // situation that an extension may not have any PHP files.
+        $formatted_error =
+          "<h6>PHPStan command failed:</h6> <p>" . implode(" ", $command) .
+          "</p> <h6>Command output:</h6> <p>" . $stdout .
+          "</p> <h6>Command error:</h6> <p>" . $stderr . '</p>';
+        $this->logger->error('%phpstan_fail', ['%phpstan_fail' => strip_tags($formatted_error)]);
+        // Add a failure message with the nonexistent 'PHPStan failed'
+        // filename, so the error conforms to the expected format.
+        $json['files']['PHPStan failed'] = [
+          'messages' => [
+            [
+              'message' => $formatted_error,
+              'line' => 0,
+            ],
+          ],
+        ];
+        $json['totals']['errors']++;
+        $json['totals']['file_errors']++;
+      }
+    }
+    foreach ($json['files'] as &$errors) {
+      foreach ($errors['messages'] as &$error) {
+        $error['analyzer'] = 'PHPStan';
+      }
     }
     $result = [
       'date' => $this->time->getRequestTime(),
@@ -425,6 +436,7 @@ final class DeprecationAnalyzer {
       $result['data']['files'][$one_deprecation->getFile()]['messages'][] = [
         'message' => $one_deprecation->getMessage(),
         'line' => $one_deprecation->getLine(),
+        'analyzer' => $one_deprecation->getAnalyzer(),
       ];
       $result['data']['totals']['errors']++;
       $result['data']['totals']['file_errors']++;
@@ -433,7 +445,7 @@ final class DeprecationAnalyzer {
     // Assume next step is to relax (there were no errors found).
     $result['data']['totals']['upgrade_status_next'] = ProjectCollector::NEXT_RELAX;
 
-    foreach ($result['data']['files'] as $path => &$errors) {
+    foreach ($result['data']['files'] as &$errors) {
       foreach ($errors['messages'] as &$error) {
 
         // Overwrite message with processed text. Save category.
@@ -679,7 +691,7 @@ final class DeprecationAnalyzer {
       // 0.5.2
       'Call to deprecated function entity_get_form_display(). Deprecated in drupal:8.8.0 and is removed from drupal:9.0.0. Use EntityDisplayRepositoryInterface::getFormDisplay() instead.',
       'Call to deprecated function entity_get_display(). Deprecated in drupal:8.8.0 and is removed from drupal:9.0.0. Use EntityDisplayRepositoryInterface::getViewDisplay() instead.',
-      'Call to deprecated constant REQUEST_TIME: Deprecated in drupal:8.3.0 and is removed from drupal:10.0.0. Use Drupal::time()->getRequestTime();',
+      'Call to deprecated constant REQUEST_TIME: Deprecated in drupal:8.3.0 and is removed from drupal:11.0.0. Use Drupal::time()->getRequestTime();',
       'Call to deprecated method urlInfo() of class Drupal\Core\Entity\EntityInterface. Deprecated in drupal:8.0.0 and is removed from drupal:9.0.0. Use Drupal\Core\Entity\EntityInterface::toUrl() instead.',
       'Call to deprecated function file_scan_directory(). Deprecated in drupal:8.8.0 and is removed from drupal:9.0.0. Use Drupal\Core\File\FileSystemInterface::scanDirectory() instead.',
       'Call to deprecated function file_default_scheme(). Deprecated in drupal:8.8.0 and is removed from drupal:9.0.0. Use Drupal::config(\'system.file\')->get(\'default_scheme\') instead.',
@@ -792,11 +804,79 @@ final class DeprecationAnalyzer {
       'Call to deprecated function file_move(). Deprecated in drupal:9.3.0 and is removed from drupal:10.0.0. Use Drupal\file\FileRepositoryInterface::move() instead.',
       'Call to deprecated function file_save_data(). Deprecated in drupal:9.3.0 and is removed from drupal:10.0.0. Use Drupal\file\FileRepositoryInterface::writeData() instead.',
 
-      // 0.12.3 (0.12.2 has no rule additions.)
-      'Call to deprecated function user_password(). Deprecated in drupal:9.1.0 and is removed from drupal:10.0.0. Use \Drupal\Core\Password\PasswordGeneratorInterface::generate() instead.',
+      // 0.12.2
+      // No new rules
+
+      // 0.12.3
+      'Call to deprecated function user_password(). Deprecated in drupal:9.1.0 and is removed from drupal:10.0.0. Use Drupal\Core\Password\PasswordGeneratorInterface::generate() instead.',
 
       // 0.12.4
       'Call to deprecated function file_build_uri(). Deprecated in drupal:9.3.0 and is removed from drupal:10.0.0 without replacement.',
+
+      // 0.13.0
+      // No new rules
+
+      // 0.13.1
+      // Covers https://www.drupal.org/node/2909426 ($modules property in tests), but not identified in contrib by phpstan.
+
+      // 0.15.0
+      // No new rules
+
+      // 0.15.1
+      // No new rules
+
+      // 0.18.0
+      // Add TwigSetList::TWIG_240 to D9 deprecations (https://github.com/palantirnet/drupal-rector/pull/223) -- not tracking non-Drupal coverage here
+      // system_sort_modules_by_info_name: (https://www.drupal.org/node/3225999) -- not found in contrib
+      'Call to deprecated function module_load_install(). Deprecated in drupal:9.4.0 and is removed from drupal:10.0.0. Use Drupal::moduleHandler()->loadInclude($module, \'install\') instead. Note, the replacement no longer allows including code from uninstalled modules.',
+      'Call to deprecated function watchdog_exception(). Deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. Use Use Drupal\Core\Utility\Error::logException() instead.',
+      'Call to deprecated function taxonomy_vocabulary_get_names(). Deprecated in drupal:9.3.0 and is removed from drupal:10.0.0. Use Drupal::entityQuery(\'taxonomy_vocabulary\')->execute() instead.',
+      // taxonomy_term_uri
+      'Call to deprecated function taxonomy_term_load_multiple_by_name(). Deprecated in drupal:9.3.0 and is removed from drupal:10.0.0. Use Drupal::entityTypeManager()->getStorage(\'taxonomy_term\')->loadByProperties([\'name\' => $name, \'vid\' => $vid]) instead, to get a list of taxonomy term entities having the same name and keyed by their term ID.',
+      // taxonomy_terms_static_reset -- not found in contrib
+      // taxonomy_vocabulary_static_reset -- not found in contrib
+      'Call to deprecated function taxonomy_implode_tags(). Deprecated in drupal:9.3.0 and is removed from drupal:10.0.0. Use Drupal\Core\Entity\Element\EntityAutocomplete::getEntityLabels() instead.',
+      // taxonomy_term_title -- not found in contrib
+      // Drupal 9 rector now includes PHPUnit rector (PHPUnitLevelSetList::UP_TO_PHPUNIT_90)
+
+      // 0.18.1
+      'Drupal\Tests\BrowserTestBase::$defaultTheme is required in drupal:9.0.0 when using an install profile that does not set a default theme. See https://www.drupal.org/node/3083055, which includes recommendations on which theme to use.',
+
+      // 0.18.2
+      'Call to deprecated function system_time_zones(). Deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. This function is no longer used in Drupal core. Use Drupal\Core\Datetime\TimeZoneFormHelper::getOptionsList() or \DateTimeZone::listIdentifiers() instead.',
+
+      // 0.18.3
+      'Missing call to parent::setUp() method.',
+      'Missing call to parent::tearDown() method.',
+
+      // 0.18.4
+      'Call to deprecated function module_load_include(). Deprecated in drupal:9.4.0 and is removed from drupal:11.0.0. Use Drupal::moduleHandler()->loadInclude($module, $type, $name = NULL). Note that including code from uninstalled extensions is no longer supported.',
+      'Call to deprecated function module_load_install(). Deprecated in drupal:9.4.0 and is removed from drupal:10.0.0. Use Drupal::moduleHandler()->loadInclude($module, \'install\') instead. Note, the replacement no longer allows including code from uninstalled modules.',
+
+      // 0.18.5
+      'Call to deprecated constant FILE_STATUS_PERMANENT: Deprecated in drupal:9.3.0 and is removed from drupal:10.0.0. Use Drupal\file\FileInterface::STATUS_PERMANENT or \Drupal\file\FileInterface::setPermanent().',
+      'Call to deprecated method toInt() of class Drupal\Component\Utility\Bytes. Deprecated in drupal:9.1.0 and is removed from drupal:10.0.0. Use Drupal\Component\Utility\Bytes::toNumber() instead.',
+
+      // 0.18.6
+      // no new rules
+
+      // 0.19.0
+      'Call to deprecated function format_size(). Deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use Drupal\Core\StringTranslation\ByteSizeMarkup::create($size, $langcode) instead.',
+
+      // 0.19.1
+      // no new rules
+
+      // 0.19.2
+      // no new rules
+
+      // 0.20.0
+      'Call to deprecated method getResource() of class Drupal\system\Plugin\ImageToolkit\GDToolkit. Deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use Drupal\system\Plugin\ImageToolkit\GDToolkit::getImage() instead.',
+      'Call to deprecated method setResource() of class Drupal\system\Plugin\ImageToolkit\GDToolkit. Deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use Drupal\system\Plugin\ImageToolkit\GDToolkit::setImage() instead.',
+
+      // 0.21.0
+      'Symfony\Cmf\Component\Routing\RouteObjectInterface::ROUTE_OBJECT is deprecated and removed in Drupal 10. Use Drupal\Core\Routing\RouteObjectInterface::ROUTE_OBJECT instead.',
+      'Symfony\Cmf\Component\Routing\RouteObjectInterface::ROUTE_NAME is deprecated and removed in Drupal 10. Use Drupal\Core\Routing\RouteObjectInterface::ROUTE_NAME instead.',
+      'Symfony\Cmf\Component\Routing\RouteObjectInterface::CONTROLLER_NAME is deprecated and removed in Drupal 10. Use Drupal\Core\Routing\RouteObjectInterface::CONTROLLER_NAME instead.',
     ];
     return
       in_array($string, $rector_covered) ||

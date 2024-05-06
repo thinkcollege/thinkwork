@@ -3,4 +3,4 @@ type: module
 description: 'Provides various dummy Feeds source plugins.'
 package: Testing
 dependencies:
-  - feeds
+  - feeds:feeds

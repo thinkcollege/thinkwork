@@ -59,7 +59,7 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
   /**
    * Drupal file system helper for Feeds.
    *
-   * @var \Drupal\Core\File\FeedsFileSystemInterface
+   * @var \Drupal\feeds\File\FeedsFileSystemInterface
    */
   protected $feedsFileSystem;
 
@@ -78,7 +78,7 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
    *   The cache backend.
    * @param \Drupal\Core\File\FileSystemInterface $file_system
    *   The Drupal file system helper.
-   * @param \Drupal\Core\File\FeedsFileSystemInterface $feeds_file_system
+   * @param \Drupal\feeds\File\FeedsFileSystemInterface $feeds_file_system
    *   The Drupal file system helper for Feeds.
    */
   public function __construct(array $configuration, $plugin_id, array $plugin_definition, ClientInterface $client, CacheBackendInterface $cache, FileSystemInterface $file_system, FeedsFileSystemInterface $feeds_file_system) {
@@ -100,7 +100,7 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
       $container->get('http_client'),
       $container->get('cache.feeds_download'),
       $container->get('file_system'),
-      $container->get('feeds.file_system.in_progress')
+      $container->get('feeds.file_system.in_progress'),
     );
   }
 

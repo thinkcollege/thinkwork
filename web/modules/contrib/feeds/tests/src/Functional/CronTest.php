@@ -92,7 +92,7 @@ class CronTest extends FeedsBrowserTestBase {
     \Drupal::cache('feeds_download')->deleteAll();
     sleep(1);
     $this->drupalGet('feed/' . $feed->id() . '/import');
-    $this->submitForm([], t('Import'));
+    $this->submitForm([], 'Import');
     $feed = $this->reloadEntity($feed);
 
     $manual_imported_time = $feed->getImportedTime();
@@ -151,7 +151,7 @@ class CronTest extends FeedsBrowserTestBase {
 
     // Select a file that contains 9 items.
     $feed = $this->createFeed($feed_type->id(), [
-      'source' => \Drupal::request()->getSchemeAndHttpHost() . '/testing/feeds/nodes.csv',
+      'source' => $this->getBaseUrl() . '/testing/feeds/nodes.csv',
     ]);
 
     // Schedule import.
@@ -393,7 +393,7 @@ class CronTest extends FeedsBrowserTestBase {
 
     // Create a feed that contains 9 items.
     $feed = $this->createFeed($feed_type->id(), [
-      'source' => \Drupal::request()->getSchemeAndHttpHost() . '/testing/feeds/nodes.csv',
+      'source' => $this->getBaseUrl() . '/testing/feeds/nodes.csv',
     ]);
 
     // Schedule import.

@@ -26,11 +26,15 @@
         }
         // Link.
         if (plugins.has('LinkUI')) {
-          const view = plugins.get('LinkUI').formView;
-          if (view) {
-            const el = view.urlInputView.fieldView.element;
-            imceInput.processCKEditor5Input(el, 'link');
-          }
+          const ui = plugins.get('LinkUI');
+          const process = () => {
+            const el = ui.formView?.urlInputView?.fieldView?.element;
+            if (el) {
+              imceInput.processCKEditor5Input(el, 'link');
+              return true;
+            }
+          };
+          process() || ui._balloon?.view?.once('change:isVisible', process);
         }
       });
     }
@@ -122,6 +126,7 @@
       return false;
     };
     el.insertAdjacentElement('afterend', button);
+    el.parentNode.className += ' ck-imce-wrp ck-imce-' + type + '-wrp';
     return button;
   };
 

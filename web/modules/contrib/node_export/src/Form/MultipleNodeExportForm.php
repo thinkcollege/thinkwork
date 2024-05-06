@@ -50,7 +50,10 @@ class MultipleNodeExportForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $export_type = $form_state->getValue('export_type');
     // Loads all the node of selected content type.
-    $nids = \Drupal::entityQuery('node')->condition('type', $export_type)->execute();
+    $nids = \Drupal::entityQuery('node')
+        ->accessCheck()
+        ->condition('type', $export_type)
+        ->execute();
     $batch = [
       'title' => $this->t('Generating Export Code...'),
       'operations' => [],

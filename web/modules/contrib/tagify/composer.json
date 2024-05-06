@@ -18,6 +18,8 @@
         "drupal/core": "^8.8 || ^9 || ^10"
     },
     "require-dev": {
-        "drupal/better_exposed_filters": "^6.0"
+        "drupal/better_exposed_filters": "^6.0",
+        "drupal/facets": "^2.0",
+        "drupal/search_api": "^1.31"
     }
 }

@@ -5,6 +5,7 @@ namespace Drupal\tagify\Plugin\Field\FieldWidget;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
@@ -58,6 +59,13 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
   protected $entityTypeManager;
 
   /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * Constructs a TagifyEntityReferenceAutocompleteWidget object.
    *
    * @param string $plugin_id
@@ -78,13 +86,27 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
    *   The selection plugin manager.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, KeyValueFactoryInterface $key_value_factory, AccountInterface $current_user, SelectionPluginManagerInterface $selection_manager, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(
+    $plugin_id,
+    $plugin_definition,
+    FieldDefinitionInterface $field_definition,
+    array $settings,
+    array $third_party_settings,
+    KeyValueFactoryInterface $key_value_factory,
+    AccountInterface $current_user,
+    SelectionPluginManagerInterface $selection_manager,
+    EntityTypeManagerInterface $entity_type_manager,
+    ModuleHandlerInterface $module_handler,
+  ) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
     $this->keyValueFactory = $key_value_factory;
     $this->currentUser = $current_user;
     $this->selectionManager = $selection_manager;
     $this->entityTypeManager = $entity_type_manager;
+    $this->moduleHandler = $module_handler;
   }
 
   /**
@@ -101,6 +123,7 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
       $container->get('current_user'),
       $container->get('plugin.manager.entity_reference_selection'),
       $container->get('entity_type.manager'),
+      $container->get('module_handler')
     );
   }
 
@@ -124,6 +147,8 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
       'suggestions_dropdown' => 1,
       'placeholder' => '',
       'show_entity_id' => 0,
+      'show_info_label' => 0,
+      'info_label' => '',
     ] + parent::defaultSettings();
   }
 
@@ -164,7 +189,44 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
       '#default_value' => $this->getSetting('show_entity_id'),
       '#description' => $this->t('Include the entity ID within the tag.'),
     ];
-
+    $element['show_info_label'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Include info label'),
+      '#default_value' => $this->getSetting('show_info_label'),
+      '#description' => $this->t('Show an extra tag with information next to the entity label.'),
+    ];
+    $element['info_label'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Info label content'),
+      '#default_value' => $this->getSetting('info_label'),
+      '#description' => $this->t('The information that will be shown. You can use tokens to make this dynamic.'),
+      '#states' => [
+        'visible' => [
+          sprintf(':input[name="fields[%s][settings_edit_form][settings][show_info_label]"]', $this->fieldDefinition->getName()) => ['checked' => TRUE],
+        ],
+      ],
+    ];
+    if ($this->moduleHandler->moduleExists('token')) {
+      $token_type = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('target_type');
+      // Convert 'taxonomy_term' target type into 'term' in order to make it
+      // work as a token type.
+      if ($token_type === 'taxonomy_term') {
+        $token_type = 'term';
+      }
+      $element['info_label_tokens'] = [
+        '#type' => 'item',
+        '#theme' => 'token_tree_link',
+        '#token_types' => [$token_type],
+        '#show_restricted' => TRUE,
+        '#global_types' => FALSE,
+        '#recursion_limit' => 3,
+        '#states' => [
+          'visible' => [
+            sprintf(':input[name="fields[%s][settings_edit_form][settings][show_info_label]"]', $this->fieldDefinition->getName()) => ['checked' => TRUE],
+          ],
+        ],
+      ];
+    }
     return $element;
   }
 
@@ -181,6 +243,9 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
     $placeholder = $this->getSetting('placeholder');
     $show_entity_id = $this->getSetting('show_entity_id');
     $summary[] = $show_entity_id ? $this->t('Include the entity ID within the tag') : $this->t('Remove the entity ID from the tag');
+    if ($this->getSetting('show_info_label')) {
+      $summary[] = $this->t('Include a label with extra information inside the tag');
+    }
     if (!empty($placeholder)) {
       $summary[] = $this->t('Placeholder: @placeholder', ['@placeholder' => $placeholder]);
     }
@@ -203,6 +268,9 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
       'placeholder' => $this->getSetting('placeholder'),
       'show_entity_id' => (bool) $this->getSetting('show_entity_id'),
     ];
+    if ($this->getSetting('show_info_label')) {
+      $selection_settings['info_label'] = $this->getSetting('info_label');
+    }
     $target_type = $this->getFieldSetting('target_type');
     $selection_handler = $this->getFieldSetting('handler');
     $data = serialize($selection_settings) . $target_type . $selection_handler;
@@ -237,7 +305,14 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
       '#placeholder' => $this->getSetting('placeholder'),
       '#match_operator' => $this->getSetting('match_operator'),
       '#show_entity_id' => $this->getSetting('show_entity_id'),
+      '#cardinality' => $items->getFieldDefinition()
+        ->getFieldStorageDefinition()
+        ->getCardinality(),
     ];
+
+    if ($this->getSetting('show_info_label')) {
+      $element['#info_label'] = $this->getSetting('info_label');
+    }
 
     // Add description if it doesn't exist.
     if ($target_type) {
@@ -246,7 +321,13 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
 
       if ($cardinality) {
         $element['#description'] = !empty($element['#description'])
-          ? ['#theme' => 'item_list', '#items' => [$element['#description'], $message]]
+          ? [
+            '#theme' => 'item_list',
+            '#items' => [
+              $element['#description'],
+              $message,
+            ],
+          ]
           : $message;
       }
     }
@@ -272,6 +353,9 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
       'placeholder' => $this->getSetting('placeholder'),
       'show_entity_id' => $this->getSetting('show_entity_id'),
     ];
+    if ($this->getSetting('show_info_label')) {
+      $selection_settings['info_label'] = $this->getSetting('info_label');
+    }
     $uid = $this->currentUser->id();
     $handler = $this->selectionManager->getInstance($selection_settings);
 

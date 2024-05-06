@@ -16,7 +16,7 @@ use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
  *
  * @covers \PHP_CodeSniffer\Standards\Squiz\Sniffs\WhiteSpace\OperatorSpacingSniff
  */
-class OperatorSpacingUnitTest extends AbstractSniffUnitTest
+final class OperatorSpacingUnitTest extends AbstractSniffUnitTest
 {
 
 
@@ -33,7 +33,7 @@ class OperatorSpacingUnitTest extends AbstractSniffUnitTest
     public function getErrorList($testFile='')
     {
         switch ($testFile) {
-        case 'OperatorSpacingUnitTest.inc':
+        case 'OperatorSpacingUnitTest.1.inc':
             return [
                 4   => 1,
                 5   => 2,
@@ -104,6 +104,12 @@ class OperatorSpacingUnitTest extends AbstractSniffUnitTest
                 265 => 2,
                 266 => 2,
                 271 => 2,
+                487 => 1,
+                488 => 1,
+                493 => 1,
+                494 => 1,
+                499 => 1,
+                504 => 1,
             ];
 
         case 'OperatorSpacingUnitTest.js':

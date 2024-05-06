@@ -63,7 +63,7 @@ class Crawler implements \Countable, \IteratorAggregate
     /**
      * @param \DOMNodeList|\DOMNode|\DOMNode[]|string|null $node A Node to use as the base for the crawling
      */
-    public function __construct(\DOMNodeList|\DOMNode|array|string $node = null, string $uri = null, string $baseHref = null, bool $useHtml5Parser = true)
+    public function __construct(\DOMNodeList|\DOMNode|array|string|null $node = null, ?string $uri = null, ?string $baseHref = null, bool $useHtml5Parser = true)
     {
         $this->uri = $uri;
         $this->baseHref = $baseHref ?: $uri;
@@ -137,7 +137,7 @@ class Crawler implements \Countable, \IteratorAggregate
      *
      * @return void
      */
-    public function addContent(string $content, string $type = null)
+    public function addContent(string $content, ?string $type = null)
     {
         if (empty($type)) {
             $type = str_starts_with($content, '<?xml') ? 'application/xml' : 'text/html';
@@ -350,7 +350,7 @@ class Crawler implements \Countable, \IteratorAggregate
     /**
      * Slices the list of nodes by $offset and $length.
      */
-    public function slice(int $offset = 0, int $length = null): static
+    public function slice(int $offset = 0, ?int $length = null): static
     {
         return $this->createSubCrawler(\array_slice($this->nodes, $offset, $length));
     }
@@ -500,7 +500,7 @@ class Crawler implements \Countable, \IteratorAggregate
      * @throws \InvalidArgumentException When current node is empty
      * @throws \RuntimeException         If the CssSelector Component is not available and $selector is provided
      */
-    public function children(string $selector = null): static
+    public function children(?string $selector = null): static
     {
         if (!$this->nodes) {
             throw new \InvalidArgumentException('The current node list is empty.');
@@ -565,7 +565,7 @@ class Crawler implements \Countable, \IteratorAggregate
      *
      * @throws \InvalidArgumentException When current node is empty
      */
-    public function text(string $default = null, bool $normalizeWhitespace = true): string
+    public function text(?string $default = null, bool $normalizeWhitespace = true): string
     {
         if (!$this->nodes) {
             if (null !== $default) {
@@ -615,7 +615,7 @@ class Crawler implements \Countable, \IteratorAggregate
      *
      * @throws \InvalidArgumentException When current node is empty
      */
-    public function html(string $default = null): string
+    public function html(?string $default = null): string
     {
         if (!$this->nodes) {
             if (null !== $default) {
@@ -864,7 +864,7 @@ class Crawler implements \Countable, \IteratorAggregate
      *
      * @throws \InvalidArgumentException If the current node list is empty or the selected node is not instance of DOMElement
      */
-    public function form(array $values = null, string $method = null): Form
+    public function form(?array $values = null, ?string $method = null): Form
     {
         if (!$this->nodes) {
             throw new \InvalidArgumentException('The current node list is empty.');
@@ -1090,12 +1090,30 @@ class Crawler implements \Countable, \IteratorAggregate
 
     private function parseHtml5(string $htmlContent, string $charset = 'UTF-8'): \DOMDocument
     {
-        return $this->html5Parser->parse($this->convertToHtmlEntities($htmlContent, $charset));
+        if (!$this->supportsEncoding($charset)) {
+            $htmlContent = $this->convertToHtmlEntities($htmlContent, $charset);
+            $charset = 'UTF-8';
+        }
+
+        return $this->html5Parser->parse($htmlContent, ['encoding' => $charset]);
+    }
+
+    private function supportsEncoding(string $encoding): bool
+    {
+        try {
+            return '' === @mb_convert_encoding('', $encoding, 'UTF-8');
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 
     private function parseXhtml(string $htmlContent, string $charset = 'UTF-8'): \DOMDocument
     {
-        $htmlContent = $this->convertToHtmlEntities($htmlContent, $charset);
+        if ('UTF-8' === $charset && preg_match('//u', $htmlContent)) {
+            $htmlContent = '<?xml encoding="UTF-8">'.$htmlContent;
+        } else {
+            $htmlContent = $this->convertToHtmlEntities($htmlContent, $charset);
+        }
 
         $internalErrors = libxml_use_internal_errors(true);
 

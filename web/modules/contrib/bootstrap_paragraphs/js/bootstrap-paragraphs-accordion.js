@@ -21,14 +21,6 @@
     });
 
     /*
-     * When the page loads and there are some accordions defaulted to open this
-     * function will grab those accordions and change the alt text for them.
-     */
-    $(".panel-collapse.in").each(function () {
-      changeAccordionAlt($(this).siblings(".panel-heading").find("a"));
-    });
-
-    /*
      * When the "Expand/Collapse All" button is click this function will be
      * called. If the button has the class "active" then open all the accordions
      *  else close all the accordions.
@@ -49,12 +41,14 @@
       // Get the number of open accordions in the container.
       var numPanelOpen = $(this).find(".panel-collapse.in").length;
 
+      // Remove aria-expanded attribute from div added by Bootstrap,
+      // to avoid accessibility issues.
+      $(this).find(".panel-collapse").each(function() {
+        $(this).removeAttr("aria-expanded");
+      });
+
       // Get the total number of accordions in the container.
       var totalNumberPanels = $(this).find(".panel-collapse").length;
-
-      // Call the function to change the alt text of the accordion that was
-      // clicked.
-      changeAccordionAlt($(".panel-title a", this));
 
       // If the number of open accordions equals the total number of accordions
       // then the "Expand/Collapse All" button needs to be changed.
@@ -70,9 +64,11 @@
       // Get the number of open accordions in a container.
       var numPanelOpen = $(this).find(".panel-collapse.in").length;
 
-      // Call the function to change the alt text of the accordion that was
-      // clicked.
-      changeAccordionAlt($(".panel-title a", this));
+      // Remove aria-expanded attribute from div added by Bootstrap,
+      // to avoid accessibility issues.
+      $(this).find(".panel-collapse").each(function() {
+        $(this).removeAttr("aria-expanded");
+      });
 
       // If the number of open accordions equals 0 then the
       // "Expand/Collapse All" button needs to be changed.
@@ -122,20 +118,6 @@
       $(id).attr("title", Drupal.t("Click to expand all accordions in this section."));
       $(id).text(Drupal.t("Expand All"));
       $(id).toggleClass("active");
-    }
-
-    /*
-     * Take in an id parameter and use that variable to in a jQuery call to see
-     * if the accordion is open or closed then change the alt text based on the
-     * results.
-     */
-    function changeAccordionAlt(id) {
-      if ($(id).attr("aria-expanded") === 'true') {
-        $(id).attr("alt", Drupal.t("Currently open. Click to collapse this section."));
-      }
-      else {
-        $(id).attr("alt", Drupal.t("Currently closed. Click to expand this section."));
-      }
     }
 
   });

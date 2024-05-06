@@ -54,17 +54,17 @@ class Range extends Constraint
     public $maxPropertyPath;
 
     public function __construct(
-        array $options = null,
-        string $notInRangeMessage = null,
-        string $minMessage = null,
-        string $maxMessage = null,
-        string $invalidMessage = null,
-        string $invalidDateTimeMessage = null,
+        ?array $options = null,
+        ?string $notInRangeMessage = null,
+        ?string $minMessage = null,
+        ?string $maxMessage = null,
+        ?string $invalidMessage = null,
+        ?string $invalidDateTimeMessage = null,
         mixed $min = null,
-        string $minPropertyPath = null,
+        ?string $minPropertyPath = null,
         mixed $max = null,
-        string $maxPropertyPath = null,
-        array $groups = null,
+        ?string $maxPropertyPath = null,
+        ?array $groups = null,
         mixed $payload = null
     ) {
         parent::__construct($options, $groups, $payload);
@@ -95,7 +95,7 @@ class Range extends Constraint
             throw new LogicException(sprintf('The "%s" constraint requires the Symfony PropertyAccess component to use the "minPropertyPath" or "maxPropertyPath" option. Try running "composer require symfony/property-access".', static::class));
         }
 
-        if (null !== $this->min && null !== $this->max && ($minMessage || $maxMessage)) {
+        if (null !== $this->min && null !== $this->max && ($minMessage || $maxMessage || isset($options['minMessage']) || isset($options['maxMessage']))) {
             throw new ConstraintDefinitionException(sprintf('The "%s" constraint can not use "minMessage" and "maxMessage" when the "min" and "max" options are both set. Use "notInRangeMessage" instead.', static::class));
         }
     }

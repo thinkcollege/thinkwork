@@ -121,11 +121,13 @@ class EasyBreadcrumbGeneralSettingsForm extends ConfigFormBase {
     $details_general[EasyBreadcrumbConstants::USE_MENU_TITLE_AS_FALLBACK] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Use menu title when available'),
-      '#description' => $this->t('Use menu title instead of raw path component. The real page title setting above will take presidence over this setting. So, one or the other, but not both.'),
+      '#description' => $this->t('Use menu title instead of raw path component. The real page title setting above will take precedence over this setting. So, one or the other, but not both.'),
       '#default_value' => $config->get(EasyBreadcrumbConstants::USE_MENU_TITLE_AS_FALLBACK),
     ];
 
-    $menu_list = array_map(function ($menu) { return $menu->label(); }, Menu::loadMultiple());
+    $menu_list = array_map(function ($menu) {
+      return $menu->label();
+    }, Menu::loadMultiple());
     asort($menu_list);
     $details_general[EasyBreadcrumbConstants::MENU_TITLE_PREFERRED_MENU] = [
       '#type' => 'select',
@@ -137,10 +139,12 @@ class EasyBreadcrumbGeneralSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get(EasyBreadcrumbConstants::MENU_TITLE_PREFERRED_MENU),
       '#states' => [
         'disabled' => [
-          ':input[name="' . EasyBreadcrumbConstants::USE_MENU_TITLE_AS_FALLBACK . '"]' => ['checked' => FALSE],
+          ':input[name="' . EasyBreadcrumbConstants::USE_MENU_TITLE_AS_FALLBACK . '"]' 
+          => ['checked' => FALSE],
         ],
         'invisible' => [
-          ':input[name="' . EasyBreadcrumbConstants::USE_MENU_TITLE_AS_FALLBACK . '"]' => ['checked' => FALSE],
+          ':input[name="' . EasyBreadcrumbConstants::USE_MENU_TITLE_AS_FALLBACK . '"]' 
+          => ['checked' => FALSE],
         ],
       ],
     ];

@@ -70,7 +70,7 @@ class UpgradeStatusUiTest extends UpgradeStatusTestBase {
     $this->drupalGet('/admin/reports/upgrade-status/project/upgrade_status_test_error');
     $this->assertSession()->pageTextContains('Upgrade status test error');
     $this->assertSession()->pageTextContains('2 errors found. 5 warnings found.');
-    $this->assertSession()->pageTextContains('Syntax error, unexpected T_STRING on line 3');
+    $this->assertSession()->pageTextContains('Syntax error, unexpected T_STRING on line 5');
 
     // Go forward to the export page and assert that still contains the results
     // as well as an export specific title.
@@ -80,7 +80,7 @@ class UpgradeStatusUiTest extends UpgradeStatusTestBase {
     $this->assertSession()->pageTextContains('Custom projects');
     $this->assertSession()->pageTextNotContains('Contributed projects');
     $this->assertSession()->pageTextContains('2 errors found. 5 warnings found.');
-    $this->assertSession()->pageTextContains('Syntax error, unexpected T_STRING on line 3');
+    $this->assertSession()->pageTextContains('Syntax error, unexpected T_STRING on line 5');
 
     // Go back to the results page and click over to exporting in single ASCII.
     $this->drupalGet('/admin/reports/upgrade-status/project/upgrade_status_test_error');
@@ -89,7 +89,7 @@ class UpgradeStatusUiTest extends UpgradeStatusTestBase {
     $this->assertSession()->pageTextContains('CUSTOM PROJECTS');
     $this->assertSession()->pageTextNotContains('CONTRIBUTED PROJECTS');
     $this->assertSession()->pageTextContains('2 errors found. 5 warnings found.');
-    $this->assertSession()->pageTextContains('Syntax error, unexpected T_STRING on line 3');
+    $this->assertSession()->pageTextContains('Syntax error, unexpected T_STRING on line 5');
 
     // Run partial export of multiple projects.
     $edit = [
@@ -112,7 +112,7 @@ class UpgradeStatusUiTest extends UpgradeStatusTestBase {
       $this->assertSession()->pageTextNotContains('Upgrade status test root module');
       $this->assertSession()->pageTextNotContains('Upgrade status test contrib 9 compatbile');
       $this->assertSession()->pageTextContains('2 errors found. 5 warnings found.');
-      $this->assertSession()->pageTextContains('Syntax error, unexpected T_STRING on line 3');
+      $this->assertSession()->pageTextContains('Syntax error, unexpected T_STRING on line 5');
     }
   }
 

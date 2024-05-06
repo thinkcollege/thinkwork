@@ -42,7 +42,7 @@
 
 {# Renders Width field. #}
 {# Sets class name from values in database. #}
-{% if content.bp_width|render %}
+{% if paragraph.bp_width is not empty %}
   {% set layout_width = content.bp_width['#items'].getString() %}
   {% set layout_width_classes = [
     'paragraph--width--tiny' == layout_width ? 'paragraph--width--tiny',
@@ -56,7 +56,7 @@
 
 {# Renders Background field. #}
 {# Sets class name from values in database. #}
-{% if content.bp_background|render %}
+{% if paragraph.bp_background is not empty %}
   {% set layout_background = content.bp_background['#items'].getString() %}
   {% set layout_background_classes = [
     'paragraph--color paragraph--color--rgba-black-slight' == layout_background ? 'paragraph--color paragraph--color--rgba-black-slight',
@@ -133,14 +133,12 @@ view_mode ? 'paragraph--view-mode--' ~ view_mode|clean_class,
 %}
 
 {# Merges Width field with classes. #}
-{% set width_field = content.bp_width|render %}
-{% if width_field %}
+{% if paragraph.bp_width is not empty %}
   {% set classes = classes|merge(layout_width_classes) %}
 {% endif %}
 
 {# Merges Background field with classes. #}
-{% set background_field = content.bp_background|render %}
-{% if background_field %}
+{% if paragraph.bp_background is not empty %}
   {% set classes = classes|merge(layout_background_classes) %}
 {% endif %}
 
@@ -150,7 +148,7 @@ view_mode ? 'paragraph--view-mode--' ~ view_mode|clean_class,
 {# Prints div with classes, and button to trigger the modal. #}
 <div{{ attributes.addClass(classes) }}>
   <div class="paragraph__column">
-    {% if content.bp_header|render %}
+    {% if paragraph.bp_header is not empty %}
       <h2>{{ content.bp_header }}</h2>
     {% endif %}
     {# Button trigger modal #}
@@ -168,20 +166,20 @@ view_mode ? 'paragraph--view-mode--' ~ view_mode|clean_class,
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        {% if content.bp_modal_title|render %}
+        {% if paragraph.bp_modal_title is not empty %}
           <div class="modal-title" id="{{ paragraph_id }}-label">
             {{ content.bp_modal_title }}
           </div>
         {% endif %}
       </div>
-      {% if content.bp_modal_body|render %}
+      {% if paragraph.bp_modal_body is not empty %}
         <div class="modal-body">
           {% for key, item in content.bp_modal_body|filter((value, key) => key|first != '#') %}
             {{ item }}
           {% endfor %}
         </div>
       {% endif %}
-      {% if content.bp_modal_footer|render %}
+      {% if paragraph.bp_modal_footer it not empty %}
         <div class="modal-footer">
           {% for key, item in content.bp_modal_footer|filter((value, key) => key|first != '#') %}
             {{ item }}

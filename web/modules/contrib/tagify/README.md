@@ -37,7 +37,7 @@ Use one of the options below, for locally served script files.
 ### Option 1 - Download required libraries (optional installation)
 
 1. Download the required libraries.
-   - https://github.com/yairEO/tagify/releases/tag/v4.17.9
+   - https://github.com/yairEO/tagify/releases/tag/v4.26.0
 1. Extract the libraries into their corresponding folders.
    - libraries/tagify
 1. Enable the Tagify module.
@@ -52,10 +52,10 @@ Use one of the options below, for locally served script files.
           "type": "package",
           "package": {
             "name": "yaireo/tagify",
-            "version": "4.17.9",
+            "version": "4.26.0",
             "type": "drupal-library",
             "dist": {
-              "url": "https://github.com/yaireo/tagify/archive/refs/tags/v4.17.9.zip",
+              "url": "https://github.com/yaireo/tagify/archive/refs/tags/v4.26.0.zip",
               "type": "zip"
             }
           }
@@ -76,6 +76,28 @@ Use one of the options below, for locally served script files.
     ```
 1. Enable the Tagify module.
 
+## Code Quality (JS)
+
+You have the capability to execute ESLint and Prettier on this module. Simply 
+follow these steps:
+
+- Install the needed packages
+
+```bash
+yarn install
+```
+
+- Lint JS files to find errors
+
+```bash
+yarn lint:js
+```
+
+- Run Prettier script to fix errors
+
+```bash
+yarn prettier
+```
 
 ## Configuration
 
@@ -87,7 +109,6 @@ Under Tagify Widget settings, you can set Autocomplete matching to be
 "Starts with" or "Contains", the number of results, set the Suggestions
 dropdown method to be on click or when 1 character is typed, as well as
 defining a placeholder.
-
 
 ## Maintainers
 

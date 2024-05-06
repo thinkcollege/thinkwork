@@ -17,6 +17,18 @@ field.widget.settings.tagify_entity_reference_autocomplete_widget:
     show_entity_id:
       type: integer
       label: 'Include entity Id'
+    show_info_label:
+      type: integer
+      label: 'Include info label'
+    cardinality:
+      type: integer
+      label: 'Field cardinality'
+    info_label:
+      type: string
+      label: 'Info label content'
+    identifier:
+      type: string
+      label: 'Field name'
 
 better_exposed_filters.filter.bef_tagify:
   label: 'Tagify'

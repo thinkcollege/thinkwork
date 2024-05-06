@@ -3,9 +3,9 @@
 namespace Drupal\Tests\feeds\FunctionalJavascript;
 
 use Drupal\Component\Utility\Html;
+use Drupal\feeds\Entity\FeedType;
 use Drupal\feeds\FeedInterface;
 use Drupal\feeds\FeedTypeInterface;
-use Drupal\feeds\Entity\FeedType;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\Tests\feeds\Traits\FeedCreationTrait;
 use Drupal\Tests\feeds\Traits\FeedsCommonTrait;

@@ -3,8 +3,17 @@
   --tagify-dd-bg-color: var(--gin-bg-layer2);
 }
 
-.tagify:focus-within {
-  outline: none;
+.tagify.form-element--api-entity-autocomplete-tagify-user-list:focus,
+.tagify.form-element--api-entity-autocomplete-tagify-user-list:focus-within {
+  box-shadow: 0 0 0 1px var(--gin-color-focus-border), 0 0 0 4px var(--gin-color-focus) !important;
+}
+
+.tagify.form-element--api-entity-autocomplete-tagify:focus,
+.tagify.form-element--api-entity-autocomplete-tagify:focus-within {
+  box-shadow: 0 0 0 1px var(--gin-color-focus-border), 0 0 0 4px var(--gin-color-focus) !important;
+}
+
+#tagify__tag-remove-button:focus {
   box-shadow: 0 0 0 1px var(--gin-color-focus-border), 0 0 0 4px var(--gin-color-focus);
 }
 
@@ -12,16 +21,23 @@
   background: var(--gin-color-primary) !important;
 }
 
-.tagify__tag--editable .tagify__tag-entity-id {
-  background: var(--gin-color-primary-light-hover) !important;
-}
-
-.tagify__tag:focus div::before, .tagify__tag:hover:not([readonly]) div::before {
+.tagify__tag:focus div::before,
+.tagify__tag:hover:not([readonly]) div::before {
   --tag-bg: var(--gin-color-primary-light-hover) !important;
 }
 
-.tagify__tag--editable>div::before{
-  box-shadow:0 0 0 2px var(--gin-color-primary-light-hover) inset !important
+/* Loading spinner */
+.tagify--loading .tagify__input::after {
+  right: 5px;
+  width: 17px;
+  height: 17px;
+  border: 2px solid var(--gin-bg-input);
+  border-top: 2px solid var(--gin-color-primary);
+  border-radius: 50%;
+}
+
+.tagify--loading-text {
+  color: var(--gin-color-primary);
 }
 
 /* Gin dark mode */
@@ -39,10 +55,6 @@
   background: #dedfe4;
 }
 
-.gin--dark-mode .tagify__tag--editable #tagify__tag-remove-button {
-  background: none !important;
-}
-
 .gin--dark-mode .tagify__dropdown__item--active {
   color: var(--gin-color-primary-hover) !important;
   background-color: var(--gin-bg-item-hover) !important;
@@ -58,3 +70,19 @@
   background-color: var(--gin-bg-layer);
 }
 
+.gin--dark-mode .tagify__tag-entity-id,
+.gin--dark-mode #tagify__tag__entity-id-wrap,
+.gin--dark-mode #tagify__tag__info-label-wrap {
+  color: var(--gin-color-text);
+  background-color: #55565b;
+}
+
+.gin--dark-mode #tagify__tag-items .tagify__tag__info-label-wrap {
+  transition: none;
+}
+
+.gin--dark-mode .tagify__tag:hover > #tagify__tag-items .tagify__tag-entity-id,
+.gin--dark-mode .tagify__tag:hover > #tagify__tag-items .tagify__tag__info-label-wrap {
+  color: #55565b;
+  background-color: var(--gin-color-text);
+}

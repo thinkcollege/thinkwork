@@ -41,7 +41,7 @@
 
 {# Renders Card Style field. #}
 {# Sets class name from values in database. #}
-{% if content.bp_card_style|render %}
+{% if paragraph.bp_card_style is not empty %}
   {% set card_style = content.bp_card_style['#items'].getString() %}
   {% set card_style_classes = [
     'card--large-top' == card_style ? 'card--large-top',
@@ -61,8 +61,7 @@ view_mode ? 'paragraph--view-mode--' ~ view_mode|clean_class,
 %}
 
 {# Merges Card Style field with classes. #}
-{% set card_style_field = content.bp_card_style|render %}
-{% if card_style_field %}
+{% if paragraph.bp_card_style is not empty %}
   {% set classes = classes|merge(card_style_classes) %}
 {% endif %}
 
@@ -70,26 +69,26 @@ view_mode ? 'paragraph--view-mode--' ~ view_mode|clean_class,
 {% set paragraph_id = 'card-' ~ paragraph.id.value %}
 
 {# Pulls out the Card Link if it exists and renders the URL in this link. #}
-{% if content.bp_card_link[0]['#url']|render %}
+{% if paragraph.bp_card_link is not empty %}
   <a href="{{ content.bp_card_link[0]['#url'] }}">
 {% endif %}
 {# Prints Card template. #}
   <div{{ attributes.addClass(classes).setAttribute('id', paragraph_id) }}>
-    {% if content.bp_card_image|render %}
+    {% if paragraph.bp_card_image is not empty %}
       <div class="card-image">
         <h2>{{ content.bp_card_image }}</h2>
       </div>
     {% endif %}
     <div class="card-body">
-      {% if content.bp_card_title|render %}
+      {% if paragraph.bp_card_title is not empty %}
         <div class="card-title">{{ content.bp_card_title }}</div>
       {% endif %}
-      {% if content.bp_card_text|render %}
+      {% if paragraph.bp_card_text is not empty %}
         <div class="card-text">{{ content.bp_card_text }}</div>
       {% endif %}
       {{ content|without('bp_card_image', 'bp_card_link', 'bp_card_style', 'bp_card_text', 'bp_card_title') }}
     </div>
   </div>
-{% if content.bp_card_link[0]['#url']|render %}
+{% if paragraph.bp_card_link is not empty %}
   </a>
 {% endif %}

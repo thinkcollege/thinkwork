@@ -21,6 +21,11 @@
   display: none;
 }
 
+.ck-imce-image-wrp > .ck.ck-input {
+  min-width: auto;
+  flex: 1;
+}
+
 .ck-imce-image-button:before,
 .ck-imce-link-button:before {
   content: '';

@@ -6,7 +6,7 @@ core_version_requirement: ^8.8 || ^9 || ^10
 dependencies:
   - drupal:taxonomy
 
-# Information added by Drupal.org packaging script on 2024-01-20
-version: '1.2.4'
+# Information added by Drupal.org packaging script on 2024-04-29
+version: '1.2.12'
 project: 'tagify'
-datestamp: 1705752139
+datestamp: 1714383521

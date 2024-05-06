@@ -4,11 +4,12 @@ namespace Drupal\easy_breadcrumb;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class EasyBreadcrumbStructuredDataJsonLd.
+ * Generates structured data in JSON-LD format for Easy Breadcrumb.
  *
  * @package Drupal\easy_breadcrumb
  */
@@ -36,6 +37,13 @@ class EasyBreadcrumbStructuredDataJsonLd implements ContainerInjectionInterface 
   protected $routeMatch;
 
   /**
+   * The module handler to invoke the alter hook.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * EasyBreadcrumbStructuredDataJsonLd constructor.
    *
    * @param \Drupal\easy_breadcrumb\EasyBreadcrumbBuilder $easy_breadcrumb_builder
@@ -44,11 +52,14 @@ class EasyBreadcrumbStructuredDataJsonLd implements ContainerInjectionInterface 
    *   The config factory.
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The route match.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler;.
    */
-  public function __construct(EasyBreadcrumbBuilder $easy_breadcrumb_builder, ConfigFactoryInterface $config_factory, RouteMatchInterface $route_match) {
+  public function __construct(EasyBreadcrumbBuilder $easy_breadcrumb_builder, ConfigFactoryInterface $config_factory, RouteMatchInterface $route_match, ModuleHandlerInterface $module_handler) {
     $this->easyBreadcrumbBuilder = $easy_breadcrumb_builder;
     $this->configFactory = $config_factory;
     $this->routeMatch = $route_match;
+    $this->moduleHandler = $module_handler;
   }
 
   /**
@@ -58,7 +69,8 @@ class EasyBreadcrumbStructuredDataJsonLd implements ContainerInjectionInterface 
     return new static(
       $container->get('easy_breadcrumb.breadcrumb'),
       $container->get('config.factory'),
-      $container->get('current_route_match')
+      $container->get('current_route_match'),
+      $container->get('module_handler')
     );
   }
 
@@ -74,6 +86,11 @@ class EasyBreadcrumbStructuredDataJsonLd implements ContainerInjectionInterface 
 
       /** @var \Drupal\Core\Breadcrumb\Breadcrumb $breadcrumb */
       $breadcrumb = $this->easyBreadcrumbBuilder->build($this->routeMatch);
+
+      // Allow modules to alter the breadcrumb.
+      $context = ['builder' => $this->easyBreadcrumbBuilder];
+      $this->moduleHandler->alter('system_breadcrumb', $breadcrumb, $this->routeMatch, $context);
+
       $links = $breadcrumb->getLinks();
 
       // Only fire if at least one link present.

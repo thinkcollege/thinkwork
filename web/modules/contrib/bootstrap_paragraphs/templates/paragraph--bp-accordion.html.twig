@@ -42,7 +42,7 @@
 
 {# Renders Width field. #}
 {# Sets class name from values in database. #}
-{% if content.bp_width|render %}
+{% if paragraph.bp_width is not empty %}
   {% set layout_width = content.bp_width['#items'].getString() %}
   {% set layout_width_classes = [
     'paragraph--width--tiny' == layout_width ? 'paragraph--width--tiny',
@@ -56,7 +56,7 @@
 
 {# Renders Background field. #}
 {# Sets class name from values in database. #}
-{% if content.bp_background|render %}
+{% if paragraph.bp_background is not empty %}
   {% set layout_background = content.bp_background['#items'].getString() %}
   {% set layout_background_classes = [
     'paragraph--color paragraph--color--rgba-black-slight' == layout_background ? 'paragraph--color paragraph--color--rgba-black-slight',
@@ -134,14 +134,12 @@ accordion_active ? 'paragraph--accordion_active--',
 %}
 
 {# Merges Width field with classes. #}
-{% set width_field = content.bp_width|render %}
-{% if width_field %}
+{% if paragraph.bp_width is not empty %}
   {% set classes = classes|merge(layout_width_classes) %}
 {% endif %}
 
 {# Merges Background field with classes. #}
-{% set background_field = content.bp_background|render %}
-{% if background_field %}
+{% if paragraph.bp_background is not empty %}
   {% set classes = classes|merge(layout_background_classes) %}
 {% endif %}
 
@@ -156,8 +154,8 @@ accordion_active ? 'paragraph--accordion_active--',
     </button>
   {% endif %}
   <div{{ attributes.addClass(classes) }}>
-    <div class="paragraph__column" id="{{ paragraph_id }}" role="tablist" aria-multiselectable="true">
-      {% if content.bp_header|render %}
+    <div class="paragraph__column" id="{{ paragraph_id }}">
+      {% if paragraph.bp_header is not empty %}
         <h2>{{ content.bp_header }}</h2>
       {% endif %}
       <div class="card panel panel-default">
@@ -176,15 +174,15 @@ accordion_active ? 'paragraph--accordion_active--',
             {% set show_accordion = '' %}
             {% set aria = 'false' %}
           {% endif %}
-          <div class="card-header panel-heading" role="tab" id="heading-{{ paragraph_id }}-{{ key + 1 }}">
+          <div class="card-header panel-heading" id="heading-{{ paragraph_id }}-{{ key + 1 }}">
             <div class="panel-title">
-              <a class="{{ (indicator_class) }}" role="button" data-toggle="collapse" data-parent="#{{ paragraph_id }}" href="#collapse-{{ paragraph_id }}-{{ key + 1 }}" aria-expanded="{{ aria }}" aria-controls="collapse-{{ paragraph_id }}-{{ key + 1 }}">
+              <button class="{{ (indicator_class) }}" data-toggle="collapse" data-parent="#{{ paragraph_id }}" href="#collapse-{{ paragraph_id }}-{{ key + 1 }}" aria-expanded="{{ aria }}" aria-controls="collapse-{{ paragraph_id }}-{{ key + 1 }}">
                 {# Print the accordion section title. #}
                 {{ item['#paragraph'].bp_accordion_section_title.value }}
-              </a>
+              </button>
             </div>
           </div>
-          <div id="collapse-{{ paragraph_id }}-{{ key + 1 }}" class="card-block panel-collapse collapse{{ show_accordion }}" role="tabpanel" aria-labelledby="heading-{{ paragraph_id }}-{{ key + 1 }}">
+          <div id="collapse-{{ paragraph_id }}-{{ key + 1 }}" class="card-block panel-collapse collapse{{ show_accordion }}" aria-labelledby="heading-{{ paragraph_id }}-{{ key + 1 }}">
             {# Loop through all of the accordion section bodies. #}
             {% for body_key, body_item in item['#paragraph'].bp_accordion_section_body %}
               {# Use the same render array as item and set the '#paragraph'. #}

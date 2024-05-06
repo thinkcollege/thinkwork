@@ -34,6 +34,8 @@ use Drupal\image\Entity\ImageStyle;
  *   - uid: User ID to use as the author of auto-created entities. Defaults to
  *     the current user.
  *  - #max_items: (optional) The maximum number of items that will be shown.
+ *  - #suggestions_dropdown: (required) The method uses to show the suggestions
+ *     dropdown.
  *  - #match_operator: (required) The autocomplete matching option.
  *
  * Usage example:
@@ -52,6 +54,7 @@ use Drupal\image\Entity\ImageStyle;
  *    'uid' => <a valid user ID>,
  *   ],
  *  '#max_items' => 10,
+ *  '#suggestions_dropdown' => 1,
  *  '#max_operator' => 'CONTAINS',
  * ];
  * @endcode
@@ -66,20 +69,19 @@ class EntityAutocompleteTagifyUserList extends Textfield {
    * {@inheritdoc}
    */
   public function getInfo() {
-    $info = parent::getInfo();
     $class = static::class;
+    $info = parent::getInfo();
 
     $info['#maxlength'] = NULL;
-
     $info['#autocreate'] = NULL;
     $info['#cardinality'] = -1;
-
     $info['#max_items'] = 10;
-
+    $info['#suggestions_dropdown'] = 1;
     $info['#target_type'] = NULL;
     $info['#selection_handler'] = 'default';
     $info['#selection_settings_key'] = [];
     $info['#match_operator'] = 'CONTAINS';
+    $info['#identifier'] = '';
 
     array_unshift(
       $info['#process'],
@@ -110,31 +112,49 @@ class EntityAutocompleteTagifyUserList extends Textfield {
   public static function processEntityAutocompleteTagifyUserList(array &$element, FormStateInterface $form_state, array &$complete_form) {
     $element['#attached'] = [
       'library' => [
-        'tagify_user_list/user_list',
-        'tagify/default',
         'tagify/tagify',
+        'tagify/default',
         'tagify/tagify_polyfils',
-        'tagify/tagify_jquery',
-        'tagify/dragsort',
+        'tagify_user_list/user_list',
       ],
     ];
+
+    if (_tagify_is_gin_theme_active()) {
+      $element['#attached']['library'][] = 'tagify/gin';
+    }
+
+    if (_tagify_is_claro_theme_active()) {
+      $element['#attached']['library'][] = 'tagify/claro';
+    }
 
     if (!isset($element['#attributes']['class'])) {
       $element['#attributes']['class'] = [];
     }
     $element['#attributes']['class'][] = 'tagify-user-list-widget';
 
+    // Find the index of 'tagify-widget' class in the array.
+    $index = array_search('tagify-widget', $element['#attributes']['class'], FALSE);
+    // Remove the 'tagify-widget' class if it exists.
+    if ($index !== FALSE) {
+      unset($element['#attributes']['class'][$index]);
+    }
+    // Re-index the array after removing the class.
+    $element['#attributes']['class'] = array_values($element['#attributes']['class']);
+
+    // Add Tagify attributes.
     if ($element['#max_items']) {
       $element['#attributes']['data-max-items'] = $element['#max_items'];
     }
-
+    $element['#attributes']['data-suggestions-dropdown'] = $element['#suggestions_dropdown'];
     $element['#attributes']['data-match-operator'] = ($element['#match_operator'] === 'CONTAINS') ? 1 : 0;
-
+    $element['#attributes']['data-placeholder'] = $element['#placeholder'];
+    $element['#attributes']['data-identifier'] = $element['#field_name'];
     $element['#attributes']['data-autocomplete-url'] = Url::fromRoute('tagify_user_list.entity_autocomplete', [
       'target_type' => $element['#target_type'],
       'selection_handler' => $element['#selection_handler'],
       'selection_settings_key' => $element['#selection_settings_key'],
     ])->toString();
+    $element['#attributes']['cardinality'] = $element['#cardinality'];
 
     return $element;
   }
@@ -147,32 +167,21 @@ class EntityAutocompleteTagifyUserList extends Textfield {
     if ($input === FALSE && isset($element['#default_value']) && $element['#default_value']) {
       // Extract the labels from the passed-in entity objects, taking access
       // checks into account.
-      return static::getTagifyDefaultValue($element['#default_value']);
+      return static::getTagifyDefaultValue($element['#default_value'], $element['#info_label']);
     }
 
     // Potentially the #value is set directly, so it contains the 'target_id'
     // array structure instead of a string.
     if (FALSE !== $input && is_array($input)) {
-      $entity_ids = array_map(function (array $item) {
+      $entity_ids = array_map(static function (array $item) {
         return $item['target_id'];
       }, $input);
-
       $entities = \Drupal::entityTypeManager()->getStorage($element['#target_type'])->loadMultiple($entity_ids);
 
-      return static::getTagifyDefaultValue($entities);
+      return static::getTagifyDefaultValue($entities, $element['#info_label']);
     }
 
-    // Potentially the #value is set directly, so it contains the 'target_id'
-    // array structure instead of a string.
-    if ($input !== FALSE && is_array($input)) {
-      $entity_ids = array_map(function (array $item) {
-        return $item['target_id'];
-      }, $input);
-
-      $entities = \Drupal::entityTypeManager()->getStorage($element['#target_type'])->loadMultiple($entity_ids);
-
-      return static::getTagifyDefaultValue($entities);
-    }
+    return NULL;
   }
 
   /**
@@ -183,49 +192,77 @@ class EntityAutocompleteTagifyUserList extends Textfield {
    *
    * @param \Drupal\Core\Entity\EntityInterface[] $entities
    *   An array of entity objects.
+   * @param string $info_label_template
+   *   The extra information to be shown below the entity label.
    *
    * @return false|string
    *   The tagify default values array. Associative array with at least the
    *   following keys:
+   *   - 'value':
+   *     The text to be shown in the autocomplete and tagify, IE: "My label"
    *   - 'entity_id':
    *     The referenced entity ID.
-   *   - 'label':
-   *     The text to be shown in the autocomplete and tagify, IE: "My label"
+   *   - 'info_label':
+   *     The extra information to be shown below the entity label.
+   *   - 'avatar':
+   *     The user image.
    */
-  public static function getTagifyDefaultValue(array $entities) {
+  public static function getTagifyDefaultValue(array $entities, string $info_label_template) {
+    $default_value = [];
     /** @var \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository */
     $entity_repository = \Drupal::service('entity.repository');
-    $default_value = [];
     foreach ($entities as $entity) {
+      /** @var \Drupal\Core\Entity\EntityInterface $entity */
       // Set the entity in the correct language for display.
       $entity = $entity_repository->getTranslationFromContext($entity);
-
       if ($entity->getEntityTypeId() !== 'user') {
-        return NULL;
+        return FALSE;
       }
-
       // Use the special view label, since some entities allow the label to be
       // viewed, even if the entity is not allowed to be viewed.
-      $label = ($entity->access('view label')) ? $entity->label() : t('- Restricted access -');
+      $label = ($entity->access('view label'))
+        ? $entity->label()
+        : t('- Restricted access -');
       // Get image path.
       $image_url = '';
+      /** @var \Drupal\Core\Entity\FieldableEntityInterface $entity */
       if ($entity->hasField('user_picture')
         && !$entity->get('user_picture')->isEmpty()
       ) {
+        /** @var \Drupal\file\FileInterface $user_image */
         $user_image = $entity->get('user_picture')->entity;
         $image_style = 'thumbnail';
+        /** @var \Drupal\image\Entity\ImageStyle $style */
         $style = ImageStyle::load($image_style);
-        $image_url = $style
-          ? $style->buildUrl($user_image->getFileUri())
-          : '';
+        $image_url = $style->buildUrl($user_image->getFileUri());
       }
-      $tagify_user_list_path = \Drupal::service('extension.list.module')->getPath('tagify_user_list');
+      $tagify_user_list_path = \Drupal::service('extension.list.module')
+        ->getPath('tagify_user_list');
+
+      $info_label = \Drupal::token()->replacePlain(
+        $info_label_template,
+        [
+          $entity->getEntityTypeId() => $entity,
+        ],
+        [
+          'clear' => TRUE,
+        ]
+      );
+      $info_label = trim(preg_replace('/\s+/', ' ', $info_label));
+
+      $context = ['entity' => $entity, 'info_label' => $info_label_template];
+      \Drupal::moduleHandler()->alter('tagify_autocomplete_match', $label, $info_label, $context);
+
+      if ($label === NULL) {
+        continue;
+      }
 
       $default_value[] = [
         'value' => $label,
         'entity_id' => $entity->id(),
-        'email' => is_null($entity->getEmail()) ? '' : $entity->getEmail(),
+        'info_label' => $info_label,
         'avatar' => $image_url ?: '/' . $tagify_user_list_path . '/images/no-user.svg',
+        'editable' => FALSE,
       ];
     }
 

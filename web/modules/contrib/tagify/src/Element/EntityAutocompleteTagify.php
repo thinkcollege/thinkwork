@@ -37,6 +37,9 @@ use Drupal\Core\Url;
  *     dropdown.
  *  - #match_operator: (required) The autocomplete matching option.
  *  - #show_entity_id: (optional) The method uses to show the entity id.
+ *  - #info_label: (optional) The extra information that will be shown next to
+ *     the entity label.
+ *  - #identifier: The field name.
  *
  * Usage example:
  * @code
@@ -44,7 +47,7 @@ use Drupal\Core\Url;
  *  '#type' => 'entity_autocomplete_tagify',
  *  '#target_type' => 'node',
  *  '#tags' => TRUE,
- *  '#default_value' => [['value' => 'entity label', 'entity_id' => 1]],
+ *  '#default_value' => [['value' => 1, 'entity_id' => 1, 'label' => 'entity label']],
  *  '#selection_handler' => 'default',
  *  '#selection_settings' => [
  *    'target_bundles' => ['article', 'page'],
@@ -57,6 +60,8 @@ use Drupal\Core\Url;
  *  '#suggestions_dropdown' => 1,
  *  '#match_operator' => 'CONTAINS,
  *  '#show_entity_id' => 0,
+ *  '#info_label' => '[node:type]',
+ *  '#identifier' => 'field_name',
  * ];
  * @endcode
  *
@@ -86,6 +91,8 @@ class EntityAutocompleteTagify extends Textfield {
     $info['#suggestions_dropdown'] = 1;
     $info['#match_operator'] = 'CONTAINS';
     $info['#show_entity_id'] = 0;
+    $info['#info_label'] = '';
+    $info['#identifier'] = '';
 
     array_unshift($info['#process'], [$class, 'processEntityAutocompleteTagify']);
 
@@ -114,10 +121,8 @@ class EntityAutocompleteTagify extends Textfield {
     $element['#attached'] = [
       'library' => [
         'tagify/tagify',
-        'tagify/tagify_polyfils',
-        'tagify/tagify_jquery',
-        'tagify/dragsort',
         'tagify/default',
+        'tagify/tagify_polyfils',
       ],
     ];
 
@@ -143,18 +148,16 @@ class EntityAutocompleteTagify extends Textfield {
     }
 
     $element['#attributes']['data-suggestions-dropdown'] = $element['#suggestions_dropdown'];
-
     $element['#attributes']['data-match-operator'] = ($element['#match_operator'] === 'CONTAINS') ? 1 : 0;
-
     $element['#attributes']['data-placeholder'] = $element['#placeholder'];
-
     $element['#attributes']['data-show-entity-id'] = $element['#show_entity_id'];
-
+    $element['#attributes']['data-identifier'] = $element['#field_name'];
     $element['#attributes']['data-autocomplete-url'] = Url::fromRoute('tagify.entity_autocomplete', [
       'target_type' => $element['#target_type'],
       'selection_handler' => $element['#selection_handler'],
       'selection_settings_key' => $element['#selection_settings_key'],
     ])->toString();
+    $element['#attributes']['cardinality'] = $element['#cardinality'];
 
     return $element;
   }
@@ -167,7 +170,7 @@ class EntityAutocompleteTagify extends Textfield {
     if ($input === FALSE && isset($element['#default_value']) && $element['#default_value']) {
       // Extract the labels from the passed-in entity objects, taking access
       // checks into account.
-      return static::getTagifyDefaultValue($element['#default_value']);
+      return static::getTagifyDefaultValue($element['#default_value'], $element['#info_label'] ?? '');
     }
 
     // Potentially the #value is set directly, so it contains the 'target_id'
@@ -178,7 +181,7 @@ class EntityAutocompleteTagify extends Textfield {
       }, $input);
       $entities = \Drupal::entityTypeManager()->getStorage($element['#target_type'])->loadMultiple($entity_ids);
 
-      return static::getTagifyDefaultValue($entities);
+      return static::getTagifyDefaultValue($entities, $element['#info_label'] ?? '');
     }
 
     return NULL;
@@ -192,29 +195,58 @@ class EntityAutocompleteTagify extends Textfield {
    *
    * @param \Drupal\Core\Entity\EntityInterface[] $entities
    *   An array of entity objects.
+   * @param string $info_label_template
+   *   The extra information that will be shown next to the entity label.
    *
    * @return false|string
    *   The tagify default values array. Associative array with at least the
    *   following keys:
-   *   - 'entity_id':
-   *     The referenced entity ID.
+   *   - 'value':
+   *     The referenced entity ID, IE: 1.
    *   - 'label':
    *     The text to be shown in the autocomplete and tagify, IE: "My label"
+   *   - 'entity_id':
+   *     The referenced entity ID, IE: 1.
+   *   - 'info_label':
+   *     The extra information to be shown next to the entity label.
    */
-  public static function getTagifyDefaultValue(array $entities) {
+  public static function getTagifyDefaultValue(array $entities, string $info_label_template) {
     /** @var \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository */
     $entity_repository = \Drupal::service('entity.repository');
     $default_value = [];
     foreach ($entities as $entity) {
       // Set the entity in the correct language for display.
+      /** @var \Drupal\Core\Entity\EntityInterface $entity */
       $entity = $entity_repository->getTranslationFromContext($entity);
+      $entity_id = $entity->id();
       // Use the special view label, since some entities allow the label to be
       // viewed, even if the entity is not allowed to be viewed.
       $label = ($entity->access('view label')) ? $entity->label() : t('- Restricted access -');
 
+      $info_label = \Drupal::token()->replacePlain(
+        $info_label_template,
+        [
+          $entity->getEntityTypeId() => $entity,
+        ],
+        [
+          'clear' => TRUE,
+        ]
+      );
+      $info_label = trim(preg_replace('/\s+/', ' ', $info_label));
+
+      $context = ['entity' => $entity, 'info_label' => $info_label_template];
+      \Drupal::moduleHandler()->alter('tagify_autocomplete_match', $label, $info_label, $context);
+
+      if ($label === NULL) {
+        continue;
+      }
+
       $default_value[] = [
-        'value' => $label,
-        'entity_id' => $entity->id(),
+        'value' => $entity_id,
+        'label' => $label,
+        'entity_id' => $entity_id,
+        'info_label' => $info_label,
+        'editable' => FALSE,
       ];
     }
 

@@ -57,14 +57,18 @@ class Email extends Constraint
     public $normalizer;
 
     public function __construct(
-        array $options = null,
-        string $message = null,
-        string $mode = null,
-        callable $normalizer = null,
-        array $groups = null,
+        ?array $options = null,
+        ?string $message = null,
+        ?string $mode = null,
+        ?callable $normalizer = null,
+        ?array $groups = null,
         mixed $payload = null
     ) {
         if (\is_array($options) && \array_key_exists('mode', $options) && !\in_array($options['mode'], self::VALIDATION_MODES, true)) {
+            throw new InvalidArgumentException('The "mode" parameter value is not valid.');
+        }
+
+        if (null !== $mode && !\in_array($mode, self::VALIDATION_MODES, true)) {
             throw new InvalidArgumentException('The "mode" parameter value is not valid.');
         }
 

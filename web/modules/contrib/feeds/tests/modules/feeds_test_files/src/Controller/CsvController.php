@@ -118,7 +118,7 @@ class CsvController extends ControllerBase {
    */
   public function nodes() {
     // Check if there needs to be a delay.
-    $delay = \Drupal::state()->get('feeds_timeout');
+    $delay = $this->state->get('feeds_timeout');
     if (is_numeric($delay) && $delay > 0) {
       sleep($delay);
     }

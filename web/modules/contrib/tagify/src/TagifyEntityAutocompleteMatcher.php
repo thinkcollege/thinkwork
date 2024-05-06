@@ -6,6 +6,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Utility\Token;
 
 /**
  * Matcher class to get autocompletion results for entity reference.
@@ -34,6 +35,13 @@ class TagifyEntityAutocompleteMatcher implements TagifyEntityAutocompleteMatcher
   protected $entityTypeManager;
 
   /**
+   * The token service.
+   *
+   * @var \Drupal\Core\Utility\Token
+   */
+  protected $token;
+
+  /**
    * Constructs a TagifyEntityAutocompleteMatcher object.
    *
    * @param \Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface $selection_manager
@@ -42,11 +50,19 @@ class TagifyEntityAutocompleteMatcher implements TagifyEntityAutocompleteMatcher
    *   The module handler service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
+   * @param \Drupal\Core\Utility\Token $token
+   *   The token service.
    */
-  public function __construct(SelectionPluginManagerInterface $selection_manager, ModuleHandlerInterface $module_handler, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(
+    SelectionPluginManagerInterface $selection_manager,
+    ModuleHandlerInterface $module_handler,
+    EntityTypeManagerInterface $entity_type_manager,
+    Token $token,
+  ) {
     $this->selectionManager = $selection_manager;
     $this->moduleHandler = $module_handler;
     $this->entityTypeManager = $entity_type_manager;
+    $this->token = $token;
   }
 
   /**
@@ -74,33 +90,44 @@ class TagifyEntityAutocompleteMatcher implements TagifyEntityAutocompleteMatcher
    */
   public function getMatches($target_type, $selection_handler, array $selection_settings, $string = '', array $selected = []) {
     $matches = [];
-
+    $storage = $this->entityTypeManager->getStorage($target_type);
     $options = $selection_settings + [
       'target_type' => $target_type,
       'handler' => $selection_handler,
     ];
     $handler = $this->selectionManager->getInstance($options);
-
-    // Get an array of matching entities.
-    $match_operator = !empty($selection_settings['match_operator']) ? $selection_settings['match_operator'] : 'CONTAINS';
-    $match_limit = isset($selection_settings['match_limit']) ? (int) $selection_settings['match_limit'] : 10;
-    $entity_labels = $handler->getReferenceableEntities($string, $match_operator, ($match_limit === 0) ? $match_limit : $match_limit + count($selected));
-    // Loop through the entities and convert them into autocomplete output.
-    foreach ($entity_labels as $bundle => $values) {
-      foreach ($values as $entity_id => $label) {
-        // Filter out already selected items.
-        if (in_array($entity_id, $selected)) {
-          continue;
+    if ($handler !== FALSE) {
+      // Get an array of matching entities.
+      $match_operator = !empty($selection_settings['match_operator']) ? $selection_settings['match_operator'] : 'CONTAINS';
+      $match_limit = isset($selection_settings['match_limit']) ? (int) $selection_settings['match_limit'] : 10;
+      $entity_labels = $handler->getReferenceableEntities($string, $match_operator, ($match_limit === 0) ? $match_limit : $match_limit + count($selected));
+      // Loop through the entities and convert them into autocomplete output.
+      foreach ($entity_labels as $values) {
+        foreach ($values as $entity_id => $label) {
+          // Filter out already selected items.
+          if (in_array($entity_id, $selected)) {
+            continue;
+          }
+          $info_label = NULL;
+          $entity = $storage->load($entity_id);
+          if (!empty($selection_settings['info_label'])) {
+            $info_label = $this->token->replacePlain($selection_settings['info_label'], [$target_type => $entity], ['clear' => TRUE]);
+            $info_label = trim(preg_replace('/\s+/', ' ', $info_label));
+          }
+          $context = $options + ['entity' => $entity];
+          $this->moduleHandler->alter('tagify_autocomplete_match', $label, $info_label, $context);
+          if ($label !== NULL) {
+            $matches[$entity_id] = $this->buildTagifyItem($entity_id, $label, $info_label);
+          }
         }
-        $matches[$entity_id] = $this->buildTagifyItem($entity_id, $label, $bundle);
       }
-    }
 
-    if ($match_limit > 0) {
-      $matches = array_slice($matches, 0, $match_limit, TRUE);
-    }
+      if ($match_limit > 0) {
+        $matches = array_slice($matches, 0, $match_limit, TRUE);
+      }
 
-    $this->moduleHandler->alter('tagify_autocomplete_matches', $matches, $options);
+      $this->moduleHandler->alterDeprecated('Use hook_tagify_autocomplete_match_alter() instead.', 'tagify_autocomplete_matches', $matches, $options);
+    }
 
     return array_values($matches);
   }
@@ -113,18 +140,19 @@ class TagifyEntityAutocompleteMatcher implements TagifyEntityAutocompleteMatcher
    *   - 'entity_id':
    *     The referenced entity ID.
    *   - 'label':
-   *     The text to be shown in hte autocomplete and tagify, IE: "My label"
-   *   - 'type':
-   *     The type of the entity being represented., IE: tags
+   *     The text to be shown in the autocomplete and tagify, IE: "My label"
+   *   - 'info_label':
+   *     The extra information to be shown next to the entity label.
    *   - 'attributes':
    *     A key-value array of extra properties sent directly to tagify, IE:
    *     ['--tag-bg' => '#FABADA']
    */
-  protected function buildTagifyItem($entity_id, $label, $bundle): array {
+  protected function buildTagifyItem($entity_id, $label, $info_label): array {
     return [
       'entity_id' => $entity_id,
       'label' => Html::decodeEntities($label),
-      'type' => $bundle,
+      'info_label' => $info_label,
+      'editable' => FALSE,
     ];
   }
 

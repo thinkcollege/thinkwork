@@ -16,7 +16,7 @@ use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
  *
  * @covers \PHP_CodeSniffer\Standards\Squiz\Sniffs\ControlStructures\ForLoopDeclarationSniff
  */
-class ForLoopDeclarationUnitTest extends AbstractSniffUnitTest
+final class ForLoopDeclarationUnitTest extends AbstractSniffUnitTest
 {
 
 
@@ -33,7 +33,7 @@ class ForLoopDeclarationUnitTest extends AbstractSniffUnitTest
     public function getErrorList($testFile='')
     {
         switch ($testFile) {
-        case 'ForLoopDeclarationUnitTest.inc':
+        case 'ForLoopDeclarationUnitTest.1.inc':
             return [
                 8   => 2,
                 11  => 2,
@@ -121,8 +121,9 @@ class ForLoopDeclarationUnitTest extends AbstractSniffUnitTest
     public function getWarningList($testFile='')
     {
         switch ($testFile) {
-        case 'ForLoopDeclarationUnitTest.inc':
-            return [129 => 1];
+        case 'ForLoopDeclarationUnitTest.2.inc':
+        case 'ForLoopDeclarationUnitTest.3.inc':
+            return [6 => 1];
 
         case 'ForLoopDeclarationUnitTest.js':
             return [125 => 1];

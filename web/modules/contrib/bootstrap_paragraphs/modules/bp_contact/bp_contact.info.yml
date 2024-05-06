@@ -9,7 +9,7 @@ dependencies:
   - drupal:contact
   - paragraphs:paragraphs
 
-# Information added by Drupal.org packaging script on 2023-09-05
-version: '8.x-2.0-beta8'
+# Information added by Drupal.org packaging script on 2024-03-29
+version: '8.x-2.0-beta9'
 project: 'bootstrap_paragraphs'
-datestamp: 1693918049
+datestamp: 1711722190

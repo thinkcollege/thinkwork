@@ -85,7 +85,7 @@ class TagifyEntityAutocompleteController extends ControllerBase {
       // stored in the key/value store.
       $selection_settings = $this->keyValue('entity_autocomplete')->get($selection_settings_key, FALSE);
       // Validate the autocomplete minimum length.
-      if ($input === '' && $selection_settings['suggestions_dropdown'] !== 0) {
+      if ($input === '' && $selection_settings['suggestions_dropdown']) {
         return new JsonResponse([]);
       }
 

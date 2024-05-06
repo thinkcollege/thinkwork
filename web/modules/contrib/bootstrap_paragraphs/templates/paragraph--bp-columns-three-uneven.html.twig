@@ -43,7 +43,7 @@
 
 {# Renders Width field. #}
 {# Sets class name from values in database. #}
-{% if content.bp_width|render %}
+{% if paragraph.bp_width is not empty %}
   {% set layout_width = content.bp_width['#items'].getString() %}
   {% set layout_width_classes = [
     'paragraph--width--tiny' == layout_width ? 'paragraph--width--tiny',
@@ -57,7 +57,7 @@
 
 {# Renders Background field. #}
 {# Sets class name from values in database. #}
-{% if content.bp_background|render %}
+{% if paragraph.bp_background is not empty %}
   {% set layout_background = content.bp_background['#items'].getString() %}
   {% set layout_background_classes = [
     'paragraph--color paragraph--color--rgba-black-slight' == layout_background ? 'paragraph--color paragraph--color--rgba-black-slight',
@@ -124,7 +124,7 @@
 
 {# Renders Column Style field. #}
 {# Sets class name from values in database. #}
-{% if content.bp_column_style_3|render %}
+{% if paragraph.bp_column_style_3 is not empty %}
   {% set column_style_3 = content.bp_column_style_3['#items'].getString() %}
   {% set column_style_3_classes = [
     'paragraph--style--25-50-25' == column_style_3 ? 'paragraph--style--25-50-25',
@@ -149,27 +149,24 @@ view_mode ? 'paragraph--view-mode--' ~ view_mode|clean_class,
 %}
 
 {# Merges Width field with classes. #}
-{% set width_field = content.bp_width|render %}
-{% if width_field %}
+{% if paragraph.bp_width is not empty %}
   {% set classes = classes|merge(layout_width_classes) %}
 {% endif %}
 
 {# Merges Background field with classes. #}
-{% set background_field = content.bp_background|render %}
-{% if background_field %}
+{% if paragraph.bp_background is not empty %}
   {% set classes = classes|merge(layout_background_classes) %}
 {% endif %}
 
 {# Merges Column Style field with classes. #}
-{% set column_style_field = content.bp_column_style_3|render %}
-{% if column_style_field %}
+{% if paragraph.bp_column_style_3 is not empty %}
   {% set classes = classes|merge(column_style_3_classes) %}
 {% endif %}
 
 {# Prints div with classes, and content without Width and Background. #}
 <div{{ attributes.addClass(classes) }}>
   <div class="paragraph__column">
-    {% if content.bp_header|render %}
+    {% if paragraph.bp_header is not empty %}
       <h2>{{ content.bp_header }}</h2>
     {% endif %}
     {{ content|without('bp_background', 'bp_header', 'bp_column_style_3','bp_width') }}

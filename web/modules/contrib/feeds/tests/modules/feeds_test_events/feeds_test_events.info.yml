@@ -3,4 +3,4 @@ type: module
 description: 'Provides subscribers to feeds events.'
 package: Testing
 dependencies:
-  - feeds
+  - feeds:feeds

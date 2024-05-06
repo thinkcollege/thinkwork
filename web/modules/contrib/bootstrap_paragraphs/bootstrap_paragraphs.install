@@ -21,7 +21,7 @@ use Symfony\Component\Yaml\Yaml;
 function bootstrap_paragraphs_read_in_new_config($config_name, $bp_path) {
   /** @var \Drupal\Core\Config\StorageInterface $active_storage */
   $active_storage = \Drupal::service('config.storage');
-  $active_storage->write($config_name, Yaml::parse(file_get_contents($bp_path . '/config/install/' . $config_name . '.yml')));
+  $active_storage->write($config_name, Yaml::parse(file_get_contents($bp_path . '/config/optional/' . $config_name . '.yml')));
 }
 
 /**
@@ -104,12 +104,12 @@ function bootstrap_paragraphs_update_8201() {
   bootstrap_paragraphs_read_in_new_config('paragraphs.paragraphs_type.bp_column_wrapper', $bp_path);
 
   // Create field storage.
-  $field_storage_yml = Yaml::parse(file_get_contents($bp_path . '/config/install/field.storage.paragraph.bp_column_content_w.yml'));
+  $field_storage_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.storage.paragraph.bp_column_content_w.yml'));
   if (!FieldStorageConfig::loadByName($field_storage_yml['entity_type'], $field_storage_yml['field_name'])) {
     FieldStorageConfig::create($field_storage_yml)->save();
   }
   // Create field instance.
-  $field_yml = Yaml::parse(file_get_contents($bp_path . '/config/install/field.field.paragraph.bp_column_wrapper.bp_column_content_w.yml'));
+  $field_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_column_wrapper.bp_column_content_w.yml'));
   if (!FieldConfig::loadByName($field_yml['entity_type'], $field_yml['bundle'], $field_yml['field_name'])) {
     FieldConfig::create($field_yml)->save();
   }

@@ -243,6 +243,11 @@ class UpdateSemverCoreTest extends UpdateSemverCoreTestBase {
 
   /**
    * Checks that Drupal recovers after problems connecting to update server.
+   *
+   * This test uses the following XML fixtures.
+   *  - drupal.broken.xml
+   *  - drupal.sec.8.0.2.xml
+   *     'supported_branches' is '8.0.,8.1.'.
    */
   public function testBrokenThenFixedUpdates() {
     $this->drupalLogin($this->drupalCreateUser([
@@ -273,6 +278,14 @@ class UpdateSemverCoreTest extends UpdateSemverCoreTestBase {
     $this->drupalGet('admin/config');
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->pageTextContains('There is a security update available for your version of Drupal.');
+  }
+
+  /**
+   * Tests when a dev release does not have a date.
+   */
+  public function testDevNoReleaseDate() {
+    $this->setProjectInstalledVersion('8.0.x-dev');
+    $this->refreshUpdateStatus([$this->updateProject => 'dev-no-date']);
   }
 
 }

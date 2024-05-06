@@ -31,7 +31,10 @@ class TagifyUserListEntityReferenceAutocompleteWidget extends TagifyEntityRefere
     return [
       'match_operator' => 'STARTS_WITH',
       'match_limit' => 10,
+      'suggestions_dropdown' => 1,
       'placeholder' => '',
+      'show_info_label' => 1,
+      'info_label' => '[user:mail]',
     ] + parent::defaultSettings();
   }
 
@@ -53,13 +56,57 @@ class TagifyUserListEntityReferenceAutocompleteWidget extends TagifyEntityRefere
       '#min' => 0,
       '#description' => $this->t('The number of suggestions that will be listed. Use <em>0</em> to remove the limit.'),
     ];
+    $element['suggestions_dropdown'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('Suggestions dropdown'),
+      '#default_value' => $this->getSetting('suggestions_dropdown'),
+      '#options' => $this->getSuggestionsDropdownOptions(),
+      '#description' => $this->t('Select the method used to show suggestions dropdown.'),
+    ];
     $element['placeholder'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Placeholder'),
       '#default_value' => $this->getSetting('placeholder'),
       '#description' => $this->t('Text that will be shown inside the field until a value is entered. This hint is usually a sample value or a brief description of the expected format.'),
     ];
-
+    $element['show_info_label'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Include info label'),
+      '#default_value' => $this->getSetting('show_info_label'),
+      '#description' => $this->t('Show extra information below the entity label.'),
+    ];
+    $element['info_label'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Info label content'),
+      '#default_value' => $this->getSetting('info_label'),
+      '#description' => $this->t('The information that will be shown. You can use tokens to make this dynamic.'),
+      '#states' => [
+        'visible' => [
+          sprintf(':input[name="fields[%s][settings_edit_form][settings][show_info_label]"]', $this->fieldDefinition->getName()) => ['checked' => TRUE],
+        ],
+      ],
+    ];
+    if ($this->moduleHandler->moduleExists('token')) {
+      $token_type = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('target_type');
+      // Convert 'taxonomy_term' target type into 'term' in order to make it
+      // work as a token type.
+      if ($token_type === 'taxonomy_term') {
+        $token_type = 'term';
+      }
+      $element['info_label_tokens'] = [
+        '#type' => 'item',
+        '#theme' => 'token_tree_link',
+        '#token_types' => [$token_type],
+        '#show_restricted' => TRUE,
+        '#global_types' => FALSE,
+        '#recursion_limit' => 3,
+        '#states' => [
+          'visible' => [
+            sprintf(':input[name="fields[%s][settings_edit_form][settings][show_info_label]"]', $this->fieldDefinition->getName()) => ['checked' => TRUE],
+          ],
+        ],
+      ];
+    }
     return $element;
   }
 
@@ -71,6 +118,11 @@ class TagifyUserListEntityReferenceAutocompleteWidget extends TagifyEntityRefere
     $summary[] = $this->t('Autocomplete matching: @match_operator', ['@match_operator' => $operators[$this->getSetting('match_operator')]]);
     $size = $this->getSetting('match_limit') ?: $this->t('unlimited');
     $summary[] = $this->t('Autocomplete suggestion list size: @size', ['@size' => $size]);
+    $suggestions_dropdown = $this->getSuggestionsDropdownOptions();
+    $summary[] = $this->t('Autocomplete suggestions dropdown: @suggestions_dropdown', ['@suggestions_dropdown' => $suggestions_dropdown[$this->getSetting('suggestions_dropdown')]]);
+    if ($this->getSetting('show_info_label')) {
+      $summary[] = $this->t('Show extra information below the entity label');
+    }
     $placeholder = $this->getSetting('placeholder');
     if (!empty($placeholder)) {
       $summary[] = $this->t('Placeholder: @placeholder', ['@placeholder' => $placeholder]);
@@ -91,8 +143,12 @@ class TagifyUserListEntityReferenceAutocompleteWidget extends TagifyEntityRefere
     $selection_settings = $this->getFieldSetting('handler_settings') + [
       'match_operator' => $this->getSetting('match_operator'),
       'match_limit' => $this->getSetting('match_limit'),
+      'suggestions_dropdown' => $this->getSetting('suggestions_dropdown'),
       'placeholder' => $this->getSetting('placeholder'),
     ];
+    if ($this->getSetting('show_info_label')) {
+      $selection_settings['info_label'] = $this->getSetting('info_label');
+    }
     $target_type = $this->getFieldSetting('target_type');
     $selection_handler = $this->getFieldSetting('handler');
     $data = serialize($selection_settings) . $target_type . $selection_handler;
@@ -109,6 +165,7 @@ class TagifyUserListEntityReferenceAutocompleteWidget extends TagifyEntityRefere
     $limited = !$cardinality ? 'tagify--limited' : '';
     // Handle field autocreate option.
     $autocreate = $this->getSelectionHandlerSetting('auto_create') ? 'tagify--autocreate' : '';
+    $tags_identifier = $items->getName();
 
     $element += [
       '#type' => 'entity_autocomplete_tagify_user_list',
@@ -118,12 +175,21 @@ class TagifyUserListEntityReferenceAutocompleteWidget extends TagifyEntityRefere
       '#selection_handler' => $selection_handler,
       '#selection_settings_key' => $selection_settings_key,
       '#max_items' => $this->getSetting('match_limit'),
+      '#suggestions_dropdown' => $this->getSetting('suggestions_dropdown'),
       '#attributes' => [
-        'class' => [$limited, $autocreate],
+        'class' => [$limited, $autocreate, $tags_identifier],
       ],
       '#placeholder' => $this->getSetting('placeholder'),
       '#match_operator' => $this->getSetting('match_operator'),
+      '#cardinality' => $this->fieldDefinition
+        ->getFieldStorageDefinition()
+        ->getCardinality(),
     ];
+
+    if ($this->getSetting('show_info_label')) {
+      $element['#info_label'] = $this->getSetting('info_label');
+    }
+
     return $element;
   }
 
