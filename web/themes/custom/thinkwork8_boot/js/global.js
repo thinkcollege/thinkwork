@@ -181,7 +181,7 @@
                     $('#tableWarnings').empty();
                     var newChart = drawSDvisualization();
                     $('html, body').animate({
-                        scrollTop: $("#chartTitle").offset().top
+                        scrollTop: $("h1.title").offset().top
                     }, 500);
 
                     if(!$('p.privWarn').hasClass('visible')) $('p.privWarn').addClass('visible');
@@ -354,7 +354,6 @@
                 var pageSub = reportURL.get('grp') == 'indst' ? 'Individual State Report' : (reportURL.get('grp') == 'stcomp' ? 'State Comparison Report' : (reportURL.get('grp') == 'natrep' ? 'National Report' : ''));
                 if ($('#downCSV').hasClass('visible')) $('#downCSV').removeClass('visible');
                 if($('p.privWarn').hasClass('visible')) $('p.privWarn').removeClass('visible');
-                $('h1#chartTitle').text('State Data Chart Builder: ' + pageSub);
                 $('a#singleTab').attr('href','/statedata/chart-builder-test?report=single');
                 $('a#comparisonTab').attr('href','/statedata/chart-builder-test?report=comparison');
                 $('a#nationalTab').attr('href','/statedata/chart-builder-test?report=national');
@@ -476,7 +475,7 @@
             
                 $("#chartRedraw").click(function() {
                     $('html, body').animate({
-                        scrollTop: $("#chartTitle").offset().top
+                        scrollTop: $("h1.title").offset().top
                     }, 500);
                 });
             
