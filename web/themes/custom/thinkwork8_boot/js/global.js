@@ -107,6 +107,7 @@
             columnSelected = $('input[name="reportChoose"]:checked').val();
             
             $(document).ready(function() {
+                var yearArray = populateYears('sta_d3_agency_labor');
                 var urlLoc = window.location.href;  //get current url
                 if(urlLoc.indexOf("?report=") == -1){ 
                     document.location = urlLoc+"?report=single"; // redirect it
@@ -217,8 +218,11 @@
             
             
                 dataTable = $(this).val();
+                if(reportURL.get('report') == 'single' || reportURL.get('report') == 'comparison') $('#yearMultiple').empty();
+                else $('#yearSingle').empty();
+                populateYears(dataTable);
                 var valParentId = $(this).closest('.collapse').attr('id');
-                $('#chosenText').remove();
+                //$('#chosenText').remove();
                 $('img#chosenCheck').remove();
                 $('.tableSelect').each(function(i, obj) {
                 $(this).removeClass('tableChosen');
@@ -232,15 +236,14 @@
                 
                 $(this).addClass('tableChosen');
                 if(reportURL.get('report') == 'single')
-            { 
-                if($(this).is('input')) {
-                    var varname = $(this).closest('label').text();
-                    updateSelectCount('table',varname);
+                { 
+                    if($(this).is('input')) {
+                        var varname = $(this).closest('label').text();
+                        updateSelectCount('table',varname);
+                    }
+                    var tableIndicator = '&nbsp;<img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_check.png" alt="this table chosen" />';
+                    $(this).parent('label.js-simple-tooltip').length ? $(this).closest('label.js-simple-tooltip').append(tableIndicator) : $('.tableChosen').after(tableIndicator);
                 }
-                var tableIndicator = '&nbsp;<img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_check.png" alt="this table chosen" />';
-                $(this).parent('label.js-simple-tooltip').length ? $(this).closest('label.js-simple-tooltip').append(tableIndicator) : $('.tableChosen').after(tableIndicator);
-            }
-                console.log("Table: " + dataTable);
                 var tableDescrip = $(this).attr("title") ? $(this).attr("title") : $(this).closest('label').attr("title");
                 $('input#tableId').val(dataTable);
                 $('input#tableDescrip').val(tableDescrip);
@@ -286,7 +289,6 @@
             }
             $('input#tableId').val(tableIDval);
             $('input#tableDescrip').val(tableDescrip);
-            console.log("Table description: " + tableDescrip);
             });
             
             
@@ -302,7 +304,6 @@
             });
             $(document).on("change",'input:checkbox[name="regionPayer[]"]', function () {
             
-            //console.log(payerarray1);
             //$('#programContainer').empty();
                 var getProgram = populatePrograms('programcull');
             
@@ -310,7 +311,6 @@
             });
             $(document).on('click','#sdChartForm input.checkAll',function() {
                 var parentID = $(this).closest('div.formSub').attr('id');
-                //console.log(parentID);
             
                 var checked = $(this).prop('checked');
                 $('#' + parentID).find('ul input:checkbox').prop('checked', checked);
@@ -333,16 +333,20 @@
             
                 updateSelectCount('state');
                 updateSelectCount('year');
+                updateSelectCount('table');
+                updateSelectCount('variable');
             
                 $('#collapseSeven input').click(function(event) {
                     updateSelectCount('state');
             
                 });
-                $('#collapseEight input').click(function(event) {
+               
+                $('body').on('click', '#collapseEight input', function() {
                     updateSelectCount('year');
             
                 });
-                $('#collapseNine input').click(function(event) {
+               
+                $('body').on('click', '#collapseNine input', function() {
                     updateSelectCount('year');
             
                 });
@@ -362,7 +366,6 @@
             
             
                 var programSlug = reportURL.get('grp') == 'natrep' ? 'Programs' : 'CMHSPs';
-                console.log('Group from URL: ' + reportURL.get('grp'));
                 $('span.programSlug').text(programSlug);
                 var pageSub = reportURL.get('grp') == 'indst' ? 'Individual State Report' : (reportURL.get('grp') == 'stcomp' ? 'State Comparison Report' : (reportURL.get('grp') == 'natrep' ? 'National Report' : ''));
                 if ($('#downCSV').hasClass('visible')) $('#downCSV').removeClass('visible');
@@ -496,7 +499,6 @@
             
                 $('.switchNum button').on('click', function() {
                     useRawNum =  useRawNum == true ? false : true;
-                    //console.log(useRawNum);
                     if(useRawNum == true) {
                         if(!$('.percOn').hasClass('toggleHide')) $('.percOn').addClass('toggleHide'); if($('.numOn').hasClass('toggleHide')) $('.numOn').removeClass('toggleHide'); $('.numOn').addClass('toggleShow');
                     } else
@@ -549,7 +551,6 @@
             
                 $('input.checkAll').click(function() {
                     var parentID = $(this).closest('div.collapse').attr('id');
-                    // console.log(parentID);
             
                     var checked = $(this).prop('checked');
                     $('#' + parentID).find('.col input:checkbox').prop('checked', checked);
@@ -592,7 +593,6 @@
             function checkTrends() {
             var countDates;
                 countDates = countChecks('trendPers');
-                console.log(countDates);
                 if(countDates < 2) {
                     if($('#nationalActivityDiv').hasClass('active')) $('#nationalActivityDiv').removeClass('active');
                     if($('#singleActivity').hasClass('active')) $('#singleActivity').removeClass('active')
@@ -628,7 +628,6 @@
                     var progText = $("label[for='"+progId+"']").text();
                     var progPrefix = $('input[name="reportChoose"]:checked').closest('.card').find('.tableChosen').attr("title") ? $('input[name="reportChoose"]:checked').closest('.card').find('.tableChosen').attr("title") : $('input[name="reportChoose"]:checked').closest('.card').find('.tableChosen').closest('label').attr("title");
                     choiceNames = progPrefix + ": " + progText;
-                    console.log("Prog prefix: " + progPrefix + ', Prog text: ' + progText);
                 }
                 else if (type == 'single') {
                     choiceNames = [];
@@ -639,7 +638,6 @@
             
                     });
                 }
-                console.log('Table descripff: ' + choiceNames);
                 return choiceNames;
             
             }
@@ -678,7 +676,6 @@
                     dataType: "json",
                     cache: false,
                     success: function(data) {
-                        //console.log(data);
                         $.each(data, function () {
                             var options = "";
                             options += '<li><label>' + '<input type="checkbox" value="' + this.field_choice_code + '" name="regionSingle[]" /><span class="textLabel">' + this.field_choice_label + '</span></label></li>';
@@ -696,6 +693,42 @@
                 });
             
             
+            
+            }function populateYears(tableindex) {
+                
+            
+            
+                jQuery.ajax({
+                    url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?type=years&tableindex=' + tableindex,
+                    type: "POST",
+                    dataType: "json",
+                    cache: false,
+                    success: function(data) {
+                        jQuery.each(data, function () {
+                            
+                            var year = this.YEAR;
+            
+                            var inputs = '';
+                            if(reportURL.get('report') == 'single' || reportURL.get('report') == 'comparison' ) {
+                            inputs += ' <div class="checkbox"><label class="form-check-label" for="' + year + '"><input class="yearCheck" name="regionYear[]" id="' + year + '" type="checkbox" value="' + year + '">' + year + '</label></div>';
+                                jQuery("#yearMultiple")
+                                .append(inputs
+                                )
+                            } else if(reportURL.get('report') == 'national') {
+                                inputs += '<label for="sum_' + year + '"><input id="sum_' + year + '" name="summChoose" type="radio" value="' + year + '">' + year + '<label>';
+                                jQuery('#yearSingle').append(inputs);
+            
+                            }
+                        })
+            
+            
+            
+                    },
+                    error: function(xhr, status, err) {
+                    console.log('error')
+                    }
+            
+                });
             
             }
             
@@ -726,7 +759,6 @@
                                     );
             
                             })
-                        // if (!$.trim(data)){ $('#programHed').hide(); console.log('fuggabe');} else { $('#programHed').show();}
             
             
             
@@ -847,7 +879,6 @@
             
                         var returnedStuff = [returnedStuff1,returnedStuff2,returnedStuff3];
                     } else {
-                        console.log("Ajax table URL: " + '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=table' + storedID);
             
                         var returnedStuff =
                         $.ajax({
@@ -873,7 +904,7 @@
                         }).responseText;
                     }
             
-                    console.log( 'in function table: ' + returnedStuff);
+                    //console.log( 'in function table: ' + returnedStuff);
                     return returnedStuff;
             
                 } 
@@ -882,7 +913,6 @@
                     
                     
                     var reportType = reportURL.get('showchart') ? getReportVar('report') : (reportURL.get('report') ? reportURL.get('report') : 'comparison');
-                    console.log('report type: ' + reportType);
                     
                     var changeChart = tableindex === 0 || tableindex ? '&tableindex=' + tableindex + '&numpercdol=' + numpercdol : '';
                     
@@ -987,10 +1017,9 @@
                             }).responseText; 
                         }
             
-                        console.log( 'in function chart: ' + returnedStuff);
+                       // console.log( 'in function chart: ' + returnedStuff);
                         var returnedStuff = tableindex && numpercdol ? [returnedStuff1] : [returnedStuff1,returnedStuff2,returnedStuff3];
                     } else {
-                        console.log("Ajax Chart URL: " + '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?reportType=' + reportType + '&type=chart' + storedID);
                         
             
                             var returnedStuff =
@@ -1017,7 +1046,7 @@
                             }).responseText;
             
                     }
-                    console.log( 'in function chart: ' + returnedStuff);
+                   // console.log( 'in function chart: ' + returnedStuff);
                     return returnedStuff;
             
                 } 
@@ -1035,7 +1064,6 @@
                 var url = '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?type=download' + reportType +singleType;
                 $('#sdChartForm').attr('action', url);
                 var HiddenTtl = buildTableTitle('download');
-                console.log(HiddenTtl);
                 $('#titleInputs').append('<input type="hidden" name="sendTitle" value="' + HiddenTtl + '" />');
                 var form = $(this);
                 $.ajax({
@@ -1218,8 +1246,6 @@
                 var tableSelected = '';
                 
                 joinTitle += tableTitle + ' in ' + (reportType == 'national' ? 'the United States' : getStateYearArray('state', reportType)) + ' during years: ' + getStateYearArray('year', reportType) ;
-                //console.log("Payer names: ");
-                //console.log(payerNames);
                 return joinTitle;
             }
             
@@ -1235,7 +1261,6 @@
             
             function getReportVar(calltype) {
                 var urlid = reportURL.get('showchart');
-                console.log("URL segment: " + urlid);
                 
             return $.ajax({
                     url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?getstoredvar=' + calltype + '&urlid=' + urlid,
@@ -1265,7 +1290,6 @@
                 var titleDiv = $('#sdchart_table_div_0_title');
                 var stackedType = 'percent';
                 var reportVar = changeChart == 'storedChart' ? getReportVar('report') : reportURL.get('report');
-                console.log('Report type from draw function: ' + reportVar);
                 if(!changeChart || changeChart != 'changeChart'){
             
                     $(titleDiv).empty();
@@ -1279,7 +1303,6 @@
                 if(!numpercdol || numpercdol == 'perc') $('#chart_div_1').empty();
                 if(!numpercdol || numpercdol == 'dol')$('#chart_div_2').empty();
                 var legendArray = reportVar == 'single' ? getCheckboxLabels('single') : getCheckboxLabels('comparison');
-                //console.log(legendArray);
                 var legendHTML = legendBuild(legendArray);
                 if((reportVar == 'single' && countChecks('single') && countChecks('single') < 12) || (reportVar == 'comparison' && countChecks('activity') && countChecks('activity') < 5)) { stackedType = true ; }
             
@@ -1324,7 +1347,6 @@
                         chart = new google.visualization.ColumnChart(container);
                         if(numpercdol == 'perc') {
                             var obj = JSON.parse(chartReturn[0]);
-                            console.log('Data length: ' + obj.cols.length);
                         }
                         chart.draw(chartdata,chartoptions);
                         // $(titleDiv).append('<h5>' + tableTitle + '</h5>');
@@ -1581,7 +1603,6 @@
                     //if (yeararray1.length < 1 && reportURL[1] == 'natrep') return;
                     var years1 = reportURL.get('grp') == 'natrep' ? $('input[name="summChoose"]:checked').val() : yeararray1;
                     yearstext = reportURL.get('grp') != 'natrep' ? yeararray1.join(', ') : years1;
-                    console.log('Year Array:' + years1);
                     $('#yearCountText').empty();
                     $('#summyearCountText').empty();
                     var yrsSelect = yearstext;
@@ -1599,8 +1620,8 @@
                     // if (statearray1.length < 1) return;
                     $('#stateCountText').empty();
                     var staSelect = statenametext;
-                    if (statenametext.length > 54) {
-                        staSelect = "Selected: (" + countChecks('state') + ") ";
+                    if (statenametext.length > 100) {
+                        staSelect = "Selected: (" + countChecks('states') + " states) ";
                     }
                     staSelectText = staSelect;
                     $('#stateCountText').append(staSelectText);

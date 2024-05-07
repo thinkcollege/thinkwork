@@ -42,8 +42,8 @@ populateEthnic();
 }  elseif ($type && $type == 'nonPop') {
     populateNonwork();
 
-}   elseif ($type && $type == 'rptperiod') {
-        populateRptPeriod($selector);
+}   elseif ($type && $type == 'years') {
+        populateYears($tableindex);
 
  }
 elseif ($type && $type == 'programcull') {
@@ -82,11 +82,10 @@ function populatePayers($grp) {
         echo json_encode($rows);
 
 
-}
-function populateRptPeriod($selector) {
+} */
+function populateYears($tableindex) {
     global $con;
-    $orderby = $selector == 'check' ? "ASC" : "DESC";
-    $query = "SELECT CONCAT(SUBSTR(`table_name`, 1,4) ,'-',SUBSTR(`table_name`,5,2),'-01' ) AS `rptperiod` FROM `INFORMATION_SCHEMA`.`tables` WHERE `table_schema` = 'statedata' AND `table_name` LIKE '2%' ORDER BY `table_name` $orderby";
+    $query = "SELECT DISTINCT `YEAR` FROM `$tableindex` WHERE `YEAR` != 0000 ORDER BY `YEAR` ASC";
 
     $result = mysqli_query($con,$query);
 
@@ -97,7 +96,7 @@ function populateRptPeriod($selector) {
     $rptperarray = array();
     foreach($rows as $i) {
         foreach($i as $key => $value) {
-        if(!in_array(array('rptperiod' =>$value),$rptperarray)) $rptperarray[]= array('rptperiod' => $value);
+        if(!in_array(array('YEAR' =>$value),$rptperarray)) $rptperarray[]= array('YEAR' => $value);
         }
     }
 
@@ -105,6 +104,7 @@ function populateRptPeriod($selector) {
 
 
 }
+/*
 
 function populateRace() {
     global $con;

@@ -540,8 +540,8 @@ display: block;
     border: 1px solid #5157AD;
         width: 80%;
 }
-h5 div#stateCountText, h5 div#yearCountText { float: left; width: 40%; font-size: 70%; padding-left:29px;margin-top: 12px;  font-weight: 300;}
-#headingSeven h5 button, #headingEight h5 button { float:left; width: 45%; }
+h5 div#stateCountText, h5 div#yearCountText { font-weight: bold; float: none; width: 100%; font-size: 70%; padding-left:5px;margin-top: 5px; }
+#headingSeven h5 button, #headingEight h5 button { float:none; width: 45%; }
 /*
 .accordionFloat .card-header,.accordionFloat .card-header .btn {
 	padding:7px 4px;
