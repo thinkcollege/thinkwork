@@ -548,12 +548,12 @@
                         scrollTop: $("#chartTitle").offset().top
                     }, 500);
                 });
-            
-                $('input.checkAll').click(function() {
+                $('#sdChartForm').on('click', 'input.checkAll', function() {
+                
                     var parentID = $(this).closest('div.collapse').attr('id');
             
                     var checked = $(this).prop('checked');
-                    $('#' + parentID).find('.col input:checkbox').prop('checked', checked);
+                    $('#' + parentID).find('input:checkbox').prop('checked', checked);
                 });
             
                 $('select').change(countChecks);
