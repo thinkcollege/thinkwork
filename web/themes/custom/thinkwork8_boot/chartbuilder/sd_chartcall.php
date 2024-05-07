@@ -104,61 +104,6 @@ function populateYears($tableindex) {
 
 
 }
-/*
-
-function populateRace() {
-    global $con;
-
-    $query = "SELECT DISTINCT `field_choice_code`, `field_choice_label` from `mi_labels` WHERE `field_name` = 'race' ORDER BY `field_choice_label`";
-
-    $result = mysqli_query($con,$query);
-
-
-    $rows = array();
-    while($r = mysqli_fetch_assoc($result)) {
-        $rows[] = $r;
-    }
-    echo json_encode($rows);
-
-
-}
-
-
-function populateEthnic() {
-    global $con;
-    $info = new stdClass();
-
-    $query = "SELECT DISTINCT `field_choice_code`, `field_choice_label` from `mi_labels` WHERE `field_name` = 'ethnic' ORDER BY `field_choice_label`";
-
-    $result = mysqli_query($con,$query);
-    //$info->{'status'} = "complete";
-    //$_SESSION['assent'] = $assent;
-
-
-    $rows = array();
-    while($r = mysqli_fetch_assoc($result)) {
-        $rows[] = $r;
-    }
-    echo json_encode($rows);
-
-
-}
-
-function populateNonWork() {
-    global $con;
-
-    $query = "SELECT DISTINCT `field_choice_code`, `field_choice_label` from `mi_labels` WHERE `field_name` = 'notlabd' AND field_choice_code != '96' AND field_choice_code != '98' ORDER BY `field_choice_code`";
-
-    $result = mysqli_query($con,$query);
-
-    $rows = array();
-    while($r = mysqli_fetch_assoc($result)) {
-        $rows[] = $r;
-    }
-    echo json_encode($rows);
-
-
-} */
 function pullStoredVar($getstoredvar,$urlid) {
     global $con;
     if($getstoredvar == 'report') {
@@ -258,7 +203,7 @@ function sendChart($type,$reporttype,$singletype,$tableindex,$numpercdol) {
             if ($row_cnt === 0) break;
             $i = 0;
             while($row = mysqli_fetch_assoc($result)) {
-                $querystring .= $i == $row_cnt - 1 ? "`" . $row['column_name'] . "` '" . $row['short_name'] . "'" : "`" . $row['column_name'] . "` '" . $row['short_name'] . "',";
+                $querystring .= $i == $row_cnt - 1 ? "IF(`" . $row['column_name'] . "` = -1, NULL,`" . $row['column_name'] . "`) '" . $row['short_name'] . "'" : "IF(`" . $row['column_name'] . "` = -1, NULL,`" . $row['column_name'] . "`) '" . $row['short_name'] . "',";
 
                 $i++;
 
@@ -357,7 +302,7 @@ function sendChart($type,$reporttype,$singletype,$tableindex,$numpercdol) {
         $getformattypequery = "SELECT `num_perc_dol` FROM `chart_labels` WHERE `table_name` = '$tablename' AND `column_name` = '$reportvar' LIMIT 1";
         $getformattype = mysqli_query($con,$getformattypequery);
         $formattype = $getformattype->fetch_column();
-        $querystring = "SELECT `s`.`name` 'varstate',GROUP_CONCAT(`$reportvar`) 'var' FROM `$tablename` t LEFT JOIN `sta_d3_states` s ON t.`STATE` = s.`abbreviation` WHERE `STATE` IN ('$statestring') AND `YEAR` IN ($yearstring) GROUP BY `STATE` ORDER BY `STATE`,`YEAR`";
+        $querystring = "SELECT `s`.`name` 'varstate',GROUP_CONCAT(IF(`$reportvar` = -1, NULL, `$reportvar`)) 'var' FROM `$tablename` t LEFT JOIN `sta_d3_states` s ON t.`STATE` = s.`abbreviation` WHERE `STATE` IN ('$statestring') AND `YEAR` IN ($yearstring) GROUP BY `STATE` ORDER BY `STATE`,`YEAR`";
        if(!$urlid) array_unshift($yeararray, 'State');
         //echo "Query string: $querystring";
 
@@ -431,7 +376,7 @@ function sendChart($type,$reporttype,$singletype,$tableindex,$numpercdol) {
         $getformattypequery = "SELECT `num_perc_dol` FROM `chart_labels` WHERE `table_name` = '$tablename' AND `column_name` = '$reportvar' LIMIT 1";
         $getformattype = mysqli_query($con,$getformattypequery);
         $formattype = $getformattype->fetch_column();
-        $querystring = "SELECT `s`.`name` 'State',`$reportvar` '$shortname' FROM `$tablename` t LEFT JOIN `sta_d3_states` s ON t.`STATE` = s.`abbreviation` WHERE `YEAR` = $year AND t.`STATE` != 'US' ORDER BY `State`";
+        $querystring = "SELECT `s`.`name` 'State',IF(`$reportvar` = -1 , NULL , `$reportvar`) '$shortname' FROM `$tablename` t LEFT JOIN `sta_d3_states` s ON t.`STATE` = s.`abbreviation` WHERE `YEAR` = $year AND t.`STATE` != 'US' ORDER BY `State`";
         $tablerows = mysqli_query($con,$querystring);
         $tableoutput = array();
         while($row = mysqli_fetch_assoc($tablerows)) {
