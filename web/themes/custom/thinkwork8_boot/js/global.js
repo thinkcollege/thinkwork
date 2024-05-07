@@ -107,25 +107,40 @@
             columnSelected = $('input[name="reportChoose"]:checked').val();
             
             $(document).ready(function() {
-            var urlLoc = window.location.href;  //get current url
+                var urlLoc = window.location.href;  //get current url
                 if(urlLoc.indexOf("?report=") == -1){ 
-                document.location = urlLoc+"?report=single"; // redirect it
+                    document.location = urlLoc+"?report=single"; // redirect it
                 } 
                 var timeout;
-                if (reportURL.get('showchart') && reportURL.get('showchart') != '' ) {
+
+                    
+                    if (reportURL.get('showchart') && reportURL.get('showchart') != '' ) {
+                        google.charts.load('current', { 'packages': ['corechart', 'table','line','geochart']});
+                        timeout = setInterval(function () {
+                            if (google.visualization != undefined) {
+                                drawSDvisualization('storedChart');
+                            clearInterval(timeout);
+                            }
+                        }, 300);
+                    
+                    
+                    } else
                     google.charts.load('current', { 'packages': ['corechart', 'table','line','geochart']});
-                    timeout = setInterval(function () {
-                        if (google.visualization != undefined) {
-                            drawSDvisualization('storedChart');
-                        clearInterval(timeout);
-                        }
-                    }, 300);
-                
-                
-                } else
-                google.charts.load('current', { 'packages': ['corechart', 'table','line','geochart']});
-                if($('.introText').hasClass('hideIntro')) $('.introText').removeClass('hideIntro');
+                    if($('.introText').hasClass('hideIntro')) $('.introText').removeClass('hideIntro');
             })
+            $( "body" ).on( "mousemove", function( event ) {
+                if(!$('tr.chartSelected').length && reportURL.get('report') == 'single') {
+                
+                    
+                    $(".google-visualization-table-table").each(function(i, obj) {
+                    $('tbody tr:first', this).addClass('chartSelected');
+                    $('tbody tr:first td:first',this).prepend('<i class="fas fa-chart-bar"></i>');
+                    });
+                    
+                
+            
+                }
+             });
 
             
             $(document).on('click','.google-visualization-table-table tbody tr', function() {
@@ -165,14 +180,12 @@
                     $('p.privWarn').each(function(i, obj) {
                         if(!$(this).hasClass('visible') ) $(this).addClass('visible');
                         });
-                /* var timeout;
-                    timeout = setInterval(function () {
-                        $(".google-visualization-table-table").each(function(i, obj) {
-                            $('tbody tr:first', this).addClass('chartSelected');
-                            
-                        });
-                    }, 300); */
+            
+                    
                 }
+                    
+                            
+                 
             
                 
             
