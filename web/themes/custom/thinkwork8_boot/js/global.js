@@ -108,9 +108,9 @@
             
             $(document).ready(function() {
                 var yearArray = populateYears('sta_d3_agency_labor');
-                var urlLoc = window.location.href;  //get current url
+                var urlLoc = window.location.href;  
                 if(urlLoc.indexOf("?report=") == -1){ 
-                    document.location = urlLoc+"?report=single"; // redirect it
+                    document.location = urlLoc+"?report=single"; // redirect if no report type chosen
                 } 
                 var timeout;
 
@@ -126,9 +126,10 @@
                     
                     
                     } else
-                    google.charts.load('current', { 'packages': ['corechart', 'table','line','geochart']});
-                    if($('.introText').hasClass('hideIntro')) $('.introText').removeClass('hideIntro');
-            })
+                      google.charts.load('current', { 'packages': ['corechart', 'table','line','geochart']});
+                      if($('.introText').hasClass('hideIntro')) $('.introText').removeClass('hideIntro');
+                    
+            });
             $( "body" ).on( "mousemove", function( event ) {
                 if(!$('tr.chartSelected').length && reportURL.get('report') == 'single') {
                 
@@ -141,7 +142,7 @@
                 
             
                 }
-             });
+            });
 
             
             $(document).on('click','.google-visualization-table-table tbody tr', function() {
@@ -217,12 +218,12 @@
             var tableIDval = "";
             
             
-                dataTable = $(this).val();
+                var dataTable = $(this).val();
                 if(reportURL.get('report') == 'single' || reportURL.get('report') == 'comparison') $('#yearMultiple').empty();
                 else $('#yearSingle').empty();
                 populateYears(dataTable);
                 var valParentId = $(this).closest('.collapse').attr('id');
-                //$('#chosenText').remove();
+                $('#chosenText').remove();
                 $('img#chosenCheck').remove();
                 $('.tableSelect').each(function(i, obj) {
                 $(this).removeClass('tableChosen');
@@ -321,6 +322,27 @@
             
             // All the document ready stuff
             $(document).ready(function() {
+                var yearArray = populateYears('sta_d3_agency_labor');
+                var urlLoc = window.location.href;  
+                if(urlLoc.indexOf("?report=") == -1){ 
+                    document.location = urlLoc+"?report=single"; // redirect if no report type chosen
+                } 
+                var timeout;
+
+                    
+                    if (reportURL.get('showchart') && reportURL.get('showchart') != '' ) {
+                        google.charts.load('current', { 'packages': ['corechart', 'table','line','geochart']});
+                        timeout = setInterval(function () {
+                            if (google.visualization != undefined) {
+                                drawSDvisualization('storedChart');
+                            clearInterval(timeout);
+                            }
+                        }, 300);
+                    
+                    
+                    } else
+                      google.charts.load('current', { 'packages': ['corechart', 'table','line','geochart']});
+                if($('.introText').hasClass('hideIntro')) $('.introText').removeClass('hideIntro');
                 var singleActivRadio = singleActiveFilter();
                 var checktrends = checkTrends();
                 $("#sdChartForm button.michRedraw").click(function(event) {
@@ -340,13 +362,11 @@
                     updateSelectCount('state');
             
                 });
-               
-                $('body').on('click', '#collapseEight input', function() {
+                $('#collapseEight input').click(function(event) {
                     updateSelectCount('year');
             
                 });
-               
-                $('body').on('click', '#collapseNine input', function() {
+                $('#collapseNine input').click(function(event) {
                     updateSelectCount('year');
             
                 });
@@ -548,12 +568,12 @@
                         scrollTop: $("#chartTitle").offset().top
                     }, 500);
                 });
-                $('#sdChartForm').on('click', 'input.checkAll', function() {
-                
+            
+                $('input.checkAll').click(function() {
                     var parentID = $(this).closest('div.collapse').attr('id');
             
                     var checked = $(this).prop('checked');
-                    $('#' + parentID).find('input:checkbox').prop('checked', checked);
+                    $('#' + parentID).find('.col input:checkbox').prop('checked', checked);
                 });
             
                 $('select').change(countChecks);
@@ -707,6 +727,7 @@
                         jQuery.each(data, function () {
                             
                             var year = this.YEAR;
+                            console.log('Data: ' + data);
             
                             var inputs = '';
                             if(reportURL.get('report') == 'single' || reportURL.get('report') == 'comparison' ) {
@@ -1486,10 +1507,14 @@
                                         'allowHtml': true,
                                         'height':'100%'
                             };
+                            var yearCount = countChecks('years');
                             
                             var formatter = new google.visualization.NumberFormat({decimalSymbol: '.',groupingSymbol: ',', suffix: '%'});
-                            formatter.format(data, 1);
-                            formatter.format(data, 2);
+
+                           
+                            for(var i = 1; i <= yearCount; i++) {
+                                formatter.format(data, i);
+                            }
                             
             
             
@@ -1516,64 +1541,7 @@
                 }
             
             
-            }
-            
-            
-            function doQuery(q, i, reportHeader, reportchoice) {
-            
-                var tableTarget = 'table_div_' + i;
-                var tableTitleTarget = 'table_div_' + i + '_title';
-            
-                if (reportchoice == '30') {
-                    return;
-                } else if (reportchoice >= '31' && reportchoice <= '36') {
-                    $('#' + tableTitleTarget).append('<h5><strong>' + reportHeader + ' ' + yearstext + '</strong></h5><p class="tableInstruct"><em>Select the table headings to sort table data</em></p>');
-                    if ($('#' + tableTarget).hasClass('collapse')) $('#' + tableTarget).removeClass('collapse');
-                    $('#' + tableTarget).attr('aria-labelledby', tableTitleTarget).attr('data-parent', '#summ_accordion').attr('aria-expanded', true);
-            
-                }
-                else {
-                    $('#' + tableTitleTarget).append('<h5><strong>' + reportHeader + ' in ' + statenametext + ' for ' + yearstext + '</strong></h5><p class="tableInstruct"><em>Select the table headings to sort table data</em></p>');
-                    if ($('#' + tableTarget).hasClass('collapse')) $('#' + tableTarget).removeClass('collapse');
-                    $('#' + tableTarget).attr('aria-labelledby', tableTitleTarget).attr('data-parent', '#summ_accordion').attr('aria-expanded', true);
-            
-                }
-                q.send(function(response) {
-                    var data = response.getDataTable();
-                    var dataView = new google.visualization.DataView(data);
-                    var numrows = dataView.getNumberOfRows();
-                    if (numrows === 0 && i === 0 && !clearAll) {
-                        $('#chart_div_0').prepend('<h5>Your query produced no results.  Try again.</h5>');
-                        $('#' + tableTitleTarget + ' h5').remove();
-                        $('#chart_div_0 > div').remove();
-                        $('#legend_div').empty();
-                        if($('button#spreadDL').hasClass('toggleShow')) $('button#spreadDL').removeClass('toggleShow');
-                        if($('.switchNum').hasClass('toggleShow'))$('.switchNum').removeClass('toggleShow');
-                        $('.dlHeading').hide();
-                        if($('button#printButton').hasClass('toggleShow')) $('button#printButton').removeClass('toggleShow');
-                        return;
-                    }
-                    data.setProperty(0, 0, 'style', 'width:100px');
-            
-                    if (reportchoice != '30') {
-                        var container = document.getElementById(tableTarget);
-                        var table = new google.visualization.Table(
-                            container);
-                        table.draw(data, {
-                            showRowNumber: false,
-                            allowHtml: true
-                        });
-                    }
-            
-            
-            
-                });
-            
-            
-            
-            
-            }
-            $(document).on('change','input:radio[name="vrcat"]', function() {
+            }            $(document).on('change','input:radio[name="vrcat"]', function() {
             
                     if ($(this).is(':checked')) {
                     if(!$('div#vrvars').hasClass('showVars')) $('div#vrvars').addClass('showVars');
