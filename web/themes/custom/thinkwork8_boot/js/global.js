@@ -310,14 +310,14 @@
             
             
             });
-            $(document).on('click','#sdChartForm input.checkAll',function() {
+           /* $(document).on('click','#sdChartForm input.checkAll',function() {
                 var parentID = $(this).closest('div.formSub').attr('id');
             
                 var checked = $(this).prop('checked');
-                $('#' + parentID).find('ul input:checkbox').prop('checked', checked);
+                $('body #' + parentID).find('ul input:checkbox').prop('checked', checked);
             // $('#programContainer').empty();
             // var getProgram = populatePrograms('program');
-            });
+            });*/
             
             
             // All the document ready stuff
@@ -569,11 +569,12 @@
                     }, 500);
                 });
             
-                $('input.checkAll').click(function() {
+                $('#sdChartForm').on('click', 'input.checkAll', function(event) {
                     var parentID = $(this).closest('div.collapse').attr('id');
+                    console.log("Parent ID: " + parentID);
             
                     var checked = $(this).prop('checked');
-                    $('#' + parentID).find('.col input:checkbox').prop('checked', checked);
+                    $('#' + parentID).find('input:checkbox').prop('checked', checked);
                 });
             
                 $('select').change(countChecks);
