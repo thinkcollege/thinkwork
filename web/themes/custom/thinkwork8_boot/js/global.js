@@ -358,15 +358,11 @@
                 updateSelectCount('table');
                 updateSelectCount('variable');
             
-                $('#collapseSeven input').click(function(event) {
+                $('#collapseSeven .card-body').on('click','input',function(event) {
                     updateSelectCount('state');
             
                 });
-                $('#collapseEight input').click(function(event) {
-                    updateSelectCount('year');
-            
-                });
-                $('#collapseNine input').click(function(event) {
+                $('#collapseEight .card-body').on('click','input', function(event) {
                     updateSelectCount('year');
             
                 });
@@ -378,7 +374,7 @@
                 });
             
             
-                $("#sdChartForm button#clearForm").click(function(event) {
+                $("#sdChartForm button#clearForm").on('click', function(event) {
                     event.preventDefault(); // cancel default behavior
             
             
@@ -574,7 +570,9 @@
                     console.log("Parent ID: " + parentID);
             
                     var checked = $(this).prop('checked');
+                    console.log("Checked?: " + checked);
                     $('#' + parentID).find('input:checkbox').prop('checked', checked);
+                    var checkSelect = parentID == 'collapseEight' ? updateSelectCount('year') : updateSelectCount('state');
                 });
             
                 $('select').change(countChecks);
@@ -1164,24 +1162,6 @@
             
             return returnCount;
             }
-            // counting states and years
-            /* function updateSelectCount(checkType) {
-                if (checkType == 'year') {
-                    yeararray1 = getStateYearArray('year');
-            
-                    $('#yearCountText').empty();
-                    $('#summyearCountText').empty();
-                    var yrsSelect = yearstext;
-                    if (yearstext.length > 20) {
-                        yrsSelect = "Selected: (" + countChecks('year') + ") ";
-                    }
-                    yrsSelectText = yrsSelect;
-                    $('#yearCountText').append(yrsSelectText);
-                    $('#summyearCountText').append(yrsSelectText);
-            
-                }
-            
-            } */
             
             function updateCatNameText() {
                 $('#catChecked').empty();
@@ -1570,11 +1550,12 @@
                 if (checkType == 'year') {
                     var yeararray1 = getStateYearArray('year', reportType);
                     //if (yeararray1.length < 1 && reportURL[1] == 'natrep') return;
-                    var years1 = reportURL.get('grp') == 'natrep' ? $('input[name="summChoose"]:checked').val() : yeararray1;
-                    yearstext = reportURL.get('grp') != 'natrep' ? yeararray1.join(', ') : years1;
+                    var years1 = reportType == 'national' ? $('input[name="summChoose"]:checked').val() : yeararray1;
+                    var yearstext = reportType != 'national' ? yeararray1.join(', ') : years1;
+                    console.log("Years text: " + yearstext);
+                    var yrsSelect = yearstext;
                     $('#yearCountText').empty();
                     $('#summyearCountText').empty();
-                    var yrsSelect = yearstext;
             
                     var yrsSelectText = yrsSelect;
                     $('#yearCountText').append(yrsSelectText);
