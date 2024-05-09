@@ -29,6 +29,44 @@ margin: 0 auto;
 }
 
 */
+
+
+
+/* Basic overrides */
+
+
+body {font-size:1.2rem}
+
+a {
+  color: #0077AF; 
+  font-weight:600;
+}
+
+
+/*****Fonts*****/
+body,p,a,li {
+  font-family: "Lato", "Trebuchet MS", sans-serif;
+	-webkit-font-smoothing:antialiased;
+	-moz-osx-font-smoothing:grayscale;
+}
+
+h1,h2,h3,h4,h5,h6,h1 a,h2 a,h3 a {
+  font-family: "Montserrat", sans-serif;
+	font-weight:600;
+}
+
+h1 {
+  color: #0077B0;
+}
+
+h2 {color: #5F9832}
+
+
+h3,h4,h5,h6 {
+	color:#343a40;
+}
+
+
 #logo {
 	max-height:150px;
 }
@@ -60,7 +98,7 @@ blockquote.f_quote {
 
 
 
-.dropdown-item.active, .dropdown-item:active {background-color:#5f9639;}
+.dropdown-item.active, .dropdown-item:active {background-color:#5F9832;}
 
 .dropdown-item a.active{color:#fff}
 .navbar-dark .navbar-nav .nav-link {
@@ -74,22 +112,6 @@ color:	#dfe2e4}
 }
 
 #navbar-top {background-color:#DCDCDC}
-
-/*****Fonts*****/
-body,p,a,li {
-	font-family:'Lato',sans-serif;
-	-webkit-font-smoothing:antialiased;
-	-moz-osx-font-smoothing:grayscale;
-}
-
-h1,h2,h3,h4,h5,h6,h1 a,h2 a,h3 a {
-	font-family:'Open Sans',sans-serif;
-	font-weight:600;
-}
-
-h1,h2,h3,h4,h5,h6 {
-	color:#343a40;
-}
 
 
 /* links on top of search bar in header */
@@ -128,16 +150,16 @@ h1,h2,h3,h4,h5,h6 {
 	padding:10px 0;
 	color:#fff;
 	text-transform:uppercase;
-	font-family:Montserrat;
+  font-family: "Montserrat", sans-serif;
 }
 
 .site-footer__top {
-	background-color:#5f9639;
+	background-color:#5F9832;
 	/*margin:0;*/
 }
 
 .site-footer__bottom {
-	background-color:#468cc8;
+	background-color:#0077B0;
 	margin-top:0;
 }
 
@@ -156,7 +178,7 @@ h1,h2,h3,h4,h5,h6 {
 .region-featured-top {
 	margin:0;
 	margin-top:20px;
-	background-color:#468cc8;
+	background-color:#0077B0;
 	color:#fff;
 }
 
@@ -168,7 +190,7 @@ h1,h2,h3,h4,h5,h6 {
 
 .card-header {
 	color:#fff;
-	background-color:#468cc8;
+	background-color:#0077B0;
 
   font-family:'Montserrat',sans-serif;
 	font-weight:700;
@@ -190,16 +212,16 @@ padding: 5px 10px;
 }
 
 .dropdown-item:focus,.dropdown-item:hover {
-	color:#468cc8;
+	color:#0077B0;
 	text-decoration:none;
 	background-color:#f8f9fa;
 }
 
 
-.dropdown-item.active:hover {background-color:#468cc8;}
+.dropdown-item.active:hover {background-color:#0077B0;}
 
 #block-bootstrap-barrio-subtheme-thinkwork-boot-block-5 {
-	background-color:#468cc8;
+	background-color:#0077B0;
 	border:0;
 	margin-top:10px;
 	border-radius:calc(.25rem - 1px) calc(.25rem - 1px) 0 0;
@@ -231,12 +253,12 @@ padding: 5px 10px;
 }
 
 .node--view-mode-teaser h2 a {
-	color:#468cc8;
+	color:#0077B0;
 }
 
 .card-block h3.field-content {
     padding-top:0;
-    color:#468cc8;
+    color:#0077B0;
     font-size: 1.25rem;
 }
 
@@ -326,7 +348,7 @@ img[data-align="right"] {padding:0 0 5px 5px }
     font-weight: 700;
     color: #fff;
     line-height: 1;
-    background: #5f9639;
+    background: #5F9832;
     text-align: center;
     white-space: nowrap;
     vertical-align: baseline;
@@ -350,7 +372,7 @@ img[data-align="right"] {padding:0 0 5px 5px }
     line-height: 1.5;
     border-radius: .25rem;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    background-color: #468cc8;
+    background-color: #0077B0;
 
 }
 
@@ -613,7 +635,7 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
 .view-aie-taxonomy-term .more-link {
     font-weight: 700;
     border-radius: 4px;
-    border: solid 2px #468cc8;
+    border: solid 2px #0077B0;
     display: inline-block;
     padding: 5px;
     float: right;
@@ -624,7 +646,7 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
 .view-elc-taxonomy-term .more-link {
     font-weight: 700;
     border-radius: 4px;
-    border: solid 2px #468cc8;
+    border: solid 2px #0077B0;
     display: inline-block;
     padding: 5px;
     float: right;
@@ -634,7 +656,7 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
 .view-rrtc-taxonomy-term .more-link {
     font-weight: 700;
     border-radius: 4px;
-    border: solid 2px #468cc8;
+    border: solid 2px #0077B0;
     display: inline-block;
     padding: 5px;
     float: right;
@@ -647,14 +669,14 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
 
 .block-bootstrap-collapse .btn-secondary {
   background-color:#fff;
-  color: #468cc8;
+  color: #0077B0;
   font-size: 1.7em;
   font-family: 'Open Sans',sans-serif;
   font-weight: 800;
 }
 
  .btn-secondary:not(:disabled):not(.disabled).active, .btn-secondary:not(:disabled):not(.disabled):active, .show>.btn-secondary.dropdown-toggle {
-    color: #468cc8;
+    color: #0077B0;
     background-color: #fff;
     border-color: #4e555b;
 }
