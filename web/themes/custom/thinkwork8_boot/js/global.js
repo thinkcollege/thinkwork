@@ -146,14 +146,16 @@
 
             
             $(document).on('click','.google-visualization-table-table tbody tr', function() {
+                var tableParent = $(this).closest('.tablePad').attr('id');
                 if(reportURL.get('report') == 'single') {
-                    $(".google-visualization-table-table tbody tr").each(function(i, obj) {
-                        if($('.google-visualization-table-table tbody tr').hasClass('chartSelected')) $('.google-visualization-table-table tbody tr').removeClass('chartSelected');
+                    $("#" + tableParent + " .google-visualization-table-table tbody tr").each(function(i, obj) {
+                        if($('#' + tableParent + ' .google-visualization-table-table tbody tr').hasClass('chartSelected')) $('#' + tableParent + ' .google-visualization-table-table tbody tr').removeClass('chartSelected');
                         
                     });
-                    if($('.fa-chart-bar').length) $('.fa-chart-bar').remove();
+                    if($('#' + tableParent + ' .fa-chart-bar').length) $('#' + tableParent + ' .fa-chart-bar').remove();
                     $(this).addClass('chartSelected');
                     $('td:first',this).prepend('<i class="fas fa-chart-bar"></i>');
+                    console.log("Table parent ID: " + tableParent);
 
                 }
 
@@ -358,7 +360,7 @@
                 updateSelectCount('table');
                 updateSelectCount('variable');
             
-                $('#collapseSeven .card-body').on('click','input',function(event) {
+                $('#collapseSeven .altSelect').on('click','input',function(event) {
                     updateSelectCount('state');
             
                 });
