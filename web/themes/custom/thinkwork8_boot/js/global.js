@@ -212,7 +212,8 @@
                     $('#chart_div_0').append('<p class="searchWarnings">' + searchWarnings + '</p>');
                     if($('p.privWarn').hasClass('visible')) $('p.privWarn').removeClass('visible'); 
                 }
-            
+                updateSelectCount('state');
+                updateSelectCount('year');
                 
             });
             
@@ -508,12 +509,10 @@
                 var checkPayers = countChecks('payer');
             
                 $("#chartRedraw").click(function() {
-                    $('html, body').animate({
-                        scrollTop: $("h1.title").offset().top
-                    }, 500);
+                        $('html, body').animate({
+                            scrollTop: $("h1.title").offset().top
+                        }, 500);
                 });
-            
-                //if(useRawNum == true) { if(!$('.percOn').hasClass('toggleHide')) $('.percOn').addClass('toggleHide'); if($('.numOn').hasClass('toggleHide')) $('.numOn').removeClass('toggleHide');} else { if(!$('.numOn').hasClass('toggleHide')) $('.numOn').addClass('toggleHide'); if($('.percOn').hasClass('toggleHide')) $('.percOn').removeClass('toggleHide');}
             
                 $('.switchNum button').on('click', function() {
                     useRawNum =  useRawNum == true ? false : true;
