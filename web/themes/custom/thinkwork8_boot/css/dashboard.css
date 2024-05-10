@@ -5,6 +5,7 @@
  body {
 /*	padding-top: 54px;*/
 	color:#333;
+	font-size: 1.1rem !important;
 }
 @media (min-width: 992px) {
 	body {

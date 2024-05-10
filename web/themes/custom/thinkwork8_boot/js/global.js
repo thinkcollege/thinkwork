@@ -49,6 +49,16 @@
         $(this).next().removeClass('sf-hidden');
           event.preventDefault();
         });
+        once('selectState',"#selectState").forEach(function(value,i) {
+
+        $('input#bbState').on('click', function() {
+            var stateSelect = $('#selectState option').filter(':selected').val();
+            downloadState(stateSelect);
+        });
+
+        function downloadState(d) {
+            window.location =  '/sites/default/files/bbstates/' + d + '.pdf';
+          }
         once('chartBuilder',"#chartBuilder").forEach(function(value,i) {
           var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
           var eventer = window[eventMethod];
@@ -67,15 +77,9 @@
               document.getElementById('chartBuilder').style.width = width + 'px';
             }
           } ,false);
-          $('input#bbState').on('click', function() {
-            var stateSelect = $('#selectState option').filter(':selected').val();
-            downloadState(stateSelect);
 
           });
       });
-        function downloadState(d) {
-          window.location =  '/sites/default/files/bbstates/' + d + '.pdf';
-        }
         once('chartForm',"#sdChartForm").forEach(function(value,i) {
             var statenametext = null;
             var stringContent = null;
@@ -568,10 +572,8 @@
             
                 $('#sdChartForm').on('click', 'input.checkAll', function(event) {
                     var parentID = $(this).closest('div.collapse').attr('id');
-                    console.log("Parent ID: " + parentID);
             
                     var checked = $(this).prop('checked');
-                    console.log("Checked?: " + checked);
                     $('#' + parentID).find('input:checkbox').prop('checked', checked);
                     var checkSelect = parentID == 'collapseEight' ? updateSelectCount('year') : updateSelectCount('state');
                 });
@@ -727,7 +729,6 @@
                         jQuery.each(data, function () {
                             
                             var year = this.YEAR;
-                            console.log('Data: ' + data);
             
                             var inputs = '';
                             if(reportURL.get('report') == 'single' || reportURL.get('report') == 'comparison' ) {
@@ -925,7 +926,7 @@
                         }).responseText;
                     }
             
-                    //console.log( 'in function table: ' + returnedStuff);
+                    console.log( 'in function table: ' + returnedStuff);
                     return returnedStuff;
             
                 } 
@@ -1038,7 +1039,7 @@
                             }).responseText; 
                         }
             
-                       // console.log( 'in function chart: ' + returnedStuff);
+                        console.log( 'in function chart: ' + returnedStuff);
                         var returnedStuff = tableindex && numpercdol ? [returnedStuff1] : [returnedStuff1,returnedStuff2,returnedStuff3];
                     } else {
                         
@@ -1491,7 +1492,7 @@
                             };
                             var yearCount = countChecks('years');
                             
-                            var formatter = new google.visualization.NumberFormat({decimalSymbol: '.',groupingSymbol: ',', suffix: '%'});
+                            var formatter = new google.visualization.NumberFormat({decimalSymbol: '.',groupingSymbol: ',', suffix: '%', pattern: '0.0'});
 
                            
                             for(var i = 1; i <= yearCount; i++) {

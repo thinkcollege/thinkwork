@@ -198,12 +198,18 @@ function sendChart($type,$reporttype,$singletype,$tableindex,$numpercdol) {
         if($singletype){
             $getfieldsquery = $type == 'chart' ? "SELECT `column_name`,`short_name` FROM `chart_labels` WHERE `table_name` = '$tablename' AND `num_perc_dol` = '" . ($numpercdol ? $numpercdol : $singletype) . "' ORDER BY `sort_order` ASC LIMIT $limitindex,1" : "SELECT `column_name`,`short_name` FROM `chart_labels` WHERE `table_name` = '$tablename' AND `num_perc_dol` = '$singletype' AND `sort_order` IS NOT NULL ORDER BY `sort_order`";
             $result = mysqli_query($con,$getfieldsquery);
+
             $querystring = "SELECT ";
             $row_cnt = $result->num_rows;
             if ($row_cnt === 0) break;
             $i = 0;
             while($row = mysqli_fetch_assoc($result)) {
-                $querystring .= $i == $row_cnt - 1 ? "IF(`" . $row['column_name'] . "` = -1, NULL,`" . $row['column_name'] . "`) '" . $row['short_name'] . "'" : "IF(`" . $row['column_name'] . "` = -1, NULL,`" . $row['column_name'] . "`) '" . $row['short_name'] . "',";
+
+                $getformattypequery = "SELECT `num_perc_dol` FROM `chart_labels` WHERE `table_name` = '$tablename' AND `column_name` = '" . $row['column_name'] . "' LIMIT 1";
+                $getformattype = mysqli_query($con,$getformattypequery);
+                $formattype = $getformattype->fetch_column();
+                
+                $querystring .= $i == $row_cnt - 1 ? "IF(`" . $row['column_name'] . "` = -1, NULL," . ($formattype == 'perc' ? "ROUND(`" . $row['column_name'] . "` * 100,0)" :  "`" . $row['column_name'] . "`") . ") '" . $row['short_name'] . "'" : "IF(`" . $row['column_name'] . "` = -1, NULL," . ($formattype == 'perc' ? "ROUND(`" . $row['column_name'] . "` * 100,0)" : "`" . $row['column_name'] . "`") . ") '" . $row['short_name'] . "',";
 
                 $i++;
 
