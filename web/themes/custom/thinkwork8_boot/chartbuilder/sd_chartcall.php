@@ -209,7 +209,7 @@ function sendChart($type,$reporttype,$singletype,$tableindex,$numpercdol) {
                 $getformattype = mysqli_query($con,$getformattypequery);
                 $formattype = $getformattype->fetch_column();
                 
-                $querystring .= $i == $row_cnt - 1 ? "IF(`" . $row['column_name'] . "` = -1, NULL," . ($formattype == 'perc' ? "ROUND(`" . $row['column_name'] . "` * 100,0)" :  "`" . $row['column_name'] . "`") . ") '" . $row['short_name'] . "'" : "IF(`" . $row['column_name'] . "` = -1, NULL," . ($formattype == 'perc' ? "ROUND(`" . $row['column_name'] . "` * 100,0)" : "`" . $row['column_name'] . "`") . ") '" . $row['short_name'] . "',";
+                $querystring .= $i == $row_cnt - 1 ? "IF(`" . $row['column_name'] . "` = -1, NULL," . ($formattype == 'perc' ? "ROUND(`" . $row['column_name'] . "` * 100,1)" :  "`" . $row['column_name'] . "`") . ") '" . $row['short_name'] . "'" : "IF(`" . $row['column_name'] . "` = -1, NULL," . ($formattype == 'perc' ? "ROUND(`" . $row['column_name'] . "` * 100,1)" : "`" . $row['column_name'] . "`") . ") '" . $row['short_name'] . "',";
 
                 $i++;
 

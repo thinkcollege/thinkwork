@@ -306,10 +306,6 @@
             $(document).on('change','select#rptPeriodContainer', function() {
                 var getProgram = populatePrograms('programcull');
                 });
-            $(document).on('change','input[name="regionTrendPer[]"]', function() {
-                trendInfo = checkTrends();
-            
-            });
             $(document).on("change",'input:checkbox[name="regionPayer[]"]', function () {
             
             //$('#programContainer').empty();
@@ -317,17 +313,7 @@
             
             
             });
-           /* $(document).on('click','#sdChartForm input.checkAll',function() {
-                var parentID = $(this).closest('div.formSub').attr('id');
             
-                var checked = $(this).prop('checked');
-                $('body #' + parentID).find('ul input:checkbox').prop('checked', checked);
-            // $('#programContainer').empty();
-            // var getProgram = populatePrograms('program');
-            });*/
-            
-            
-            // All the document ready stuff
             $(document).ready(function() {
                 var yearArray = populateYears('sta_d3_agency_labor');
                 var urlLoc = window.location.href;  
@@ -350,15 +336,11 @@
                     } else
                       google.charts.load('current', { 'packages': ['corechart', 'table','line','geochart']});
                 if($('.introText').hasClass('hideIntro')) $('.introText').removeClass('hideIntro');
-                var singleActivRadio = singleActiveFilter();
-                var checktrends = checkTrends();
                 $("#sdChartForm button.michRedraw").click(function(event) {
                 event.preventDefault(); // cancel default behavior
             
             
                 });
-                var grpNameval = getUrlString('grp');
-                $('input#grpName').val(grpNameval);
             
                 updateSelectCount('state');
                 updateSelectCount('year');
@@ -407,11 +389,7 @@
                 });
             
             
-                $('#trendActivityContainer input[name="trendActivityCat"]').on('change',function() {
-                    var singleActiv = $('#trendActivityContainer input[name="trendActivityCat"]:checked').val();
-                    singleActiveFilter();
-            
-                });
+                
                 $('#sdChartForm input.checkAll').prop('checked',false);
                 $('#sdChartForm input.progToggle').prop('checked',false);
                 //$('#programHed').hide();
@@ -612,34 +590,8 @@
                 // end of document.ready functions
             
             });
-            function checkTrends() {
-            var countDates;
-                countDates = countChecks('trendPers');
-                if(countDates < 2) {
-                    if($('#nationalActivityDiv').hasClass('active')) $('#nationalActivityDiv').removeClass('active');
-                    if($('#singleActivity').hasClass('active')) $('#singleActivity').removeClass('active')
-                    }
-                else if (countDates >= 2) {
-                    if(!$('#nationalActivityDiv').hasClass('active')) $('#nationalActivityDiv').addClass('active');
-                    if(!$('#singleActivity').hasClass('active') && $('#nationalActivityContainer input[name="nationalActivityCat"]:checked').val()) $('#singleActivity').addClass('active');
-                    }
             
-            }
-            
-            function singleActiveFilter() {
-                var singleActiv = $('#nationalActivityContainer input[name="nationalActivityCat"]:checked').val();
-                if(!$('#singleActivity').hasClass('active') && singleActiv) $('#singleActivity').addClass('active');
-                if($('#nationalActivitySelContainer li').hasClass('active')) $('#nationalActivitySelContainer li').removeClass('active');
-                if(singleActiv == '1' || singleActiv == '2' || singleActiv == '4') {
-                    if(!$('#nationalActivitySelContainer li').hasClass('active')) $('#nationalActivitySelContainer li').addClass('active');
-                }
-                else if(singleActiv == '3' || singleActiv == '98' ) {
-                    if($('#nationalActivitySelContainer li.limited').hasClass('active')) $('#nationalActivitySelContainer li.limited').removeClass('active');
-                    if(!$('#nationalActivitySelContainer li.unlimited').hasClass('active')) $('#nationalActivitySelContainer li.unlimited').addClass('active');
-                }
-            }
-            
-            
+
             function getCheckboxLabels(type) {
             
             
@@ -661,30 +613,6 @@
                     });
                 }
                 return choiceNames;
-            
-            }
-            function getAgeLabel() {
-                agestart = $('#ags option:selected').val();
-                ageend = $('#age option:selected').val();
-            
-            
-                var ageText = parseInt(agestart) === 0 && parseInt(ageend) === 108 ? 'Ages: all' : 'Ages: ' + agestart + ' to ' + ageend
-            
-                return ageText;
-            
-            }
-            function getRptPerLabel() {
-                var rptPerLabel = $('#rptPeriodContainer').find(":selected").text();
-                return rptPerLabel;
-            
-            }
-            function getGenderLabel() {
-                gender = $('#genderSelect option:selected').text();
-            
-            
-                var genderText = 'Gender: ' + gender;
-            
-                return genderText;
             
             }
             
@@ -1218,30 +1146,7 @@
             
             }
             
-            
-            
-            
-            var legends = [
-                ['Vision', 'Hearing', 'Speech', 'Learning', 'Mobility', 'Daily living', 'Environmental', 'Vehicle', 'Computers', 'Recreation'],
-                ['Indivs. w/ disabilities', 'Family members', 'Reps. of education', 'Reps. of employment', 'Reps. of health', 'Reps. of community living', 'Reps. of technology'],
-                ['Highly satisfied', 'Satisfied', 'Satisfied somewhat', 'Not satisfied'],
-                ['Assist in decision-making', 'Serve as loaner', 'Provide accommodation', 'Training'],
-                ['Products', 'Funding', 'Technology', 'Combination', 'Transition']
-            
-            ];
-            
-            function legendBuild(legendIn) {
-                var legendOut = [];
-                var numCount = legendIn.length;
-                if (numCount < 1) return;
-                var i;
-            
-                for (i = 0; i < numCount; i++) {
-                    legendOut.push('<div class="legendElem"><div class="legendColorBlock legendNum' + i + '"><img src="/themes/custom/thinkwork8_boot/img/legend' + i + '.png" /></div><div class="legendText">' + legendIn[i] + '</div></div>');
-            
-                }
-                return legendOut;
-            }
+
             function buildTableTitle(type) {
                 var breaker = type == 'download' ? ' | ' : ' | ';
                 var reportType = reportURL.get('report');
@@ -1307,7 +1212,6 @@
                 if(!numpercdol || numpercdol == 'perc') $('#chart_div_1').empty();
                 if(!numpercdol || numpercdol == 'dol')$('#chart_div_2').empty();
                 var legendArray = reportVar == 'single' ? getCheckboxLabels('single') : getCheckboxLabels('comparison');
-                var legendHTML = legendBuild(legendArray);
                 if((reportVar == 'single' && countChecks('single') && countChecks('single') < 12) || (reportVar == 'comparison' && countChecks('activity') && countChecks('activity') < 5)) { stackedType = true ; }
             
                 var chartReturn = null; 
