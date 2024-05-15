@@ -54,33 +54,32 @@
             $('input#bbState').on('click', function() {
                 var stateSelect = $('#selectState option').filter(':selected').val();
                 downloadState(stateSelect);
-        });
+            });
+         });
 
         function downloadState(d) {
             window.location =  '/sites/default/files/bbstates/' + d + '.pdf';
           }
+        once('chartBuilder',"#chartBuilder").forEach(function(value,i) {
+          var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+          var eventer = window[eventMethod];
+          var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
 
-          once('chartBuilder',"#chartBuilder").forEach(function(value,i) {
-            var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
-            var eventer = window[eventMethod];
-            var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
-  
-            eventer(messageEvent,function(e) {
-  
-              // If the message is a resize frame request
-              if (e.data.indexOf('reheight::') != -1) {
-                var height = e.data.replace('reheight::', '');
-  
-                document.getElementById('chartBuilder').style.height = height + 'px';
-              }
-              else if (e.data.indexOf('rewide::') != -1) {
-                var width = e.data.replace('rewide::', '');
-                document.getElementById('chartBuilder').style.width = width + 'px';
-              }
-            } ,false);
-  
+          eventer(messageEvent,function(e) {
+
+            // If the message is a resize frame request
+            if (e.data.indexOf('reheight::') != -1) {
+              var height = e.data.replace('reheight::', '');
+
+              document.getElementById('chartBuilder').style.height = height + 'px';
+            }
+            else if (e.data.indexOf('rewide::') != -1) {
+              var width = e.data.replace('rewide::', '');
+              document.getElementById('chartBuilder').style.width = width + 'px';
+            }
+          } ,false);
+
         });
-      });
         once('chartForm',"#sdChartForm").forEach(function(value,i) {
             var statenametext = null;
             var stringContent = null;
