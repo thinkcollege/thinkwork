@@ -230,7 +230,7 @@
                 else $('#yearSingle').empty();
                 populateYears(dataTable);
                 var valParentId = $(this).closest('.collapse').attr('id');
-                $('#chosenText').remove();
+                // $('#chosenText').remove();
                 $('img#chosenCheck').remove();
                 $('.tableSelect').each(function(i, obj) {
                 $(this).removeClass('tableChosen');
@@ -370,9 +370,9 @@
                 });
             
             
-                var programSlug = reportURL.get('grp') == 'natrep' ? 'Programs' : 'CMHSPs';
-                $('span.programSlug').text(programSlug);
-                var pageSub = reportURL.get('grp') == 'indst' ? 'Individual State Report' : (reportURL.get('grp') == 'stcomp' ? 'State Comparison Report' : (reportURL.get('grp') == 'natrep' ? 'National Report' : ''));
+                
+                
+                
                 if ($('#downCSV').hasClass('visible')) $('#downCSV').removeClass('visible');
                 if($('p.privWarn').hasClass('visible')) $('p.privWarn').removeClass('visible');
                 $('a#singleTab').attr('href','/statedata/chart-builder-test?report=single');
@@ -1148,13 +1148,20 @@
             
 
             function buildTableTitle(type) {
-                var breaker = type == 'download' ? ' | ' : ' | ';
-                var reportType = reportURL.get('report');
-                var tableTitle = getCheckboxLabels(reportType);
-                var joinTitle = 'Search results for: ';
-                var tableSelected = '';
-                
-                joinTitle += tableTitle + ' in ' + (reportType == 'national' ? 'the United States' : getStateYearArray('state', reportType)) + ' during years: ' + getStateYearArray('year', reportType) ;
+                if(type == 'stored') {
+                    var joinTitle = getReportVar('search_descrip');
+                    console.log("Join title: " + joinTitle);
+                } else {
+
+                    var breaker = type == 'download' ? ' | ' : ' | ';
+
+                    var reportType = reportURL.get('report');
+                    var tableTitle = getCheckboxLabels(reportType);
+                    var joinTitle = 'Search results for: ';
+                    var tableSelected = '';
+                    
+                    joinTitle += tableTitle + ' in ' + (reportType == 'national' ? 'the United States' : getStateYearArray('state', reportType)) + ' during years: ' + getStateYearArray('year', reportType) ;
+                }
                 return joinTitle;
             }
             
@@ -1170,27 +1177,48 @@
             
             function getReportVar(calltype) {
                 var urlid = reportURL.get('showchart');
+                if(calltype == 'search_descrip') {
                 
-            return $.ajax({
-                    url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?getstoredvar=' + calltype + '&urlid=' + urlid,
-                    beforeSend: function(){
-                        $('#chart_div_0').html('<img class="loadingImg" src="/themes/custom/thinkwork8_boot/img/spinner.gif">');
-                    },
-                    type: "GET",
-                    dataType: "json",
-                    global: false,
-                    async:false,
-                    cache: false,
-                    success: function(response) {
-            
+                    return $.ajax({
+                            url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?getstoredvar=' + calltype + '&urlid=' + urlid,
+                            type: "GET",
+                            dataType: "text",
+                            global: false,
+                            async:false,
+                            cache: false,
+                            success: function(response) {
                     
-            
+                            
+                    
+                        }
+                        ,
+                        error: function(xhr, status, err) {
+                            return false;
+                        }
+                    }).responseText;
+               } else {
+                
+                    return $.ajax({
+                            url: '/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall.php?getstoredvar=' + calltype + '&urlid=' + urlid,
+                            beforeSend: function(){
+                                $('#chart_div_0').html('<img class="loadingImg" src="/themes/custom/thinkwork8_boot/img/spinner.gif">');
+                            },
+                            type: "GET",
+                            dataType: "json",
+                            global: false,
+                            async:false,
+                            cache: false,
+                            success: function(response) {
+                    
+                            
+                    
+                        }
+                        ,
+                        error: function(xhr, status, err) {
+                            return false;
+                        }
+                    }).responseText;
                 }
-                ,
-                error: function(xhr, status, err) {
-                    return false;
-                }
-                }).responseText;
             }
             
             function drawSDvisualization(changeChart,tableindex,numpercdol) {
@@ -1219,8 +1247,8 @@
                 var inputCount = parseInt(countChecks('program') + (countChecks('program') > 0 ? 0 : countChecks('comparison')));
                 var chartHeight = inputCount > 3 ? (inputCount > 5 ? (inputCount > 9 ? '900' : '600') : '500') : '250';
                 var groupWid = inputCount > 3 ? (inputCount > 5 ? '22' : '32') : '22';
-                
-                var chartTitle = reportVar == 'single' ? buildTableTitle('single') : buildTableTitle('comparison');
+                if(changeChart == 'storedChart') var chartTitle = buildTableTitle('stored');
+                 else var chartTitle = reportVar == 'single' ? buildTableTitle('single') : buildTableTitle('comparison');
                 
                 
                 var chartoptions = {
@@ -1234,7 +1262,7 @@
                 var chart = null;
                 var containerDiv = null;
                 if(reportVar == 'single'){
-                    var joinTitle = buildTableTitle('single');
+                    var joinTitle = changeChart == 'storedChart' ? buildTableTitle('stored') : buildTableTitle('single');
                     var chartReturn = changeChart == 'storedChart' ? populatePrograms('storechart',tableindex,numpercdol) : populatePrograms('chart',tableindex,numpercdol); 
                     
                     if(changeChart == 'changeChart' && numpercdol){
@@ -1303,8 +1331,7 @@
                     }
                 }
                 else if(reportVar == 'national') {
-                        
-                    var joinTitle = buildTableTitle('comparison');
+                    joinTitle = changeChart == 'storedChart' ? buildTableTitle('stored') : buildTableTitle('single');
                     var natoptions = {
                         region: 'US',
                         displayMode: 'regions',
@@ -1331,7 +1358,7 @@
                     
                     
                 } else {
-                        var joinTitle = buildTableTitle('comparison');
+                        joinTitle = changeChart == 'storedChart' ? buildTableTitle('stored') : buildTableTitle('comparison');
                         titleDiv = $('#sdchart_table_div_0_title');
                         $(titleDiv).append('<h5>' + joinTitle + '</h5>');
                         var chartReturn = changeChart == 'storedChart' ? populatePrograms('storechart') : populatePrograms('chart'); 

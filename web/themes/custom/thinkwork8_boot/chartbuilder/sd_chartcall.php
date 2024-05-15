@@ -1,6 +1,6 @@
 <?php
-//error_reporting(E_ALL);
-//ini_set('display_errors', 1);
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
 //print_r($_POST);
 include_once('/var/www/chartinclude.inc');
 $con = new mysqli($servername, $username, $password, $dbname);
@@ -27,22 +27,7 @@ $activityarray = array();
 
 if($getstoredvar) pullStoredVar($getstoredvar,$urlid);
 
-if ($type && $type == 'payer') {
-    populatePayers($grp);
-
-} elseif ($type && $type == 'program') {
-        populatePrograms('nocull');
-
-} elseif ($type && $type == 'race') {
-    populateRace();
-
-}  elseif ($type && $type == 'ethnic') {
-populateEthnic();
-
-}  elseif ($type && $type == 'nonPop') {
-    populateNonwork();
-
-}   elseif ($type && $type == 'years') {
+ if ($type && $type == 'years') {
         populateYears($tableindex);
 
  }
@@ -124,9 +109,9 @@ function pullStoredVar($getstoredvar,$urlid) {
             $search_descrip = $row['search_descrip'];
             $reportvar = $formvars['reportvar'];
            
-            if ($getstoredvar == 'search_descrip') return $search_descrip;
+            if ($getstoredvar == 'search_descrip') { return $search_descrip;}
             elseif($getstoredvar == 'reportvar') return $reportvar;
-            return  is_array($formvars) ? $formvars : FALSE;
+            else return  is_array($formvars) ? $formvars : FALSE;
         }
     }
       
