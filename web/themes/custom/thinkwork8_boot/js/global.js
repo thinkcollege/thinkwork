@@ -249,7 +249,7 @@
                         $('#chosenText').remove();
                         updateSelectCount('table',varname);
                     }
-                    var tableIndicator = '&nbsp;<img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_check.png" alt="this table chosen" />';
+                    var tableIndicator = '&nbsp;<img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_checkmark.svg" alt="this table chosen" />';
                     $(this).parent('label.js-simple-tooltip').length ? $(this).closest('label.js-simple-tooltip').append(tableIndicator) : $('.tableChosen').after(tableIndicator);
                 }
                 var tableDescrip = $(this).attr("title") ? $(this).attr("title") : $(this).closest('label').attr("title");
@@ -292,7 +292,7 @@
                 else varParent = '';
                 varname = varParent + varname;
                 updateSelectCount('variable',varname);
-                var variableIndicator = '&nbsp;<img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_check.png" alt="this variable chosen" />';
+                var variableIndicator = '&nbsp;<img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_checkmark.svg" alt="this variable chosen" />';
                 $(this).parent('label.js-simple-tooltip').length ? $(this).closest('label.js-simple-tooltip').append(variableIndicator) : $('.variableChosen').after(variableIndicator);
             }
             $('input#tableId').val(tableIDval);
