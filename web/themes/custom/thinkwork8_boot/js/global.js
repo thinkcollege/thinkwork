@@ -247,6 +247,7 @@
                 { 
                     if($(this).is('input')) {
                         var varname = $(this).closest('label').text();
+                        $('#chosenText').remove();
                         updateSelectCount('table',varname);
                     }
                     var tableIndicator = '&nbsp;<img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_check.png" alt="this table chosen" />';
@@ -1513,13 +1514,14 @@
                 if (checkType == 'table') {
                     
                     var chosenText = '<span id="chosenText">Chosen: ' + tableVar + '</span>';
-            
+                    $('#chosenText').remove();
                     
                     $('.tableChosen').closest('.card').find('h5').append(chosenText);
                 }
             
             
                 if (checkType == 'variable') {
+                    $('#chosenText').remove();
                     
                     var chosenText = '<span id="chosenText">Chosen: ' + tableVar + '</span>';
             
