@@ -1135,3 +1135,4 @@ h5 #chosenText { font-size: 70%; padding-left:15px;margin-top: 12px;}
 .fa-bar-chart::before, .fa-chart-bar::before {font-size: 120%;}
 .google-visualization-table td i.fa-chart-bar {margin-right: 10px; font-size: 200%;}
 .google-visualization-table tr.chartSelected { background-color: #000; color: #fff;}
+rect[stroke="#ffffff"] {stroke: #000 !important; stroke-width: 5px !important; }

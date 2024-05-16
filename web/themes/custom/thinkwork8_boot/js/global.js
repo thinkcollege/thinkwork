@@ -146,8 +146,7 @@
                 
             
                 }
-            });
-
+            }); 
             
             $(document).on('click','.google-visualization-table-table tbody tr', function() {
                 var tableParent = $(this).closest('.tablePad').attr('id');
