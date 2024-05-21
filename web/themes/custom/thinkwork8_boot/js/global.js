@@ -1177,7 +1177,7 @@
                     var joinTitle = 'Search results for: ';
                     var tableSelected = '';
                     
-                    joinTitle += tableTitle + ' in ' + (reportType == 'national' ? 'the United States' : getStateYearArray('state', reportType)) + ' during years: ' + getStateYearArray('year', reportType) ;
+                    joinTitle += tableTitle + ' in ' + (reportType == 'national' ? 'the United States' : getStateYearArray('state', reportType)) + ' during years: ' + getStateYearArray('year', reportType).join(', ') ;
                 }
                 return joinTitle;
             }

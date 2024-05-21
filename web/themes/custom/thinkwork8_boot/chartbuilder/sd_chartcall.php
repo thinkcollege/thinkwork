@@ -293,7 +293,7 @@ function sendChart($type,$reporttype,$singletype,$tableindex,$numpercdol) {
         $getformattypequery = "SELECT `num_perc_dol` FROM `chart_labels` WHERE `table_name` = '$tablename' AND `column_name` = '$reportvar' LIMIT 1";
         $getformattype = mysqli_query($con,$getformattypequery);
         $formattype = $getformattype->fetch_column();
-        $querystring = "SELECT `s`.`name` 'varstate',GROUP_CONCAT(IF(`$reportvar` = -1, NULL, `$reportvar`)) 'var' FROM `$tablename` t LEFT JOIN `sta_d3_states` s ON t.`STATE` = s.`abbreviation` WHERE `STATE` IN ('$statestring') AND `YEAR` IN ($yearstring) GROUP BY `STATE` ORDER BY `STATE`,`YEAR`";
+        $querystring = "SELECT `s`.`name` 'varstate',GROUP_CONCAT(IF(`$reportvar` = -1, NULL, `$reportvar`) ORDER BY `YEAR`) 'var' FROM `$tablename` t LEFT JOIN `sta_d3_states` s ON t.`STATE` = s.`abbreviation` WHERE `STATE` IN ('$statestring') AND `YEAR` IN ($yearstring) GROUP BY `STATE` ORDER BY `STATE`";
        if(!$urlid) array_unshift($yeararray, 'State');
         //echo "Query string: $querystring";
 
@@ -319,7 +319,7 @@ function sendChart($type,$reporttype,$singletype,$tableindex,$numpercdol) {
         }
         $temp = array();
         $k = 0;
-        
+        $yearprint = print_r($yeararray, true);
         $valcount = count($yeararray);
         foreach($tableoutput as $key => $val) {
            
