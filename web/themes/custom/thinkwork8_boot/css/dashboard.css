@@ -1002,24 +1002,20 @@ ul#singleContainer {
 	line-height: 24px;
   }
   a.tabSelect {
-	margin: 0 10px;
+	margin: 0;
 	padding: 0 10px;
 	border: 1px solid #AAA;
-	background: #ECECEC;
+	background: #282e37;
+	color: #fff;
 	display: inline-block;
-	-webkit-border-top-left-radius: 15px;
-	-webkit-border-top-right-radius: 15px;
-	-moz-border-radius-topleft: 15px;
-	-moz-border-radius-topright: 15px;
-	border-top-left-radius: 15px;
-	border-top-right-radius: 15px;
 	border-bottom: 1px solid #fff;
 	margin-bottom: -1px;
 	font-size: 1.2em;
+	width: 30%;
   }
   a.tabSelect.selected {
-	background: #FFF;
-	color: #000;
+	background-color: #4b82b0;
+	color: #fff;
   }
   #singleDiv label,#allactivityDiv label {margin-bottom: .25em; }
   #rptPeriodDiv h3, #singleDiv h3,#allactivityDiv h3,#nationalDiv h3 {margin-bottom: .25em; font-size: 1.4em;}
