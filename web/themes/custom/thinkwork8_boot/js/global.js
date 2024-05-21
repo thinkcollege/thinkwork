@@ -221,8 +221,8 @@
             });
             
             $(document).on('click','.tableSelect', function() {
-            var tableIDval = "";
-            
+                var tableIDval = "";
+                if(('#checkAffirm').length) $('#checkAffirm').remove();
             
                 var dataTable = $(this).val();
                 if(reportURL.get('report') == 'single' || reportURL.get('report') == 'comparison') $('#yearMultiple').empty();
@@ -231,6 +231,7 @@
                 var valParentId = $(this).closest('.collapse').attr('id');
                 // $('#chosenText').remove();
                 $('img#chosenCheck').remove();
+                $('#yearCountText').empty();
                 $('.tableSelect').each(function(i, obj) {
                 $(this).removeClass('tableChosen');
                 if($(this).val() != dataTable) $(this).prop('checked', false);
@@ -243,14 +244,20 @@
                 
                 $(this).addClass('tableChosen');
                 if(reportURL.get('report') == 'single')
-                { 
+                {  
+                    
+                    $('#chosenText').remove();
                     if($(this).is('input')) {
                         var varname = $(this).closest('label').text();
-                        $('#chosenText').remove();
+                        
                         updateSelectCount('table',varname);
                     }
+                    var checkFade = '&nbsp;<div id="checkAffirm"><p>You have selected a data set.  Now choose one state and as many years as you like.</div>';
                     var tableIndicator = '&nbsp;<img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_checkmark.svg" alt="this table chosen" />';
                     $(this).parent('label.js-simple-tooltip').length ? $(this).closest('label.js-simple-tooltip').append(tableIndicator) : $('.tableChosen').after(tableIndicator);
+                    $(this).parent('label.js-simple-tooltip').length ? $(this).closest('label.js-simple-tooltip').after(checkFade) : $('.tableChosen').after(checkFade);
+                    $('#checkAffirm').delay(2000).fadeOut(400);
+
                 }
                 var tableDescrip = $(this).attr("title") ? $(this).attr("title") : $(this).closest('label').attr("title");
                 $('input#tableId').val(dataTable);
@@ -261,57 +268,62 @@
             
             
             $(document).on('click','input[name="reportChoose"]', function() {
-            var tableIDval = "";
-            var tableDescrip = "";
-            $('#chosenText').remove();
-            if($(this).hasClass('acsVars')) {
-                tableIDval = $('input[name="acscat"]:checked').val();
-                var tableDescrip = $('input[name="acscat"]:checked').parent('label').attr("title");
-            
-            } else if ($(this).hasClass('vrVars')) {
-            tableIDval = $('input[name="vrcat"]:checked').val();
-            var tableDescrip = $('input[name="vrcat"]:checked').parent('label').attr("title");
-            } else {
-                tableIDval = $(this).closest('div.altSelect').attr('id');
-                var tableDescrip = $(this).closest('.card').find('h5 button').attr("title");
-            
-            }
-            if(reportURL.get('report') == 'comparison' || reportURL.get('report') == 'national') {
-                $('#chosenCheck').remove();
-                $('input[name="reportChoose"]').each(function(i, obj) {
-                    $(this).removeClass('variableChosen');
-                });
-                $(this).addClass('variableChosen');
-            
-                var varname = $(this).closest('label').text();
-                var varParent;
-                if($(this).closest('.card').find('input.tableChosen').length) { 
-                    varParent = $(this).closest('.card').find('input.tableChosen').parent('label').text();
-                    varParent = varParent + ': ';
+                if(('#checkAffirm').length) $('#checkAffirm').remove();
+                var tableIDval = "";
+                var tableDescrip = "";
+                $('#chosenText').remove();
+                if($(this).hasClass('acsVars')) {
+                    tableIDval = $('input[name="acscat"]:checked').val();
+                    var tableDescrip = $('input[name="acscat"]:checked').parent('label').attr("title");
+                
+                } else if ($(this).hasClass('vrVars')) {
+                tableIDval = $('input[name="vrcat"]:checked').val();
+                var tableDescrip = $('input[name="vrcat"]:checked').parent('label').attr("title");
+                } else {
+                    tableIDval = $(this).closest('div.altSelect').attr('id');
+                    var tableDescrip = $(this).closest('.card').find('h5 button').attr("title");
+                
                 }
-                else varParent = '';
-                varname = varParent + varname;
-                updateSelectCount('variable',varname);
-                var variableIndicator = '&nbsp;<img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_checkmark.svg" alt="this variable chosen" />';
-                $(this).parent('label.js-simple-tooltip').length ? $(this).closest('label.js-simple-tooltip').append(variableIndicator) : $('.variableChosen').after(variableIndicator);
-            }
-            $('input#tableId').val(tableIDval);
-            $('input#tableDescrip').val(tableDescrip);
-            });
-            
-            
-            
-            
-            
-            $(document).on('change','select#rptPeriodContainer', function() {
-                var getProgram = populatePrograms('programcull');
+                if(reportURL.get('report') == 'comparison' || reportURL.get('report') == 'national') {
+                    $('#chosenCheck').remove();
+                    var checkFade = reportURL.get('report') == 'comparison' ? '&nbsp;<div id="checkAffirm"><p>You have selected a variable.  Now choose as many states and years as you like.</div>' : '&nbsp;<div id="checkAffirm"><p>You have selected a variable.  Now choose one year below for your report.</div>';
+                    $('input[name="reportChoose"]').each(function(i, obj) {
+                        $(this).removeClass('variableChosen');
+                    });
+                    $(this).addClass('variableChosen');
+                
+                    var varname = $(this).closest('label').text();
+                    var varParent;
+                    if($(this).closest('.card').find('input.tableChosen').length) { 
+                        varParent = $(this).closest('.card').find('input.tableChosen').parent('label').text();
+                        varParent = varParent + ': ';
+                    }
+                    else varParent = '';
+                    varname = varParent + varname;
+                    updateSelectCount('variable',varname);
+                    var variableIndicator = '&nbsp;<img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_checkmark.svg" alt="this variable chosen" />';
+                    $(this).parent('label.js-simple-tooltip').length ? $(this).closest('label.js-simple-tooltip').after(variableIndicator) : $('.variableChosen').after(variableIndicator);
+
+                    $(this).parent('label.js-simple-tooltip').length ? $(this).closest('label.js-simple-tooltip').after(checkFade) : $('.tableChosen').after(checkFade);
+                    $('#checkAffirm').delay(2000).fadeOut(400);
+                }
+                $('input#tableId').val(tableIDval);
+                $('input#tableDescrip').val(tableDescrip);
                 });
-            $(document).on("change",'input:checkbox[name="regionPayer[]"]', function () {
-            
-            //$('#programContainer').empty();
-                var getProgram = populatePrograms('programcull');
-            
-            
+                
+                
+                
+                
+                
+                $(document).on('change','select#rptPeriodContainer', function() {
+                    var getProgram = populatePrograms('programcull');
+                    });
+                $(document).on("change",'input:checkbox[name="regionPayer[]"]', function () {
+                
+                //$('#programContainer').empty();
+                    var getProgram = populatePrograms('programcull');
+                
+                
             });
             
             $(document).ready(function() {
@@ -600,8 +612,13 @@
                 if (type == 'comparison' || type == 'national') {
                     var progId = $('input[name="reportChoose"]:checked').attr("id");
                     var progText = $("label[for='"+progId+"']").text();
-                    var progPrefix = $('input[name="reportChoose"]:checked').closest('.card').find('.tableChosen').attr("title") ? $('input[name="reportChoose"]:checked').closest('.card').find('.tableChosen').attr("title") : $('input[name="reportChoose"]:checked').closest('.card').find('.tableChosen').closest('label').attr("title");
-                    choiceNames = progPrefix + ": " + progText;
+                    var progPrefixFind = '';
+                    if($('button.tableChosen').length ){ 
+                        progPrefixFind = $('input[name="reportChoose"]:checked').closest('.card').find('button.tableChosen').attr('title'); } 
+                    else {
+                        progPrefixFind = $('input.tableChosen').closest('label').attr('alt-text'); 
+                    }
+                    choiceNames = progPrefixFind + ": " + progText;
                 }
                 else if (type == 'single') {
                     choiceNames = [];
@@ -1255,7 +1272,13 @@
                 title: chartTitle,
                 width: '90%',
                 height: '600',
-                vAxis: {minValue: 0},
+                
+                vAxis: {
+                    minValue:0,
+                    viewWindow:{
+                     min:0
+                    }
+                },
                 colors: ['#006e82', '#fae6be', '#00a0fa', '#8214a0', '#a0fa82', '#fa7850', '#005ac8', '#f0f032', '#0ab45a', '#000000','#f5b7b1','#85929e']
                 };
                 var chartdata = null;
@@ -1272,7 +1295,12 @@
                                 title: chartTitle,
                                 width: '90%',
                                 height: '600',
-                                vAxis: {minValue: 0,format: '#\'%\''},
+                                vAxis: {
+                                    minValue:0,
+                                    viewWindow:{
+                                        min:0
+                                       },
+                                       format: '#\'%\''},
                                 colors: ['#006e82', '#fae6be', '#00a0fa', '#8214a0', '#a0fa82', '#fa7850', '#005ac8', '#f0f032', '#0ab45a', '#000000','#f5b7b1','#85929e']
                             };
                         }
@@ -1338,6 +1366,12 @@
                         resolution: 'provinces',
                         width: '90%',
                         height: '600',
+                        vAxis: {
+                            minValue:0,
+                            viewWindow:{
+                                min:0
+                            }
+                        },
                         interpolateNulls: true,
                         defaultColor: '#f5f5f5',
             

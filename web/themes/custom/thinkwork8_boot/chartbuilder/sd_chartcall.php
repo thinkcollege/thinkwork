@@ -1,5 +1,5 @@
 <?php
-// error_reporting(E_ALL);
+//error_reporting(E_ALL);
 // ini_set('display_errors', 1);
 //print_r($_POST);
 include_once('/var/www/chartinclude.inc');
@@ -328,7 +328,7 @@ function sendChart($type,$reporttype,$singletype,$tableindex,$numpercdol) {
                 else { 
                     if($formattype == 'perc') {
                         $formatter = new NumberFormatter('en_US', NumberFormatter::PERCENT);
-                        $percvalue = $formatter->format($val[$i]);
+                        $percvalue = !$val[$i] || is_null($val[$i]) || $val[$i] == -1 || $val[$i] === 0  ? null : $formatter->format($val[$i]);
                     }
                     $temp[$k][] = $format == 'double' ? (is_null($val[$i]) || $val[$i] == -1 ? array('v' => null) :  ($formattype == 'perc' ? array('v' => (float) $val[$i], 'f' => $percvalue ) : array('v' => (float) $val[$i]))) : (is_null($val[$i]) || $val[$i] == -1 ? array('v' => null) :  array('v' => (int) $val[$i])) ; 
                 }
