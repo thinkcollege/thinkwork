@@ -602,7 +602,16 @@
                 // end of document.ready functions
             
             });
-            
+            function getCitationInfo() {
+                var urlLoc = window.location.href;
+                var suggestedCit = reportURL.get('report') == 'single' || reportURL.get('report') == 'national' ? buildTableTitle('single') : buildTableTitle('comparison');
+                console.log('Suggested cite: ' + suggestedCit);
+                var citationDiv = '<div id="citation" class="clearable"><em>Suggested citation: ' + suggestedCit + ': ' + urlLoc + '</em></div>';
+                $('#citation').remove();
+                
+                    $('#bodyDiv').append(citationDiv);
+                
+            }
 
             function getCheckboxLabels(type) {
             
@@ -623,7 +632,7 @@
                 else if (type == 'single') {
                     choiceNames = [];
                     $('.tableChosen').each(function() {
-                        var tableDescrip = $(this).attr("title") ? $(this).attr("title") : $(this).closest('label').attr("title");
+                        var tableDescrip = $(this).attr("title") ? $(this).attr("title") : $(this).closest('label').attr("alt-text");
                     
                         choiceNames.push(tableDescrip);
             
@@ -1285,6 +1294,8 @@
                 var chart = null;
                 var containerDiv = null;
                 if(reportVar == 'single'){
+
+                    var showcitation = getCitationInfo();
                     var joinTitle = changeChart == 'storedChart' ? buildTableTitle('stored') : buildTableTitle('single');
                     var chartReturn = changeChart == 'storedChart' ? populatePrograms('storechart',tableindex,numpercdol) : populatePrograms('chart',tableindex,numpercdol); 
                     
@@ -1359,6 +1370,8 @@
                     }
                 }
                 else if(reportVar == 'national') {
+
+                     var showcitation = getCitationInfo();
                     joinTitle = changeChart == 'storedChart' ? buildTableTitle('stored') : buildTableTitle('single');
                     var natoptions = {
                         region: 'US',
@@ -1392,6 +1405,8 @@
                     
                     
                 } else {
+
+                        var showcitation = getCitationInfo();
                         joinTitle = changeChart == 'storedChart' ? buildTableTitle('stored') : buildTableTitle('comparison');
                         titleDiv = $('#sdchart_table_div_0_title');
                         $(titleDiv).append('<h5>' + joinTitle + '</h5>');
