@@ -1135,3 +1135,8 @@ rect[stroke="#ffffff"] {stroke: #000 !important; stroke-width: 5px !important; }
 img#chosenCheck { width: 50px; height: 50px; position: absolute; left: 100%; margin-top: -18px; z-index: 1000; margin-left: 8px;}
 div#checkAffirm { width: 270px; height: 80px; color: green; border: 2px solid green; background-color: #dcdcdc; position: absolute; left: 105%; margin-top: 55px; font-size: 14px; font-weight:normal; padding: 5px;}
 .google-visualization-table > div { overflow:visible !important;}
+#collapseSeven .card-body {font-size: 1rem !important; padding: .9rem;}
+#collapseSeven .col { padding-left: 8px; }
+@media only screen and (min-width: 990px) {
+	#collapseSeven .card-body .col {width: 47%; float: left;}
+}
