@@ -605,8 +605,7 @@
             function getCitationInfo() {
                 var urlLoc = window.location.href;
                 var suggestedCit = reportURL.get('report') == 'single' || reportURL.get('report') == 'national' ? buildTableTitle('single') : buildTableTitle('comparison');
-                console.log('Suggested cite: ' + suggestedCit);
-                var citationDiv = '<div id="citation" class="clearable"><em>Suggested citation: ' + suggestedCit + ': ' + urlLoc + '</em></div>';
+                var citationDiv = '<div id="citation" class="clearable"><em><strong>Suggested citation:</strong> ' + suggestedCit + ': ' + urlLoc + '</em></div>';
                 $('#citation').remove();
                 
                     $('#bodyDiv').append(citationDiv);
