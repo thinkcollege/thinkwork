@@ -541,7 +541,7 @@ display: block;
     border: 1px solid #5157AD;
         width: 80%;
 }
-h3 div#stateCountText, h3 div#yearCountText { font-weight: bold; float: none; width: 100%; font-size: 70%; padding-left:5px;margin-top: 5px; }
+h3 div#h4, h3 div#yearCountText { font-weight: bold; float: none; width: 100%; font-size: 70%; padding-left:5px;margin-top: 5px; }
 #headingSeven h3 button, #headingEight h3 button { float:none; width: 45%; }
 /*
 .accordionFloat .card-header,.accordionFloat .card-header .btn {
@@ -1152,3 +1152,5 @@ div#checkAffirm { width: 270px; height: 80px; color: green; border: 2px solid gr
 	font-size: 1.2rem;
   
   }
+  #bodyDiv h3 { font-weight: 1.3rem; color: #282e37;}
+  h3 #stateCountText, h3 #yearCountText { color: #282e37; font-size: 1rem;}
