@@ -281,7 +281,7 @@
                 var tableDescrip = $('input[name="vrcat"]:checked').parent('label').attr("title");
                 } else {
                     tableIDval = $(this).closest('div.altSelect').attr('id');
-                    var tableDescrip = $(this).closest('.card').find('h5 button').attr("title");
+                    var tableDescrip = $(this).closest('.card').find('h3 button').attr("title");
                 
                 }
                 if(reportURL.get('report') == 'comparison' || reportURL.get('report') == 'national') {
@@ -1323,7 +1323,7 @@
                             var obj = JSON.parse(chartReturn[0]);
                         }
                         chart.draw(chartdata,chartoptions);
-                        // $(titleDiv).append('<h5>' + tableTitle + '</h5>');
+                        // $(titleDiv).append('<h3>' + tableTitle + '</h3>');
                     } else {
                         $.each(chartReturn, function( index, value ) {
             
@@ -1331,7 +1331,7 @@
             
                             titleDiv = $('#sdchart_table_div_' +index + '_title');
                             var titleSuffix = index === 0 ? ': Numbers of people' : (index == 1 ? ': Percentages' : ': Dollars and Hours');
-                            $(titleDiv).append('<h5>' + tableTitle + titleSuffix + '</h5>' + '<p>Select rows in the table to change the chart displayed above.</p>');
+                            $(titleDiv).append('<h3>' + tableTitle + titleSuffix + '</h3>' + '<p>Select rows in the table to change the chart displayed above.</p>');
                             if(!chartReturn[index]) {
                                 $('#chart_div_' + index).empty();
                                 titleDiv.empty();
@@ -1391,7 +1391,7 @@
                     var natChartTitleDiv = $('#nationalTitle');
                     $(natChartTitleDiv).append('<h6>' + joinTitle + '</h6>');
                     titleDiv = $('#sdchart_table_div_0_title');
-                    $(titleDiv).append('<h5>' + joinTitle + '</h5>');
+                    $(titleDiv).append('<h3>' + joinTitle + '</h3>');
                 
                     var chartReturn = changeChart == 'storedChart' ? populatePrograms('storechart') : populatePrograms('chart'); 
                     var containerDiv = 'chart_div_0';
@@ -1408,7 +1408,7 @@
                         var showcitation = getCitationInfo();
                         joinTitle = changeChart == 'storedChart' ? buildTableTitle('stored') : buildTableTitle('comparison');
                         titleDiv = $('#sdchart_table_div_0_title');
-                        $(titleDiv).append('<h5>' + joinTitle + '</h5>');
+                        $(titleDiv).append('<h3>' + joinTitle + '</h3>');
                         var chartReturn = changeChart == 'storedChart' ? populatePrograms('storechart') : populatePrograms('chart'); 
                             containerDiv = 'chart_div_0';
                             if(changeChart == 'storedChart') {
@@ -1515,7 +1515,7 @@
                     if(!$('div#acsvars').hasClass('showVars')) $('div#acsvars').addClass('showVars');
                     }
             });
-            $(document).on('click','#accordion h5 button', function() {
+            $(document).on('click','#accordion h3 button', function() {
             var accordParent = $(this).closest('.card');
             var parentID = accordParent.attr('id');
             /* Don't want to clear data source checks when closing accordion
@@ -1563,7 +1563,7 @@
                     var chosenText = '<span id="chosenText">Chosen: ' + tableVar + '</span>';
                     $('#chosenText').remove();
                     
-                    $('.tableChosen').closest('.card').find('h5').append(chosenText);
+                    $('.tableChosen').closest('.card').find('h3').append(chosenText);
                 }
             
             
@@ -1573,7 +1573,7 @@
                     var chosenText = '<span id="chosenText">Chosen: ' + tableVar + '</span>';
             
                     
-                    $('.variableChosen').closest('.card').find('h5').append(chosenText);
+                    $('.variableChosen').closest('.card').find('h3').append(chosenText);
                 }
             
             }

@@ -343,7 +343,7 @@ float: left;
 float: left;
 }
 
-.card-body h6 {
+.card-body h4 {
 	margin-left: 15px;
 	font-weight: bold;
 }
@@ -541,8 +541,8 @@ display: block;
     border: 1px solid #5157AD;
         width: 80%;
 }
-h5 div#stateCountText, h5 div#yearCountText { font-weight: bold; float: none; width: 100%; font-size: 70%; padding-left:5px;margin-top: 5px; }
-#headingSeven h5 button, #headingEight h5 button { float:none; width: 45%; }
+h3 div#stateCountText, h3 div#yearCountText { font-weight: bold; float: none; width: 100%; font-size: 70%; padding-left:5px;margin-top: 5px; }
+#headingSeven h3 button, #headingEight h3 button { float:none; width: 45%; }
 /*
 .accordionFloat .card-header,.accordionFloat .card-header .btn {
 	padding:7px 4px;
@@ -981,7 +981,7 @@ p.disclaimBody {line-height: .95em; }
 .hideMe {display: none;}
 .warningP {color: red;}
 .google-visualization-table-table td.google-visualization-table-type-number.google-visualization-table-td {text-align: center;}
-#mich_table_div_0_title h5 { font-size: 1em;}
+#mich_table_div_0_title h3 { font-size: 1em;}
 main .formSub { display: none; }
 main .formSub.selectShow { display: block;}
 ul#singleContainer {
@@ -1046,7 +1046,7 @@ body > .container-fluid { width: 90%; }
 #topDiv h1 a, nav h1 a:hover,nav h2 a, nav h2 a:hover {color: #5d9731;
 	font-family: 'Roboto Condensed', sans-serif;
 font-weight: 700; text-decoration: none;}
-#topDiv h2 a, nav h2 a:hover {color: #007bff;
+#topDiv h2 a, nav h2 a:hover {color: #0077af;
 	font-family: 'Roboto Condensed', sans-serif;
 	font-weight: 700; text-decoration: none; }
 #comparisonDiv, #stateWide, #programDiv,#generDiv,#ageDiv,#raceDiv,#ethnicDiv { border: 1px solid #ccc; padding-left: 13px; margin-bottom: 20px; }
@@ -1084,10 +1084,7 @@ font-weight: 700; text-decoration: none;}
   /*nav.navbar.bg-dark {background-color: #5d9731 !important; } */
   #accordion h3 button { border: none; color: #256497; display: block; width: 100%; text-align: left;}
 
-  #accordion #headingFive h3 button {background-color:#e6f5f7;}
-  #accordion #headingSix h3 button,#accordion #headingOne h3 button {background-color: #e7f5eb;}
-   #accordion #headingTwo h3 button,#accordion #headingFour h3 button {background-color:#fff8e4;}
-  #accordion #headingThree h3 button{background-color:#f1d8e3;}
+ 
   #clearForm {margin-top: 15px;}
   .lessThan {font-weight: bold; color: red; font-size: 120%;}
   @media only screen and (min-width: 990px) {
@@ -1127,7 +1124,7 @@ nav li a:hover {
 .introText.hideIntro { display: none; }
 #sidebar .card-header {background-color: #fff; padding: .75rem .5rem;}
 .google-visualization-table tr th { color: #000; text-align: center;}
-h5 #chosenText { font-size: 70%; padding-left:15px;margin-top: 12px;}
+h3 #chosenText { font-size: 70%; padding-left:15px;margin-top: 12px;}
 .fa-bar-chart::before, .fa-chart-bar::before {font-size: 120%;}
 .google-visualization-table td i.fa-chart-bar {margin-right: 10px; font-size: 200%;}
 .google-visualization-table tr.chartSelected { background-color: #000; color: #fff;}
@@ -1145,3 +1142,13 @@ div#checkAffirm { width: 270px; height: 80px; color: green; border: 2px solid gr
 	  
 	  }
 }
+.michRedraw.btn-primary { background-color: #0077af}
+#sidebar .btn-link, #sidebar .btn-outline-primary { color: #0077af; }
+#sidebar h2 {
+	font-size: 1.5rem;
+	color: #282e37;
+}
+#sidebar h4 {
+	font-size: 1.2rem;
+  
+  }
