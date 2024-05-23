@@ -1153,4 +1153,4 @@ div#checkAffirm { width: 270px; height: 80px; color: green; border: 2px solid gr
   
   }
   #bodyDiv h3 { font-weight: 1.3rem; color: #282e37;}
-  h3 #stateCountText, h3 #yearCountText { color: #282e37; font-size: 1rem;}
+  h3 #stateCountText, h3 #yearCountText, h3 #chosenText { color: #282e37; font-size: 1rem;}
