@@ -766,6 +766,10 @@ div#accordion [data-toggle="collapse"].collapsed .fa:before {
 /* State Data Homepage Styles */
 
 
+
+/*paragraphs columns */
+
+
 .page-node-64 .paragraph--type--bp-columns__3col .paragraph__column {
 	display: flex;
 	flex-direction: column;
@@ -775,3 +779,13 @@ div#accordion [data-toggle="collapse"].collapsed .fa:before {
 
 .page-node-64 .paragraph--type--bp-columns__3col {
   background:rgba(3, 169, 244, 0.1)}
+
+
+/* paragraphs accordian/card */
+.page-node-64 .card-header {background-color:#f5f5f5}
+
+
+/*State Data Sidebar */
+.page-node-64 div#sidebar_second {
+    background-color: #f8f9fa;
+}
