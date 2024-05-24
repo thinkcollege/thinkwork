@@ -42,6 +42,14 @@ a {
   font-weight:600;
 }
 
+.lead {
+      color:#212529;
+      font-size:1.4rem;
+	    font-family: "Montserrat", sans-serif;
+    }
+
+
+
 
 /*****Fonts*****/
 body,p,a,li {
@@ -704,7 +712,7 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
      margin-top: 0;
 }
 
-.lead {color:#212529}
+
 
 
 /*State Data Data source page*/
@@ -754,3 +762,16 @@ div#accordion [data-toggle="collapse"].collapsed .fa:before {
 .page-view-search-thinkwork .facet-item label {
     display: inline;
 }
+
+/* State Data Homepage Styles */
+
+
+.page-node-64 .paragraph--type--bp-columns__3col .paragraph__column {
+	display: flex;
+	flex-direction: column;
+  align-items: stretch;
+	
+}
+
+.page-node-64 .paragraph--type--bp-columns__3col {
+  background:rgba(3, 169, 244, 0.1)}
