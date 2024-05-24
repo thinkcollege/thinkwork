@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "991b03da948d0567ebeb22dea9a42284",
+    "content-hash": "77d70377ded9fda5e8c5cacb9e635abe",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -4432,6 +4432,55 @@
             "homepage": "https://www.drupal.org/project/paragraphs",
             "support": {
                 "source": "https://git.drupalcode.org/project/paragraphs"
+            }
+        },
+        {
+            "name": "drupal/paragraphs_grid",
+            "version": "1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/paragraphs_grid.git",
+                "reference": "8.x-1.6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/paragraphs_grid-8.x-1.6.zip",
+                "reference": "8.x-1.6",
+                "shasum": "5c3fa365596abb7f5ad70162f90e62fbbcd7bc6b"
+            },
+            "require": {
+                "drupal/core": "^9.3 || ^10",
+                "drupal/paragraphs": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-1.6",
+                    "datestamp": "1706363873",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "JFeltkamp",
+                    "homepage": "https://www.drupal.org/user/2471686"
+                }
+            ],
+            "description": "Provides possibillity to render paragraphs components in a grid with bootstrap grid classes.",
+            "homepage": "https://www.drupal.org/project/paragraphs_grid",
+            "keywords": [
+                "Drupal"
+            ],
+            "support": {
+                "source": "http://cgit.drupalcode.org/paragraphs_grid",
+                "issues": "https://www.drupal.org/project/issues/paragraphs_grid"
             }
         },
         {

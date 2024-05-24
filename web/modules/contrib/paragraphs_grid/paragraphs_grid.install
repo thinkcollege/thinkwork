@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Define db updates for Paragraph grid.
+ */
+
+use Symfony\Component\Yaml\Yaml;
+
+/**
+ * Installs Bootstrap 5 for Paragraphs Grid.
+ */
+function paragraphs_grid_update_8001() {
+  $message = NULL;
+
+  // Only create if the redirect view doesn't exist and views is enabled.
+  if (\Drupal::moduleHandler()->moduleExists('paragraphs_grid')) {
+    $module_path = \Drupal::service('extension.list.module')->getPath('paragraphs_grid');
+    $config_path = $module_path . '/config/install/paragraphs_grid.grid_entity.bs5.yml';
+    $data = Yaml::parseFile($config_path);
+    \Drupal::configFactory()->getEditable('paragraphs_grid.grid_entity.bs5')->setData($data)->save(TRUE);
+    $message = 'Paragraphs Grid has installed Bootstrap 5.';
+  }
+  return $message;
+}

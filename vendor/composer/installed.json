@@ -5748,6 +5748,58 @@
             "install-path": "../../web/modules/contrib/paragraphs"
         },
         {
+            "name": "drupal/paragraphs_grid",
+            "version": "1.6.0",
+            "version_normalized": "1.6.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/paragraphs_grid.git",
+                "reference": "8.x-1.6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/paragraphs_grid-8.x-1.6.zip",
+                "reference": "8.x-1.6",
+                "shasum": "5c3fa365596abb7f5ad70162f90e62fbbcd7bc6b"
+            },
+            "require": {
+                "drupal/core": "^9.3 || ^10",
+                "drupal/paragraphs": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-1.6",
+                    "datestamp": "1706363873",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "installation-source": "dist",
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "JFeltkamp",
+                    "homepage": "https://www.drupal.org/user/2471686"
+                }
+            ],
+            "description": "Provides possibillity to render paragraphs components in a grid with bootstrap grid classes.",
+            "homepage": "https://www.drupal.org/project/paragraphs_grid",
+            "keywords": [
+                "Drupal"
+            ],
+            "support": {
+                "source": "http://cgit.drupalcode.org/paragraphs_grid",
+                "issues": "https://www.drupal.org/project/issues/paragraphs_grid"
+            },
+            "install-path": "../../web/modules/contrib/paragraphs_grid"
+        },
+        {
             "name": "drupal/pathauto",
             "version": "1.12.0",
             "version_normalized": "1.12.0.0",
