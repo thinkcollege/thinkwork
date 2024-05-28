@@ -60,14 +60,12 @@ body,p,a,li {
 
 h1,h2,h3,h4,h5,h6,h1 a,h2 a,h3 a {
   font-family: "Montserrat", sans-serif;
-	font-weight:600;
+	font-weight:800;
 }
 
-h1 {
-  color: #0077B0;
+h1, h2 {
+  color: #0077AF;
 }
-
-h2 {color: #5F9832}
 
 
 h3,h4,h5,h6 {
@@ -412,7 +410,7 @@ img.align-right {margin:10px;}
 /* Superfish */
 
 
-
+/*
 ul.sf-menu span.nolink {
     display: block;
     padding: 1em 1em;
@@ -450,7 +448,7 @@ ul.sf-menu.sf-style-none a:hover {
 ul.sf-menu.sf-style-none span.nolink
 {
   border: 0 none;
-/*  color: #fff; */
+
 
 }
 
@@ -542,16 +540,21 @@ a.is-active.sf-depth-1.menuparent.sf-with-ul {
     color: #fff;
 }
 
+*/
+
 /* This seems to fix the issue of the sf menu disappearing in mobile view... probably a better way to fix-revisit later*/
+
+/* Not using sf menu so commenting these styles out*/
+/*
  .navbar-toggler {display:none}
 #block-thinkwork8-boot-mainmenu .collapse:not(.show) {
     display: block;
 }
+*/
 
 
 
-
-
+/*
 div.sf-accordion-toggle.sf-style-none a {
   background: #ddd;
   color: #007bff;
@@ -634,17 +637,16 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
   font-weight: bold;
 }
 
+*/
 
 
 
-
-/* View More links on some project landing pages */
+/*  "See more Publications" links on some project landing pages */
 
 .view-aie-taxonomy-term .more-link {
     font-weight: 700;
     border-radius: 4px;
     border: solid 2px #0077B0;
-    display: inline-block;
     padding: 5px;
     float: right;
 }
@@ -655,7 +657,6 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
     font-weight: 700;
     border-radius: 4px;
     border: solid 2px #0077B0;
-    display: inline-block;
     padding: 5px;
     float: right;
 }
@@ -665,7 +666,6 @@ ul.sf-menu.sf-style-none li.sf-multicolumn-wrapper span.nolink.menuparent {
     font-weight: 700;
     border-radius: 4px;
     border: solid 2px #0077B0;
-    display: inline-block;
     padding: 5px;
     float: right;
 }
@@ -788,4 +788,10 @@ align-content:stretch;}
 /*State Data Sidebar */
 .page-node-64 div#sidebar_second {
     background-color: #f8f9fa;
+}
+
+    /* spaces between blue card columns on StateData home */
+    
+   .page-node-64 .paragraph.paragraph--type--bp-columns.paragraph--view-mode--default.paragraph--id--6.paragraph--width--full .paragraph__column {
+    gap: 5px;
 }
