@@ -104,6 +104,14 @@ blockquote.f_quote {
 
 
 
+/*Nav Menu */
+
+.mainmenu .container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
 .dropdown-item.active, .dropdown-item:active {background-color:#5F9832;}
 
 .dropdown-item a.active{color:#fff}
@@ -777,7 +785,7 @@ div#accordion [data-toggle="collapse"].collapsed .fa:before {
 .page-node-64 .paragraph--type--bp-columns__3col {
   background:rgba(3, 169, 244, 0.1)}
 
-.page-node-64 .paragraph>.paragraph__column .paragraph>.paragraph__column
+.page-node-64 .paragraph--id--7.paragraph>.paragraph__column .paragraph>.paragraph__column
 {display:flex;
 align-content:stretch;}
 
