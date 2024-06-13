@@ -7,7 +7,6 @@
 #/web/profiles/contrib/
 #/web/libraries/
 /.htaccess
-/web/.htaccess
 #*.lock
 # Ignore sensitive information
 /web/sites/*/settings.php
