@@ -1136,7 +1136,7 @@ div#checkAffirm { width: 270px; height: 80px; color: green; border: 2px solid gr
 #collapseSeven .col { padding-left: 8px; }
 @media only screen and (min-width: 990px) {
 	#collapseSeven .card-body .col {width: 47%; float: left;}
-	#collapseSeven input[type="radio"] {
+	#collapseSeven input[type="radio"], #collapseEight input {
 		margin-right: 3px;
 		margin-left: 0;
 	  
@@ -1154,3 +1154,4 @@ div#checkAffirm { width: 270px; height: 80px; color: green; border: 2px solid gr
   }
   #bodyDiv h3 { font-size: 1.3rem !important; color: #282e37;}
   h3 #stateCountText, h3 #yearCountText, h3 #chosenText { color: #282e37; font-size: 1rem;}
+  #yearMultiple, #yearSingle {column-count: 3;} 

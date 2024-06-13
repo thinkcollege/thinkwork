@@ -327,7 +327,7 @@
             });
             
             $(document).ready(function() {
-                var yearArray = populateYears('sta_d3_agency_labor');
+               // var yearArray = populateYears('sta_d3_agency_labor');
                 var urlLoc = window.location.href;  
                 if(urlLoc.indexOf("?report=") == -1){ 
                     document.location = urlLoc+"?report=single"; // redirect if no report type chosen
@@ -688,7 +688,7 @@
                             inputs += ' <div class="checkbox"><label class="form-check-label" for="' + year + '"><input class="yearCheck" name="regionYear[]" id="' + year + '" type="checkbox" value="' + year + '">' + year + '</label></div>';
                                 jQuery("#yearMultiple")
                                 .append(inputs
-                                )
+                                );
                             } else if(reportURL.get('report') == 'national') {
                                 inputs += '<label for="sum_' + year + '"><input id="sum_' + year + '" name="summChoose" type="radio" value="' + year + '">' + year + '<label>';
                                 jQuery('#yearSingle').append(inputs);

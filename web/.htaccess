@@ -3,7 +3,7 @@
 #
 
 # Protect files and directories from prying eyes.
-<FilesMatch "\.(engine|inc|install|make|module|profile|po|sh|.*sql|theme|twig|tpl(\.php)?|xtmpl|yml)(~|\.sw[op]|\.bak|\.orig|\.save)?$|^(\.(?!well-known).*|Entries.*|Repository|Root|Tag|Template|composer\.(json|lock)|web\.config|yarn\.lock|package\.json)$|^#.*#$|\.php(~|\.sw[op]|\.bak|\.orig|\.save)$">
+<FilesMatch "\.(engine|inc|install|make|module|profile|po|sh|.*sql|theme|twig|tpl(\.php)?|xtmpl|yml)(~|\.sw[op]|\.bak|\.orig|\.save)?$|^(\.(?!well-known).*|Entries.*|Repository|Root|Tag|Template|composer\.(json|lock))$|^#.*#$|\.php(~|\.sw[op]|\.bak|\.orig|\.save)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>
@@ -26,8 +26,17 @@ AddEncoding gzip svgz
 # sites/default/default.settings.php and
 # Drupal\Core\DrupalKernel::bootEnvironment() for settings that can be
 # changed at runtime.
-<IfModule mod_php.c>
+
+# PHP 5, Apache 1 and 2.
+<IfModule mod_php5.c>
   php_value assert.active                   0
+  php_flag session.auto_start               off
+  php_value mbstring.http_input             pass
+  php_value mbstring.http_output            pass
+  php_flag mbstring.encoding_translation    off
+  # PHP 5.6 has deprecated $HTTP_RAW_POST_DATA and produces warnings if this is
+  # not set.
+  php_value always_populate_raw_post_data   -1
 </IfModule>
 
 # Requires mod_expires to be enabled.
@@ -35,8 +44,8 @@ AddEncoding gzip svgz
   # Enable expirations.
   ExpiresActive On
 
-  # Cache all files for 1 year after access.
-  ExpiresDefault "access plus 1 year"
+  # Cache all files for 2 weeks after access (A).
+  ExpiresDefault A1209600
 
   <FilesMatch \.php$>
     # Do not allow PHP scripts to be cached unless they explicitly send cache
@@ -70,7 +79,7 @@ AddEncoding gzip svgz
   # Make sure Authorization HTTP header is available to PHP
   # even when running as CGI or FastCGI.
   RewriteRule ^ - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-
+  
   # Block access to "hidden" directories whose names begin with a period. This
   # includes directories used by version control systems such as Subversion or
   # Git to store control files. Files whose names begin with a period, as well
@@ -85,7 +94,9 @@ AddEncoding gzip svgz
   # directories from your webroot or otherwise protect them from being
   # downloaded.
   RewriteRule "/\.|^\.(?!well-known/)" - [F]
-
+  RewriteCond %{REQUEST_URI}  ^\/project/aie$ 
+  RewriteCond %{QUERY_STRING} ^page=0 
+  RewriteRule ^(.*)$ http://devel.thinkwork.org/aie [R=301,L]
   # If your site can be accessed both with and without the 'www.' prefix, you
   # can use one of the following settings to redirect users to your preferred
   # URL, either WITH or WITHOUT the 'www.' prefix. Choose ONLY one option:
@@ -114,23 +125,100 @@ AddEncoding gzip svgz
   # RewriteBase /
 
   # Redirect common PHP files to their new locations.
-  RewriteCond %{REQUEST_URI} ^(.*)?/(install\.php) [OR]
-  RewriteCond %{REQUEST_URI} ^(.*)?/(rebuild\.php)
+  RewriteCond %{REQUEST_URI} ^(.*)?/(install.php) [OR]
+  RewriteCond %{REQUEST_URI} ^(.*)?/(rebuild.php)
   RewriteCond %{REQUEST_URI} !core
   RewriteRule ^ %1/core/%2 [L,QSA,R=301]
 
   # Rewrite install.php during installation to see if mod_rewrite is working
-  RewriteRule ^core/install\.php core/install.php?rewrite=ok [QSA,L]
+  RewriteRule ^core/install.php core/install.php?rewrite=ok [QSA,L]
 
   # Pass all requests not referring directly to files in the filesystem to
   # index.php.
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_URI} !=/favicon.ico  
+  RewriteCond %{REQUEST_URI} !=/favicon.ico
   RewriteCond %{REQUEST_URI} !/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall\.php$
   RewriteCond %{REQUEST_URI} !/themes/custom/thinkwork8_boot/chartbuilder/stateFunctions\.php$
-
   RewriteRule ^ index.php [L]
+    RewriteCond %{THE_REQUEST} ^.*(2funion|2fselect\+|2fselect\x25|select%2|20null|20union|20select\x25|20select\+|00union|00select\+|00select\x25|\+union|\+select\+|28select\+|28select\x25|\(select|\+\+\+\+\+\+\+|information_schema|user-prefs|/\./\.|/\.\.\/\.\.|/\.\./\.\.\/|3xp\.php|0day\.php|70pet\.php|ViAr\.php|disable_functions|mosConfig_absolute_path|data-dot|version=1576|openflash|\.ru/|dsafe_mode|/cgi-bin/php|base64|document\.write|<\?php|<script).* [NC,OR]
+    RewriteCond %{REQUEST_METHOD} ^(delete|connect) [NC,OR]
+    RewriteCond %{HTTP_REFERER} \.(ru|ua)(/|$) [NC,OR]
+    RewriteCond %{HTTP_COOKIE} ^.*(<|>).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(DAPPER-HOST).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(EmailSiphon).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(EmailWolf).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Havij).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(sqlmap).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(MJ12bot).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Ezooms).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(libwww-perl).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Java).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Jakarta).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(panopta).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(URL\ Resolver).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(TencentTraveler).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(YaBrowser).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Edition\ Yx).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(YB\/3\.).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Xenu\ Link\ Sleuth).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(SISTRIX).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(SeznamBot).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(360Spider).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(SiteBot).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Apache-HttpClient).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(K-Meleon).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(SearchmetricsBot).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(meanpathbot).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(SemrushBot).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(MySuperBot).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Nikto).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(curl\/).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(SEOkicks-Robot).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(ZumBot).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Mua).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Abonti).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(magpie-crawler).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(YYSpider).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Indy\ Library).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(CPython).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(BLEXBot).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Baiduspider).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Synapse).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Yeti).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Python-urllib).*$ [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(CompSpyBot).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(heritrix).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(hivaBot).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(ELNSB50).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Crazy\ Browser).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Add\ Catalog).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(aiHitBot).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(spbot).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(JS-Kit).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(URLAppendBot).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Blog\ Search).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Nutch).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(FunWebProducts).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(EAK01AG9).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(DigExt).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(KKman).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Deepnet\ Explorer).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Babya\ Discoverer).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Nichrome).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Alexa\ Toolbar).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(GbPlugin).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(MauiBot).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(DotBot).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(dotbot).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(Googlebot).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(bingbot).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(AhrefsBot).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(BingPreview).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^.*(crawler\.feedback).* [NC]
+    # ISSUE 403 / SERVE ERRORDOCUMENT
+    RewriteRule ^(.*)$ - [F,L]
 
   # For security reasons, deny access to other PHP files on public sites.
   # Note: The following URI conditions are not anchored at the start (^),
@@ -139,11 +227,13 @@ AddEncoding gzip svgz
   # Allow access to PHP files in /core (like authorize.php or install.php):
   RewriteCond %{REQUEST_URI} !/core/[^/]*\.php$
   # Allow access to test-specific PHP files:
-  RewriteCond %{REQUEST_URI} !/core/modules/system/tests/https?\.php
+  RewriteCond %{REQUEST_URI} !/core/modules/system/tests/https?.php
+  RewriteCond %{REQUEST_URI} !/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall\.php$
+  RewriteCond %{REQUEST_URI} !/themes/custom/thinkwork8_boot/chartbuilder/stateFunctions\.php$
   # Allow access to Statistics module's custom front controller.
   # Copy and adapt this rule to directly execute PHP files in contributed or
   # custom modules or to run another PHP application in the same directory.
-  RewriteCond %{REQUEST_URI} !/core/modules/statistics/statistics\.php$
+  RewriteCond %{REQUEST_URI} !/core/modules/statistics/statistics.php$
   # Deny access to any other PHP files that do not match the rules above.
   # Specifically, disallow autoload.php from being served directly.
   RewriteRule "^(.+/.*|autoload)\.php($|/)" - [F]
@@ -154,17 +244,16 @@ AddEncoding gzip svgz
     # Serve gzip compressed CSS files if they exist and the client accepts gzip.
     RewriteCond %{HTTP:Accept-encoding} gzip
     RewriteCond %{REQUEST_FILENAME}\.gz -s
-    RewriteRule ^(.*css_[a-zA-Z0-9-_]+)\.css$ $1\.css\.gz [QSA]
+    RewriteRule ^(.*)\.css $1\.css\.gz [QSA]
 
     # Serve gzip compressed JS files if they exist and the client accepts gzip.
     RewriteCond %{HTTP:Accept-encoding} gzip
     RewriteCond %{REQUEST_FILENAME}\.gz -s
-    RewriteRule ^(.*js_[a-zA-Z0-9-_]+)\.js$ $1\.js\.gz [QSA]
+    RewriteRule ^(.*)\.js $1\.js\.gz [QSA]
 
-    # Serve correct content types, and prevent double compression.
-    RewriteRule \.css\.gz$ - [T=text/css,E=no-gzip:1,E=no-brotli:1]
-    RewriteRule \.js\.gz$ - [T=text/javascript,E=no-gzip:1,E=no-brotli:1]
-
+    # Serve correct content types, and prevent mod_deflate double gzip.
+    RewriteRule \.css\.gz$ - [T=text/css,E=no-gzip:1]
+    RewriteRule \.js\.gz$ - [T=text/javascript,E=no-gzip:1]
     <FilesMatch "(\.js\.gz|\.css\.gz)$">
       # Serve correct encoding type.
       Header set Content-Encoding gzip
@@ -176,13 +265,7 @@ AddEncoding gzip svgz
 
 # Various header fixes.
 <IfModule mod_headers.c>
-  # Disable content sniffing for all responses, since it's an attack vector.
-  # This header is also set in FinishResponseSubscriber, which depending on
-  # Apache configuration might get placed in the 'onsuccess' table. To prevent
-  # header duplication, unset that one prior to setting in the 'always' table.
-  # See "To circumvent this limitation..." in
-  # https://httpd.apache.org/docs/current/mod/mod_headers.html.
-  Header onsuccess unset X-Content-Type-Options
+  # Disable content sniffing, since it's an attack vector.
   Header always set X-Content-Type-Options nosniff
   # Disable Proxy header, since it's an attack vector.
   RequestHeader unset Proxy
