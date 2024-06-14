@@ -251,6 +251,11 @@
                         var varname = $(this).closest('label').text();
                         
                         updateSelectCount('table',varname);
+                    } else
+                    { 
+                        var varname = "This data set";
+                        
+                        updateSelectCount('table',varname);
                     }
                     var checkFade = '&nbsp;<div id="checkAffirm"><img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_checkmark.svg" alt="this table chosen" /><p>You have selected a data set.  Now choose one state and as many years as you like.</div>';
                     var tableIndicator = '&nbsp;<img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_checkmark.svg" alt="this table chosen" />';
