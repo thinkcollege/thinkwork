@@ -1433,6 +1433,14 @@
                             
             
                 }
+                if (!$('#chart_div_0').is(':empty')){
+                    $.each($('div.collapse'), function(index, element) {
+                        if($(element).hasClass('show')) $(element).removeClass('show');
+                      });
+                      $.each($('#sdChartForm button'), function(index, element) {
+                        if(!$(element).hasClass('collapsed')) $(element).addClass('collapsed');
+                      });
+                  }
             
                 
             
