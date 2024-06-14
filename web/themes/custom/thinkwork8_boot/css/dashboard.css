@@ -1129,8 +1129,9 @@ h3 #chosenText { font-size: 70%; padding-left:15px;margin-top: 12px;}
 .google-visualization-table td i.fa-chart-bar {margin-right: 10px; font-size: 200%;}
 .google-visualization-table tr.chartSelected { background-color: #000; color: #fff;}
 rect[stroke="#ffffff"] {stroke: #000 !important; stroke-width: 5px !important; stroke-dasharray: .8em; }
-img#chosenCheck { width: 50px; height: 50px; position: absolute; left: 100%; margin-top: -18px; z-index: 1000; margin-left: 8px;}
-div#checkAffirm { width: 270px; height: 80px; color: green; border: 2px solid green; background-color: #dcdcdc; position: absolute; left: 105%; margin-top: 55px; font-size: 14px; font-weight:normal; padding: 5px;}
+img#chosenCheck { width: 50px; float: left; height: 50px; /*position: absolute; left: 100%; margin-top: -18px; z-index: 1000; margin-left: 8px;*/}
+div#checkAffirm { width: 300px; height: 80px; color: green; border: 2px solid green; background-color: #dcdcdc; position: absolute; left: 105%; margin-top: -60px; font-size: 14px; font-weight:normal; padding: 5px;}
+div#checkAffirm p {float: left; width: 200px; padding-left: 10px; }
 .google-visualization-table > div { overflow:visible !important;}
 #collapseSeven .card-body {font-size: .9rem !important; padding: .9rem;}
 #collapseSeven .col { padding-left: 8px; }
@@ -1142,6 +1143,7 @@ div#checkAffirm { width: 270px; height: 80px; color: green; border: 2px solid gr
 	  
 	  }
 }
+
 .michRedraw.btn-primary { background-color: #0077af}
 #sidebar .btn-link, #sidebar .btn-outline-primary { color: #0077af; }
 #sidebar h2 {

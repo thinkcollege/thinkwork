@@ -252,11 +252,11 @@
                         
                         updateSelectCount('table',varname);
                     }
-                    var checkFade = '&nbsp;<div id="checkAffirm"><p>You have selected a data set.  Now choose one state and as many years as you like.</div>';
+                    var checkFade = '&nbsp;<div id="checkAffirm"><img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_checkmark.svg" alt="this table chosen" /><p>You have selected a data set.  Now choose one state and as many years as you like.</div>';
                     var tableIndicator = '&nbsp;<img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_checkmark.svg" alt="this table chosen" />';
-                    $(this).parent('label.js-simple-tooltip').length ? $(this).closest('label.js-simple-tooltip').append(tableIndicator) : $('.tableChosen').after(tableIndicator);
+                   // $(this).parent('label.js-simple-tooltip').length ? $(this).closest('label.js-simple-tooltip').append(tableIndicator) : $('.tableChosen').after(tableIndicator);
                     $(this).parent('label.js-simple-tooltip').length ? $(this).closest('label.js-simple-tooltip').after(checkFade) : $('.tableChosen').after(checkFade);
-                    $('#checkAffirm').delay(2000).fadeOut(400);
+                   $('#checkAffirm').delay(2000).fadeOut(400);
 
                 }
                 var tableDescrip = $(this).attr("title") ? $(this).attr("title") : $(this).closest('label').attr("title");
@@ -285,8 +285,8 @@
                 
                 }
                 if(reportURL.get('report') == 'comparison' || reportURL.get('report') == 'national') {
-                    $('#chosenCheck').remove();
-                    var checkFade = reportURL.get('report') == 'comparison' ? '&nbsp;<div id="checkAffirm"><p>You have selected a variable.  Now choose as many states and years as you like.</div>' : '&nbsp;<div id="checkAffirm"><p>You have selected a variable.  Now choose one year below for your report.</div>';
+                    //$('#chosenCheck').remove();
+                    var checkFade = reportURL.get('report') == 'comparison' ? '&nbsp;<div id="checkAffirm"><img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_checkmark.svg" alt="this table chosen" /><p>You have selected a variable.  Now choose as many states and years as you like.</div>' : '&nbsp;<div id="checkAffirm"><img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_checkmark.svg" alt="this table chosen" /><p>You have selected a variable.  Now choose one year below for your report.</div>';
                     $('input[name="reportChoose"]').each(function(i, obj) {
                         $(this).removeClass('variableChosen');
                     });
@@ -301,8 +301,8 @@
                     else varParent = '';
                     varname = varParent + varname;
                     updateSelectCount('variable',varname);
-                    var variableIndicator = '&nbsp;<img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_checkmark.svg" alt="this variable chosen" />';
-                    $(this).parent('label.js-simple-tooltip').length ? $(this).closest('label.js-simple-tooltip').after(variableIndicator) : $('.variableChosen').after(variableIndicator);
+                    //var variableIndicator = '&nbsp;<img id="chosenCheck" src= "/themes/custom/thinkwork8_boot/img/green_checkmark.svg" alt="this variable chosen" />';
+                    //$(this).parent('label.js-simple-tooltip').length ? $(this).closest('label.js-simple-tooltip').after(variableIndicator) : $('.variableChosen').after(variableIndicator);
 
                     $(this).parent('label.js-simple-tooltip').length ? $(this).closest('label.js-simple-tooltip').after(checkFade) : $('.tableChosen').after(checkFade);
                     $('#checkAffirm').delay(2000).fadeOut(400);
