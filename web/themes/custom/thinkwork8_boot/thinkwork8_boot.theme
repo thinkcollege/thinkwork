@@ -15,3 +15,10 @@ use Drupal\Core\Form\FormStateInterface;
  * Example on how to alter theme settings form
  *
  */
+function thinkwork8_boot_preprocess_html(&$variables) {
+    // Add node id to the body class.
+    $node = \Drupal::routeMatch()->getParameter('node');
+    if($node) {
+      $variables['attributes']['class'][] = 'node-' . $node->id();
+    }
+  }
