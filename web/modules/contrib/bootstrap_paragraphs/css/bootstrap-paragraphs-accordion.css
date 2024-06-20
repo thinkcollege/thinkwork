@@ -12,21 +12,17 @@
   float: right;
 }
 /* Adds margin and padding to paragraphs in accordion section bodies. */
-.paragraph.paragraph--type--bp-accordion .panel-heading button {
+.paragraph.paragraph--type--bp-accordion .panel-heading a {
   display: block;
   padding: 10px 10px;
-  background: transparent;
-  border: 0;
-  width: 100%;
-  text-align: left;
 }
-.paragraph.paragraph--type--bp-accordion .panel-heading button:after {
+.paragraph.paragraph--type--bp-accordion .panel-heading a:after {
   float: right;
 }
-.paragraph.paragraph--type--bp-accordion .panel-heading button[aria-expanded="false"].display:after {
+.paragraph.paragraph--type--bp-accordion .panel-heading a[aria-expanded="false"].display:after {
   content: "+";
 }
-.paragraph.paragraph--type--bp-accordion .panel-heading button[aria-expanded="true"].display:after {
+.paragraph.paragraph--type--bp-accordion .panel-heading a[aria-expanded="true"].display:after {
   content: "-";
 }
 .paragraph.paragraph--type--bp-accordion .panel-collapse > .paragraph {

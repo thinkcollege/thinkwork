@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: bp_media
+label: Media
+icon_uuid: null
+icon_default: null
+description: ''
+behavior_plugins: {  }

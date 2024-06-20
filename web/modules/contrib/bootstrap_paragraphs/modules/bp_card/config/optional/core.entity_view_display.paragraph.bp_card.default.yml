@@ -7,6 +7,10 @@ dependencies:
     - field.field.paragraph.bp_card.bp_card_style
     - field.field.paragraph.bp_card.bp_card_text
     - field.field.paragraph.bp_card.bp_card_title
+    - field.field.paragraph.bp_card.bp_link_entire_card
+    - field.field.paragraph.bp_card.bp_card_button_style
+    - field.field.paragraph.bp_card.bp_margin
+    - field.field.paragraph.bp_card.bp_padding
     - paragraphs.paragraphs_type.bp_card
   module:
     - image
@@ -59,5 +63,36 @@ content:
       link_to_entity: false
     third_party_settings: {  }
     type: string
+    region: content
+  bp_link_entire_card:
+    type: boolean
+    label: hidden
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    weight: 5
+    region: content
+  bp_card_button_style:
+    weight: 6
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: list_key
+    region: content
+  bp_margin:
+    type: list_key
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 7
+    region: content
+  bp_padding:
+    type: list_key
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 8
     region: content
 hidden: {  }

@@ -3,9 +3,30 @@ status: true
 dependencies:
   config:
     - field.field.paragraph.bp_column_wrapper.bp_column_content_w
+    - field.field.paragraph.bp_column_wrapper.bp_margin
+    - field.field.paragraph.bp_column_wrapper.bp_padding
     - paragraphs.paragraphs_type.bp_column_wrapper
   module:
+    - field_group
     - paragraphs
+third_party_settings:
+  field_group:
+    group_styles:
+      children:
+        - bp_margin
+        - bp_padding
+      label: Styles
+      region: content
+      parent_name: ''
+      weight: 1
+      format_type: details
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        open: false
+        description: ''
+        required_fields: true
 id: paragraph.bp_column_wrapper.default
 targetEntityType: paragraph
 bundle: bp_column_wrapper
@@ -22,6 +43,18 @@ content:
       form_display_mode: default
     third_party_settings: {  }
     region: content
+  bp_margin:
+    type: options_select
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  bp_padding:
+    type: options_select
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   created: true
   status: true

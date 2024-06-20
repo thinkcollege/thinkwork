@@ -6,6 +6,8 @@ dependencies:
     - field.field.paragraph.bp_carousel.bp_slide_content
     - field.field.paragraph.bp_carousel.bp_slide_interval
     - field.field.paragraph.bp_carousel.bp_width
+    - field.field.paragraph.bp_carousel.bp_margin
+    - field.field.paragraph.bp_carousel.bp_padding
     - paragraphs.paragraphs_type.bp_carousel
   module:
     - entity_reference_revisions
@@ -41,6 +43,20 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: list_key
+  bp_margin:
+    type: list_key
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 7
+    region: content
+  bp_padding:
+    type: list_key
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 8
+    region: content
 hidden:
   created: true
   uid: true

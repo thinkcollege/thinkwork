@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.bp_link_entire_card
+    - paragraphs.paragraphs_type.bp_card
+id: paragraph.bp_card.bp_link_entire_card
+field_name: bp_link_entire_card
+entity_type: paragraph
+bundle: bp_card
+label: 'Link Entire Card'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

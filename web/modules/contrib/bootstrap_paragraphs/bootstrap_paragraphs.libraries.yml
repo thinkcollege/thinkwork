@@ -3,7 +3,7 @@ bootstrap-paragraphs:
     component:
       css/bootstrap-paragraphs.min.css: { minified: true }
       css/bootstrap-paragraphs-columns.min.css: { minified: true }
-      css/bootstrap-paragraphs-colors.min.css: { minified: true }
+      css/bootstrap-paragraphs-colors.css: { minified: false }
 bp-accordion:
   css:
     component:
@@ -44,7 +44,5 @@ bp-tabs:
   css:
     component:
       css/bootstrap-paragraphs-tabs.min.css: { preprocess: false, minified: true }
-  js:
-    js/bootstrap-paragraphs-tabs.js: { preprocess: false }
   dependencies:
     - core/jquery

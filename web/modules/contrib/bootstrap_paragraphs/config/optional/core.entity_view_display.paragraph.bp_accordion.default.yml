@@ -8,6 +8,9 @@ dependencies:
     - field.field.paragraph.bp_accordion.bp_header
     - field.field.paragraph.bp_accordion.bp_show_indicators
     - field.field.paragraph.bp_accordion.bp_width
+    - field.field.paragraph.bp_accordion.bp_margin
+    - field.field.paragraph.bp_accordion.bp_padding
+    - field.field.paragraph.bp_always_show
     - paragraphs.paragraphs_type.bp_accordion
   module:
     - entity_reference_revisions
@@ -67,6 +70,30 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: list_key
+    region: content
+  bp_always_show:
+    type: boolean
+    label: hidden
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    weight: 6
+    region: content
+  bp_margin:
+    type: list_key
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 7
+    region: content
+  bp_padding:
+    type: list_key
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 8
     region: content
 hidden:
   created: true

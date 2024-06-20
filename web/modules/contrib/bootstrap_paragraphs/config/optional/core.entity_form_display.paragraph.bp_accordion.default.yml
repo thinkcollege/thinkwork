@@ -8,9 +8,33 @@ dependencies:
     - field.field.paragraph.bp_accordion.bp_header
     - field.field.paragraph.bp_accordion.bp_show_indicators
     - field.field.paragraph.bp_accordion.bp_width
+    - field.field.paragraph.bp_accordion.bp_margin
+    - field.field.paragraph.bp_accordion.bp_padding
+    - field.field.paragraph.bp_always_show
     - paragraphs.paragraphs_type.bp_accordion
   module:
+    - field_group
     - paragraphs
+third_party_settings:
+  field_group:
+    group_styles:
+      children:
+        - bp_background
+        - bp_margin
+        - bp_padding
+        - bp_width
+      label: Styles
+      region: content
+      parent_name: ''
+      weight: 7
+      format_type: details
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        open: false
+        description: ''
+        required_fields: true
 id: paragraph.bp_accordion.default
 targetEntityType: paragraph
 bundle: bp_accordion
@@ -41,6 +65,13 @@ content:
     third_party_settings: {  }
     type: options_select
     region: content
+  bp_always_show:
+    type: boolean_checkbox
+    weight: 6
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
   bp_header:
     type: string_textfield
     weight: 4
@@ -62,6 +93,18 @@ content:
     third_party_settings: {  }
     type: options_select
     region: content
+  bp_margin:
+    type: options_select
+    weight: 8
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  bp_padding:
+    type: options_select
+    weight: 9
+    region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   created: true
   status: true
