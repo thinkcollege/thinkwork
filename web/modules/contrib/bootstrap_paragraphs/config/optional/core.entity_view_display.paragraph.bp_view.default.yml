@@ -6,6 +6,8 @@ dependencies:
     - field.field.paragraph.bp_view.bp_header
     - field.field.paragraph.bp_view.bp_view
     - field.field.paragraph.bp_view.bp_width
+    - field.field.paragraph.bp_view.bp_margin
+    - field.field.paragraph.bp_view.bp_padding
     - paragraphs.paragraphs_type.bp_view
   module:
     - options
@@ -45,6 +47,20 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: list_key
+    region: content
+  bp_margin:
+    type: list_key
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 7
+    region: content
+  bp_padding:
+    type: list_key
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 8
     region: content
 hidden:
   created: true

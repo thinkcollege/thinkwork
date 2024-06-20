@@ -7,7 +7,8 @@
     "drupal/core": "*",
     "drupal/entity_reference_revisions": "*",
     "drupal/paragraphs": "*",
-    "drupal/viewsreference": "*"
+    "drupal/viewsreference": "*",
+    "drupal/field_group": "*"
   },
   "support": {
     "issues": "https://drupal.org/project/issues/bootstrap_paragraphs",

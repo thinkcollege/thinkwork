@@ -6,9 +6,32 @@ dependencies:
     - field.field.paragraph.bp_view.bp_header
     - field.field.paragraph.bp_view.bp_view
     - field.field.paragraph.bp_view.bp_width
+    - field.field.paragraph.bp_view.bp_margin
+    - field.field.paragraph.bp_view.bp_padding
     - paragraphs.paragraphs_type.bp_view
   module:
+    - field_group
     - viewsreference
+third_party_settings:
+  field_group:
+    group_styles:
+      children:
+        - bp_background
+        - bp_margin
+        - bp_padding
+        - bp_width
+      label: Styles
+      region: content
+      parent_name: ''
+      weight: 4
+      format_type: details
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        open: false
+        description: ''
+        required_fields: true
 id: paragraph.bp_view.default
 targetEntityType: paragraph
 bundle: bp_view
@@ -43,6 +66,18 @@ content:
     third_party_settings: {  }
     type: options_select
     region: content
+  bp_margin:
+    type: options_select
+    weight: 5
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  bp_padding:
+    type: options_select
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   created: true
   status: true

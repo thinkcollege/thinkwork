@@ -5,9 +5,10 @@
  * Install, uninstall and update hooks for Bootstrap Paragraphs module.
  */
 
+use Drupal\Component\Utility\NestedArray;
+use Drupal\Core\Config\FileStorage;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\Component\Utility\NestedArray;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -21,7 +22,7 @@ use Symfony\Component\Yaml\Yaml;
 function bootstrap_paragraphs_read_in_new_config($config_name, $bp_path) {
   /** @var \Drupal\Core\Config\StorageInterface $active_storage */
   $active_storage = \Drupal::service('config.storage');
-  $active_storage->write($config_name, Yaml::parse(file_get_contents($bp_path . '/config/optional/' . $config_name . '.yml')));
+  $active_storage->write($config_name, Yaml::parse(file_get_contents($bp_path . '/config/install/' . $config_name . '.yml')));
 }
 
 /**
@@ -104,12 +105,12 @@ function bootstrap_paragraphs_update_8201() {
   bootstrap_paragraphs_read_in_new_config('paragraphs.paragraphs_type.bp_column_wrapper', $bp_path);
 
   // Create field storage.
-  $field_storage_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.storage.paragraph.bp_column_content_w.yml'));
+  $field_storage_yml = Yaml::parse(file_get_contents($bp_path . '/config/install/field.storage.paragraph.bp_column_content_w.yml'));
   if (!FieldStorageConfig::loadByName($field_storage_yml['entity_type'], $field_storage_yml['field_name'])) {
     FieldStorageConfig::create($field_storage_yml)->save();
   }
   // Create field instance.
-  $field_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_column_wrapper.bp_column_content_w.yml'));
+  $field_yml = Yaml::parse(file_get_contents($bp_path . '/config/install/field.field.paragraph.bp_column_wrapper.bp_column_content_w.yml'));
   if (!FieldConfig::loadByName($field_yml['entity_type'], $field_yml['bundle'], $field_yml['field_name'])) {
     FieldConfig::create($field_yml)->save();
   }
@@ -389,4 +390,409 @@ function bootstrap_paragraphs_update_8204() {
   // Send message to updater.
   $message = t('Successfully added Header field to Accordion, Blank, Block, Columns (2, 3, and Equal), Image, Modal, Simple, Tabs, and View bundles.');
   return $message;
+}
+
+/**
+ * Adds margin and padding field to top level bundles.
+ */
+function bootstrap_paragraphs_update_8205() {
+  $modules = ['field_group'];
+  \Drupal::service('module_installer')->install($modules, TRUE);
+
+  // Sets variable for the path.
+  $bp_path = \Drupal::service('extension.list.module')->getPath('bootstrap_paragraphs');
+
+  // Creates field storage.
+  $module_handler = \Drupal::moduleHandler();
+  $config_storage = new FileStorage($module_handler->getModule('bootstrap_paragraphs')->getPath() . '/config/optional');
+
+  $config_names = [
+    'field.storage.paragraph.bp_margin',
+    'field.storage.paragraph.bp_padding',
+    'field.storage.paragraph.bp_always_show',
+  ];
+
+  foreach ($config_names as $config_name) {
+    $config_record = $config_storage->read($config_name);
+    /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $storage */
+    $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+    $entity = $storage->createFromStorageRecord($config_record);
+    $entity->save();
+  }
+
+  // Accordion margin - Create field instance.
+  $bp_accordion_bp_margin_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_accordion.bp_margin.yml'));
+  if (!FieldConfig::loadByName($bp_accordion_bp_margin_yml['entity_type'], $bp_accordion_bp_margin_yml['bundle'], $bp_accordion_bp_margin_yml['field_name'])) {
+    FieldConfig::create($bp_accordion_bp_margin_yml)->save();
+  }
+
+  // Accordion padding - Create field instance.
+  $bp_accordion_bp_padding_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_accordion.bp_padding.yml'));
+  if (!FieldConfig::loadByName($bp_accordion_bp_padding_yml['entity_type'], $bp_accordion_bp_padding_yml['bundle'], $bp_accordion_bp_padding_yml['field_name'])) {
+    FieldConfig::create($bp_accordion_bp_padding_yml)->save();
+  }
+
+  // Accordion - Updates form display.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_form_display.paragraph.bp_accordion.default', 'entity_form_display', 'paragraph.bp_accordion.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Updates Accordian View display config.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_accordion.default', 'entity_view_display', 'paragraph.bp_accordion.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Blank margin - Create field instance.
+  $bp_blank_bp_margin_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_blank.bp_margin.yml'));
+  if (!FieldConfig::loadByName($bp_blank_bp_margin_yml['entity_type'], $bp_blank_bp_margin_yml['bundle'], $bp_blank_bp_margin_yml['field_name'])) {
+    FieldConfig::create($bp_blank_bp_margin_yml)->save();
+  }
+
+  // Blank padding - Create field instance.
+  $bp_blank_bp_padding_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_blank.bp_padding.yml'));
+  if (!FieldConfig::loadByName($bp_blank_bp_padding_yml['entity_type'], $bp_blank_bp_padding_yml['bundle'], $bp_blank_bp_padding_yml['field_name'])) {
+    FieldConfig::create($bp_blank_bp_padding_yml)->save();
+  }
+
+  // Blank - Updates form display.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_form_display.paragraph.bp_blank.default', 'entity_form_display', 'paragraph.bp_blank.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Updates Blank View display config.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_blank.default', 'entity_view_display', 'paragraph.bp_blank.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Block margin - Create field instance.
+  $bp_block_bp_margin_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_block.bp_margin.yml'));
+  if (!FieldConfig::loadByName($bp_block_bp_margin_yml['entity_type'], $bp_block_bp_margin_yml['bundle'], $bp_block_bp_margin_yml['field_name'])) {
+    FieldConfig::create($bp_block_bp_margin_yml)->save();
+  }
+
+  // Block padding - Create field instance.
+  $bp_block_bp_padding_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_block.bp_padding.yml'));
+  if (!FieldConfig::loadByName($bp_block_bp_padding_yml['entity_type'], $bp_block_bp_padding_yml['bundle'], $bp_block_bp_padding_yml['field_name'])) {
+    FieldConfig::create($bp_block_bp_padding_yml)->save();
+  }
+
+  // Block - Updates form display.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_form_display.paragraph.bp_block.default', 'entity_form_display', 'paragraph.bp_block.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Updates Block View display config.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_block.default', 'entity_view_display', 'paragraph.bp_block.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Carousel margin - Create field instance.
+  $bp_carousel_bp_margin_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_carousel.bp_margin.yml'));
+  if (!FieldConfig::loadByName($bp_carousel_bp_margin_yml['entity_type'], $bp_carousel_bp_margin_yml['bundle'], $bp_carousel_bp_margin_yml['field_name'])) {
+    FieldConfig::create($bp_carousel_bp_margin_yml)->save();
+  }
+
+  // Carousel padding - Create field instance.
+  $bp_carousel_bp_padding_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_carousel.bp_padding.yml'));
+  if (!FieldConfig::loadByName($bp_carousel_bp_padding_yml['entity_type'], $bp_carousel_bp_padding_yml['bundle'], $bp_carousel_bp_padding_yml['field_name'])) {
+    FieldConfig::create($bp_carousel_bp_padding_yml)->save();
+  }
+
+  // Carousel - Updates form display.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_form_display.paragraph.bp_carousel.default', 'entity_form_display', 'paragraph.bp_carousel.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Updates Carousel View display config.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_carousel.default', 'entity_view_display', 'paragraph.bp_carousel.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Column Wrapper margin - Create field instance.
+  $bp_column_wrapper_bp_margin_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_column_wrapper.bp_margin.yml'));
+  if (!FieldConfig::loadByName($bp_column_wrapper_bp_margin_yml['entity_type'], $bp_column_wrapper_bp_margin_yml['bundle'], $bp_column_wrapper_bp_margin_yml['field_name'])) {
+    FieldConfig::create($bp_column_wrapper_bp_margin_yml)->save();
+  }
+
+  // Column Wrapper padding - Create field instance.
+  $bp_column_wrapper_bp_padding_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_column_wrapper.bp_padding.yml'));
+  if (!FieldConfig::loadByName($bp_column_wrapper_bp_padding_yml['entity_type'], $bp_column_wrapper_bp_padding_yml['bundle'], $bp_column_wrapper_bp_padding_yml['field_name'])) {
+    FieldConfig::create($bp_column_wrapper_bp_padding_yml)->save();
+  }
+
+  // Column Wrapper - Updates form display.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_form_display.paragraph.bp_column_wrapper.default', 'entity_form_display', 'paragraph.bp_column_wrapper.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Updates Column Wrapper View display config.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_column_wrapper.default', 'entity_view_display', 'paragraph.bp_column_wrapper.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Columns margin - Create field instance.
+  $bp_columns_bp_margin_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_columns.bp_margin.yml'));
+  if (!FieldConfig::loadByName($bp_columns_bp_margin_yml['entity_type'], $bp_columns_bp_margin_yml['bundle'], $bp_columns_bp_margin_yml['field_name'])) {
+    FieldConfig::create($bp_columns_bp_margin_yml)->save();
+  }
+
+  // Columns padding - Create field instance.
+  $bp_columns_bp_padding_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_columns.bp_padding.yml'));
+  if (!FieldConfig::loadByName($bp_columns_bp_padding_yml['entity_type'], $bp_columns_bp_padding_yml['bundle'], $bp_columns_bp_padding_yml['field_name'])) {
+    FieldConfig::create($bp_columns_bp_padding_yml)->save();
+  }
+
+  // Columns - Updates form display.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_form_display.paragraph.bp_columns.default', 'entity_form_display', 'paragraph.bp_columns.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Updates Columns View display config.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_columns.default', 'entity_view_display', 'paragraph.bp_columns.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Columns Three Uneven margin - Create field instance.
+  $bp_columns_three_uneven_bp_margin_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_columns_three_uneven.bp_margin.yml'));
+  if (!FieldConfig::loadByName($bp_columns_three_uneven_bp_margin_yml['entity_type'], $bp_columns_three_uneven_bp_margin_yml['bundle'], $bp_columns_three_uneven_bp_margin_yml['field_name'])) {
+    FieldConfig::create($bp_columns_three_uneven_bp_margin_yml)->save();
+  }
+
+  // Columns Three Uneven padding - Create field instance.
+  $bp_columns_three_uneven_bp_padding_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_columns_three_uneven.bp_padding.yml'));
+  if (!FieldConfig::loadByName($bp_columns_three_uneven_bp_padding_yml['entity_type'], $bp_columns_three_uneven_bp_padding_yml['bundle'], $bp_columns_three_uneven_bp_padding_yml['field_name'])) {
+    FieldConfig::create($bp_columns_three_uneven_bp_padding_yml)->save();
+  }
+
+  // Columns Three Uneven - Updates form display.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_form_display.paragraph.bp_columns_three_uneven.default', 'entity_form_display', 'paragraph.bp_columns_three_uneven.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Updates Columns Three Uneven View display config.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_columns_three_uneven.default', 'entity_view_display', 'paragraph.bp_columns_three_uneven.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Columns Two Uneven margin - Create field instance.
+  $bp_columns_two_uneven_bp_margin_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_columns_two_uneven.bp_margin.yml'));
+  if (!FieldConfig::loadByName($bp_columns_two_uneven_bp_margin_yml['entity_type'], $bp_columns_two_uneven_bp_margin_yml['bundle'], $bp_columns_two_uneven_bp_margin_yml['field_name'])) {
+    FieldConfig::create($bp_columns_two_uneven_bp_margin_yml)->save();
+  }
+
+  // Columns Two Uneven padding - Create field instance.
+  $bp_columns_two_uneven_bp_padding_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_columns_two_uneven.bp_padding.yml'));
+  if (!FieldConfig::loadByName($bp_columns_two_uneven_bp_padding_yml['entity_type'], $bp_columns_two_uneven_bp_padding_yml['bundle'], $bp_columns_two_uneven_bp_padding_yml['field_name'])) {
+    FieldConfig::create($bp_columns_two_uneven_bp_padding_yml)->save();
+  }
+
+  // Columns Two Uneven - Updates form display.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_form_display.paragraph.bp_columns_two_uneven.default', 'entity_form_display', 'paragraph.bp_columns_two_uneven.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Updates Columns Two Uneven View display config.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_columns_two_uneven.default', 'entity_view_display', 'paragraph.bp_columns_two_uneven.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Image margin - Create field instance.
+  $bp_image_bp_margin_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_image.bp_margin.yml'));
+  if (!FieldConfig::loadByName($bp_image_bp_margin_yml['entity_type'], $bp_image_bp_margin_yml['bundle'], $bp_image_bp_margin_yml['field_name'])) {
+    FieldConfig::create($bp_image_bp_margin_yml)->save();
+  }
+
+  // Image padding - Create field instance.
+  $bp_image_bp_padding_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_image.bp_padding.yml'));
+  if (!FieldConfig::loadByName($bp_image_bp_padding_yml['entity_type'], $bp_image_bp_padding_yml['bundle'], $bp_image_bp_padding_yml['field_name'])) {
+    FieldConfig::create($bp_image_bp_padding_yml)->save();
+  }
+
+  // Image - Updates form display.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_form_display.paragraph.bp_image.default', 'entity_form_display', 'paragraph.bp_image.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Updates Image View display config.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_image.default', 'entity_view_display', 'paragraph.bp_image.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Modal margin - Create field instance.
+  $bp_modal_bp_margin_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_modal.bp_margin.yml'));
+  if (!FieldConfig::loadByName($bp_modal_bp_margin_yml['entity_type'], $bp_modal_bp_margin_yml['bundle'], $bp_modal_bp_margin_yml['field_name'])) {
+    FieldConfig::create($bp_modal_bp_margin_yml)->save();
+  }
+
+  // Modal padding - Create field instance.
+  $bp_modal_bp_padding_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_modal.bp_padding.yml'));
+  if (!FieldConfig::loadByName($bp_modal_bp_padding_yml['entity_type'], $bp_modal_bp_padding_yml['bundle'], $bp_modal_bp_padding_yml['field_name'])) {
+    FieldConfig::create($bp_modal_bp_padding_yml)->save();
+  }
+
+  // Modal - Updates form display.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_form_display.paragraph.bp_modal.default', 'entity_form_display', 'paragraph.bp_modal.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Updates Modal View display config.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_modal.default', 'entity_view_display', 'paragraph.bp_modal.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Simple margin - Create field instance.
+  $bp_simple_bp_margin_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_simple.bp_margin.yml'));
+  if (!FieldConfig::loadByName($bp_simple_bp_margin_yml['entity_type'], $bp_simple_bp_margin_yml['bundle'], $bp_simple_bp_margin_yml['field_name'])) {
+    FieldConfig::create($bp_simple_bp_margin_yml)->save();
+  }
+
+  // Simple padding - Create field instance.
+  $bp_simple_bp_padding_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_simple.bp_padding.yml'));
+  if (!FieldConfig::loadByName($bp_simple_bp_padding_yml['entity_type'], $bp_simple_bp_padding_yml['bundle'], $bp_simple_bp_padding_yml['field_name'])) {
+    FieldConfig::create($bp_simple_bp_padding_yml)->save();
+  }
+
+  // Simple - Updates form display.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_form_display.paragraph.bp_simple.default', 'entity_form_display', 'paragraph.bp_simple.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Updates Simple View display config.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_simple.default', 'entity_view_display', 'paragraph.bp_simple.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Tabs margin - Create field instance.
+  $bp_tabs_bp_margin_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_tabs.bp_margin.yml'));
+  if (!FieldConfig::loadByName($bp_tabs_bp_margin_yml['entity_type'], $bp_tabs_bp_margin_yml['bundle'], $bp_tabs_bp_margin_yml['field_name'])) {
+    FieldConfig::create($bp_tabs_bp_margin_yml)->save();
+  }
+
+  // Tabs padding - Create field instance.
+  $bp_tabs_bp_padding_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_tabs.bp_padding.yml'));
+  if (!FieldConfig::loadByName($bp_tabs_bp_padding_yml['entity_type'], $bp_tabs_bp_padding_yml['bundle'], $bp_tabs_bp_padding_yml['field_name'])) {
+    FieldConfig::create($bp_tabs_bp_padding_yml)->save();
+  }
+
+  // Tabs - Updates form display.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_form_display.paragraph.bp_tabs.default', 'entity_form_display', 'paragraph.bp_tabs.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Updates Tabs View display config.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_tabs.default', 'entity_view_display', 'paragraph.bp_tabs.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // View margin - Create field instance.
+  $bp_view_bp_margin_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_view.bp_margin.yml'));
+  if (!FieldConfig::loadByName($bp_view_bp_margin_yml['entity_type'], $bp_view_bp_margin_yml['bundle'], $bp_view_bp_margin_yml['field_name'])) {
+    FieldConfig::create($bp_view_bp_margin_yml)->save();
+  }
+
+  // View padding - Create field instance.
+  $bp_view_bp_padding_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_view.bp_padding.yml'));
+  if (!FieldConfig::loadByName($bp_view_bp_padding_yml['entity_type'], $bp_view_bp_padding_yml['bundle'], $bp_view_bp_padding_yml['field_name'])) {
+    FieldConfig::create($bp_view_bp_padding_yml)->save();
+  }
+
+  // Views - Updates form display.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_form_display.paragraph.bp_view.default', 'entity_form_display', 'paragraph.bp_view.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Updates View display config.
+  bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_view.default', 'entity_view_display', 'paragraph.bp_view.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Add field group config.
+  $ymlFileNames = [
+    'core.entity_form_display.paragraph.bp_accordion.default',
+    'core.entity_form_display.paragraph.bp_accordion_section.default',
+    'core.entity_form_display.paragraph.bp_blank.default',
+    'core.entity_form_display.paragraph.bp_block.default',
+    'core.entity_form_display.paragraph.bp_carousel.default',
+    'core.entity_form_display.paragraph.bp_column_wrapper.default',
+    'core.entity_form_display.paragraph.bp_columns.default',
+    'core.entity_form_display.paragraph.bp_columns_three_uneven.default',
+    'core.entity_form_display.paragraph.bp_columns_two_uneven.default',
+    'core.entity_form_display.paragraph.bp_image.default',
+    'core.entity_form_display.paragraph.bp_modal.default',
+    'core.entity_form_display.paragraph.bp_simple.default',
+    'core.entity_form_display.paragraph.bp_tab_section.default',
+    'core.entity_form_display.paragraph.bp_tabs.default',
+    'core.entity_form_display.paragraph.bp_view.default',
+  ];
+
+  $bp_field_group_settings = [
+    "field_group" => [
+      "group_styles" => [
+        "children" => [
+          "bp_background",
+          "bp_margin",
+          "bp_padding",
+          "bp_width",
+        ],
+        "label" => 'Styles',
+        "region" => 'content',
+        "parent_name" => '',
+        "weight" => 5,
+        "format_type" => 'details',
+        "format_settings" => [
+          "classes" => '',
+          "show_empty_fields" => FALSE,
+          "id" => '',
+          "open" => FALSE,
+          "description" => '',
+          "required_fields" => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  foreach ($ymlFileNames as $ymlFileName) {
+
+    $config = \Drupal::configFactory()->getEditable($ymlFileName);
+
+    // Adds module dependency.
+    $config->set('dependencies.module', ['field_group', 'paragraphs']);
+
+    // Adds group field config.
+    $config->set('third_party_settings', $bp_field_group_settings);
+
+    $config->save(TRUE);
+
+  }
+
+  // Send message to updater.
+  $message = t('Successfully added margin and padding fields to Accordion, Blank, Block, Carousel, Column Wrapper, Columns (2, 3, and Equal), Image, Modal, Simple, Tabs, and View bundles.');
+  return $message;
+
 }

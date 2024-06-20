@@ -1,7 +1,7 @@
 name: Bootstrap Paragraphs
 type: module
 description: A suite of Paragraph bundles made with the Boostrap framework.
-core_version_requirement: ^8 || ^9 || ^10
+core_version_requirement: ^10 || ^11
 package: Paragraphs
 dependencies:
   - drupal:block
@@ -16,10 +16,11 @@ dependencies:
   - drupal:user
   - drupal:views
   - entity_reference_revisions:entity_reference_revisions
+  - field_group:field_group
   - paragraphs:paragraphs
   - viewsreference:viewsreference
 
-# Information added by Drupal.org packaging script on 2024-03-29
-version: '8.x-2.0-beta9'
+# Information added by Drupal.org packaging script on 2024-04-11
+version: '5.0.1'
 project: 'bootstrap_paragraphs'
-datestamp: 1711722190
+datestamp: 1712836387

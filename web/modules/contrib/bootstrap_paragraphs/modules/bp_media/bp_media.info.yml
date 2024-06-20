@@ -1,0 +1,15 @@
+name: Bootstrap Paragraphs Media
+type: module
+description: A reusable Media Paragraph bundle.
+core_version_requirement: ^10
+package: Paragraphs
+dependencies:
+  - paragraphs:paragraphs
+  - bootstrap_paragraphs:bootstrap_paragraphs
+  - drupal:media
+  - drupal:media_library
+
+# Information added by Drupal.org packaging script on 2024-04-11
+version: '5.0.1'
+project: 'bootstrap_paragraphs'
+datestamp: 1712836387

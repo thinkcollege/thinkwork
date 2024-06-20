@@ -4,4 +4,4 @@
  *
  * Minified from the CSS file of the same name.
  */
-.card{margin-bottom:1rem}.card-image img{height:auto;max-width:100%}
+ .card{margin-bottom:1rem}.card-image img{height:auto;max-width:100%}.card-image .field--type-image img{margin-bottom:0}.node .card-image .field--type-image{margin-right:0}

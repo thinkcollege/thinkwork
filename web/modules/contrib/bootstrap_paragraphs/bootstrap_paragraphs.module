@@ -24,6 +24,9 @@ function bootstrap_paragraphs_theme($existing, $type, $theme, $path) {
     'paragraph__bp_tabs' => [
       'base hook' => 'paragraph',
     ],
+    'paragraph__bp_columns' => [
+      'base hook' => 'paragraph',
+    ],
     'paragraph__bp_columns_three_uneven' => [
       'base hook' => 'paragraph',
     ],
@@ -76,4 +79,15 @@ function bootstrap_paragraphs_help($route_name, RouteMatchInterface $route_match
       }
   }
   return NULL;
+}
+
+/**
+ * Implements hook_preprocess_paragraph().
+ */
+function bootstrap_paragraphs_preprocess_paragraph(&$variables) {
+  $paragraph_values = $variables['paragraph'];
+  // Replaces background color.
+  if ($paragraph_values->hasField('bp_background') && !$paragraph_values->get('bp_background')->isEmpty()) {
+    $variables['bs']['background_color'] = str_replace('paragraph--color paragraph--color--', 'bg-', $paragraph_values->get('bp_background')->getString());
+  }
 }

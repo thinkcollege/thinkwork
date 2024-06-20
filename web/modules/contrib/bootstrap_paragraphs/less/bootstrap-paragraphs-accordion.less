@@ -17,24 +17,20 @@
 /* Adds margin and padding to paragraphs in accordion section bodies. */
 .paragraph.paragraph--type--bp-accordion {
   .panel-heading {
-    button {
+    a {
       display: block;
-      padding: 10px 10px;
-      background: transparent;
-      border: 0;
-      width: 100%;
-      text-align: left;
+      padding: 10px 10px
     }
 
-    button:after {
+    a:after {
       float: right;
     }
 
-    button[aria-expanded="false"].display:after {
+    a[aria-expanded="false"].display:after {
       content: "+";
     }
 
-    button[aria-expanded="true"].display:after {
+    a[aria-expanded="true"].display:after {
       content: "-";
     }
   }

@@ -1,0 +1,169 @@
+<?php
+
+/**
+ * @file
+ * Install, uninstall and update hooks for Bootstrap Paragraphs module.
+ */
+
+use Drupal\Component\Utility\NestedArray;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
+use Symfony\Component\Yaml\Yaml;
+
+/**
+ * Reads in new configuration.
+ *
+ * @param string $config_name
+ *   Configuration name.
+ * @param string $bp_path
+ *   Base path.
+ */
+function bp_card_read_in_new_config($config_name, $bp_path) {
+  /** @var \Drupal\Core\Config\StorageInterface $active_storage */
+  $active_storage = \Drupal::service('config.storage');
+  $active_storage->write($config_name, Yaml::parse(file_get_contents($bp_path . '/config/install/' . $config_name . '.yml')));
+}
+
+/**
+ * Updates a configuration from yml file.
+ *
+ * @param string $ymlFileName
+ *   Yml file name (without .yml suffix).
+ * @param array $sets
+ *   An array of what needs to be set.
+ *   - The key will be what we are setting (Can have . in string for array).
+ *   - The value is the key that will be used from the new config file (Can have
+ *     . in string for array).
+ *
+ *   For example if you are updating 'content' with 'content' from the new
+ *   config file, $sets would be ['content' => 'content'].
+ */
+function bp_card_update_configuration_from_yml($ymlFileName, array $sets) {
+  $bp_path = \Drupal::service('extension.list.module')->getPath('bp_card');
+  $yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/' . $ymlFileName . '.yml'));
+  $config = \Drupal::configFactory()->getEditable($ymlFileName);
+  foreach ($sets as $key => $value) {
+    $parts = explode('.', $value);
+    if (count($parts) == 1) {
+      $config->set($key, $yml[$value]);
+    }
+    else {
+      $value = NestedArray::getValue($yml, $parts);
+      $config->set($key, $value);
+    }
+  }
+  $config->save(TRUE);
+}
+
+/**
+ * Update entity from yml.
+ *
+ * Some config like form display needs to be updated via config manager.
+ *
+ * @param string $ymlFileName
+ *   Yml file name.
+ * @param string $entityType
+ *   The entity type for this storage.
+ * @param mixed $id
+ *   The ID of the entity to load.
+ * @param array $setComponents
+ *   Array of components you want to add.
+ *   - The key will be what we are setting.
+ *   - The value is the key that will be used from the new config file (Can have
+ *     . in string for array).
+ */
+function bp_card_update_entity_from_yml($ymlFileName, $entityType, $id, array $setComponents) {
+  $bp_path = \Drupal::service('extension.list.module')->getPath('bp_card');
+  $yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/' . $ymlFileName . '.yml'));
+
+  $entity = \Drupal::entityTypeManager()
+    ->getStorage($entityType)
+    ->load($id);
+  foreach ($setComponents as $key => $value) {
+    $parts = explode('.', $value);
+    if (count($parts) == 1) {
+      $entity->setComponent($key, $yml[$value]);
+    }
+    else {
+      $value = NestedArray::getValue($yml, $parts);
+      $entity->setComponent($key, $value);
+    }
+  }
+
+  $entity->save();
+}
+
+/**
+ * Updates Card.
+ */
+function bp_card_update_5001() {
+  // Sets variable for the path.
+  $bp_path = \Drupal::service('extension.list.module')->getPath('bp_card');
+
+  // Create field storage.
+  $bp_link_entire_card_storage_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.storage.paragraph.bp_link_entire_card.yml'));
+  if (!FieldStorageConfig::loadByName($bp_link_entire_card_storage_yml['entity_type'], $bp_link_entire_card_storage_yml['field_name'])) {
+    FieldStorageConfig::create($bp_link_entire_card_storage_yml)->save();
+  }
+  // Create field instance.
+  $bp_link_entire_card_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_accordion.bp_link_entire_card.yml'));
+  if (!FieldConfig::loadByName($bp_link_entire_card_yml['entity_type'], $bp_link_entire_card_yml['bundle'], $bp_link_entire_card_yml['field_name'])) {
+    FieldConfig::create($bp_link_entire_card_yml)->save();
+  }
+
+  // Create field storage.
+  $bp_card_button_style_storage_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.storage.paragraph.bp_card_button_style.yml'));
+  if (!FieldStorageConfig::loadByName($bp_card_button_style_storage_yml['entity_type'], $bp_card_button_style_storage_yml['field_name'])) {
+    FieldStorageConfig::create($bp_card_button_style_storage_yml)->save();
+  }
+  // Create field instance.
+  $bp_card_button_style_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_accordion.bp_card_button_style.yml'));
+  if (!FieldConfig::loadByName($bp_card_button_style_yml['entity_type'], $bp_card_button_style_yml['bundle'], $bp_card_button_style_yml['field_name'])) {
+    FieldConfig::create($bp_card_button_style_yml)->save();
+  }
+
+  // Updates Card form display.
+  bp_card_update_entity_from_yml('core.entity_form_display.paragraph.bp_card.default', 'entity_form_display', 'paragraph.bp_card.default', [
+    'bp_card_image' => 'content.bp_card_image',
+    'bp_card_link' => 'content.bp_card_link',
+    'bp_card_style' => 'content.bp_card_style',
+    'bp_card_text' => 'content.bp_card_text',
+    'bp_card_title' => 'content.bp_card_title',
+    'bp_card_button_style' => 'content.bp_card_button_style',
+    'bp_link_entire_card' => 'content.bp_link_entire_card',
+  ]);
+
+  // Send message to updater.
+  $message = t('Adds fields to the Card bundle.');
+  return $message;
+}
+
+/**
+ * Adds margin and padding to Card.
+ */
+function bp_card_update_5002() {
+  // Sets variable for the path.
+  $bp_path = \Drupal::service('extension.list.module')->getPath('bp_card');
+
+  // Card margin - Create field instance.
+  $bp_card_bp_margin_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_card.bp_margin.yml'));
+  if (!FieldConfig::loadByName($bp_card_bp_margin_yml['entity_type'], $bp_card_bp_margin_yml['bundle'], $bp_card_bp_margin_yml['field_name'])) {
+    FieldConfig::create($bp_card_bp_margin_yml)->save();
+  }
+
+  // Card padding - Create field instance.
+  $bp_card_bp_padding_yml = Yaml::parse(file_get_contents($bp_path . '/config/optional/field.field.paragraph.bp_card.bp_padding.yml'));
+  if (!FieldConfig::loadByName($bp_card_bp_padding_yml['entity_type'], $bp_card_bp_padding_yml['bundle'], $bp_card_bp_padding_yml['field_name'])) {
+    FieldConfig::create($bp_card_bp_padding_yml)->save();
+  }
+
+  // Updates Card form display.
+  bp_card_update_entity_from_yml('core.entity_form_display.paragraph.bp_card.default', 'entity_form_display', 'paragraph.bp_card.default', [
+    'bp_margin' => 'content.bp_margin',
+    'bp_padding' => 'content.bp_padding',
+  ]);
+
+  // Send message to updater.
+  $message = t('Adds margin and padding to the Card bundle.');
+  return $message;
+}
