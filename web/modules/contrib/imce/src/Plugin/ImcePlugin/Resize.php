@@ -3,8 +3,8 @@
 namespace Drupal\imce\Plugin\ImcePlugin;
 
 use Drupal\imce\Imce;
-use Drupal\imce\ImcePluginBase;
 use Drupal\imce\ImceFM;
+use Drupal\imce\ImcePluginBase;
 
 /**
  * Defines Imce Resize plugin.
@@ -55,7 +55,10 @@ class Resize extends ImcePluginBase {
    * Validates item resizing.
    */
   public function validateResize(ImceFM $fm, array $items, $width, $height, $copy) {
-    return $items && $fm->validateDimensions($items, $width, $height) && $fm->validateImageTypes($items) && $fm->validatePermissions($items, 'resize_images');
+    return $items
+      && $fm->validateDimensions($items, $width, $height)
+      && $fm->validateImageTypes($items)
+      && $fm->validatePermissions($items, 'resize_images');
   }
 
   /**
@@ -86,6 +89,7 @@ class Resize extends ImcePluginBase {
         continue;
       }
       // Create a new file record.
+      $filesize = $image->getFileSize();
       if ($copy) {
         $filename = $fs->basename($destination);
         $values = [
@@ -93,14 +97,20 @@ class Resize extends ImcePluginBase {
           'status' => 1,
           'filename' => $filename,
           'uri' => $destination,
-          'filesize' => $image->getFileSize(),
+          'filesize' => $filesize,
           'filemime' => $image->getMimeType(),
         ];
-        $file = \Drupal::entityTypeManager()->getStorage('file')->create($values);
+        /** @var \Drupal\file\FileStorage $storage */
+        $storage = \Drupal::entityTypeManager()->getStorage('file');
+        $file = $storage->create($values);
         // Check quota.
-        if ($errors = file_validate_size($file, 0, $fm->getConf('quota'))) {
+        $quota = $fm->getConf('quota');
+        if ($quota && ($storage->spaceUsed(\Drupal::currentUser()->id()) + $filesize) > $quota) {
           $fs->delete($destination);
-          $fm->setMessage($errors[0]);
+          $fm->setMessage(t('The file is %filesize which would exceed your disk quota of %quota.', [
+            '%filesize' => Imce::formatSize($filesize),
+            '%quota' => Imce::formatSize($quota),
+          ]));
         }
         else {
           $file->save();
@@ -110,8 +120,9 @@ class Resize extends ImcePluginBase {
       }
       // Update existing.
       else {
-        if ($file = Imce::getFileEntity($uri)) {
-          $file->setSize($image->getFileSize());
+        $file = Imce::getFileEntity($uri);
+        if ($file) {
+          $file->setSize($filesize);
           $file->save();
         }
         // Add to js.

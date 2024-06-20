@@ -2,9 +2,6 @@
 
 namespace Drupal\feeds\Component;
 
-// phpcs:disable Drupal.Classes.PropertyDeclaration
-// phpcs:disable Drupal.NamingConventions.ValidVariableName.LowerCamelName
-
 /**
  * Helper methods for dealing with XML documents.
  */
@@ -50,7 +47,7 @@ trait XmlParserTrait {
    * @param int $options
    *   (optional) Bitwise OR of the libxml option constants. Defaults to 0.
    *
-   * @return \DOMDocument
+   * @return \DOMDocuemnt
    *   The new DOMDocument object.
    *
    * @throws \RuntimeException
@@ -86,7 +83,6 @@ trait XmlParserTrait {
     // details.
     // @todo remove when Drupal 9 (and thus PHP 7) is no longer supported.
     if (\PHP_VERSION_ID < 80000) {
-      // phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated
       static::$_entityLoader = libxml_disable_entity_loader(TRUE);
     }
 
@@ -109,7 +105,6 @@ trait XmlParserTrait {
 
     // @todo remove when Drupal 9 (and thus PHP 7) is no longer supported.
     if (\PHP_VERSION_ID < 80000) {
-      // phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated
       libxml_disable_entity_loader(static::$_entityLoader);
     }
   }

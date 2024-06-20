@@ -14,7 +14,7 @@ dependencies:
   - drupal:file
   - drupal:filter
 
-# Information added by Drupal.org packaging script on 2023-10-16
-version: '8.x-2.8'
+# Information added by Drupal.org packaging script on 2024-06-01
+version: '8.x-2.9'
 project: 'gutenberg'
-datestamp: 1697496074
+datestamp: 1717234797

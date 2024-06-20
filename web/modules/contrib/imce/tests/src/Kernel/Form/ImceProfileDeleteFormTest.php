@@ -2,11 +2,11 @@
 
 namespace Drupal\Tests\imce\Kernel\Form;
 
-use Drupal\KernelTests\KernelTestBase;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 use Drupal\imce\Form\ImceProfileDeleteForm;
+use Drupal\KernelTests\KernelTestBase;
 
 /**
  * Kernel tests for ImceProfileDeleteForm.
@@ -36,7 +36,7 @@ class ImceProfileDeleteFormTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() : void {
+  protected function setUp(): void {
     parent::setUp();
     $this->profileDeleteForm = new ImceProfileDeleteForm();
   }

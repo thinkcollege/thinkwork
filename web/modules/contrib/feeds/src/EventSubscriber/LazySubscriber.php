@@ -2,7 +2,6 @@
 
 namespace Drupal\feeds\EventSubscriber;
 
-use Drupal\feeds\Event\CleanEvent;
 use Drupal\feeds\Event\ClearEvent;
 use Drupal\feeds\Event\ExpireEvent;
 use Drupal\feeds\Event\FeedsEvents;
@@ -10,10 +9,12 @@ use Drupal\feeds\Event\FetchEvent;
 use Drupal\feeds\Event\InitEvent;
 use Drupal\feeds\Event\ParseEvent;
 use Drupal\feeds\Event\ProcessEvent;
+use Drupal\feeds\Event\CleanEvent;
 use Drupal\feeds\FeedTypeInterface;
 use Drupal\feeds\Plugin\Type\CleanableInterface;
 use Drupal\feeds\Plugin\Type\ClearableInterface;
 use Drupal\feeds\StateInterface;
+use Exception;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -46,7 +47,7 @@ class LazySubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents(): array {
+  public static function getSubscribedEvents() {
     $events = [];
     $events[FeedsEvents::INIT_IMPORT][] = 'onInitImport';
     $events[FeedsEvents::INIT_CLEAR][] = 'onInitClear';
@@ -121,7 +122,7 @@ class LazySubscriber implements EventSubscriberInterface {
               $feed = $event->getFeed();
               $plugin->clean($feed, $event->getEntity(), $feed->getState(StateInterface::CLEAN));
             }
-            catch (\Exception $e) {
+            catch (Exception $e) {
               watchdog_exception('feeds', $e);
             }
           });

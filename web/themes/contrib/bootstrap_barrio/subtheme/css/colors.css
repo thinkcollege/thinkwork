@@ -40,7 +40,16 @@ a:focus,
 .link:focus {
   color: #018fe2;
 }
-
+.nav-item .dropdown-item a.active {
+  color: white;
+}
+.nav-link {
+  color: rgb(231, 231, 231);
+}
+.nav-link:hover,
+.nav-link:focus {
+  color: rgb(231, 231, 231);
+}
 a:active,
 .link:active {
   color: #23aeff;

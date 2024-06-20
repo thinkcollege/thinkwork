@@ -57,13 +57,6 @@ drupal.imce.bueditor:
   dependencies:
     - bueditor/drupal.bueditor
 
-drupal.imce.ckeditor:
-  version: VERSION
-  js:
-    js/plugins/ckeditor/imce.ckeditor.js: {}
-  dependencies:
-    - ckeditor/drupal.ckeditor
-
 drupal.imce.ckeditor5:
   version: VERSION
   js:

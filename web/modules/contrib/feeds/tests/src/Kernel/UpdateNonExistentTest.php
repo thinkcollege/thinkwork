@@ -3,8 +3,8 @@
 namespace Drupal\Tests\feeds\Kernel;
 
 use Drupal\feeds\FeedInterface;
-use Drupal\feeds\Plugin\Type\Processor\ProcessorInterface;
 use Drupal\feeds\StateInterface;
+use Drupal\feeds\Plugin\Type\Processor\ProcessorInterface;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
 
 /**

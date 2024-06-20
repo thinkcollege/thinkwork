@@ -9,7 +9,7 @@
       elements.each(function () {
         const input = this;
         const { identifier } = input.dataset;
-        const cardinality = parseInt(input.attributes.cardinality.value, 10);
+        const { cardinality } = input.dataset;
 
         /**
          * Counts the number of selected tags.
@@ -110,16 +110,45 @@
         }
 
         /**
+         * Checks if a given string contains SVG elements.
+         * @param {string} infoLabel - The string to be checked for SVG elements.
+         * @return {boolean} - Returns true if the string contains SVG elements, otherwise false.
+         */
+        function containsSVG(infoLabel) {
+          // Check if infoLabel is defined and not null
+          if (infoLabel && typeof infoLabel === 'string') {
+            // Create a temporary div element
+            const tempDiv = document.createElement('div');
+            // Set the innerHTML of the div to the content of infoLabel
+            tempDiv.innerHTML = infoLabel;
+            // Check if the div contains any SVG elements
+            const svgElements = tempDiv.querySelectorAll('svg');
+            // Return true if any SVG elements are found, false otherwise
+            return svgElements.length > 0;
+          }
+        }
+
+        /**
          * Generates HTML markup for an info label.
          * @param {string} infoLabel - The info label information.
          * @return {string} The info label markup HTML.
          */
         function infoLabelMarkup(infoLabel) {
+          if (!infoLabel) {
+            return '';
+          }
+
           // Info label markup (Image or plain text).
-          const markup = validImgSrc(infoLabel)
-            ? `<div id='tagify__tag__info-label-wrap' class='tagify__tag__info-label-wrap'><div class='tagify__tag-info-label-image'><img onerror="this.style.visibility='hidden'" src="${infoLabel}"></div></div>`
-            : `<div id='tagify__tag__info-label-wrap' class='tagify__tag__info-label-wrap'><span class='tagify__tag-info-label'>${infoLabel}</span></div>`;
-          return infoLabel ? markup : '';
+          // eslint-disable-next-line no-nested-ternary
+          return validImgSrc(infoLabel) || containsSVG(infoLabel)
+            ? `<div id='tagify__tag__info-label-wrap' class='tagify__tag__info-label-wrap'><div class='tagify__tag-info-label-image'>${
+                validImgSrc(infoLabel)
+                  ? `<img onerror="this.style.visibility='hidden'" src="${infoLabel}">`
+                  : infoLabel
+              }</div></div>`
+            : infoLabel
+              ? `<div id='tagify__tag__info-label-wrap' class='tagify__tag__info-label-wrap'><span class='tagify__tag-info-label'>${infoLabel}</span></div>`
+              : infoLabel;
         }
 
         /**
@@ -198,11 +227,10 @@
             ? `<footer
           data-selector='tagify-suggestions-footer'
           class="${this.settings.classNames.dropdownFooter}">
-            <p>You can only add <strong>${cardinality} item(s)</strong></p>
+            <p>${drupalSettings.tagify.information_message.limit_tag} <strong>${cardinality}</strong></p>
          </footer>`
             : '';
         }
-
         // eslint-disable-next-line no-undef
         const tagify = new Tagify(input, {
           dropdown: {
@@ -224,7 +252,7 @@
               value="noMatch"
               tabindex="0"
               role="option">
-                <p>No matching suggestions found for: </p><strong class="tagify--value">${data.value}</strong>
+                <p>${drupalSettings.tagify.information_message.no_matching_suggestions} </p><strong class="tagify--value">${data.value}</strong>
               </div>`
                 : '',
           },
@@ -273,7 +301,9 @@
           controller && controller.abort();
           controller = new AbortController();
           // Create Loading text markup.
-          createLoadingTextMarkup();
+          if (identifier) {
+            createLoadingTextMarkup();
+          }
           // Show loading animation meanwhile the dropdown suggestions are hided.
           // eslint-disable-next-line no-unused-expressions
           value !== '' ? tagify.loading(true) : tagify.loading(false);
@@ -305,7 +335,9 @@
                 // Render the suggestion dropdown.
                 tagify.loading(false).dropdown.show(value);
                 // Remove Loading text markup.
-                removeLoadingTextMarkup();
+                if (identifier) {
+                  removeLoadingTextMarkup();
+                }
               }
               // Show dropdown suggestion if the input is or not matching.
               if (isTagLimitReached()) {
@@ -357,9 +389,8 @@
          * @param {Event} e - The click event object.
          */
         function handleClickEvent(e) {
-          const containerClass = `.${identifier}`;
           const isTagifyInput = e.target.classList.contains('tagify__input');
-          const isDesiredContainer = e.target.closest(containerClass);
+          const isDesiredContainer = e.target.closest(`.${identifier}`);
           if (isTagifyInput && isDesiredContainer) {
             handleAutocomplete(
               '',
@@ -375,41 +406,238 @@
     },
   };
 
-  /**
-   * Behaviors for tabs in the node edit form.
-   *
-   * @type {Drupal~behavior}
-   *
-   * @prop {Drupal~behaviorAttach} attach
-   *   Attaches summary behavior for tabs in the node edit form.
-   */
-  Drupal.behaviors.nodeDetailsSummaries = {
+  Drupal.behaviors.tagifySelect = {
     attach: function attach(context) {
-      const $context = $(context);
+      const selectElements = $(
+        once('tagify-select-widget', 'select.tagify-select-widget', context),
+      );
 
-      // eslint-disable-next-line no-shadow,func-names
-      $context.find('.node-form-author').drupalSetSummary(function (context) {
-        const $authorContext = $(context);
-        const name = $authorContext
-          .find('.field--name-uid input')
-          .val()
-          .split('[{"value":"')
-          .pop()
-          .split('",')[0];
-        const date = $authorContext.find('.field--name-created input').val();
+      // eslint-disable-next-line func-names
+      selectElements.each(function () {
+        const select = this;
+        const cardinality = parseInt(select.dataset.cardinality, 10);
+        const { identifier } = select.dataset;
+        const { matchOperator } = select.dataset;
+        const { matchLimit } = select.dataset;
+        const { mode } = select.dataset;
+        const { placeholder } = select.dataset;
 
-        if (name && date) {
-          return Drupal.t('By @name on @date', {
-            '@name': name,
-            '@date': date,
-          });
+        /**
+         * Counts the number of selected tags.
+         * @return {int} - The number of selected tags.
+         */
+        function countSelectedTags() {
+          const tagsElement = document.querySelector(`.${identifier}`);
+          const tagElements = tagsElement.querySelectorAll('.tagify__tag');
+          return tagElements.length;
         }
-        if (name) {
-          return Drupal.t('By @name', { '@name': name });
+
+        /**
+         * Checks if the tag limit has been reached.
+         * @return {boolean} - True if the tag limit has been reached, otherwise false.
+         */
+        function isTagLimitReached() {
+          return cardinality > 0 && countSelectedTags() >= cardinality;
         }
-        if (date) {
-          return Drupal.t('Authored on @date', { '@date': date });
+
+        /**
+         * Highlights matching letters in a given input string by wrapping them in <strong> tags.
+         * @param {string} inputTerm - The input string for matching letters.
+         * @param {string} searchTerm - The term to search for within the input string.
+         * @return {string} The input string with matching letters wrapped in <strong> tags.
+         */
+        function highlightMatchingLetters(inputTerm, searchTerm) {
+          // Escape special characters in the search term.
+          const escapedSearchTerm = searchTerm.replace(
+            /[.*+?^${}()|[\]\\]/g,
+            '\\$&',
+          );
+          // Create a regular expression to match the search term globally and case insensitively.
+          const regex = new RegExp(`(${escapedSearchTerm})`, 'gi');
+          // Check if there are any matches.
+          if (!escapedSearchTerm) {
+            // If no matches found, return the original input string.
+            return inputTerm;
+          }
+          // Replace matching letters with the same letters wrapped in <strong> tags.
+          return inputTerm.replace(regex, '<strong>$1</strong>');
         }
+
+        /**
+         * Generates HTML markup for a tag based on the provided tagData.
+         *
+         * @param {Object} tagData - Data for the tag, including value, text, class, etc.
+         * @return {string} - HTML markup for the generated tag.
+         */
+        function tagTemplate(tagData) {
+          return `<tag title="${tagData.text}"
+            contenteditable='false'
+            spellcheck='false'
+            tabIndex="-1"
+            class="tagify__tag ${tagData.class ? tagData.class : ''}"
+            ${this.getAttributes(tagData)}>
+            <x
+            id="tagify__tag-remove-button"
+            class='tagify__tag__removeBtn'
+            role='button'
+            aria-label='remove tag'
+            tabIndex="0">
+            </x>
+            <div id="tagify__tag-items">
+            <span class='tagify__tag-text'>${tagData.text}</span>
+            </div>
+          </tag>`;
+        }
+
+        /**
+         * Generates HTML markup for a dropdown item based on the provided tagData.
+         *
+         * @param {Object} tagData - Data for the tag, including value, text, etc.
+         * @return {string} - HTML markup for the generated dropdown item.
+         */
+        function dropdownItemTemplate(tagData) {
+          const { classNames } = this.settings;
+
+          if (!isTagLimitReached() || mode) {
+            const dropdownItemClass = classNames.dropdownItem;
+            const highlightedText = highlightMatchingLetters(
+              tagData.text,
+              this.state.inputText,
+            );
+
+            return `<div class='${dropdownItemClass}'
+              value="${tagData.value}"
+              tabindex="0"
+              role="option">
+              <div class="tagify__dropdown__item-highlighted">${highlightedText}</div>
+            </div>`;
+          }
+
+          return '';
+        }
+
+        const options = [];
+        const selected = [];
+        // eslint-disable-next-line func-names
+        [...this.options].forEach(function (option) {
+          options.push({ value: option.value, text: option.text });
+          if (option.selected) {
+            selected.push({ value: option.value, text: option.text });
+          }
+        });
+
+        /**
+         * Generates the HTML template for a suggestion footer in the Tagify dropdown based on the provided tagData.
+         * @return {string} - The HTML template for the suggestion footer.
+         */
+        function suggestionFooterTemplate() {
+          const { classNames } = this.settings;
+
+          if (isTagLimitReached() && !mode) {
+            return `<footer data-selector='tagify-suggestions-footer'
+              class="${classNames.dropdownFooter}">
+              <p>${drupalSettings.tagify_select.information_message.limit_tag} <strong>${cardinality}</strong></p>
+            </footer>`;
+          }
+
+          return '';
+        }
+
+        // Insert an input element to attach Tagify. Unfortunately, it is not
+        // possible to attach Tagify directly to the select element because the
+        // values, which are needed for the value callback, do get messed up.
+        const input = document.createElement('input');
+        input.setAttribute('class', this.getAttribute('class'));
+        input.value = JSON.stringify(selected);
+        this.before(input);
+
+        // eslint-disable-next-line no-undef
+        const tagify = new Tagify(input, {
+          mode,
+          dropdown: {
+            enabled: 0,
+            fuzzySearch: !!parseInt(matchOperator, 10),
+            maxItems: matchLimit ?? Infinity,
+            highlightFirst: true,
+            searchKeys: ['text'],
+            mapValueTo: 'text',
+          },
+          templates: {
+            tag: tagTemplate,
+            dropdownItem: dropdownItemTemplate,
+            dropdownFooter: suggestionFooterTemplate,
+            dropdownItemNoMatch: (data) =>
+              !isTagLimitReached()
+                ? `<div class='${tagify.settings.classNames.dropdownItem} tagify--dropdown-item-no-match'
+              value="noMatch"
+              tabindex="0"
+              role="option">
+                <p>${drupalSettings.tagify_select.information_message.no_matching_suggestions} </p><strong class="tagify--value">${data.value}</strong>
+              </div>`
+                : '',
+          },
+          whitelist: options,
+          enforceWhitelist: true,
+          editTags: !!mode,
+          maxTags: cardinality > 0 ? cardinality : Infinity,
+          tagTextProp: 'text',
+          placeholder,
+        });
+
+        // Remove tagify--select class to keep Tagify styles.
+        if (select.dataset.mode) {
+          const tagsElement = document.querySelector(`.${identifier}`);
+          tagsElement.classList.remove('tagify--select');
+        }
+
+        /**
+         * Binds Sortable to Tagify's main element and specifies draggable items.
+         */
+        Sortable.create(tagify.DOM.scope, {
+          draggable: `.${tagify.settings.classNames.tag}:not(tagify__input)`,
+          forceFallback: true,
+          onEnd() {
+            Array.from(
+              tagify.DOM.scope.querySelectorAll(
+                `.${tagify.settings.classNames.tag}`,
+              ),
+            ).forEach((tag) => {
+              const value = tag.getAttribute('value');
+              const option = select.querySelector(`option[value="${value}"]`);
+              if (option) {
+                select.removeChild(option);
+                select.appendChild(option);
+                option.selected = tag.classList.contains('tagify__tag');
+              }
+            });
+          },
+        });
+
+        /**
+         * Listens to add tag event and updates select values accordingly.
+         */
+        // eslint-disable-next-line func-names
+        tagify.on('add', function (e) {
+          const { value } = e.detail.data;
+          const option = select.querySelector(`option[value="${value}"]`);
+          if (option) {
+            select.removeChild(option);
+            select.appendChild(option);
+            option.selected = true;
+          }
+        });
+
+        /**
+         * Listens to remove tag event and updates select values accordingly.
+         */
+        // eslint-disable-next-line func-names
+        tagify.on('remove', function (e) {
+          const { value } = e.detail.data;
+          const option = select.querySelector(`option[value="${value}"]`);
+          if (option) {
+            option.selected = false;
+          }
+        });
       });
     },
   };

@@ -15,6 +15,74 @@ use Drupal\Core\Link;
  * Implements hook_form_FORM_ID_alter().
  */
 function bootstrap_barrio_form_system_theme_settings_alter(&$form, FormStateInterface $form_state, $form_id = NULL) {
+  $form['#attached']['library'][] = 'bootstrap_barrio/color-picker';
+
+  $color_config = [
+    'colors' => [
+      'bootstrap_barrio_base_primary_color' => 'Primary base color',
+      'bootstrap_barrio_base_secondary_color' => 'Secondary base color',
+    ],
+    'schemes' => [
+      'default' => [
+        'label' => 'Blue & pink',
+        'colors' => [
+          'bootstrap_barrio_base_primary_color' => '#2F3C7E',
+          'bootstrap_barrio_base_secondary_color' => '#FBEAEB',
+        ],
+      ],
+      'blue_peach' => [
+        'label' => 'Royal blue & peach',
+        'colors' => [
+          'bootstrap_barrio_base_primary_color' => '#00539C',
+          'bootstrap_barrio_base_secondary_color' => '#EEA47F',
+        ],
+      ],
+      'red_yellow' => [
+        'label' => 'Red & yellow',
+        'colors' => [
+          'bootstrap_barrio_base_primary_color' => '#F96167',
+          'bootstrap_barrio_base_secondary_color' => '#F9E795',
+        ],
+      ],
+      'peach_orange' => [
+        'label' => 'Peach & burnt orange',
+        'colors' => [
+          'bootstrap_barrio_base_primary_color' => '#FCEDDA',
+          'bootstrap_barrio_base_secondary_color' => '#EE4E34',
+        ],
+      ],
+      'red_pink' => [
+        'label' => 'Cherry red & bubblegum pink',
+        'colors' => [
+          'bootstrap_barrio_base_primary_color' => '#CC313D',
+          'bootstrap_barrio_base_secondary_color' => '#F7C5CC',
+        ],
+      ],
+      'purple_mint' => [
+        'label' => 'Light purple, mint',
+        'colors' => [
+          'bootstrap_barrio_base_primary_color' => '#AA96DA',
+          'bootstrap_barrio_base_secondary_color' => '#FFFFD2',
+        ],
+      ],
+      'blue_yellow' => [
+        'label' => 'Royal blue & pale yellow',
+        'colors' => [
+          'bootstrap_barrio_base_primary_color' => '#234E70',
+          'bootstrap_barrio_base_secondary_color' => '#FBF8BE',
+        ],
+      ],
+      'scarlet_olive' => [
+        'label' => 'Scarlet, light olive',
+        'colors' => [
+          'bootstrap_barrio_base_primary_color' => '#B85042',
+          'bootstrap_barrio_base_secondary_color' => '#E7E8D1',
+        ],
+      ],
+    ],
+  ];
+
+  $form['#attached']['drupalSettings']['barrio']['colorSchemes'] = $color_config['schemes'];
 
   // General "alters" use a form id. Settings should not be set here. The only
   // thing useful about this is if you need to alter the form for the running
@@ -57,7 +125,7 @@ function bootstrap_barrio_form_system_theme_settings_alter(&$form, FormStateInte
         'bootstrap_barrio/bootswatch_cosmo' => t('Bootswatch Cosmo'),
         'bootstrap_barrio/bootswatch_cyborg' => t('Bootswatch Cyborg'),
         'bootstrap_barrio/bootswatch_darkly' => t('Bootswatch Darkly'),
-        'bootstrap_barrio/bootswatch_flaty' => t('Bootswatch Flatly'),
+        'bootstrap_barrio/bootswatch_flatly' => t('Bootswatch Flatly'),
         'bootstrap_barrio/bootswatch_journal' => t('Bootswatch Journal'),
         'bootstrap_barrio/bootswatch_litera' => t('Bootswatch Litera'),
         'bootstrap_barrio/bootswatch_lumen' => t('Bootswatch Lumen'),
@@ -87,6 +155,182 @@ function bootstrap_barrio_form_system_theme_settings_alter(&$form, FormStateInte
     '#weight' => -10,
   ];
 
+  // Colors.
+  $form['colors'] = [
+    '#type' => 'details',
+    '#title' => t('Colors'),
+    '#group' => 'bootstrap',
+  ];
+
+  $form['colors']['scheme'] = [
+    '#type' => 'details',
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#title' => t('Barrio Color Scheme Settings'),
+  ];
+  $form['colors']['scheme']['bootstrap_barrio_enable_color'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Enable color Sheme'),
+    '#default_value' => theme_get_setting('bootstrap_barrio_enable_color'),
+    '#ajax' => [
+      'callback' => 'colorCallback',
+      'wrapper' => 'color_container',
+    ],
+  ];
+  $form['colors']['scheme']['bootstrap_barrio_scheme_description'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'p',
+    '#value' => t('These settings adjust the look and feel of the barrio based themes. Changing the colors below will change the basic color values the barrio based theme uses.'),
+  ];
+  $form['colors']['scheme']['color_container'] = [
+    '#type' => 'container',
+    '#attributes' => [
+      'id' => 'color_container'
+    ],
+  ];
+  
+  if ($form_state->getValue('bootstrap_barrio_enable_color', theme_get_setting('bootstrap_barrio_enable_color'))) {
+    $form['colors']['scheme']['color_container']['bootstrap_barrio_color_scheme'] = [
+      '#type' => 'select',
+      '#title' => t('Barrio Color Scheme'),
+      '#empty_option' => t('Custom'),
+      '#empty_value' => '',
+      '#options' => [
+        'default' => t('Blue & pink (Default)'),
+        'blue_peach' => t('Royal blue & peach'),
+        'red_yellow' => t('Red & yellow'),
+        'peach_orange' => t('Peach & burnt orange'),
+        'red_pink' => t('Cherry red & bubblegum pink'),
+        'purple_mint' => t('Light purple, mint'),
+        'blue_yellow' => t('Royal blue & pale yellow'),
+        'scarlet_olive' => t('Scarlet, light olive'),
+      ],
+      '#input' => FALSE,
+      '#wrapper_attributes' => [
+        'style' => 'display:none;',
+      ],
+    ];
+    foreach ($color_config['colors'] as $key => $title) {
+      $form['colors']['scheme']['color_container'][$key] = [
+        '#type' => 'textfield',
+        '#maxlength' => 7,
+        '#size' => 10,
+        '#title' => t($title),
+        '#description' => t('Enter color in full hexadecimal format (#abc123).') . '<br/>' . t('Derivatives will be formed from this color.'),
+        '#default_value' => theme_get_setting($key),
+        '#attributes' => [
+          'pattern' => '^#[a-fA-F0-9]{6}',
+        ],
+        '#wrapper_attributes' => [
+          'data-drupal-selector' => 'barrio-color-picker',
+        ],
+      ];
+    }
+    $form['colors']['scheme']['color_container']['bootstrap_barrio_body_color'] = [
+      '#type' => 'select',
+      '#title' => t('Body color'),
+      '#default_value' => theme_get_setting('bootstrap_barrio_body_color') ?? 'gray-800',
+      '#options' => [
+        'gray-800' => t('Dark gray'),
+        'black' => t('Black'),
+      ],
+    ];
+    $form['colors']['scheme']['color_container']['bootstrap_barrio_body_bg_color'] = [
+      '#type' => 'select',
+      '#title' => t('Body Background Color'),
+      '#default_value' => theme_get_setting('bootstrap_barrio_body_bg_color') ?? 'white',
+      '#options' => [
+        'white' => t('White'),
+        'gray-200' => t('Light gray'),
+      ],
+    ];
+    $form['colors']['scheme']['color_container']['bootstrap_barrio_h1_color'] = [
+      '#type' => 'select',
+      '#title' => t('H1 color'),
+      '#default_value' => theme_get_setting('bootstrap_barrio_h1_color') ?? 'base',
+      '#options' => [
+        'base' => t('Base color'),
+        'primary' => t('Primary color'),
+        'secondary' => t('Secondary color'),
+      ],
+    ];
+    $form['colors']['scheme']['color_container']['bootstrap_barrio_h2_color'] = [
+      '#type' => 'select',
+      '#title' => t('H2 color'),
+      '#default_value' => theme_get_setting('bootstrap_barrio_h2_color') ?? 'base',
+      '#options' => [
+        'base' => t('Base color'),
+        'primary' => t('Primary color'),
+        'secondary' => t('Secondary color'),
+      ],
+    ];
+    $form['colors']['scheme']['color_container']['bootstrap_barrio_h3_color'] = [
+      '#type' => 'select',
+      '#title' => t('H3 color'),
+      '#default_value' => theme_get_setting('bootstrap_barrio_h3_color') ?? 'base',
+      '#options' => [
+        'base' => t('Base color'),
+        'primary' => t('Primary color'),
+        'secondary' => t('Secondary color'),
+      ],
+    ];
+  }
+
+  // System messages.
+  $form['colors']['alerts'] = [
+    '#type' => 'details',
+    '#title' => t('System messages'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  ];
+  $form['colors']['alerts']['bootstrap_barrio_system_messages'] = [
+    '#type' => 'select',
+    '#title' => t('System messages color scheme'),
+    '#default_value' => theme_get_setting('bootstrap_barrio_system_messages'),
+    '#empty_option' => t('Default'),
+    '#options' => [
+      'messages_white' => t('White'),
+      'messages_gray' => t('Gray'),
+      'messages_light' => t('Light color'),
+      'messages_dark' => t('Dark color'),
+    ],
+    '#description' => t('Replace the standard color scheme for system messages with a Google Material Design color scheme.'),
+  ];
+
+  // Tables.
+  $form['colors']['tables'] = [
+    '#type' => 'details',
+    '#title' => t('Tables'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  ];
+  $form['colors']['tables']['bootstrap_barrio_table_style'] = [
+    '#type' => 'select',
+    '#title' => t('Table cell style'),
+    '#default_value' => theme_get_setting('bootstrap_barrio_table_style'),
+    '#empty_option' => t('Default'),
+    '#options' => [
+      'table-striped' => t('Striped'),
+      'table-bordered' => t('Bordered'),
+      'table-striped-columns' => t('Striped Columns'),
+    ],
+  ];
+  $form['colors']['tables']['bootstrap_barrio_table_hover'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Hover effect over table cells'),
+    '#default_value' => theme_get_setting('bootstrap_barrio_table_hover'),
+  ];
+  $form['colors']['tables']['bootstrap_barrio_table_head'] = [
+    '#type' => 'select',
+    '#title' => t('Table header color scheme'),
+    '#default_value' => theme_get_setting('bootstrap_barrio_table_head'),
+    '#empty_option' => t('Default'),
+    '#options' => [
+      'thead-light' => t('Light'),
+      'thead-dark' => t('Dark'),
+    ],
+  ];
+
   // Layout.
   $form['layout'] = [
     '#type' => 'details',
@@ -101,15 +345,32 @@ function bootstrap_barrio_form_system_theme_settings_alter(&$form, FormStateInte
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   ];
-  $form['layout']['container']['bootstrap_barrio_fluid_container'] = [
+  $form['layout']['container']['bootstrap_barrio_container'] = [
+    '#type' => 'select',
+    '#title' => t('Container'),
+    '#default_value' => theme_get_setting('bootstrap_barrio_container') ??
+      (theme_get_setting('bootstrap_barrio_fluid_container') ? 'container-fluid' : 'container'),
+    '#options' => [
+      'container' => t('Container'),
+      'container-md' => t('Container Medium'),
+      'container-lg' => t('Container Large'),
+      'container-xl' => t('Container Extra Large'),
+      'container-xxl' => t('Container Extra Extra Large'),
+      'container-fluid' => t('Container Fluid'),
+    ],
+    '#description' => t('Use <code>.container-XX</code> class. See @bootstrap_fluid_containers_link.', [
+      '@bootstrap_fluid_containers_link' => Link::fromTextAndUrl('Containers in the Bootstrap 5 documentation', Url::fromUri('https://getbootstrap.com/docs/5.2/layout/overview/', ['absolute' => TRUE, 'fragment' => 'containers']))->toString(),
+    ]),
+  ];
+/*  $form['layout']['container']['bootstrap_barrio_fluid_container'] = [
     '#type' => 'checkbox',
     '#title' => t('Fluid container'),
     '#default_value' => theme_get_setting('bootstrap_barrio_fluid_container'),
     '#description' => t('Use <code>.container-fluid</code> class. See @bootstrap_fluid_containers_link.', [
-      '@bootstrap_fluid_containers_link' => Link::fromTextAndUrl('Containers in the Bootstrap 4 documentation', Url::fromUri('https://getbootstrap.com/docs/4.3/layout/overview/', ['absolute' => TRUE, 'fragment' => 'containers']))->toString(),
+      '@bootstrap_fluid_containers_link' => Link::fromTextAndUrl('Containers in the Bootstrap 5 documentation', Url::fromUri('https://getbootstrap.com/docs/5.2/layout/overview/', ['absolute' => TRUE, 'fragment' => 'containers']))->toString(),
     ]),
   ];
-
+*/
   // List of regions.
   $theme = \Drupal::theme()->getActiveTheme()->getName();
   $region_list = system_region_list($theme);
@@ -156,6 +417,11 @@ function bootstrap_barrio_form_system_theme_settings_alter(&$form, FormStateInte
       '#type' => 'checkbox',
       '#title' => t('Clean wrapper for @description region', ['@description' => $description]),
       '#default_value' => $region_clean,
+    ];
+    $form['layout']['region'][$name]['bootstrap_barrio_region_width_' . $name] = [
+      '#type' => 'checkbox',
+      '#title' => t('Full width wrapper for @description region', ['@description' => $description]),
+      '#default_value' => theme_get_setting('bootstrap_barrio_region_width_' . $name),
     ];
     $form['layout']['region'][$name]['bootstrap_barrio_region_class_' . $name] = [
       '#type' => 'textfield',
@@ -262,6 +528,38 @@ function bootstrap_barrio_form_system_theme_settings_alter(&$form, FormStateInte
     '#group' => 'bootstrap',
   ];
 
+  // Node.
+  $form['components']['node'] = [
+    '#type' => 'details',
+    '#title' => t('Node'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  ];
+  $form['components']['node']['bootstrap_barrio_hide_node_label'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Hide node label'),
+    '#default_value' => theme_get_setting('bootstrap_barrio_hide_node_label'),
+    '#description' => t('Hide node label for all display. Usefull when using f.e. Layout Builder and you want full control of your output'),
+  ];
+
+  // Breadcrumbs.
+  $form['components']['breadcrumb'] = [
+    '#type' => 'details',
+    '#title' => t('Breadcrumb'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  ];
+  $form['components']['breadcrumb']['bootstrap_barrio_breadcrumb_divider'] = [
+    '#type' => 'textfield',
+    '#title' => t('Breadcrumb Divider'),
+    '#size' => 60,
+    '#maxlength' => 256,
+    '#default_value' => theme_get_setting('bootstrap_barrio_breadcrumb_divider'),
+    '#description' => t('Change the default breadcrumb divider. See @bootstrap_breadcrumb_link.', [
+      '@bootstrap_breadcrumb_link' => Link::fromTextAndUrl('breadcrumb in the Bootstrap 5.x documentation', Url::fromUri('https://getbootstrap.com/docs/5.2/components/breadcrumb/', ['absolute' => TRUE, 'fragment' => 'outline-buttons']))->toString(),
+    ]),
+  ];
+
   // Buttons.
   $form['components']['buttons'] = [
     '#type' => 'details',
@@ -274,6 +572,15 @@ function bootstrap_barrio_form_system_theme_settings_alter(&$form, FormStateInte
     '#title' => t('Convert input submit to button element'),
     '#default_value' => theme_get_setting('bootstrap_barrio_button'),
     '#description' => t('There is a known issue where Ajax exposed filters do not if this setting is enabled.'),
+  ];
+  $form['components']['buttons']['bootstrap_barrio_button_type'] = [
+    '#type' => 'select',
+    '#title' => t('Default button type'),
+    '#default_value' => theme_get_setting('bootstrap_barrio_button_type'),
+    '#options' => [
+      'primary' => t('Primary'),
+      'secondary' => t('Secondary'),
+    ],
   ];
   $form['components']['buttons']['bootstrap_barrio_button_size'] = [
     '#type' => 'select',
@@ -290,7 +597,7 @@ function bootstrap_barrio_form_system_theme_settings_alter(&$form, FormStateInte
     '#title' => t('Button with outline format'),
     '#default_value' => theme_get_setting('bootstrap_barrio_button_outline'),
     '#description' => t('Use <code>.btn-default-outline</code> class. See @bootstrap_outline_buttons_link.', [
-      '@bootstrap_outline_buttons_link' => Link::fromTextAndUrl('Outline buttons in the Bootstrap 4 documentation', Url::fromUri('https://getbootstrap.com/docs/4.3/components/buttons/', ['absolute' => TRUE, 'fragment' => 'outline-buttons']))->toString(),
+      '@bootstrap_outline_buttons_link' => Link::fromTextAndUrl('Outline buttons in the Bootstrap 4 documentation', Url::fromUri('https://getbootstrap.com/docs/5.2/components/buttons/', ['absolute' => TRUE, 'fragment' => 'outline-buttons']))->toString(),
     ]),
   ];
 
@@ -429,16 +736,29 @@ function bootstrap_barrio_form_system_theme_settings_alter(&$form, FormStateInte
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   ];
+  
+  $form['components']['navbar_behaviour']['bootstrap_barrio_navbar_offcanvas'] = [
+    '#type' => 'select',
+    '#title' => t('Default/Bootstrap Offcanvas Collapse'),
+    '#default_value' => theme_get_setting('bootstrap_barrio_navbar_offcanvas'),
+    '#options' => [
+      'offcanvas-collapse' => t('Offcanvas'),
+    ],
+    '#empty_option' => t('Default'),
+  ];
+
   $form['components']['navbar_behaviour']['bootstrap_barrio_navbar_flyout'] = [
     '#type' => 'checkbox',
     '#title' => t('Flyout style main menu'),
     '#default_value' => theme_get_setting('bootstrap_barrio_navbar_flyout'),
   ];
+
   $form['components']['navbar_behaviour']['bootstrap_barrio_navbar_slide'] = [
     '#type' => 'checkbox',
     '#title' => t('Sliding navbar'),
     '#description' => t('Collapsed navbar will slide left to right'),
     '#default_value' => theme_get_setting('bootstrap_barrio_navbar_slide'),
+    '#description' => t('DO NOT USE IN NEW SITES. Removed in favor of Bootstrap Offcanvas.'),
   ];
 
   // Tabs.
@@ -481,45 +801,23 @@ function bootstrap_barrio_form_system_theme_settings_alter(&$form, FormStateInte
   // Form.
   $form['components']['form'] = [
     '#type' => 'details',
-    '#title' => t('Form'),
+    '#title' => t('Form Elements'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   ];
-  $form['components']['form']['bootstrap_barrio_radio'] = [
-    '#type' => 'select',
-    '#title' => t('Radio widget'),
-    '#default_value' => theme_get_setting('bootstrap_barrio_radio'),
-    '#options' => [
-      'standard' => t('Standard'),
-      'custom' => t('Custom'),
-    ],
+  $form['components']['form']['bootstrap_barrio_float_label'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Float Labels'),
+    '#default_value' => theme_get_setting('bootstrap_barrio_float_label'),
   ];
   $form['components']['form']['bootstrap_barrio_checkbox'] = [
     '#type' => 'select',
-    '#title' => t('Checkbox widget'),
+    '#title' => t('Checkbox & Radio Style'),
     '#default_value' => theme_get_setting('bootstrap_barrio_checkbox'),
+    '#empty_option' => t('Default'),
     '#options' => [
-      'standard' => t('Standard'),
-      'custom' => t('Custom'),
       'switch' => t('Switch'),
-    ],
-  ];
-  $form['components']['form']['bootstrap_barrio_select'] = [
-    '#type' => 'select',
-    '#title' => t('Select widget'),
-    '#default_value' => theme_get_setting('bootstrap_barrio_select'),
-    '#options' => [
-      'standard' => t('Standard'),
-      'custom' => t('Custom'),
-    ],
-  ];
-  $form['components']['form']['bootstrap_barrio_file'] = [
-    '#type' => 'select',
-    '#title' => t('File widget'),
-    '#default_value' => theme_get_setting('bootstrap_barrio_file'),
-    '#options' => [
-      'standard' => t('Standard'),
-      'custom' => t('Custom'),
+      'button' => t('Button'),
     ],
   ];
 
@@ -770,63 +1068,14 @@ function bootstrap_barrio_form_system_theme_settings_alter(&$form, FormStateInte
       'fontawesome' => t('Font Awesome'),
     ],
   ];
+}
 
-  // Colors.
-  $form['colors'] = [
-    '#type' => 'details',
-    '#title' => t('Colors'),
-    '#group' => 'bootstrap',
-  ];
-
-  // System messages.
-  $form['colors']['alerts'] = [
-    '#type' => 'details',
-    '#title' => t('System messages'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-  ];
-  $form['colors']['alerts']['bootstrap_barrio_system_messages'] = [
-    '#type' => 'select',
-    '#title' => t('System messages color scheme'),
-    '#default_value' => theme_get_setting('bootstrap_barrio_system_messages'),
-    '#empty_option' => t('Default'),
-    '#options' => [
-      'messages_white' => t('White'),
-      'messages_gray' => t('Gray'),
-      'messages_light' => t('Light color'),
-      'messages_dark' => t('Dark color'),
-    ],
-    '#description' => t('Replace the standard color scheme for system messages with a Google Material Design color scheme.'),
-  ];
-  $form['colors']['tables'] = [
-    '#type' => 'details',
-    '#title' => t('Tables'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-  ];
-  $form['colors']['tables']['bootstrap_barrio_table_style'] = [
-    '#type' => 'select',
-    '#title' => t('Table cell style'),
-    '#default_value' => theme_get_setting('bootstrap_barrio_table_style'),
-    '#empty_option' => t('Default'),
-    '#options' => [
-      'table-striped' => t('Striped'),
-      'table-bordered' => t('Bordered'),
-    ],
-  ];
-  $form['colors']['tables']['bootstrap_barrio_table_hover'] = [
-    '#type' => 'checkbox',
-    '#title' => t('Hover effect over table cells'),
-    '#default_value' => theme_get_setting('bootstrap_barrio_table_hover'),
-  ];
-  $form['colors']['tables']['bootstrap_barrio_table_head'] = [
-    '#type' => 'select',
-    '#title' => t('Table header color scheme'),
-    '#default_value' => theme_get_setting('bootstrap_barrio_table_head'),
-    '#empty_option' => t('Default'),
-    '#options' => [
-      'thead-light' => t('Light'),
-      'thead-dark' => t('Dark'),
-    ],
-  ];
+/**
+ * @param $form
+ * @param FormStateInterface $form_state
+ * @return mixed
+ */
+function colorCallback($form, FormStateInterface $form_state)
+{
+  return $form['colors']['scheme']['color_container'];
 }

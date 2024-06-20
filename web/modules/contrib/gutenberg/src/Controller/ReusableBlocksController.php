@@ -95,7 +95,7 @@ class ReusableBlocksController extends ControllerBase {
       if (!is_null($title)) {
         $block->set('info', $title);
       }
-      if (!is_null($content)) {
+      if (!empty($content)) {
         $block->set('body', $content);
       }
     }

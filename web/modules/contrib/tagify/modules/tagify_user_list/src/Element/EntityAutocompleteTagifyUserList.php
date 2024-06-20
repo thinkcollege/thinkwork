@@ -2,8 +2,10 @@
 
 namespace Drupal\tagify_user_list\Element;
 
+use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element\Textfield;
+use Drupal\Core\Site\Settings;
 use Drupal\Core\Url;
 use Drupal\image\Entity\ImageStyle;
 
@@ -82,7 +84,6 @@ class EntityAutocompleteTagifyUserList extends Textfield {
     $info['#selection_settings_key'] = [];
     $info['#match_operator'] = 'CONTAINS';
     $info['#identifier'] = '';
-
     array_unshift(
       $info['#process'],
       [$class, 'processEntityAutocompleteTagifyUserList']
@@ -110,6 +111,15 @@ class EntityAutocompleteTagifyUserList extends Textfield {
    *   The form element.
    */
   public static function processEntityAutocompleteTagifyUserList(array &$element, FormStateInterface $form_state, array &$complete_form) {
+    // Nothing to do if there is no target entity type.
+    if (empty($element['#target_type'])) {
+      throw new \InvalidArgumentException('Missing required #target_type parameter.');
+    }
+
+    if ($element['#autocreate']) {
+      $element['#attributes']['class'][] = 'autocreate';
+    }
+
     $element['#attached'] = [
       'library' => [
         'tagify/tagify',
@@ -145,16 +155,28 @@ class EntityAutocompleteTagifyUserList extends Textfield {
     if ($element['#max_items']) {
       $element['#attributes']['data-max-items'] = $element['#max_items'];
     }
-    $element['#attributes']['data-suggestions-dropdown'] = $element['#suggestions_dropdown'];
+    $element['#attributes']['data-suggestions-dropdown'] = $element['#suggestions_dropdown'] ?? '';
     $element['#attributes']['data-match-operator'] = ($element['#match_operator'] === 'CONTAINS') ? 1 : 0;
-    $element['#attributes']['data-placeholder'] = $element['#placeholder'];
-    $element['#attributes']['data-identifier'] = $element['#field_name'];
+    $element['#attributes']['data-placeholder'] = $element['#placeholder'] ?? '';
+    $element['#attributes']['data-identifier'] = array_key_exists('#field_name', $element) ? $element['#field_name'] : $element['#name'];
+    $element['#attributes']['data-cardinality'] = $element['#cardinality'] ?? '';
+
+    // Store the selection settings in the key/value store and pass a hashed key
+    // in the route parameters.
+    $selection_settings = $element['#selection_settings'] ?? [];
+    $data = serialize($selection_settings) . $element['#target_type'] . $element['#selection_handler'];
+    $selection_settings_key = Crypt::hmacBase64($data, Settings::getHashSalt());
+
+    $key_value_storage = \Drupal::keyValue('entity_autocomplete');
+    if (!$key_value_storage->has($selection_settings_key)) {
+      $key_value_storage->set($selection_settings_key, $selection_settings);
+    }
+
     $element['#attributes']['data-autocomplete-url'] = Url::fromRoute('tagify_user_list.entity_autocomplete', [
       'target_type' => $element['#target_type'],
       'selection_handler' => $element['#selection_handler'],
-      'selection_settings_key' => $element['#selection_settings_key'],
+      'selection_settings_key' => $selection_settings_key,
     ])->toString();
-    $element['#attributes']['cardinality'] = $element['#cardinality'];
 
     return $element;
   }

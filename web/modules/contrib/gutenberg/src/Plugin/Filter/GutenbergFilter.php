@@ -203,7 +203,46 @@ class GutenbergFilter extends FilterBase implements ContainerFactoryPluginInterf
       }
     }
 
+    // Restore the inner container for the group block.
+    if ($block['blockName'] === 'core/group') {
+      $block_content = $this->restoreGroupInnerContainer($block, $block_content);
+    }
+
     return $block_content;
+  }
+
+  /**
+   * Restore the Inner Container for the Group block.
+   *
+   * @param string $block_content
+   *   The Gutenberg block content.
+   *
+   * @return string
+   *   The block content with the Inner Container.
+   */
+  protected function restoreGroupInnerContainer(array $block, string $block_content): string {
+    $tag_name = $block['attrs']['tagName'] ?? 'div';
+
+    $inner_container_format = '/(^\s*<%1$s\b[^>]*wp-block-group(\s|")[^>]*>)(\s*<div\b[^>]*wp-block-group__inner-container(\s|")[^>]*>)((.|\S|\s)*)/U';
+    $group_with_inner_container_regex = sprintf($inner_container_format,
+      preg_quote($tag_name, '/'));
+
+    $is_inner_container = preg_match($group_with_inner_container_regex, $block_content) === 1;
+    $is_not_default = isset($block['attrs']['layout']['type']) && $block['attrs']['layout']['type'] !== 'default';
+    if ($is_inner_container || $is_not_default) {
+      return $block_content;
+    }
+
+    $format = '/(^\s*<%1$s\b[^>]*wp-block-group[^>]*>)(.*)(<\/%1$s>\s*$)/ms';
+    $replace_regex = sprintf($format, preg_quote($tag_name, '/'));
+
+    return preg_replace_callback(
+      $replace_regex,
+      static function($matches) {
+        return $matches[1] . '<div class="wp-block-group__inner-container">' . $matches[2] . '</div>' . $matches[3];
+      },
+      $block_content
+    );
   }
 
   /**

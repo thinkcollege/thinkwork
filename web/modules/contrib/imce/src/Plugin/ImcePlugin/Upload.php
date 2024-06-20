@@ -3,8 +3,8 @@
 namespace Drupal\imce\Plugin\ImcePlugin;
 
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\imce\ImcePluginBase;
 use Drupal\imce\ImceFM;
+use Drupal\imce\ImcePluginBase;
 
 /**
  * Defines Imce Upload plugin.
@@ -50,51 +50,41 @@ class Upload extends ImcePluginBase {
     $destination = $folder->getUri();
     $replace = $fm->getConf('replace', FileSystemInterface::EXISTS_RENAME);
     $validators = [];
-    // Extension validator.
     $exts = $fm->getConf('extensions', '');
     if ($exts === '*') {
       $exts = NULL;
     }
-    $constraints = class_exists('\Drupal\file\Plugin\Validation\Constraint\FileExtensionConstraint');
-    if ($constraints) {
-      $validators['FileExtension'] = ['extensions' => $exts];
-    }
-    else {
-      $validators['file_validate_extensions'] = [$exts];
-    }
-    // File size and user quota validator.
-    if ($constraints) {
-      $validators['FileSizeLimit'] = [
-        'fileLimit' => $fm->getConf('maxsize'),
-        'userLimit' => $fm->getConf('quota'),
-      ];
-    }
-    else {
-      $validators['file_validate_size'] = [
-        $fm->getConf('maxsize'),
-        $fm->getConf('quota'),
-      ];
-    }
-    // Image resolution validator.
     $width = $fm->getConf('maxwidth');
     $height = $fm->getConf('maxheight');
-    if ($width || $height) {
-      // Fix exif orientation before resizing.
-      if (function_exists('exif_orientation_validate_image_rotation')) {
-        $validators['exif_orientation_validate_image_rotation'] = [];
-      }
-      $dims = ($width ?: 10000) . 'x' . ($height ?: 10000);
-      if ($constraints) {
+    $dims = $width || $height ? ($width ?: 10000) . 'x' . ($height ?: 10000) : '';
+    $maxsize = $fm->getConf('maxsize');
+    $quota = $fm->getConf('quota');
+    // Fix exif orientation before resizing.
+    if ($dims && function_exists('exif_orientation_validate_image_rotation')) {
+      $validators['exif_orientation_validate_image_rotation'] = [];
+    }
+    if (class_exists('Drupal\file\Plugin\Validation\Constraint\FileExtensionConstraint')) {
+      $validators['ImceFileName'] = ['filter' => $fm->getNameFilter()];
+      $validators['FileExtension'] = ['extensions' => $exts];
+      $validators['FileSizeLimit'] = [
+        'fileLimit' => $maxsize,
+        'userLimit' => $quota,
+      ];
+      if ($dims) {
         $validators['FileImageDimensions'] = ['maxDimensions' => $dims];
       }
-      else {
+    }
+    else {
+      $validators['imce_file_validate_name'] = [$fm->getNameFilter()];
+      $validators['file_validate_extensions'] = [$exts];
+      $validators['file_validate_size'] = [$maxsize, $quota];
+      if ($dims) {
         $validators['file_validate_image_resolution'] = [$dims];
       }
     }
-    // Name validator.
-    $validators['imce_file_validate_name'] = [$fm->getNameFilter()];
     // Save files.
-    if ($files = file_save_upload('imce', $validators, $destination, NULL, $replace)) {
+    $files = file_save_upload('imce', $validators, $destination, NULL, $replace);
+    if ($files) {
       $fs = \Drupal::service('file_system');
       foreach (array_filter($files) as $file) {
         // Set status and save.

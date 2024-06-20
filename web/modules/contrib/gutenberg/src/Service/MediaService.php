@@ -9,7 +9,9 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\editor\Entity\Editor;
+use Drupal\file\Entity\File as CoreFile;
 use Drupal\file\FileInterface;
+use Drupal\filefield_paths\Utility\FieldItem;
 use Drupal\gutenberg\DataProvider\EntityDataProviderManager;
 use Drupal\gutenberg\MediaEntityRendererInterface;
 use Drupal\gutenberg\MediaTypeGuesserInterface;
@@ -281,6 +283,20 @@ class MediaService {
     if ($media_installed) {
       if (!$media_entity = $this->mediaTypePersisterManager->save($media_type, $file_entity)) {
         throw new MediaEntityNotSavedException();
+      }
+
+      if ($this->moduleHandler->moduleExists('filefield_paths')) {
+        $field_definition = $media_entity->getSource()
+          ->getSourceFieldDefinition($media_entity->bundle->entity);
+        $field_name = $field_definition->getName();
+
+        if (FieldItem::hasConfigurationEnabled($media_entity->get($field_name))) {
+          // File location might have changed. Refresh file entity data.
+          $fid = $file_entity->id();
+          if (is_numeric($fid)) {
+            $file_entity = CoreFile::load($fid);
+          }
+        }
       }
 
       return $this->entityDataProviderManager->getData('media', $file_entity, [

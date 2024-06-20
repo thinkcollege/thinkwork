@@ -4,6 +4,7 @@ namespace Drupal\Tests\feeds\Unit\Result;
 
 use Drupal\feeds\Result\FetcherResult;
 use Drupal\Tests\feeds\Unit\FeedsUnitTestCase;
+use RuntimeException;
 
 /**
  * @coversDefaultClass \Drupal\feeds\Result\FetcherResult
@@ -43,7 +44,7 @@ class FetcherResultTest extends FeedsUnitTestCase {
    */
   public function testNonExistantFile() {
     $result = new FetcherResult('IDONOTEXIST');
-    $this->expectException(\RuntimeException::class);
+    $this->expectException(RuntimeException::class);
     $result->getRaw();
   }
 
@@ -54,7 +55,7 @@ class FetcherResultTest extends FeedsUnitTestCase {
     file_put_contents('vfs://feeds/test_file', 'I am test data.');
     chmod('vfs://feeds/test_file', 000);
     $result = new FetcherResult('vfs://feeds/test_file');
-    $this->expectException(\RuntimeException::class);
+    $this->expectException(RuntimeException::class);
     $result->getRaw();
   }
 
@@ -65,7 +66,7 @@ class FetcherResultTest extends FeedsUnitTestCase {
     file_put_contents('vfs://feeds/test_file', pack('CCC', 0xef, 0xbb, 0xbf) . 'I am test data.');
     chmod('vfs://feeds/test_file', 0444);
     $result = new FetcherResult('vfs://feeds/test_file');
-    $this->expectException(\RuntimeException::class);
+    $this->expectException(RuntimeException::class);
     $result->getFilePath();
   }
 

@@ -17,9 +17,26 @@
   var isMediaLibraryEnabled = gutenberg['media-library-enabled'] || false;
   var isMediaEnabled = gutenberg['media-enabled'] || false;
   var __ = Drupal.t;
+  var editorSettings = drupalSettings.editor;
+  var gutenbergSettings = null;
+  if (editorSettings && editorSettings.formats) {
+    Object.keys(editorSettings.formats).forEach(function (key) {
+      var editorSetting = editorSettings.formats[key];
+      if (editorSetting.editor !== 'gutenberg') {
+        return;
+      }
+      gutenbergSettings = editorSetting.editorSettings;
+    });
+  }
 
   var registerBlock = function registerBlock() {
     var blockId = 'drupalmedia/drupal-media-entity';
+    if (!gutenbergSettings || !gutenbergSettings.allowedDrupalBlocks) {
+      return;
+    }
+    if (!gutenbergSettings.allowedDrupalBlocks[blockId]) {
+      return;
+    }
 
     blocks.registerBlockType(blockId, {
       title: Drupal.t('Media'),

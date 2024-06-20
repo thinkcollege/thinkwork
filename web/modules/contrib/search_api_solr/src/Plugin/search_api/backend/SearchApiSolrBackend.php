@@ -5,12 +5,11 @@ namespace Drupal\search_api_solr\Plugin\search_api\backend;
 use Composer\InstalledVersions;
 use Composer\Semver\Comparator;
 use Drupal\Component\Datetime\TimeInterface;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Config\Config;
-use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\TypedData\EntityDataDefinitionInterface;
@@ -117,8 +116,6 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
 
   use PluginDependencyTrait;
 
-  use DependencySerializationTrait;
-
   use SolrCommitTrait;
 
   use SolrAutocompleteBackendTrait;
@@ -193,7 +190,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
   /**
    * The event dispatcher.
    *
-   * @var \Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
    */
   protected $eventDispatcher;
 
@@ -235,7 +232,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, array $plugin_definition, ModuleHandlerInterface $module_handler, Config $search_api_solr_settings, LanguageManagerInterface $language_manager, SolrConnectorPluginManager $solr_connector_plugin_manager, FieldsHelperInterface $fields_helper, DataTypeHelperInterface $dataTypeHelper, Helper $query_helper, EntityTypeManagerInterface $entityTypeManager, ContainerAwareEventDispatcher $eventDispatcher, TimeInterface $time, StateInterface $state, MessengerInterface $messenger, LockBackendInterface $lock, ModuleExtensionList $module_extension_list) {
+  public function __construct(array $configuration, $plugin_id, array $plugin_definition, ModuleHandlerInterface $module_handler, Config $search_api_solr_settings, LanguageManagerInterface $language_manager, SolrConnectorPluginManager $solr_connector_plugin_manager, FieldsHelperInterface $fields_helper, DataTypeHelperInterface $dataTypeHelper, Helper $query_helper, EntityTypeManagerInterface $entityTypeManager, EventDispatcherInterface $eventDispatcher, TimeInterface $time, StateInterface $state, MessengerInterface $messenger, LockBackendInterface $lock, ModuleExtensionList $module_extension_list) {
     $this->moduleHandler = $module_handler;
     $this->searchApiSolrSettings = $search_api_solr_settings;
     $this->languageManager = $language_manager;
@@ -395,7 +392,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       '#ajax' => [
         'callback' => [get_class($this), 'buildAjaxSolrConnectorConfigForm'],
         'wrapper' => 'search-api-solr-connector-config-form',
-        'method' => 'replace',
+        'method' => 'replaceWith',
         'effect' => 'fade',
       ],
     ];
@@ -771,6 +768,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       'location',
       'rpt',
       'solr_string_storage',
+      'solr_string_docvalues',
       'solr_text_omit_norms',
       'solr_text_suggester',
       'solr_text_spellcheck',
@@ -1185,7 +1183,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
                 $ret[] = $id;
               }
               catch (\Exception $e) {
-                watchdog_exception('search_api_solr', $e, '%type while indexing item %id: @message in %function (line %line of %file).', ['%id' => $id]);
+                \Drupal\Component\Utility\DeprecationHelper::backwardsCompatibleCall(\Drupal::VERSION, '10.1.0', fn() => \Drupal\Core\Utility\Error::logException(\Drupal::logger('search_api_solr'), $e, '%type while indexing item %id: @message in %function (line %line of %file).', ['%id' => $id]), fn() => watchdog_exception('search_api_solr', $e, '%type while indexing item %id: @message in %function (line %line of %file).', ['%id' => $id]));
                 // We must not throw an exception because we might have indexed
                 // some documents successfully now and need to return these ids.
               }
@@ -1196,12 +1194,12 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
           }
         }
         else {
-          watchdog_exception('search_api_solr', $e, "%type while indexing: @message in %function (line %line of %file).");
+          \Drupal\Component\Utility\DeprecationHelper::backwardsCompatibleCall(\Drupal::VERSION, '10.1.0', fn() => \Drupal\Core\Utility\Error::logException(\Drupal::logger('search_api_solr'), $e, "%type while indexing: @message in %function (line %line of %file)."), fn() => watchdog_exception('search_api_solr', $e, "%type while indexing: @message in %function (line %line of %file)."));
           throw $e;
         }
       }
       catch (\Exception $e) {
-        watchdog_exception('search_api_solr', $e, "%type while indexing: @message in %function (line %line of %file).");
+        \Drupal\Component\Utility\DeprecationHelper::backwardsCompatibleCall(\Drupal::VERSION, '10.1.0', fn() => \Drupal\Core\Utility\Error::logException(\Drupal::logger('search_api_solr'), $e, "%type while indexing: @message in %function (line %line of %file)."), fn() => watchdog_exception('search_api_solr', $e, "%type while indexing: @message in %function (line %line of %file)."));
         throw new SearchApiSolrException($e->getMessage(), $e->getCode(), $e);
       }
 
@@ -3895,7 +3893,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
         $this->filterDuplicateAutocompleteSuggestions($suggestions);
       }
       catch (SearchApiException $e) {
-        watchdog_exception('search_api_solr', $e);
+        \Drupal\Component\Utility\DeprecationHelper::backwardsCompatibleCall(\Drupal::VERSION, '10.1.0', fn() => \Drupal\Core\Utility\Error::logException(\Drupal::logger('search_api_solr'), $e), fn() => watchdog_exception('search_api_solr', $e));
       }
     }
 
@@ -4467,7 +4465,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
    *   The Search API query.
    * @param array $grouping_options
    *   Grouping options array.
-   * @param array $index_fields
+   * @param \Drupal\search_api\Item\FieldInterface[] $index_fields
    *   Index fields array.
    * @param array $field_names
    *   Field names array.
@@ -4485,9 +4483,18 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
         /** @var \Drupal\search_api\Item\Field $field */
         $field = $index_fields[$collapse_field];
         $type = $field->getType();
-        if ($this->dataTypeHelper->isTextType($type) || 's' !== Utility::getSolrFieldCardinality($first_name)) {
+        // For the Solr Document datasource, determining whether a field is
+        // single- or multivalued would be more complicated, so we just hope the
+        // user knows what they're doing in that case.
+        if (Utility::hasIndexJustSolrDocumentDatasource($query->getIndex())) {
+          $known_to_be_multi_valued = FALSE;
+        }
+        else {
+          $known_to_be_multi_valued = 's' !== Utility::getSolrFieldCardinality($first_name);
+        }
+        if ($this->dataTypeHelper->isTextType($type) || $known_to_be_multi_valued) {
           $this->getLogger()->error('Grouping is not supported for field @field. Only single-valued fields not indexed as "Fulltext" are supported.',
-            ['@field' => $index_fields[$collapse_field]['name']]);
+            ['@field' => $index_fields[$collapse_field]->getLabel()]);
         }
         else {
           $group_fields[] = $first_name;
@@ -5074,7 +5081,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
    *
    * @see getSolrConnector()
    */
-  public function __sleep() {
+  public function __sleep(): array {
     $properties = array_flip(parent::__sleep());
 
     unset($properties['solrConnector']);

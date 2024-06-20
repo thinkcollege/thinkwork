@@ -240,6 +240,13 @@ class GutenbergLibraryManager extends DefaultPluginManager implements GutenbergL
       $this->logger->error($e->getMessage());
     }
 
+    // Process style section on each theme definition.
+    foreach ($theme_definitions as $theme_name => &$theme_definition) {
+      if (!empty($theme_definition['theme-support']['styles'])) {
+        $this->processThemeSupportStyles($theme_definition, $active_theme);
+      }
+    }
+
     $this->cacheBackend->set(
       $cid,
       $theme_definitions,
@@ -325,4 +332,37 @@ class GutenbergLibraryManager extends DefaultPluginManager implements GutenbergL
     return $this->definitionsByExtension;
   }
 
+  /**
+   * Process theme support styles.
+   * It checks for files in styles sections and loads them.
+   * 
+   * @param array $theme_definition
+   *  The theme definition.
+   * @param \Drupal\Core\Theme\ActiveTheme $active_theme
+   * The active theme.
+   * 
+   */
+  protected function processThemeSupportStyles(&$theme_definition, $active_theme) {
+    $path = $active_theme->getPath();
+    foreach ($theme_definition['theme-support']['styles'] as $key => &$style) {
+      if ($style['css'] && is_array($style['css'])) {
+        $resultCss = '';
+        foreach ($style['css'] as $filename => $file_settings) {
+          $style_file_path = \Drupal::root() . '/' . $path . '/' . $filename;
+          if (file_exists($style_file_path)) {
+            $css = file_get_contents($style_file_path);
+
+            // Get folder path from file path.
+            $folder_path = dirname($path . '/' . $filename);
+
+            // Process urls.
+            $re = '/url\((?![\'"]?(?:data):)[\'"]?([^\'"\)]*)[\'"]?\)/m';
+            $subst = "url(\"/" . $folder_path . "/$1\")";            
+            $resultCss .= preg_replace($re, $subst, $css) . "\n";
+          }
+        }
+        $style['css'] = $resultCss;
+      }
+    }
+  }
 }

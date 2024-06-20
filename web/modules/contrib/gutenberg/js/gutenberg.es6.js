@@ -283,6 +283,15 @@
           $metabox.appendTo($metaBoxContainer);
           Drupal.behaviors.editor.attach(metabox, drupalSettings);
         });
+
+        if (
+          drupalSettings.gutenberg['theme-support'].extraRootContainerClassNames
+        ) {
+          $('.is-root-container').addClass(
+            drupalSettings.gutenberg['theme-support']
+              .extraRootContainerClassNames,
+          );
+        }
       }, 0);
 
       // Create fake form for metabox.

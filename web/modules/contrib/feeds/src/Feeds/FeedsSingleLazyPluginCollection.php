@@ -2,8 +2,8 @@
 
 namespace Drupal\feeds\Feeds;
 
-use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Core\Plugin\DefaultSingleLazyPluginCollection;
+use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\feeds\FeedTypeInterface;
 
 /**

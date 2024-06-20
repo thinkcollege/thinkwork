@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class UploadTest extends KernelTestBasePlugin {
 
   /**
-   * The Imce ckeditor plugin.
+   * The Imce Upload plugin.
    *
    * @var \Drupal\imce\Plugin\ImcePlugin\Upload
    */
@@ -43,7 +43,7 @@ class UploadTest extends KernelTestBasePlugin {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() : void {
+  protected function setUp(): void {
     parent::setUp();
     $this->imceFM = $this->getImceFM();
     $this->upload = new Upload([], "upload", $this->getPluginDefinations());

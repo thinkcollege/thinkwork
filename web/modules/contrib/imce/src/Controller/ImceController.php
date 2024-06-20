@@ -16,6 +16,7 @@ class ImceController extends ControllerBase {
    * Returns an administrative overview of Imce Profiles.
    */
   public function adminOverview(Request $request) {
+    $output = [];
     // Build the settings form first.(may redirect)
     $output['settings_form'] = $this->formBuilder()->getForm('Drupal\imce\Form\ImceSettingsForm') + ['#weight' => 10];
     // Buld profile list.

@@ -73,10 +73,20 @@ class MappingFieldsHelper implements ContainerInjectionInterface {
     }
 
     $field_content = $entity->get($text_fields[0])->getString();
+    $original_field_content = '';
+
+    if ($entity->original) {
+      $original_field_content = $entity->original->get($text_fields[0])->getString();
+    }
 
     // Fetch only blocks with mapping fields.
     $block_parser = new BlockParser();
     $blocks = $block_parser->parse($field_content, [$this, 'filterMappingFieldsBlock']);
+
+    // If content hasn't changed, no need to update fields.
+    if ($field_content === $original_field_content) {
+      return;
+    }
 
     // Let's build the field's array of values.
     $fields = [];

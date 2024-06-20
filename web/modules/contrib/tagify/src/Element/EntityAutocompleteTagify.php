@@ -2,8 +2,10 @@
 
 namespace Drupal\tagify\Element;
 
+use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element\Textfield;
+use Drupal\Core\Site\Settings;
 use Drupal\Core\Url;
 
 /**
@@ -27,6 +29,8 @@ use Drupal\Core\Url;
  *   - target_bundles: Array of bundles to allow (omit to allow all bundles).
  *   - sort: Array with 'field' and 'direction' keys, determining how results
  *     will be sorted. Defaults to unsorted.
+ *   - info_label: The extra information that will be shown next to
+ *     the entity label.
  * - #autocreate: (optional) Array of settings used to auto-create entities
  *   that do not exist (omit to not auto-create entities). Elements:
  *   - bundle: (required) Bundle to use for auto-created entities.
@@ -37,9 +41,8 @@ use Drupal\Core\Url;
  *     dropdown.
  *  - #match_operator: (required) The autocomplete matching option.
  *  - #show_entity_id: (optional) The method uses to show the entity id.
- *  - #info_label: (optional) The extra information that will be shown next to
- *     the entity label.
- *  - #identifier: The field name.
+ *  - #identifier: (optional) The field name to avoid conflicts when there are
+ *     more than one element using Tagify.
  *
  * Usage example:
  * @code
@@ -47,10 +50,11 @@ use Drupal\Core\Url;
  *  '#type' => 'entity_autocomplete_tagify',
  *  '#target_type' => 'node',
  *  '#tags' => TRUE,
- *  '#default_value' => [['value' => 1, 'entity_id' => 1, 'label' => 'entity label']],
+ *  '#default_value' => $entities,
  *  '#selection_handler' => 'default',
  *  '#selection_settings' => [
  *    'target_bundles' => ['article', 'page'],
+ *    'info_label' => '[node:type]',
  *   ],
  *  '#autocreate' => [
  *    'bundle' => 'article',
@@ -60,7 +64,6 @@ use Drupal\Core\Url;
  *  '#suggestions_dropdown' => 1,
  *  '#match_operator' => 'CONTAINS,
  *  '#show_entity_id' => 0,
- *  '#info_label' => '[node:type]',
  *  '#identifier' => 'field_name',
  * ];
  * @endcode
@@ -79,21 +82,17 @@ class EntityAutocompleteTagify extends Textfield {
     $class = static::class;
 
     $info['#maxlength'] = NULL;
-
     $info['#autocreate'] = NULL;
     $info['#cardinality'] = -1;
-
     $info['#target_type'] = NULL;
     $info['#selection_handler'] = 'default';
     $info['#selection_settings_key'] = [];
-
     $info['#max_items'] = 10;
     $info['#suggestions_dropdown'] = 1;
     $info['#match_operator'] = 'CONTAINS';
     $info['#show_entity_id'] = 0;
     $info['#info_label'] = '';
     $info['#identifier'] = '';
-
     array_unshift($info['#process'], [$class, 'processEntityAutocompleteTagify']);
 
     return $info;
@@ -118,6 +117,15 @@ class EntityAutocompleteTagify extends Textfield {
    *   The form element.
    */
   public static function processEntityAutocompleteTagify(array &$element, FormStateInterface $form_state, array &$complete_form) {
+    // Nothing to do if there is no target entity type.
+    if (empty($element['#target_type'])) {
+      throw new \InvalidArgumentException('Missing required #target_type parameter.');
+    }
+
+    if ($element['#autocreate']) {
+      $element['#attributes']['class'][] = 'autocreate';
+    }
+
     $element['#attached'] = [
       'library' => [
         'tagify/tagify',
@@ -139,25 +147,39 @@ class EntityAutocompleteTagify extends Textfield {
     }
     $element['#attributes']['class'][] = 'tagify-widget';
 
-    if ($element['#autocreate']) {
-      $element['#attributes']['class'][] = 'autocreate';
-    }
-
     if ($element['#max_items']) {
       $element['#attributes']['data-max-items'] = $element['#max_items'];
     }
 
-    $element['#attributes']['data-suggestions-dropdown'] = $element['#suggestions_dropdown'];
+    $element['#attributes']['data-suggestions-dropdown'] = $element['#suggestions_dropdown'] ?? '';
     $element['#attributes']['data-match-operator'] = ($element['#match_operator'] === 'CONTAINS') ? 1 : 0;
-    $element['#attributes']['data-placeholder'] = $element['#placeholder'];
-    $element['#attributes']['data-show-entity-id'] = $element['#show_entity_id'];
-    $element['#attributes']['data-identifier'] = $element['#field_name'];
+    $element['#attributes']['data-placeholder'] = $element['#placeholder'] ?? '';
+    $element['#attributes']['data-show-entity-id'] = $element['#show_entity_id'] ?? '';
+    $element['#attributes']['data-identifier'] = $element['#identifier'] ?? '';
+    $element['#attributes']['data-cardinality'] = $element['#cardinality'] ?? '';
+
+    // Store the selection settings in the key/value store and pass a hashed key
+    // in the route parameters.
+    $selection_settings = $element['#selection_settings'] ?? [];
+    $data = serialize($selection_settings) . $element['#target_type'] . $element['#selection_handler'];
+    $selection_settings_key = Crypt::hmacBase64($data, Settings::getHashSalt());
+
+    $key_value_storage = \Drupal::keyValue('entity_autocomplete');
+    if (!$key_value_storage->has($selection_settings_key)) {
+      $key_value_storage->set($selection_settings_key, $selection_settings);
+    }
+
     $element['#attributes']['data-autocomplete-url'] = Url::fromRoute('tagify.entity_autocomplete', [
       'target_type' => $element['#target_type'],
       'selection_handler' => $element['#selection_handler'],
-      'selection_settings_key' => $element['#selection_settings_key'],
+      'selection_settings_key' => $selection_settings_key,
     ])->toString();
-    $element['#attributes']['cardinality'] = $element['#cardinality'];
+
+    // Information text.
+    $element['#attached']['drupalSettings']['tagify']['information_message'] = [
+      'limit_tag' => t('Tags are limited to:'),
+      'no_matching_suggestions' => t('No matching suggestions found for:'),
+    ];
 
     return $element;
   }

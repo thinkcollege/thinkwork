@@ -1,5 +1,6 @@
-/* eslint-env node */
 /* eslint-disable camelcase */
+
+'use strict'
 
 const browsers = {
   safariMac: {
@@ -23,46 +24,39 @@ const browsers = {
     browser: 'Firefox',
     browser_version: 'latest'
   },
-  edgeWin10: {
-    base: 'BrowserStack',
-    os: 'Windows',
-    os_version: '10',
-    browser: 'Edge',
-    browser_version: '15'
-  },
-  ie11Win10: {
-    base: 'BrowserStack',
-    os: 'Windows',
-    os_version: '10',
-    browser: 'IE',
-    browser_version: '11.0'
-  },
   chromeWin10: {
     base: 'BrowserStack',
     os: 'Windows',
     os_version: '10',
     browser: 'Chrome',
-    browser_version: 'latest'
+    browser_version: '60'
   },
   firefoxWin10: {
     base: 'BrowserStack',
     os: 'Windows',
     os_version: '10',
     browser: 'Firefox',
-    browser_version: 'latest'
+    browser_version: '60'
   },
-  ie10Win8: {
+  chromeWin10Latest: {
     base: 'BrowserStack',
     os: 'Windows',
-    os_version: '8',
-    browser: 'IE',
-    browser_version: '10.0'
+    os_version: '10',
+    browser: 'Chrome',
+    browser_version: 'latest'
   },
-  iphoneX: {
+  firefoxWin10Latest: {
+    base: 'BrowserStack',
+    os: 'Windows',
+    os_version: '10',
+    browser: 'Firefox',
+    browser_version: 'latest'
+  },
+  iphone7: {
     base: 'BrowserStack',
     os: 'ios',
-    os_version: '11.0',
-    device: 'iPhone X',
+    os_version: '12.0',
+    device: 'iPhone 7',
     real_mobile: true
   },
   iphone12: {
@@ -81,9 +75,6 @@ const browsers = {
   }
 }
 
-const browsersKeys = Object.keys(browsers)
-
 module.exports = {
-  browsers,
-  browsersKeys
+  browsers
 }

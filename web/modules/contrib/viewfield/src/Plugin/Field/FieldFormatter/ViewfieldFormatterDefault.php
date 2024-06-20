@@ -135,7 +135,7 @@ class ViewfieldFormatterDefault extends FormatterBase {
       if (!empty($value['target_id']) && !empty($value['display_id'])) {
         $target_id = $value['target_id'];
         $display_id = $value['display_id'];
-        $items_to_display = $value['items_to_display'];
+        $items_to_display = $value['items_to_display'] ?? "";
 
         if (!empty($value['arguments'])) {
           $arguments = $this->processArguments($value['arguments'], $entity);

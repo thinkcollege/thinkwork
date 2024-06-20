@@ -13,7 +13,7 @@
 .comment {
   margin-bottom: 19px;
   vertical-align: top;
-  display: table;
+  display: flex;
 }
 [dir="rtl"] .comment {
   direction: rtl;
@@ -22,12 +22,17 @@
 .comment__meta {
   padding: 0 30px 0 0; /* LTR */
   font-size: 1.071em;
+  text-align: center;
 }
 [dir="rtl"] .comment__meta {
   padding: 0 0 0 30px;
 }
 .comment__attribution img {
   border: 1px solid #d3d7d9;
+}
+.field--name-user-picture {
+  margin: 0 auto;
+  float: none;
 }
 /* This is required to win over specificity of .field--type-image img */
 .comment .field--name-user-picture img {
@@ -39,6 +44,8 @@
 .comment__author {
   margin: 4px 0;
   line-height: 1.2;
+  font-weight: bold;
+  font-size: 1.25rem;
 }
 .comment__time,
 .comment__permalink {

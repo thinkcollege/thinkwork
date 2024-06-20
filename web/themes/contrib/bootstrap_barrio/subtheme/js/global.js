@@ -3,7 +3,7 @@
  * Global utilities.
  *
  */
-(function ($, Drupal) {
+(function (Drupal) {
 
   'use strict';
 
@@ -13,4 +13,4 @@
     }
   };
 
-})(jQuery, Drupal);
+})(Drupal);

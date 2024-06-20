@@ -71,6 +71,19 @@ barrio_card3stack:
       label: Image
     third:
       label: Second
+barrio_cardhorizontal:
+  label: Card horizontal
+  category: Barrio Cards
+  path: layouts
+  template: card-horizontal
+  default_region: second
+  icon_map:
+    - [first, second]
+  regions:
+    first:
+      label: Image
+    second:
+      label: Second
 barrio_media:
   label: Media
   category: Barrio Media

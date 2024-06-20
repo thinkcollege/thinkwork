@@ -173,6 +173,21 @@ ul.block-editor-block-navigation__list {
   width: 100%;
 }
 
+.reusable-block__message {
+  width: 320px;
+  padding: 10px;
+  font-size: 12px;
+  background-color: #f1f1f1;
+}
+
+.reusable-block__popover.components-popover:not(.is-without-arrow) {
+  z-index: 99999;
+}
+
+.reusable-block__popover.components-popover:not(.is-without-arrow):after {
+  border-bottom-color: #f1f1f1 !important;
+}
+
 .media-entity-search-input {
   margin: 0 !important;
 }

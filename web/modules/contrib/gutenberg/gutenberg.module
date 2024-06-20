@@ -300,7 +300,7 @@ function gutenberg_form_alter(&$form, FormStateInterface $form_state, $form_id) 
           ),
           array_map(
             function ($block) {
-              return $block['default'] ? $block['id'] : 0;
+              return isset($block['default']) && $block['default'] ? $block['id'] : 0;
             },
             $category['blocks']
           )
@@ -377,6 +377,28 @@ function gutenberg_form_alter(&$form, FormStateInterface $form_state, $form_id) 
           '#default_value' => array_merge($input_default_values, $config_values ? $config_values : []),
         ];
       }
+    }
+
+    // If the media module is enabled, let's make it possible to turn on or off
+    // that as well.
+    /** @var \Drupal\Core\Extension\ModuleHandlerInterface $module_handler */
+    $module_handler = \Drupal::service('module_handler');
+    if ($module_handler->moduleExists('media')) {
+      $form['gutenberg']['allowed_drupal_blocks_details']['media'] = [
+        '#type' => 'fieldset',
+        '#title' => t('Media'),
+      ];
+      $default_values = [
+        'drupalmedia/drupal-media-entity' => !empty($config_values["drupalmedia/drupal-media-entity"]) ? 'drupalmedia/drupal-media-entity' : FALSE,
+      ];
+      $form['gutenberg']['allowed_drupal_blocks_details']['media']['allowed_drupal_blocks_media'] = [
+        '#type' => 'checkboxes',
+        '#options' => [
+          'drupalmedia/drupal-media-entity' => t('Media'),
+        ],
+        '#default_value' => $default_values,
+      ];
+      $form['gutenberg']['categories_drupal']['#default_value'][] = 'media';
     }
 
     $form['#attached']['library'][] = 'gutenberg/admin';
@@ -654,9 +676,6 @@ function gutenberg_form_node_form_alter(&$form, FormStateInterface $form_state) 
   $default_theme = \Drupal::config('system.theme')->get('default');
   if ($default_theme === 'bartik') {
     $form['#attached']['library'][] = 'gutenberg/bartik';
-  }
-  if ($default_theme === 'olivero') {
-    $form['#attached']['library'][] = 'gutenberg/olivero';
   }
 
   $theme = \Drupal::theme()->getActiveTheme();

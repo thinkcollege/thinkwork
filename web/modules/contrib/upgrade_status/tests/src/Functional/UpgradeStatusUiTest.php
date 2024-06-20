@@ -51,7 +51,7 @@ class UpgradeStatusUiTest extends UpgradeStatusTestBase {
     $assert_session->buttonExists('Export selected as HTML');
 
     // Error and no-error test module results should show.
-    $this->assertSame('7 problems', strip_tags($page->find('css', 'tr.project-upgrade_status_test_error td.scan-result')->getHtml()));
+    $this->assertSame('8 problems', strip_tags($page->find('css', 'tr.project-upgrade_status_test_error td.scan-result')->getHtml()));
     $this->assertSame($this->getDrupalCoreMajorVersion() < 10 ? 'No problems found' : '1 problem', strip_tags($page->find('css', 'tr.project-upgrade_status_test_10_compatible td.scan-result')->getHtml()));
     $this->assertSame('No problems found', strip_tags($page->find('css', 'tr.project-upgrade_status_test_11_compatible td.scan-result')->getHtml()));
 
@@ -69,7 +69,7 @@ class UpgradeStatusUiTest extends UpgradeStatusTestBase {
     // Check UI of results for the custom project.
     $this->drupalGet('/admin/reports/upgrade-status/project/upgrade_status_test_error');
     $this->assertSession()->pageTextContains('Upgrade status test error');
-    $this->assertSession()->pageTextContains('2 errors found. 5 warnings found.');
+    $this->assertSession()->pageTextContains('2 errors found. ' . ($this->getDrupalCoreMajorVersion() < 10 ? '5' : '6') . ' warnings found.');
     $this->assertSession()->pageTextContains('Syntax error, unexpected T_STRING on line 5');
 
     // Go forward to the export page and assert that still contains the results
@@ -79,7 +79,7 @@ class UpgradeStatusUiTest extends UpgradeStatusTestBase {
     $this->assertSession()->pageTextContains('Upgrade status test error');
     $this->assertSession()->pageTextContains('Custom projects');
     $this->assertSession()->pageTextNotContains('Contributed projects');
-    $this->assertSession()->pageTextContains('2 errors found. 5 warnings found.');
+    $this->assertSession()->pageTextContains('2 errors found. ' . ($this->getDrupalCoreMajorVersion() < 10 ? '5' : '6') . ' warnings found.');
     $this->assertSession()->pageTextContains('Syntax error, unexpected T_STRING on line 5');
 
     // Go back to the results page and click over to exporting in single ASCII.
@@ -88,7 +88,7 @@ class UpgradeStatusUiTest extends UpgradeStatusTestBase {
     $this->assertSession()->pageTextContains('Upgrade status test error');
     $this->assertSession()->pageTextContains('CUSTOM PROJECTS');
     $this->assertSession()->pageTextNotContains('CONTRIBUTED PROJECTS');
-    $this->assertSession()->pageTextContains('2 errors found. 5 warnings found.');
+    $this->assertSession()->pageTextContains('2 errors found. ' . ($this->getDrupalCoreMajorVersion() < 10 ? '5' : '6') . ' warnings found.');
     $this->assertSession()->pageTextContains('Syntax error, unexpected T_STRING on line 5');
 
     // Run partial export of multiple projects.
@@ -111,7 +111,7 @@ class UpgradeStatusUiTest extends UpgradeStatusTestBase {
       $this->assertSession()->pageTextContains('Upgrade status test error');
       $this->assertSession()->pageTextNotContains('Upgrade status test root module');
       $this->assertSession()->pageTextNotContains('Upgrade status test contrib 9 compatbile');
-      $this->assertSession()->pageTextContains('2 errors found. 5 warnings found.');
+      $this->assertSession()->pageTextContains('2 errors found. ' . ($this->getDrupalCoreMajorVersion() < 10 ? '5' : '6') . ' warnings found.');
       $this->assertSession()->pageTextContains('Syntax error, unexpected T_STRING on line 5');
     }
   }

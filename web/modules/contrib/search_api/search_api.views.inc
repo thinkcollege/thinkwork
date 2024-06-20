@@ -415,7 +415,7 @@ function _search_api_views_handler_mapping() {
     ];
 
     $alter_id = 'search_api_views_handler_mapping';
-    $description = 'This hook is deprecated in search_api:8.x-1.14 and is removed from search_api:2.0.0. Please use the "search_api.mapping_views_handlers" event instead. See https://www.drupal.org/node/3059866';
+    $description = 'This hook is deprecated in search_api:8.x-1.14 and is removed from search_api:2.0.0. Use the "search_api.mapping_views_handlers" event instead. See https://www.drupal.org/node/3059866';
     \Drupal::moduleHandler()
       ->alterDeprecated($description, $alter_id, $mapping);
 
@@ -1014,7 +1014,7 @@ function _search_api_views_get_field_handler_mapping() {
 
     // Let other modules change or expand this mapping.
     $alter_id = 'search_api_views_field_handler_mapping';
-    $description = 'This hook is deprecated in search_api:8.x-1.14 and is removed from search_api:2.0.0. Please use the "search_api.mapping_views_field_handlers" event instead. See https://www.drupal.org/node/3059866';
+    $description = 'This hook is deprecated in search_api:8.x-1.14 and is removed from search_api:2.0.0. Use the "search_api.mapping_views_field_handlers" event instead. See https://www.drupal.org/node/3059866';
     \Drupal::moduleHandler()
       ->alterDeprecated($description, $alter_id, $plain_mapping);
 

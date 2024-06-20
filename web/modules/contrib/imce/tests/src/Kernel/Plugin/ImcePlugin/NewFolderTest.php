@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class NewFolderTest extends KernelTestBasePlugin {
 
   /**
-   * The Imce ckeditor plugin.
+   * The Imce Newfolder plugin.
    *
    * @var \Drupal\imce\Plugin\ImcePlugin\Newfolder
    */
@@ -46,7 +46,7 @@ class NewFolderTest extends KernelTestBasePlugin {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() : void {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->imceFM = $this->getImceFM();
@@ -114,7 +114,8 @@ class NewFolderTest extends KernelTestBasePlugin {
    */
   public function testFolderCreate() {
     $uriFolder = Imce::joinPaths(
-      $this->imceFM->activeFolder->getUri(), $this->imceFM->getPost('newfolder')
+      $this->imceFM->activeFolder->getUri(),
+      $this->imceFM->getPost('newfolder')
     );
 
     $this->assertIsString($uriFolder);

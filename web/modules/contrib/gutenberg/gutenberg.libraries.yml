@@ -62,13 +62,6 @@ claro:
   css:
     theme:
       css/claro.css: {  }
-olivero:
-  version: 1.0.0
-  css:
-    theme:
-      css/olivero.css: { attributes: { id: olivero-block-editor-styles-css } }
-  dependencies:
-    - gutenberg/edit-node
 filters:
   js:
     js/filters/mapping-fields.js: {  }
@@ -130,6 +123,7 @@ edit-node:
     js/hoc/gutenberg-dialog.js: {  }
     js/hoc/native-dialog.js: {  }
     js/filters/media-upload.js: {  }
+    js/filters/reusable-block.js: {  }
     js/drupal-store.js: {  }
     js/drupal-blocks.js: {  }
     js/drupal-media.js: {  }

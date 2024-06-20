@@ -3,8 +3,8 @@
 namespace Drupal\imce\Plugin\ImcePlugin;
 
 use Drupal\imce\Imce;
-use Drupal\imce\ImcePluginBase;
 use Drupal\imce\ImceFM;
+use Drupal\imce\ImcePluginBase;
 
 /**
  * Defines Imce New Folder plugin.

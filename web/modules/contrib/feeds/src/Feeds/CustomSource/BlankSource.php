@@ -65,6 +65,14 @@ class BlankSource extends CustomSourceBase {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function supportsParserType($parser_type) {
+    // All parsers are supported by this custom source type.
+    return TRUE;
+  }
+
+  /**
    * Returns the description for a single source.
    *
    * @return \Drupal\Core\StringTranslation\TranslatableMarkup|null

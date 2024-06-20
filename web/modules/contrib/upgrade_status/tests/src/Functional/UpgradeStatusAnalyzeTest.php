@@ -36,8 +36,8 @@ class UpgradeStatusAnalyzeTest extends UpgradeStatusTestBase {
 
     $report = $key_value->get('upgrade_status_test_error');
     $this->assertNotEmpty($report);
-    $this->assertEquals(7, $report['data']['totals']['file_errors']);
-    $this->assertCount(7, $report['data']['files']);
+    $this->assertEquals(8, $report['data']['totals']['file_errors']);
+    $this->assertCount(8, $report['data']['files']);
     $file = reset($report['data']['files']);
     $message = $file['messages'][0];
     $this->assertEquals('fatal.php', basename(key($report['data']['files'])));
@@ -68,6 +68,11 @@ class UpgradeStatusAnalyzeTest extends UpgradeStatusTestBase {
     $message = $file['messages'][0];
     $this->assertEquals("The #drupal-off-canvas selector is deprecated in drupal:9.5.0 and is removed from drupal:10.0.0. See https://www.drupal.org/node/3305664.", $message['message']);
     $this->assertEquals(0, $message['line']);
+    $file = next($report['data']['files']);
+    $this->assertEquals('views.view.remove_default_argument_skip_url.yml', basename(key($report['data']['files'])));
+    $message = $file['messages'][0];
+    $this->assertEquals("Support from all Views contextual filter settings for the default_argument_skip_url setting is removed from drupal:11.0.0. No replacement is provided. See https://www.drupal.org/node/3382316.", $message['message']);
+    $this->assertEquals(109, $message['line']);
     $file = next($report['data']['files']);
     $this->assertEquals('upgrade_status_test_error.info.yml', basename(key($report['data']['files'])));
     $message = $file['messages'][0];

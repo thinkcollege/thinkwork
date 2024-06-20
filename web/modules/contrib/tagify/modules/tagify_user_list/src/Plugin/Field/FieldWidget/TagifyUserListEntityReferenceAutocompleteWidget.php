@@ -2,11 +2,9 @@
 
 namespace Drupal\tagify_user_list\Plugin\Field\FieldWidget;
 
-use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Site\Settings;
 use Drupal\tagify\Plugin\Field\FieldWidget\TagifyEntityReferenceAutocompleteWidget;
 
 /**
@@ -107,6 +105,7 @@ class TagifyUserListEntityReferenceAutocompleteWidget extends TagifyEntityRefere
         ],
       ];
     }
+
     return $element;
   }
 
@@ -144,20 +143,15 @@ class TagifyUserListEntityReferenceAutocompleteWidget extends TagifyEntityRefere
       'match_operator' => $this->getSetting('match_operator'),
       'match_limit' => $this->getSetting('match_limit'),
       'suggestions_dropdown' => $this->getSetting('suggestions_dropdown'),
-      'placeholder' => $this->getSetting('placeholder'),
+      'cardinality' => $this->fieldDefinition
+        ->getFieldStorageDefinition()
+        ->getCardinality(),
     ];
     if ($this->getSetting('show_info_label')) {
       $selection_settings['info_label'] = $this->getSetting('info_label');
     }
     $target_type = $this->getFieldSetting('target_type');
     $selection_handler = $this->getFieldSetting('handler');
-    $data = serialize($selection_settings) . $target_type . $selection_handler;
-    $selection_settings_key = Crypt::hmacBase64($data, Settings::getHashSalt());
-
-    $key_value_storage = $this->keyValueFactory->get('entity_autocomplete');
-    if (!$key_value_storage->has($selection_settings_key)) {
-      $key_value_storage->set($selection_settings_key, $selection_settings);
-    }
 
     // User field definition doesn't have fieldStorage defined.
     $cardinality = $items->getFieldDefinition()->getFieldStorageDefinition()->isMultiple();
@@ -169,19 +163,18 @@ class TagifyUserListEntityReferenceAutocompleteWidget extends TagifyEntityRefere
 
     $element += [
       '#type' => 'entity_autocomplete_tagify_user_list',
+      '#target_type' => $target_type,
       '#default_value' => $items->referencedEntities() ?? NULL,
       '#autocreate' => $this->getSelectionHandlerSetting('auto_create'),
-      '#target_type' => $target_type,
       '#selection_handler' => $selection_handler,
-      '#selection_settings_key' => $selection_settings_key,
+      '#selection_settings' => $selection_settings,
       '#max_items' => $this->getSetting('match_limit'),
+      '#placeholder' => $this->getSetting('placeholder'),
       '#suggestions_dropdown' => $this->getSetting('suggestions_dropdown'),
       '#attributes' => [
         'class' => [$limited, $autocreate, $tags_identifier],
       ],
-      '#placeholder' => $this->getSetting('placeholder'),
-      '#match_operator' => $this->getSetting('match_operator'),
-      '#cardinality' => $this->fieldDefinition
+      '#cardinality' => $items->getFieldDefinition()
         ->getFieldStorageDefinition()
         ->getCardinality(),
     ];

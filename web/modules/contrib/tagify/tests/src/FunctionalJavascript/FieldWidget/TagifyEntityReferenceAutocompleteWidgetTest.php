@@ -221,7 +221,7 @@ class TagifyEntityReferenceAutocompleteWidgetTest extends TagifyJavascriptTestBa
     $assert_session->waitForElement('css', '.tagify__dropdown__item');
     $assert_session->waitForElementVisible('css', '.tagify__dropdown__footer');
     // Assert that the footer element contains the correct text.
-    $this->assertSession()->elementTextContains('css', '.tagify__dropdown__footer', 'You can only add 1 item(s)');
+    $this->assertSession()->elementTextContains('css', '.tagify__dropdown__footer', 'Tags are limited to: 1');
   }
 
   /**

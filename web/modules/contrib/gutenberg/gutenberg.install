@@ -200,6 +200,38 @@ function gutenberg_update_8205() {
 }
 
 /**
+ * Add media block to allowed list of blocks for all enabled content types.
+ */
+function gutenberg_update_8206() {
+  /** @var \Drupal\Core\Extension\ModuleHandlerInterface $module_handler */
+  $module_handler = \Drupal::service('module_handler');
+  if (!$module_handler->moduleExists('media')) {
+    // Not really relevant then.
+    return;
+  }
+  $types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
+  /** @var \Drupal\gutenberg\GutenbergContentTypeManager $mng */
+  $mng = \Drupal::service('gutenberg.content_type_manager');
+  $config_editable = \Drupal::configFactory()->getEditable('gutenberg.settings');
+  $types_where_it_has_been_added = [];
+  foreach ($types as $entity) {
+    if (!$mng->isContentTypeSupported($entity->id())) {
+      continue;
+    }
+    $key = $entity->id() . '_allowed_drupal_blocks';
+    $allowed_blocks = $config_editable->get($key);
+    $allowed_blocks['drupalmedia/drupal-media-entity'] = 'drupalmedia/drupal-media-entity';
+    $config_editable->set($key, $allowed_blocks)->save();
+    $types_where_it_has_been_added[] = $entity->label();
+  }
+  if (!empty($types_where_it_has_been_added)) {
+    \Drupal::messenger()->addStatus(t('Added media block to allowed list of blocks for the following content types: @types', [
+      '@types' => implode(', ', $types_where_it_has_been_added),
+    ]));
+  }
+}
+
+/**
  * Implements hook_uninstall().
  */
 function gutenberg_uninstall() {

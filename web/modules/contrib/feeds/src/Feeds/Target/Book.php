@@ -451,7 +451,7 @@ class Book extends TargetBase implements ConfigurableTargetInterface, ContainerF
     $delta = 0;
     foreach ($form_state->getValues() as $key => $value) {
       if (strpos($key, 'target-settings-') === 0) {
-        [, , $delta] = explode('-', $key);
+        list(, , $delta) = explode('-', $key);
         break;
       }
     }

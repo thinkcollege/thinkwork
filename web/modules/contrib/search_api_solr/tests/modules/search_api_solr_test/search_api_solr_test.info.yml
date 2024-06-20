@@ -8,7 +8,7 @@ dependencies:
   - search_api_solr:search_api_solr
 hidden: true
 
-# Information added by Drupal.org packaging script on 2024-04-10
-version: '4.3.3'
+# Information added by Drupal.org packaging script on 2024-06-18
+version: '4.3.4'
 project: 'search_api_solr'
-datestamp: 1712757705
+datestamp: 1718728098

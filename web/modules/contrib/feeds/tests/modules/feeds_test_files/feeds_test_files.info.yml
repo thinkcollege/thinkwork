@@ -3,4 +3,4 @@ type: module
 description: 'Generates source files.'
 package: Testing
 dependencies:
-  - feeds:feeds
+  - feeds

@@ -5,14 +5,14 @@
  * Defines Drupal hooks for imce module.
  */
 
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Field\WidgetInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\WidgetInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\imce\ImceFileField;
-use Drupal\imce\Imce;
-use Drupal\imce\Controller\ImceHelpController;
 use Drupal\file\FileInterface;
+use Drupal\imce\Controller\ImceHelpController;
+use Drupal\imce\Imce;
+use Drupal\imce\ImceFileField;
 
 /**
  * Implements hook_theme().
@@ -114,13 +114,6 @@ function imce_process_url_element(&$element, $type = 'link') {
  * Implements hook_form_FORM_ID_alter() for filter_format_form.
  */
 function imce_form_filter_format_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  // CKEditor 4.
-  if (isset($form['editor']['settings']['subform']['plugins']['drupalimage']['image_upload']['status'])) {
-    $desc = &$form['editor']['settings']['subform']['plugins']['drupalimage']['image_upload']['status']['#description'];
-    $str = t('Disable to use IMCE file browser.');
-    $desc = $desc ? $desc . ' ' . $str : $str;
-  }
-  // CKEditor 5.
   if (isset($form['editor']['settings']['subform']['plugins']['ckeditor5_image']['status'])) {
     $desc = &$form['editor']['settings']['subform']['plugins']['ckeditor5_image']['status']['#description'];
     $str = t('Disable to use IMCE file browser.');

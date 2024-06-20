@@ -404,7 +404,7 @@ class Application extends BaseApplication
             }
 
             if (isset($startTime)) {
-                $io->writeError('<info>Memory usage: '.round(memory_get_usage() / 1024 / 1024, 2).'MiB (peak: '.round(memory_get_peak_usage() / 1024 / 1024, 2).'MiB), time: '.round(microtime(true) - $startTime, 2).'s');
+                $io->writeError('<info>Memory usage: '.round(memory_get_usage() / 1024 / 1024, 2).'MiB (peak: '.round(memory_get_peak_usage() / 1024 / 1024, 2).'MiB), time: '.round(microtime(true) - $startTime, 2).'s</info>');
             }
 
             if ($proxyManager->needsTransitionWarning()) {
@@ -446,6 +446,7 @@ class Application extends BaseApplication
             // as http error codes are all beyond the 255 range of permitted exit codes
             if ($e instanceof TransportException) {
                 $reflProp = new \ReflectionProperty($e, 'code');
+                $reflProp->setAccessible(true);
                 $reflProp->setValue($e, Installer::ERROR_TRANSPORT_EXCEPTION);
             }
 

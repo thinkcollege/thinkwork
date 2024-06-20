@@ -2,11 +2,11 @@
 
 namespace Drupal\imce\Plugin\BUEditorPlugin;
 
+use Drupal\bueditor\BUEditorPluginBase;
+use Drupal\bueditor\Entity\BUEditorEditor;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\editor\Entity\Editor;
-use Drupal\bueditor\BUEditorPluginBase;
-use Drupal\bueditor\Entity\BUEditorEditor;
 use Drupal\imce\Imce as ImceMain;
 
 /**
@@ -53,7 +53,10 @@ class Imce extends BUEditorPluginBase {
         'class' => ['description'],
       ],
       'content' => [
-        '#markup' => $this->t('Configure <a href=":url">Imce File Manager</a>.', [':url' => Url::fromRoute('imce.admin')->toString()]),
+        '#markup' => $this->t(
+          'Configure <a href=":url">Imce File Manager</a>.',
+          [':url' => Url::fromRoute('imce.admin')->toString()]
+        ),
       ],
     ];
     // Set weight.

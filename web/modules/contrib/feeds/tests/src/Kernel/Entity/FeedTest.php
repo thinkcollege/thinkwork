@@ -3,6 +3,7 @@
 namespace Drupal\Tests\feeds\Kernel\Entity;
 
 use Drupal\Core\Logger\RfcLogLevel;
+use Drupal\feeds\StateInterface;
 use Drupal\feeds\Entity\Feed;
 use Drupal\feeds\Event\FeedsEvents;
 use Drupal\feeds\Event\ImportFinishedEvent;
@@ -13,7 +14,6 @@ use Drupal\feeds\Plugin\Type\FeedsPluginInterface;
 use Drupal\feeds\Plugin\Type\Fetcher\FetcherInterface;
 use Drupal\feeds\Plugin\Type\Parser\ParserInterface;
 use Drupal\feeds\Plugin\Type\Processor\ProcessorInterface;
-use Drupal\feeds\StateInterface;
 use Drupal\node\Entity\Node;
 use Drupal\Tests\feeds\Kernel\FeedsKernelTestBase;
 use Symfony\Component\EventDispatcher\EventDispatcher;

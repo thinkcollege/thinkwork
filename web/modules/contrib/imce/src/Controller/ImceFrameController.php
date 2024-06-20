@@ -19,6 +19,7 @@ class ImceFrameController extends ControllerBase {
    *   Return the IMCE file manager in a frame.
    */
   public function page() {
+    $render = [];
     $render['iframe'] = [
       '#type' => 'inline_template',
       '#template' => '<iframe class="imce-browser" src="{{ url }}"></iframe>',

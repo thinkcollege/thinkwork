@@ -116,8 +116,8 @@ class HttpFetcherTest extends FeedsBrowserTestBase {
     ]);
 
     $this->drupalGet('feed/' . $feed->id());
-    $this->clickLink('Import');
-    $this->submitForm([], 'Import');
+    $this->clickLink(t('Import'));
+    $this->submitForm([], t('Import'));
     $this->assertSession()->pageTextContains('Created 6');
     $this->assertNodeCount(6);
 
@@ -156,13 +156,13 @@ class HttpFetcherTest extends FeedsBrowserTestBase {
 
     // Test cache.
     $this->drupalGet('feed/' . $feed->id() . '/import');
-    $this->submitForm([], 'Import');
+    $this->submitForm([], t('Import'));
     $this->assertSession()->pageTextContains('The feed has not been updated.');
 
     // Import again.
     \Drupal::cache('feeds_download')->deleteAll();
     $this->drupalGet('feed/' . $feed->id() . '/import');
-    $this->submitForm([], 'Import');
+    $this->submitForm([], t('Import'));
     $this->assertSession()->pageTextContains('There are no new');
 
     // Test force-import.
@@ -173,13 +173,13 @@ class HttpFetcherTest extends FeedsBrowserTestBase {
     $this->feedType->getProcessor()->setConfiguration($configuration);
     $this->feedType->save();
     $this->drupalGet('feed/' . $feed->id() . '/import');
-    $this->submitForm([], 'Import');
+    $this->submitForm([], t('Import'));
     $this->assertNodeCount(6);
     $this->assertSession()->pageTextContains('Updated 6');
 
     // Delete items.
-    $this->clickLink('Delete items');
-    $this->submitForm([], 'Delete items');
+    $this->clickLink(t('Delete items'));
+    $this->submitForm([], t('Delete items'));
     $this->assertNodeCount(0);
     $this->assertSession()->pageTextContains('Deleted 6');
   }
@@ -238,7 +238,7 @@ class HttpFetcherTest extends FeedsBrowserTestBase {
 
     // Import feed.
     $feed = $this->createFeed($feed_type->id(), [
-      'source' => $this->getBaseUrl() . '/testing/feeds/nodes.csv',
+      'source' => \Drupal::request()->getSchemeAndHttpHost() . '/testing/feeds/nodes.csv',
     ]);
     $this->batchImport($feed);
     $this->assertSession()->pageTextContains('Created 8');
@@ -300,7 +300,7 @@ class HttpFetcherTest extends FeedsBrowserTestBase {
 
     // Create a feed that contains 9 items.
     $feed = $this->createFeed($feed_type->id(), [
-      'source' => $this->getBaseUrl() . '/testing/feeds/nodes.csv',
+      'source' => \Drupal::request()->getSchemeAndHttpHost() . '/testing/feeds/nodes.csv',
     ]);
 
     // Try to import the feed using the UI.

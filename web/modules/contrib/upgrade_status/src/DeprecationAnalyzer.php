@@ -113,6 +113,13 @@ final class DeprecationAnalyzer {
   protected $extensionMetadataDeprecationAnalyzer;
 
   /**
+   * The config schema deprecation analyzer.
+   *
+   * @var \Drupal\upgrade_status\ConfigSchemaDeprecationAnalyzer
+   */
+  protected $configSchemaDeprecationAnalyzer;
+
+  /**
    * The CSS deprecation analyzer.
    *
    * @var \Drupal\upgrade_status\CSSDeprecationAnalyzer
@@ -161,6 +168,8 @@ final class DeprecationAnalyzer {
    *   The route deprecation analyzer.
    * @param \Drupal\upgrade_status\ExtensionMetadataDeprecationAnalyzer $extension_metadata_analyzer
    *   The extension metadata analyzer.
+   * @param \Drupal\upgrade_status\ConfigSchemaDeprecationAnalyzer $config_schema_analyzer
+   *   The config schema analyzer.
    * @param \Drupal\upgrade_status\CSSDeprecationAnalyzer $css_deprecation_analyzer
    *   The CSS deprecation analyzer.
    * @param \Drupal\Component\Datetime\TimeInterface $time
@@ -176,6 +185,7 @@ final class DeprecationAnalyzer {
     ThemeFunctionDeprecationAnalyzer $theme_function_deprecation_analyzer,
     RouteDeprecationAnalyzer $route_deprecation_analyzer,
     ExtensionMetadataDeprecationAnalyzer $extension_metadata_analyzer,
+    ConfigSchemaDeprecationAnalyzer $config_schema_analyzer,
     CSSDeprecationAnalyzer $css_deprecation_analyzer,
     TimeInterface $time
   ) {
@@ -188,6 +198,7 @@ final class DeprecationAnalyzer {
     $this->themeFunctionDeprecationAnalyzer = $theme_function_deprecation_analyzer;
     $this->routeDeprecationAnalyzer = $route_deprecation_analyzer;
     $this->extensionMetadataDeprecationAnalyzer = $extension_metadata_analyzer;
+    $this->configSchemaDeprecationAnalyzer = $config_schema_analyzer;
     $this->CSSDeprecationAnalyzer = $css_deprecation_analyzer;
     $this->time = $time;
   }
@@ -423,6 +434,7 @@ final class DeprecationAnalyzer {
       $this->libraryDeprecationAnalyzer->analyze($extension),
       $this->routeDeprecationAnalyzer->analyze($extension),
       $this->CSSDeprecationAnalyzer->analyze($extension),
+      $this->configSchemaDeprecationAnalyzer->analyze($extension),
       $metadataDeprecations,
     );
     if (projectCollector::getDrupalCoreMajorVersion() < 10) {
@@ -544,8 +556,12 @@ final class DeprecationAnalyzer {
     $config = file_get_contents($module_path . '/deprecation_testing_template.neon');
     $config = str_replace(
       'parameters:',
-      "parameters:\n\ttmpDir: '" . $this->temporaryDirectory . '/phpstan' . "'\n" .
-        "\tdrupal:\n\t\tdrupal_root: '" . DRUPAL_ROOT . "'",
+      "parameters:\n\ttmpDir: '" . $this->temporaryDirectory . '/phpstan' . "'",
+      $config
+    );
+    $config = str_replace(
+      "\tdrupal:",
+      "\tdrupal:\n\t\tdrupal_root: '" . DRUPAL_ROOT . "'",
       $config
     );
 
@@ -567,6 +583,7 @@ final class DeprecationAnalyzer {
     }
 
     $success = file_put_contents($this->phpstanNeonPath, $config);
+
     if (!$success) {
       throw new \Exception('Unable to write configuration for PHPStan to ' . $this->phpstanNeonPath . '.');
     }

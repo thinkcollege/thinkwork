@@ -30,11 +30,12 @@
           const process = () => {
             const el = ui.formView?.urlInputView?.fieldView?.element;
             if (el) {
+              ui._balloon?.view?.off('change:isVisible', process);
               imceInput.processCKEditor5Input(el, 'link');
               return true;
             }
           };
-          process() || ui._balloon?.view?.once('change:isVisible', process);
+          process() || ui._balloon?.view?.on('change:isVisible', process);
         }
       });
     }

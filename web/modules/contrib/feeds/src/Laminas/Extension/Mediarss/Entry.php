@@ -89,7 +89,7 @@ class Entry extends AbstractEntry {
   /**
    * Registers MediaRSS namespaces.
    */
-  protected function registerNamespaces(): void {
+  protected function registerNamespaces() {
     $this->getXpath()
       ->registerNamespace('media', 'http://search.yahoo.com/mrss');
   }

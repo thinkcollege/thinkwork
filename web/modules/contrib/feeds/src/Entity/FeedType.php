@@ -358,7 +358,7 @@ class FeedType extends ConfigEntityBundleBase implements FeedTypeInterface, Enti
     $sources = [];
 
     foreach ($this->getMappings() as $mapping) {
-      foreach ($mapping['map'] as $source) {
+      foreach ($mapping['map'] as $column => $source) {
         if ($source === '') {
           // Skip empty sources.
           continue;
@@ -592,7 +592,7 @@ class FeedType extends ConfigEntityBundleBase implements FeedTypeInterface, Enti
    * {@inheritdoc}
    */
   public function preSave(EntityStorageInterface $storage_controller, $update = TRUE) {
-    foreach ($this->getPlugins() as $plugin) {
+    foreach ($this->getPlugins() as $type => $plugin) {
       $plugin->onFeedTypeSave($update);
     }
 

@@ -33,3 +33,23 @@ field.widget.settings.tagify_entity_reference_autocomplete_widget:
 better_exposed_filters.filter.bef_tagify:
   label: 'Tagify'
   type: better_exposed_filters_filter_widget
+
+field.widget.settings.tagify_select_widget:
+  type: field.widget.settings.tagify_select
+  label: 'Tagify select widget'
+  mapping:
+    match_operator:
+      type: string
+      label: 'Autocomplete matching'
+    match_limit:
+      type: integer
+      label: 'Maximum number of autocomplete suggestions'
+    placeholder:
+      type: string
+      label: 'Placeholder'
+    cardinality:
+      type: integer
+      label: 'Field cardinality'
+    identifier:
+      type: string
+      label: 'Field name'

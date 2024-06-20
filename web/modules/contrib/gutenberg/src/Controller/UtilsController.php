@@ -55,7 +55,7 @@ class UtilsController extends ControllerBase {
 
   /**
    * Gets allowed custom blocks.
-   * It fetched from *gutenberg.yml file within the theme
+   * It fetches from *gutenberg.yml file within themes and modules
    *
    */
   public static function getAllowedCustomBlocks() {
@@ -64,7 +64,9 @@ class UtilsController extends ControllerBase {
     if (!isset($settings)) {
       $gutenberg_library_manager = \Drupal::service('plugin.manager.gutenberg.library');
       $theme_definitions = $gutenberg_library_manager->getThemeDefinitions();
-      foreach ($theme_definitions as $theme_definition) {
+      $module_definitions = $gutenberg_library_manager->getModuleDefinitions();
+      $definitions = array_merge($theme_definitions, $module_definitions);
+      foreach ($definitions as $theme_definition) {
         if (!empty( $theme_definition['custom-blocks'])) {
           foreach ($theme_definition['custom-blocks']['categories'] as $category) {
             $settings['categories'][$category['reference']] = $category;

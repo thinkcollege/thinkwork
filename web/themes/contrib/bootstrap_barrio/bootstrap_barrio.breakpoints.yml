@@ -1,24 +1,42 @@
-bootstrap_barrio.small:
-  label: small
-  mediaQuery: 'all and (min-width: 34em) and (max-width: 47.99em)'
+bootstrap_barrio.xs:
+  label: extrasmall
+  mediaQuery: ''
   weight: 0
   multipliers:
     - 1x
+    - 2x
+bootstrap_barrio.small:
+  label: small
+  mediaQuery: 'all and (max-width: 576px)'
+  weight: 0
+  multipliers:
+    - 1x
+    - 2x
 bootstrap_barrio.medium:
   label: medium
-  mediaQuery: 'all and (min-width: 48em) and (max-width: 61.99em)'
+  mediaQuery: 'all and (min-width: 768px)'
   weight: 1
   multipliers:
     - 1x
+    - 2x
 bootstrap_barrio.large:
   label: large
-  mediaQuery: 'all and (min-width: 62em) and (max-width: 74.99em)'
+  mediaQuery: 'all and (min-width: 992px)'
   weight: 2
   multipliers:
     - 1x
+    - 2x
 bootstrap_barrio.extra:
   label: extra
-  mediaQuery: 'all and (min-width: 75em)'
+  mediaQuery: 'all and (min-width: 1200px)'
   weight: 3
   multipliers:
     - 1x
+    - 2x
+bootstrap_barrio.extraextra:
+  label: extra
+  mediaQuery: 'all and (min-width: 1400px)'
+  weight: 3
+  multipliers:
+    - 1x
+    - 2x

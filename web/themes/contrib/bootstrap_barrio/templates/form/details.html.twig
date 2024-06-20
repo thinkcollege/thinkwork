@@ -24,8 +24,8 @@
         <strong>{{ errors }}</strong>
       </div>
     {% endif %}
-    {%- if description.content -%}
-      <small {{ description.attributes.addClass('details-description text-muted') }}>{{ description.content }}</small>
+    {%- if description -%}
+      <small class='details-description text-muted'>{{ description }}</small>
     {%- endif -%}
     {%- if children -%}
       {{ children }}

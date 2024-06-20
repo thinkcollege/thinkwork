@@ -67,6 +67,10 @@
  * @see html.html.twig
  */
 #}
+{# see https://www.drupal.org/project/drupal/issues/953034#comment-14192130 #}
+{% set sidebar_first_exists = page.sidebar_first|render|striptags('<img><video><audio><drupal-render-placeholder>')|trim is not empty %}
+{% set sidebar_second_exists = page.sidebar_second|render|striptags('<img><video><audio><drupal-render-placeholder>')|trim is not empty %}
+
 <div id="page-wrapper">
   <div id="page">
     <header id="header" class="header" role="banner" aria-label="{{ 'Site header'|t}}">
@@ -79,7 +83,7 @@
               {{ page.secondary_menu }}
               {{ page.top_header }}
               {% if page.top_header_form %}
-                <div class="form-inline navbar-form ml-auto">
+                <div class="form-inline navbar-form ms-auto">
                   {{ page.top_header_form }}
                 </div>
               {% endif %}
@@ -88,29 +92,40 @@
           {% endif %}
           </nav>
         {% endif %}
-        <nav{{ navbar_attributes }}>
-          {% if container_navbar %}
-          <div class="container">
-          {% endif %}
-            {{ page.header }}
-            {% if page.primary_menu or page.header_form %}
-              <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#CollapsingNavbar" aria-controls="CollapsingNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-              <div class="collapse navbar-collapse justify-content-end" id="CollapsingNavbar">
-                {{ page.primary_menu }}
-                {% if page.header_form %}
-                  <div class="form-inline navbar-form justify-content-end">
-                    {{ page.header_form }}
-                  </div>
-                {% endif %}
-	          </div>
+        {% if page.header or page.primary_menu or page.header_form %}
+          <nav{{ navbar_attributes }}>
+            {% if container_navbar %}
+            <div class="container">
             {% endif %}
-            {% if sidebar_collapse %}
-              <button class="navbar-toggler navbar-toggler-left collapsed" type="button" data-toggle="collapse" data-target="#CollapsingLeft" aria-controls="CollapsingLeft" aria-expanded="false" aria-label="Toggle navigation"></button>
+              {{ page.header }}
+              {% if page.primary_menu or page.header_form %}
+                <button class="navbar-toggler collapsed" type="button" data-bs-toggle="{{ navbar_collapse_btn_data }}" data-bs-target="#CollapsingNavbar" aria-controls="CollapsingNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="{{ navbar_collapse_class }}" id="CollapsingNavbar">
+                  {% if navbar_offcanvas %}
+                    <div class="offcanvas-header">
+                      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                  {% endif %}
+                  {{ page.primary_menu }}
+                  {% if page.header_form %}
+                    <div class="form-inline navbar-form justify-content-end">
+                      {{ page.header_form }}
+                    </div>
+                  {% endif %}
+                  {% if navbar_offcanvas %}
+                    </div>
+                  {% endif %}
+                </div>
+              {% endif %}
+              {% if sidebar_collapse %}
+                <button class="navbar-toggler navbar-toggler-left collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#CollapsingLeft" aria-controls="CollapsingLeft" aria-expanded="false" aria-label="Toggle navigation"></button>
+              {% endif %}
+            {% if container_navbar %}
+            </div>
             {% endif %}
-          {% if container_navbar %}
-          </div>
-          {% endif %}
-        </nav>
+          </nav>
+        {% endif %}
       {% endblock %}
     </header>
     {% if page.highlighted %}
@@ -136,18 +151,18 @@
           <div class="row row-offcanvas row-offcanvas-left clearfix">
               <main{{ content_attributes }}>
                 <section class="section">
-                  <a id="main-content" tabindex="-1"></a>
+                  <a href="#main-content" id="main-content" tabindex="-1"></a>
                   {{ page.content }}
                 </section>
               </main>
-            {% if page.sidebar_first %}
+            {% if sidebar_first_exists %}
               <div{{ sidebar_first_attributes }}>
                 <aside class="section" role="complementary">
                   {{ page.sidebar_first }}
                 </aside>
               </div>
             {% endif %}
-            {% if page.sidebar_second %}
+            {% if sidebar_second_exists %}
               <div{{ sidebar_second_attributes }}>
                 <aside class="section" role="complementary">
                   {{ page.sidebar_second }}

@@ -43,7 +43,7 @@ class ViewfieldFormatterTest extends ViewfieldFunctionalTestBase {
     $viewfield_display->setValue('block_1');
 
     // Submit node form.
-    $this->submitForm($edit, t('Save'));
+    $this->submitForm($edit, 'Save');
     $this->assertSession()->responseContains('Article 1');
     $this->assertSession()->responseContains('Page 1');
   }
@@ -82,7 +82,7 @@ class ViewfieldFormatterTest extends ViewfieldFunctionalTestBase {
     $viewfield_display->setValue('block_1');
 
     // Submit node form.
-    $this->submitForm($edit, t('Save'));
+    $this->submitForm($edit, 'Save');
     $this->assertSession()->pageTextContains('View: (content_test)');
     $this->assertSession()->pageTextContains('Display: Block (block_1)');
   }
@@ -126,7 +126,7 @@ class ViewfieldFormatterTest extends ViewfieldFunctionalTestBase {
     ];
 
     // Submit node form.
-    $this->submitForm($edit, t('Save'));
+    $this->submitForm($edit, 'Save');
 
     // Test results to verify that only page nodes are shown.
     $this->assertSession()->responseContains('Page 1');
@@ -173,7 +173,7 @@ class ViewfieldFormatterTest extends ViewfieldFunctionalTestBase {
     ];
 
     // Submit node form.
-    $this->submitForm($edit, t('Save'));
+    $this->submitForm($edit, 'Save');
 
     // Test results to verify that only page nodes are shown.
     $rows = $page->findAll('css', '.views-element-container div .views-row');
@@ -219,7 +219,7 @@ class ViewfieldFormatterTest extends ViewfieldFunctionalTestBase {
     ];
 
     // Submit node form.
-    $this->submitForm($edit, t('Save'));
+    $this->submitForm($edit, 'Save');
 
     // Test results to verify that only page nodes are shown.
     $this->assertSession()->elementNotExists('css', 'div.field--name-field-view-test');

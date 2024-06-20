@@ -2,10 +2,10 @@
 
 namespace Drupal\imce;
 
-use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\imce\Entity\ImceProfile;
 
@@ -45,7 +45,13 @@ class ImcePluginManager extends DefaultPluginManager {
    *   The module handler to invoke the alter hook with.
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
-    parent::__construct('Plugin/ImcePlugin', $namespaces, $module_handler, 'Drupal\imce\ImcePluginInterface', 'Drupal\imce\Annotation\ImcePlugin');
+    parent::__construct(
+      'Plugin/ImcePlugin',
+      $namespaces,
+      $module_handler,
+      'Drupal\imce\ImcePluginInterface',
+      'Drupal\imce\Annotation\ImcePlugin'
+    );
     $this->alterInfo('imce_plugin_info');
     $this->setCacheBackend($cache_backend, 'imce_plugins');
   }
@@ -67,8 +73,9 @@ class ImcePluginManager extends DefaultPluginManager {
    * {@inheritdoc}
    */
   public function getInstance(array $options) {
-    if (isset($options['id']) && $id = $options['id']) {
-      return isset($this->instances[$id]) ? $this->instances[$id] : $this->createInstance($id);
+    $id = $options['id'] ?? NULL;
+    if ($id) {
+      return $this->instances[$id] ?? $this->createInstance($id);
     }
   }
 
@@ -176,8 +183,11 @@ class ImcePluginManager extends DefaultPluginManager {
         $method = $def['operations'][$op];
       }
     }
-    if ($method && $instance = $this->getInstance(['id' => $plugin])) {
-      return $instance->$method($fm);
+    if ($method) {
+      $instance = $this->getInstance(['id' => $plugin]);
+      if ($instance) {
+        return $instance->$method($fm);
+      }
     }
     // Indicate that the operation handler is not found.
     return FALSE;

@@ -2,7 +2,6 @@
 
 namespace Drupal\gutenberg\BlockProcessor;
 
-use Drupal\Component\Utility\Html;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Render\Markup;
@@ -88,9 +87,14 @@ class DrupalBlockProcessor implements GutenbergBlockProcessorInterface {
         'content' => $render_content,
       ];
 
-      // Add the CSS class if available.
-      if (!empty($block_attributes['className'])) {
-        $render['content']['#attributes']['class'][] = Html::escape($block_attributes['className']);
+      // Add extra CSS classes if available.
+      if ($block_attributes['className']) {
+        $extra_classes = preg_split('/\s+/', $block_attributes['className']);
+        foreach ($extra_classes as $class) {
+          if (!empty($class)) {
+            $render['content']['#attributes']['class'][] = $class;
+          }
+        }
       }
 
       // Add the align CSS class if available.

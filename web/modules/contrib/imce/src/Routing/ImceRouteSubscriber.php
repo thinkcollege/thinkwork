@@ -2,9 +2,9 @@
 
 namespace Drupal\imce\Routing;
 
-use Symfony\Component\Routing\RouteCollection;
-use Drupal\Core\Routing\RouteSubscriberBase;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Routing\RouteSubscriberBase;
+use Symfony\Component\Routing\RouteCollection;
 
 /**
  * Listens to the dynamic route events.
@@ -33,7 +33,8 @@ class ImceRouteSubscriber extends RouteSubscriberBase {
    */
   protected function alterRoutes(RouteCollection $collection) {
     // Conditionally declare imce.page an admin route.
-    if ($route = $collection->get('imce.page')) {
+    $route = $collection->get('imce.page');
+    if ($route) {
       $config = $this->configFactory->get('imce.settings');
       if ($config->get('admin_theme')) {
         $route->setOption('_admin_route', TRUE);

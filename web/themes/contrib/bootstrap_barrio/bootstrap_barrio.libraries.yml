@@ -2,9 +2,9 @@ global-styling:
   version: VERSION
   js:
     js/barrio.js: {}
-    js/affix.js: {}
   css:
     component:
+      css/components/variables.css: { weight: -20 }
       css/components/affix.css: {}
       css/components/book.css: {}
       css/components/contextual.css: {}
@@ -35,13 +35,12 @@ global-styling:
       # @see https://www.drupal.org/node/2389735
       css/components/vertical-tabs.css: {}
       css/components/views.css: {}
+      css/components/webform.css: {}
       css/components/ui-dialog.css: {}
       css/components/progress.css: { weight: -10 }
     theme:
       css/print.css: { media: print }
   dependencies:
-    - core/jquery
-    - core/once
     - core/drupal
 
 affix:
@@ -76,6 +75,24 @@ breadcrumb:
   css:
     component:
       css/components/breadcrumb.css: {}
+
+color-picker:
+  version: VERSION
+  css:
+    component:
+      css/components/color-picker.css: {}
+  js:
+    js/color-picker.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - core/drupal.announce
+
+colors:
+  version: VERSION
+  css:
+    component:
+      css/colors/colors.css: { weight: 10 }
 
 comments:
   css:
@@ -176,6 +193,8 @@ toast:
   version: VERSION
   js:
     js/toast.js: {}
+  dependencies:
+    - bootstrap_barrio/bootstrap_js
 
 verticaltabs:
   version: VERSION
@@ -203,99 +222,99 @@ roboto:
   css:
     component:
       fonts/roboto.css: {}
-      //fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:700: {}
+      //fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:700: { type: external }
 
 alegreya_roboto:
   version: VERSION
   css:
     component:
       fonts/alegreya_roboto.css: {}
-      //fonts.googleapis.com/css?family=Roboto|Roboto+Condensed|Alegreya:700: {}
+      //fonts.googleapis.com/css?family=Roboto|Roboto+Condensed|Alegreya:700: { type: external }
 
 dancing_garamond:
   version: VERSION
   css:
     component:
       fonts/dancing_garamond.css: {}
-      //fonts.googleapis.com/css?family=Dancing+Script:700|EB+Garamond: {}
+      //fonts.googleapis.com/css?family=Dancing+Script:700|EB+Garamond: { type: external }
 
 amatic_josefin:
   version: VERSION
   css:
     component:
       fonts/amatic_josefin.css: {}
-      //fonts.googleapis.com/css?family=Josefin+Sans:700|Amatic+SC:700: {}
+      //fonts.googleapis.com/css?family=Josefin+Sans:700|Amatic+SC:700: { type: external }
 
 oswald_droid:
   version: VERSION
   css:
     component:
       fonts/oswald_droid.css: {}
-      //fonts.googleapis.com/css?family=Oswald:700|Droid+Serif:400,700italic: {}
+      //fonts.googleapis.com/css?family=Oswald:700|Droid+Serif:400,700italic: { type: external }
 
 playfair_alice:
   version: VERSION
   css:
     component:
       fonts/playfair_alice.css: {}
-      //fonts.googleapis.com/css?family=Alice|Playfair+Display:900: {}
+      //fonts.googleapis.com/css?family=Alice|Playfair+Display:900: { type: external }
 
 dosis_opensans:
   version: VERSION
   css:
     component:
       fonts/dosis_opensans.css: {}
-      //fonts.googleapis.com/css?family=Open+Sans|Dosis:400,800: {}
+      //fonts.googleapis.com/css?family=Open+Sans|Dosis:400,800: { type: external }
 
 lato_hotel:
   version: VERSION
   css:
     component:
       fonts/lato_hotel.css: {}
-      //fonts.googleapis.com/css?family=Lato:300|Grand+Hotel: {}
+      //fonts.googleapis.com/css?family=Lato:300|Grand+Hotel: { type: external }
 
 medula_abel:
   version: VERSION
   css:
     component:
       fonts/medula_abel.css: {}
-      //fonts.googleapis.com/css?family=Abel|Medula+One: {}
+      //fonts.googleapis.com/css?family=Abel|Medula+One: { type: external }
 
 fjalla_cantarell:
   version: VERSION
   css:
     component:
       fonts/fjalla_cantarell.css: {}
-      //fonts.googleapis.com/css?family=Fjalla+One|Cantarell:400,400italic,700italic,700: {}
+      //fonts.googleapis.com/css?family=Fjalla+One|Cantarell:400,400italic,700italic,700: { type: external }
 
 coustard_leckerli:
   version: VERSION
   css:
     component:
       fonts/coustard_leckerli.css: {}
-      //fonts.googleapis.com/css?family=Leckerli+One|Coustard:900: {}
+      //fonts.googleapis.com/css?family=Leckerli+One|Coustard:900: { type: external }
 
 philosopher_muli:
   version: VERSION
   css:
     component:
       fonts/philosopher_muli.css: {}
-      //fonts.googleapis.com/css?family=Philosopher|Muli:300: {}
+      //fonts.googleapis.com/css?family=Philosopher|Muli:300: { type: external }
 
 vollkorn_exo:
   version: VERSION
   css:
     component:
       fonts/vollkorn_exo.css: {}
-      //fonts.googleapis.com/css?family=Vollkorn:700italic,700|Exo:400,400italic: {}
+      //fonts.googleapis.com/css?family=Vollkorn:700italic,700|Exo:400,400italic: { type: external }
 
 monserrat_lato:
   version: VERSION
   css:
     component:
       fonts/monserrat_lato.css: {}
-      //fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic: {}
-      //fonts.googleapis.com/css?family=Montserrat:400,700: {}
+      //fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic: { type: external }
+      //fonts.googleapis.com/css?family=Montserrat:400,700: { type: external }
 
 # Colors
 
@@ -329,13 +348,13 @@ material_design_icons:
   version: VERSION
   css:
     component:
-      //fonts.googleapis.com/icon?family=Material+Icons: {}
+      //fonts.googleapis.com/icon?family=Material+Icons: { type: external }
 
 fontawesome:
   version: VERSION
   css:
     component:
-      //use.fontawesome.com/releases/v5.13.0/css/all.css: {}
+      //use.fontawesome.com/releases/v5.13.0/css/all.css: { type: external }
 
 # Material Design for Bootstrap
 
@@ -345,12 +364,11 @@ mdb:
     name: MIT
     gpl-compatible: false
   js:
-    //mdbootstrap.com/mdbcdn/mdbcdn/mdb.min.js: { external: true }
+    //mdbootstrap.com/mdbcdn/mdbcdn/mdb.min.js: { type: external, minified: true }
   css:
     theme:
-      //mdbootstrap.com/mdbcdn/mdb.min.css: {}
+      //mdbootstrap.com/mdbcdn/mdb.min.css: { type: external, minified: true }
   dependencies:
-    - core/jquery
     - bootstrap_barrio/material_design_icons
 
 views.ajax:
@@ -361,141 +379,142 @@ views.ajax:
 
 bootstrap:
   js:
-    /libraries/bootstrap/dist/js/bootstrap.min.js: {}
+    /libraries/bootstrap/dist/js/bootstrap.bundle.min.js: { minified: true }
   css:
     component:
       /libraries/bootstrap/dist/css/bootstrap.min.css: {}
-  dependencies:
-    - core/popperjs
 bootstrap_cdn:
   js:
-    //cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js: {}
-    //stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js: {}
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css: {}
-boostrap_js:
-  js:
-    //cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js: {}
-    //stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js: {}
+      //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css: { type: external, minified: true }
 
 # Bootswatch
 
+bootswatch_cerulean:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
+  css:
+    component:
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/cerulean/bootstrap.min.css: { type: external, minified: true }
 bootswatch_cosmo:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/cosmo/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/cosmo/bootstrap.min.css: { type: external, minified: true }
 bootswatch_cyborg:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/cyborg/bootstrap.min.css: {}
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/cyborg/bootstrap.min.css: { type: external, minified: true }
 bootswatch_darkly:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/darkly/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/darkly/bootstrap.min.css: { type: external, minified: true }
 bootswatch_flatly:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/flatly/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/flatly/bootstrap.min.css: { type: external, minified: true }
 bootswatch_journal:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/journal/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/journal/bootstrap.min.css: { type: external, minified: true }
 bootswatch_litera:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/litera/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/litera/bootstrap.min.css: { type: external, minified: true }
 bootswatch_lumen:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/lumen/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/lumen/bootstrap.min.css: { type: external, minified: true }
 bootswatch_lux:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/lux/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/lux/bootstrap.min.css: { type: external, minified: true }
 bootswatch_materia:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/materia/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/materia/bootstrap.min.css: { type: external, minified: true }
 bootswatch_minty:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/minty/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/minty/bootstrap.min.css: { type: external, minified: true }
 bootswatch_pulse:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/pulse/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/pulse/bootstrap.min.css: { type: external, minified: true }
 bootswatch_sandstone:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/sandstone/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/sandstone/bootstrap.min.css: { type: external, minified: true }
 bootswatch_simplex:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/simplex/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/simplex/bootstrap.min.css: { type: external, minified: true }
 bootswatch_sketchy:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/sketchy/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/sketchy/bootstrap.min.css: { type: external, minified: true }
 bootswatch_slate:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/slate/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/slate/bootstrap.min.css: { type: external, minified: true }
 bootswatch_solar:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/solar/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/solar/bootstrap.min.css: { type: external, minified: true }
 bootswatch_spacelab:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/spacelab/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/spacelab/bootstrap.min.css: { type: external, minified: true }
 bootswatch_superhero:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/superhero/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/superhero/bootstrap.min.css: { type: external, minified: true }
 bootswatch_united:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/united/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/united/bootstrap.min.css: { type: external, minified: true }
 bootswatch_yeti:
+  js:
+    //cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js: { type: external, minified: true }
   css:
     component:
-      //stackpath.bootstrapcdn.com/bootswatch/4.5.2/yeti/bootstrap.min.css: {}
-  dependencies:
-    - bootstrap_barrio/bootstrap_js
+      //cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.0/yeti/bootstrap.min.css: { type: external, minified: true }

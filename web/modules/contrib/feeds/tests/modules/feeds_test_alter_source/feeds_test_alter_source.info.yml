@@ -3,4 +3,4 @@ type: module
 description: 'Adds an event subscriber to alter the parsed result.'
 package: Testing
 dependencies:
-  - feeds:feeds
+  - feeds

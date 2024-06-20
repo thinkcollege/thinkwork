@@ -68,12 +68,10 @@ class ImceFolder extends ImceItem {
       return $this->conf;
     }
     // Inherit parent conf.
-    if ($parent = $this->parent) {
-      if ($conf = $parent->getConf()) {
-        if (Imce::permissionInFolderConf('browse_subfolders', $conf)) {
-          return $conf + ['inherited' => TRUE];
-        }
-      }
+    $parent = $this->parent;
+    $conf = $parent ? $parent->getConf() : NULL;
+    if ($conf && Imce::permissionInFolderConf('browse_subfolders', $conf)) {
+      return $conf + ['inherited' => TRUE];
     }
   }
 
@@ -134,7 +132,8 @@ class ImceFolder extends ImceItem {
    * Scans the folder if needed.
    */
   public function checkItem($name) {
-    if (!$item = $this->getItem($name)) {
+    $item = $this->getItem($name);
+    if (!$item) {
       if (!$this->scanned) {
         $this->scan();
         $item = $this->getItem($name);
@@ -225,7 +224,8 @@ class ImceFolder extends ImceItem {
       return $this;
     }
     foreach ($this->subfolders as $folder) {
-      if ($folder = $folder->hasPredefinedPath()) {
+      $folder = $folder->hasPredefinedPath();
+      if ($folder) {
         return $folder;
       }
     }
@@ -236,26 +236,27 @@ class ImceFolder extends ImceItem {
    * Scans folder content.
    */
   public function scan() {
-    if (!$this->scanned) {
-      $this->scanned = TRUE;
-      $options = [
-        'browse_files' => $this->getPermission('browse_files'),
-        'browse_subfolders' => $this->getPermission('browse_subfolders'),
-      ];
-      $content = $this->fm()->scanDir($this->getUri(), $options);
-      // Add files as raw data. We create the objects when needed.
-      $this->files = $this->items = $content['files'];
-      // Create the subfolder objects.
-      $subfolders = $this->subfolders;
-      $this->subfolders = [];
-      foreach ($content['subfolders'] as $name => $uri) {
-        // Check if previously created.
-        if (isset($subfolders[$name]) && is_object($subfolders[$name])) {
-          $this->subfolders[$name] = $this->items[$name] = $subfolders[$name];
-        }
-        else {
-          $this->addSubfolder($name);
-        }
+    if ($this->scanned) {
+      return;
+    }
+    $this->scanned = TRUE;
+    $options = [
+      'browse_files' => $this->getPermission('browse_files'),
+      'browse_subfolders' => $this->getPermission('browse_subfolders'),
+    ];
+    $content = $this->fm()->scanDir($this->getUri(), $options);
+    // Add files as raw data. We create the objects when needed.
+    $this->files = $this->items = $content['files'];
+    // Create the subfolder objects.
+    $subfolders = $this->subfolders;
+    $this->subfolders = [];
+    foreach ($content['subfolders'] as $name => $uri) {
+      // Check if previously created.
+      if (isset($subfolders[$name]) && is_object($subfolders[$name])) {
+        $this->subfolders[$name] = $this->items[$name] = $subfolders[$name];
+      }
+      else {
+        $this->addSubfolder($name);
       }
     }
   }

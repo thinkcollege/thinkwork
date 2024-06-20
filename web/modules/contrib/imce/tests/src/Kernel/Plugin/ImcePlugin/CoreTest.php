@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class CoreTest extends KernelTestBasePlugin {
 
   /**
-   * The Imce ckeditor plugin.
+   * The Imce Core plugin.
    *
    * @var \Drupal\imce\Plugin\ImcePlugin\Core
    */
@@ -45,7 +45,7 @@ class CoreTest extends KernelTestBasePlugin {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() : void {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->imceFM = $this->getImceFM();

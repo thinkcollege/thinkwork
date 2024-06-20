@@ -110,7 +110,11 @@ class ViewfieldItem extends EntityReferenceItem {
    * {@inheritdoc}
    */
   public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
-    $form = [];
+    $form = parent::fieldSettingsForm($form, $form_state);
+
+    // Hide the handler settings since configuration is not useful.
+    $form['handler']['#type'] = 'fieldset';
+    $form['handler']['#attributes']['hidden'] = TRUE;
 
     $form['force_default'] = [
       '#type' => 'checkbox',
@@ -150,6 +154,7 @@ class ViewfieldItem extends EntityReferenceItem {
    * fieldSettingsForm().
    */
   public static function fieldSettingsFormValidate(array $form, FormStateInterface $form_state) {
+    parent::fieldSettingsFormValidate($form, $form_state);
     $settings = $form_state->getValue('settings');
     if ($settings['force_default']) {
       $default_value = $form_state->getValue('default_value_input');

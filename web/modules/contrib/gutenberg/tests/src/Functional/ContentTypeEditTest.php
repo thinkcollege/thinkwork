@@ -58,7 +58,7 @@ class ContentTypeEditTest extends BrowserTestBase {
     // Save it, and now it should be checked?
     $this->submitForm([
       "enable_gutenberg_experience" => TRUE,
-    ], 'Save content type');
+    ], 'edit-submit');
     $this->drupalGet('admin/structure/types/manage/' . $content_type->id());
     // We should have the checkbox.
     $this->assertSession()->checkboxChecked('enable_gutenberg_experience');

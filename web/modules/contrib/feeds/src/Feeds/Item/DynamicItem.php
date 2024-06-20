@@ -20,7 +20,7 @@ class DynamicItem implements ItemInterface {
    * {@inheritdoc}
    */
   public function get($field) {
-    return $this->data[$field] ?? NULL;
+    return isset($this->data[$field]) ? $this->data[$field] : NULL;
   }
 
   /**

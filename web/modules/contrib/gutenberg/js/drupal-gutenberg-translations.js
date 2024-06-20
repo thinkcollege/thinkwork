@@ -7,6 +7,7 @@
 	Drupal.t("Drupal");
 	Drupal.t("Simple text");
 	Drupal.t("Simple text block.");
+	Drupal.t("An error occured when loading the block.");
 	Drupal.t("Open block settings");
 	Drupal.t("block");
 	Drupal.t("Loading block...");
@@ -15,15 +16,17 @@
 	Drupal.t("Block settings");
 	Drupal.t("block");
 	Drupal.t("This block is rendering empty content.");
+	Drupal.t("Media");
+	Drupal.t("Cannot edit this block. Probably mapped to a non-translatable field.");
 	Drupal.t("Upload a media file or pick one from your media library.");
 	Drupal.t("Media entity settings");
 	Drupal.t("View mode");
 	Drupal.t("Edit media");
 	Drupal.t("Clear media");
+	Drupal.t("Edit media");
 	Drupal.t("Type media ID or text to search media");
 	Drupal.t("Insert");
 	Drupal.t("Insert");
-	Drupal.t("Media");
 	Drupal.t("Upload");
 	Drupal.t("Media library");
 	Drupal.t("Insert");
@@ -31,6 +34,7 @@
 	Drupal.t("Media Library");
 	Drupal.t("Media Library");
 	Drupal.t("Write caption…");
+	Drupal.t("You are editing a reusable block. Any changes made here will apply wherever this block is used.");
 	Drupal.t("Welcome Guide");
 	Drupal.t("Help");
 	Drupal.t("Reusable blocks saved!");
@@ -2464,5 +2468,4 @@
 	Drupal.t("Widget is missing.");
 	Drupal.t("Move to widget area");
 	Drupal.t("Move to");
-	Drupal.t("An error occured when loading the block.");
 */

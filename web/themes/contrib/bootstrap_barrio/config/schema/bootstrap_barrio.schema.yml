@@ -19,72 +19,141 @@ bootstrap_barrio.settings:
     bootstrap_barrio_fluid_container:
       type: integer
       label: 'Fluid container'
+    bootstrap_barrio_container:
+      type: string
+      label: 'Container'
 
     # Region.
     # ----------------------------
     bootstrap_barrio_region_clean_top_header:
-      type: string
+      type: integer
       label: 'Clean wrapper for Top header region'
+    bootstrap_barrio_region_class_top_header:
+      type: string
+      label: 'Classes for Top header region'
     bootstrap_barrio_region_clean_top_header_form:
-      type: string
+      type: integer
       label: 'Clean wrapper for Top header form region'
-    bootstrap_barrio_region_clean_header:
+    bootstrap_barrio_region_class_top_header_form:
       type: string
+      label: 'Classes for Top header form region'
+    bootstrap_barrio_region_clean_header:
+      type: integer
       label: 'Clean wrapper for Header region'
+    bootstrap_barrio_region_class_header:
+      type: string
+      label: 'Classes for Header region'
+    bootstrap_barrio_region_clean_header_form:
+      type: integer
+      label: 'Clean wrapper for Header form region'
     bootstrap_barrio_region_class_header_form:
       type: string
       label: 'Classes for Header form region'
     bootstrap_barrio_region_clean_primary_menu:
-      type: string
+      type: integer
       label: 'Clean wrapper for Primary menu region'
+    bootstrap_barrio_region_class_primary_menu:
+      type: string
+      label: 'Classes for Primary menu region'
+    bootstrap_barrio_region_clean_secondary_menu:
+      type: integer
+      label: 'Clean wrapper for Secondary menu region'
     bootstrap_barrio_region_class_secondary_menu:
       type: string
       label: 'Classes for Secondary menu region'
     bootstrap_barrio_region_clean_page_top:
-      type: string
+      type: integer
       label: 'Clean wrapper for Page top region'
+    bootstrap_barrio_region_class_page_top:
+      type: string
+      label: 'Classes for Page top region'
+    bootstrap_barrio_region_clean_page_bottom:
+      type: integer
+      label: 'Clean wrapper for Page bottom region'
     bootstrap_barrio_region_class_page_bottom:
       type: string
       label: 'Classes for Page bottom region'
     bootstrap_barrio_region_clean_highlighted:
-      type: string
+      type: integer
       label: 'Clean wrapper for Highlighted region'
+    bootstrap_barrio_region_class_highlighted:
+      type: string
+      label: 'Classes for Highlighted region'
+    bootstrap_barrio_region_clean_featured_top:
+      type: integer
+      label: 'Clean wrapper for Featured top region'
     bootstrap_barrio_region_class_featured_top:
       type: string
       label: 'Classes for Featured top region'
     bootstrap_barrio_region_clean_breadcrumb:
-      type: string
+      type: integer
       label: 'Clean wrapper for Breadcrumb region'
+    bootstrap_barrio_region_class_breadcrumb:
+      type: string
+      label: 'Classes for Breadcrumb region'
+    bootstrap_barrio_region_clean_content:
+      type: integer
+      label: 'Clean wrapper for Content region'
     bootstrap_barrio_region_class_content:
       type: string
       label: 'Classes for Content region'
     bootstrap_barrio_region_clean_sidebar_first:
-      type: string
+      type: integer
       label: 'Clean wrapper for Sidebar first region'
+    bootstrap_barrio_region_class_sidebar_first:
+      type: string
+      label: 'Classes for Sidebar first region'
+    bootstrap_barrio_region_clean_sidebar_second:
+      type: integer
+      label: 'Clean wrapper for Sidebar second region'
     bootstrap_barrio_region_class_sidebar_second:
       type: string
       label: 'Classes for Sidebar second region'
     bootstrap_barrio_region_clean_featured_bottom_first:
-      type: string
+      type: integer
       label: 'Clean wrapper for Featured bottom first region'
+    bootstrap_barrio_region_class_featured_bottom_first:
+      type: string
+      label: 'Classes for Featured bottom first region'
+    bootstrap_barrio_region_clean_featured_bottom_second:
+      type: integer
+      label: 'Clean wrapper for Featured bottom second region'
     bootstrap_barrio_region_class_featured_bottom_second:
       type: string
       label: 'Classes for Featured bottom second region'
     bootstrap_barrio_region_clean_featured_bottom_third:
-      type: string
+      type: integer
       label: 'Clean wrapper for Featured bottom third region'
+    bootstrap_barrio_region_class_featured_bottom_third:
+      type: string
+      label: 'Classes for Featured bottom third region'
+    bootstrap_barrio_region_clean_footer_first:
+      type: integer
+      label: 'Clean wrapper for Footer first region'
     bootstrap_barrio_region_class_footer_first:
       type: string
       label: 'Classes for Footer first region'
     bootstrap_barrio_region_clean_footer_second:
-      type: string
+      type: integer
       label: 'Clean wrapper for Footer second region'
+    bootstrap_barrio_region_class_footer_second:
+      type: string
+      label: 'Classes for Footer second region'
+    bootstrap_barrio_region_clean_footer_third:
+      type: integer
+      label: 'Clean wrapper for Footer third region'
     bootstrap_barrio_region_class_footer_third:
       type: string
       label: 'Classes for Footer third region'
     bootstrap_barrio_region_clean_footer_fourth:
-      type: string
+      type: integer
       label: 'Clean wrapper for Footer fourth region'
+    bootstrap_barrio_region_class_footer_fourth:
+      type: string
+      label: 'Classes for Footer fourth region'
+    bootstrap_barrio_region_clean_footer_fifth:
+      type: integer
+      label: 'Clean wrapper for Footer fifth region'
     bootstrap_barrio_region_class_footer_fifth:
       type: string
       label: 'Classes for Footer fifth region'
@@ -119,6 +188,18 @@ bootstrap_barrio.settings:
       type: integer
       label: 'Sidebar second layout'
 
+    # Node.
+    # ----------------------------
+    bootstrap_barrio_hide_node_label:
+      type: integer
+      label: 'Hide node label'
+
+    # Breadcrumb
+    # ----------------------------
+    bootstrap_barrio_breadcrumb_divider:
+      type: string
+      label: 'Breadcrumb Divider'
+
     # Buttons.
     # ----------------------------
     bootstrap_barrio_button:
@@ -127,6 +208,9 @@ bootstrap_barrio.settings:
     bootstrap_barrio_button_size:
       type: string
       label: 'Default button size'
+    bootstrap_barrio_button_type:
+      type: string
+      label: 'Default button type'
     bootstrap_barrio_button_outline:
       type: integer
       label: 'Button with outline format'
@@ -172,6 +256,9 @@ bootstrap_barrio.settings:
     bootstrap_barrio_navbar_slide:
       type: boolean
       label: 'Sliding navbar'
+    bootstrap_barrio_navbar_offcanvas:
+      type: string
+      label: 'Navbar offcanvas'
 
     # Messages.
     # ----------------------------
@@ -181,18 +268,12 @@ bootstrap_barrio.settings:
 
     # Form.
     # ----------------------------
-    bootstrap_barrio_radio:
+    bootstrap_barrio_float_label:
       type: string
-      label: 'Radio widget'
+      label: 'Float Labels'
     bootstrap_barrio_checkbox:
       type: string
-      label: 'Checkbox widget'
-    bootstrap_barrio_select:
-      type: string
-      label: 'Select widget'
-    bootstrap_barrio_file:
-      type: string
-      label: 'File widget'
+      label: 'Checkbox & Radio Style'
 
     # Affix.
     # ----------------------------
@@ -259,3 +340,33 @@ bootstrap_barrio.settings:
     bootstrap_barrio_tabs_style:
       type: string
       label: 'Tabs style'
+
+    # Colors.
+    # ----------------------------
+    bootstrap_barrio_enable_color:
+      type: boolean
+      label: 'Enable color Sheme'
+    bootstrap_barrio_color_scheme:
+      type: string
+      label: 'Barrio Color Scheme'
+    bootstrap_barrio_base_primary_color:
+      type: string
+      label: 'Primary base color'
+    bootstrap_barrio_base_secondary_color:
+      type: string
+      label: 'Secondary base color'
+    bootstrap_barrio_body_color:
+      type: string
+      label: 'Body color'
+    bootstrap_barrio_body_bg_color:
+      type: string
+      label: 'Body Background Color'
+    bootstrap_barrio_h1_color:
+      type: string
+      label: 'H1 color'
+    bootstrap_barrio_h2_color:
+      type: string
+      label: 'H2 color'
+    bootstrap_barrio_h3_color:
+      type: string
+      label: 'H3 color'

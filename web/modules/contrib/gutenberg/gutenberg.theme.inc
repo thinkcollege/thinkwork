@@ -40,6 +40,16 @@ function template_preprocess_gutenberg_block(array &$variables) {
     $block_name = substr($block_name, 5);
   }
   $variables['attributes']['class'][] = 'wp-block-' . $block_name;
+
+  // Add extra CSS classes if available.
+  if (!empty($variables['block_attributes']['className'])) {
+    $extra_classes = preg_split('/\s+/', $variables['block_attributes']['className']);
+    foreach ($extra_classes as $class) {
+      if (!empty($class)) {
+        $variables['attributes']['class'][] = $class;
+      }
+    }
+  }
 }
 
 /**
@@ -58,6 +68,11 @@ function template_preprocess_gutenberg_block__drupalmedia__drupal_media_entity(&
 
     if (!empty($variables['block_attributes']['align'])) {
       $variables['attributes']['class'][] = 'align' . $variables['block_attributes']['align'];
+    }
+
+    // The caption can include HTML formatting, therefore processing it.
+    if (!empty($variables['block_attributes']['caption'])) {
+      $variables['block_attributes']['caption'] = check_markup($variables['block_attributes']['caption'], 'gutenberg');
     }
   }
 }

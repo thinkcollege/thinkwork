@@ -10,7 +10,7 @@
 {{ attach_library('bootstrap_barrio/breadcrumb') }}
 
 {% if breadcrumb %}
-  <nav role="navigation" aria-label="breadcrumb">
+  <nav role="navigation" aria-label="breadcrumb" style="{{breadcrumb_divider}}">
     <ol class="breadcrumb">
     {% for item in breadcrumb %}
       {% if item.url %}

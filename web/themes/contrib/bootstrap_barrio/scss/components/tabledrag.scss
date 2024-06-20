@@ -12,7 +12,7 @@ tr.drag-previous {
 }
 
 body div.tabledrag-changed-warning {
-    margin-bottom: ($spacer * 0.5);
+    margin-bottom: calc($spacer / 2);
 }
 
 a.tabledrag-handle .handle {

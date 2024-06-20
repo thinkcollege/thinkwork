@@ -16,10 +16,7 @@
         "source": "https://git.drupalcode.org/project/imce"
     },
     "require": {
-        "drupal/core": "^9.3 || ^10"
-    },
-    "require-dev": {
-        "drupal/ckeditor": "^1.0"
+        "drupal/core": "^9.3 || ^10 || ^11"
     },
     "license": "GPL-2.0-or-later"
 }

@@ -3,9 +3,9 @@
 namespace Drupal\Tests\imce\Kernel\Form;
 
 use Drupal\Core\Form\FormInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\imce\Form\ImceSettingsForm;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Kernel tests for ImceSettingsForm.
@@ -44,7 +44,7 @@ class ImceSettingsFormTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() : void {
+  protected function setUp(): void {
     parent::setUp();
     $this->imceConfig = $this->container->get('config.factory')->get('imce.settings');
     $this->imceSettingsForm = ImceSettingsForm::create($this->container);

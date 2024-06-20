@@ -8,9 +8,27 @@
   const isMediaLibraryEnabled = gutenberg['media-library-enabled'] || false;
   const isMediaEnabled = gutenberg['media-enabled'] || false;
   const __ = Drupal.t;
+  const editorSettings = drupalSettings.editor;
+  var gutenbergSettings = null;
+  if (editorSettings && editorSettings.formats) {
+    Object.keys(editorSettings.formats).forEach(function (key) {
+      const editorSetting = editorSettings.formats[key];
+      if (editorSetting.editor !== 'gutenberg') {
+        return;
+      }
+      gutenbergSettings = editorSetting.editorSettings;
+    })
+  }
 
   const registerBlock = () => {
     const blockId = 'drupalmedia/drupal-media-entity';
+    if (!gutenbergSettings || !gutenbergSettings.allowedDrupalBlocks) {
+      // Totally not enabled, that's for sure.
+      return;
+    }
+    if (!gutenbergSettings.allowedDrupalBlocks[blockId]) {
+      return;
+    }
 
     blocks.registerBlockType(blockId, {
       title: Drupal.t('Media'),

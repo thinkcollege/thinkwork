@@ -50,31 +50,15 @@
 %}
 
 {% if type == 'checkbox' %}
-  {% if customtype == 'custom' %}
-    {% set wrapperclass = "custom-control custom-checkbox" %}
-    {% set labelclass = "custom-control-label" %}
-    {% set inputclass = "custom-control-input" %}
-  {% elseif customtype == 'switch' %}
-    {% set wrapperclass = "custom-control custom-switch" %}
-    {% set labelclass = "custom-control-label" %}
-    {% set inputclass = "custom-control-input" %}
-  {% else %}
-    {% set wrapperclass = "form-check" %}
-    {% set labelclass = "form-check-label" %}
-    {% set inputclass = "form-check-input" %}
-  {% endif %}
+  {% set wrapperclass = checkbox_style != 'form-button' ? "form-check" %}
+  {% set labelclass = checkbox_style == 'form-button' ? 'btn btn-outline-primary' : "form-check-label"  %}
+  {% set inputclass = checkbox_style == 'form-button' ? 'btn-check' : "form-check-input" %}
 {% endif %}
 
 {% if type == 'radio' %}
-  {% if customtype == 'custom' %}
-    {% set wrapperclass = "custom-control custom-radio" %}
-    {% set labelclass = "custom-control-label" %}
-    {% set inputclass = "custom-control-input" %}
-  {% else %}
-    {% set wrapperclass = "form-check" %}
-    {% set labelclass = "form-check-label" %}
-    {% set inputclass = "form-check-input" %}
-  {% endif %}
+  {% set wrapperclass = checkbox_style != 'form-button' ? "form-check" %}
+  {% set labelclass = checkbox_style == 'form-button' ? 'btn btn-outline-primary' : "form-check-label"  %}
+  {% set inputclass = checkbox_style == 'form-button' ? 'btn-check' : "form-check-input" %}
 {% endif %}
 
 {%
@@ -83,6 +67,8 @@
     'js-form-type-' ~ type|clean_class,
     type in ['checkbox', 'radio'] ? type|clean_class : 'form-type-' ~ type|clean_class,
     type in ['checkbox', 'radio'] ? wrapperclass,
+    checkbox_style == 'form-switch' ? 'form-switch' : '',
+    type in ['checkbox'] ? 'mb-3',
     'js-form-item-' ~ name|clean_class,
     'form-item-' ~ name|clean_class,
     title_display not in ['after', 'before'] ? 'form-no-label',
@@ -90,6 +76,7 @@
     errors ? 'has-error',
   ]
 %}
+
 {% if title_display == 'invisible' %}
   {% if labelclass is defined %}
     {% set labelclass = labelclass ~ ' visually-hidden' %}
@@ -97,11 +84,12 @@
     {% set labelclass = 'visually-hidden' %}
   {% endif %}
 {% endif %}
+
 {%
   set description_classes = [
     'description',
 	  'text-muted',
-    description_display == 'invisible' ? 'sr-only',
+    description_display == 'invisible' ? 'visually-hidden',
   ]
 %}
 {% if type in ['checkbox', 'radio'] %}
@@ -119,7 +107,11 @@
         {{ input_title | raw }}
       </label>
     {% endif %}
-    <input{{ input_attributes.addClass(inputclass) }}>
+    {% if checkbox_style == 'form-button' %}
+      <input{{ input_attributes.addClass(inputclass).setAttribute('autocomplete', 'off') }}>
+    {% else %}
+      <input{{ input_attributes.addClass(inputclass) }}>
+    {% endif %}
     {% if label_display == 'after' %}
       <label {{ label_attributes.addClass(labelclass).setAttribute('for', input_attributes.id) }}>
         {{ input_title | raw }}
@@ -129,7 +121,7 @@
       <span class="field-suffix">{{ suffix }}</span>
     {% endif %}
     {% if errors %}
-      <div class="invalid-feedback">
+      <div class="invalid-feedback form-item--error-message">
         {{ errors }}
       </div>
     {% endif %}
@@ -140,12 +132,12 @@
     {% endif %}
   </div>
 {% else %}
-  <fieldset{{ attributes.addClass(classes, 'form-group') }}>
+  <div{{ attributes.addClass(classes, 'mb-3', float_label ? 'form-floating') }}>
     {% if label_display in ['before', 'invisible'] %}
       {{ label }}
     {% endif %}
     {% if (prefix is not empty) or (suffix is not empty) %}
-      <div class="input-group">
+      <div class="input-group{{ errors ? ' is-invalid' : '' }}">
     {% endif %}
     {% if prefix is not empty %}
       <div class="input-group-prepend">
@@ -170,7 +162,7 @@
       {{ label }}
     {% endif %}
     {% if errors %}
-      <div class="invalid-feedback">
+      <div class="invalid-feedback form-item--error-message">
         {{ errors }}
       </div>
     {% endif %}
@@ -179,5 +171,5 @@
         {{ description.content }}
       </small>
     {% endif %}
-  </fieldset>
+  </div>
 {% endif %}

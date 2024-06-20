@@ -55,6 +55,7 @@ class SearchApiSolrTest extends SolrBackendTestBase {
     'bg' => 'bg',
     'ca' => 'ca',
     'cs' => 'cs',
+    'cy' => 'cy',
     'da' => 'da',
     'el' => 'el',
     'es' => 'es',
@@ -336,6 +337,7 @@ class SearchApiSolrTest extends SolrBackendTestBase {
           $language_ids['zh-hant'] = FALSE;
           if (version_compare($targeted_solr_major_version, '6', '<')) {
             $language_ids['ar'] = FALSE;
+            $language_ids['cy'] = FALSE;
             $language_ids['ja'] = FALSE;
             $language_ids['hu'] = FALSE;
             $language_ids['sk'] = FALSE;
@@ -1568,7 +1570,7 @@ class SearchApiSolrTest extends SolrBackendTestBase {
   /**
    * Data provider for testConfigGeneration method.
    */
-  public function configGenerationDataProvider() {
+  public static function configGenerationDataProvider() {
     // @codingStandardsIgnoreStart
     return [[[
       'schema_extra_types.xml' => [

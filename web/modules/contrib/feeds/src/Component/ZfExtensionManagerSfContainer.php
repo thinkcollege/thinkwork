@@ -2,10 +2,10 @@
 
 namespace Drupal\feeds\Component;
 
-use Laminas\Feed\Reader\ExtensionManagerInterface as ReaderManagerInterface;
-use Laminas\Feed\Writer\ExtensionManagerInterface as WriterManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Laminas\Feed\Reader\ExtensionManagerInterface as ReaderManagerInterface;
+use Laminas\Feed\Writer\ExtensionManagerInterface as WriterManagerInterface;
 
 /**
  * Defines a bridge between the Laminas service manager to Symfony container.
@@ -120,7 +120,7 @@ class ZfExtensionManagerSfContainer implements ReaderManagerInterface, WriterMan
   /**
    * {@inheritdoc}
    */
-  public function setContainer(ContainerInterface $container = NULL): void {
+  public function setContainer(ContainerInterface $container = NULL) {
     $this->container = $container;
   }
 

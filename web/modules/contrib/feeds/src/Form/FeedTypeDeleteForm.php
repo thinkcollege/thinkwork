@@ -4,6 +4,7 @@ namespace Drupal\feeds\Form;
 
 use Drupal\Core\Entity\EntityDeleteForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 /**
  * Provides a form for feed type deletion.

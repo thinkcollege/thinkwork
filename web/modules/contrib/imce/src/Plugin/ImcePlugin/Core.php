@@ -2,8 +2,8 @@
 
 namespace Drupal\imce\Plugin\ImcePlugin;
 
-use Drupal\imce\ImcePluginBase;
 use Drupal\imce\ImceFM;
+use Drupal\imce\ImcePluginBase;
 
 /**
  * Defines Imce Core plugin.
@@ -34,23 +34,25 @@ class Core extends ImcePluginBase {
    * Operation handler: browse.
    */
   public function opBrowse(ImceFM $fm) {
-    if ($folder = $fm->activeFolder) {
-      $folder->scan();
-      $uri = $folder->getUri();
-      $uri_prefix = substr($uri, -1) === '/' ? $uri : $uri . '/';
-      $content = ['props' => $fm->getFolderProperties($uri)];
-      if ($folder->getPermission('browse_files')) {
-        foreach ($folder->files as $name => $file) {
-          $content['files'][$name] = $fm->getFileProperties($uri_prefix . $name);
-        }
-      }
-      if ($folder->getPermission('browse_subfolders')) {
-        foreach ($folder->subfolders as $name => $subfolder) {
-          $content['subfolders'][$name] = $fm->getFolderProperties($uri_prefix . $name);
-        }
-      }
-      $fm->addResponse('content', $content);
+    $folder = $fm->activeFolder;
+    if (!$folder) {
+      return;
     }
+    $folder->scan();
+    $uri = $folder->getUri();
+    $uri_prefix = substr($uri, -1) === '/' ? $uri : $uri . '/';
+    $content = ['props' => $fm->getFolderProperties($uri)];
+    if ($folder->getPermission('browse_files')) {
+      foreach ($folder->files as $name => $file) {
+        $content['files'][$name] = $fm->getFileProperties($uri_prefix . $name);
+      }
+    }
+    if ($folder->getPermission('browse_subfolders')) {
+      foreach ($folder->subfolders as $name => $subfolder) {
+        $content['subfolders'][$name] = $fm->getFolderProperties($uri_prefix . $name);
+      }
+    }
+    $fm->addResponse('content', $content);
   }
 
   /**
@@ -63,12 +65,13 @@ class Core extends ImcePluginBase {
     }
     $uris = [];
     foreach ($items as $item) {
-      if ($uri = $item->getUri()) {
+      $uri = $item->getUri();
+      if ($uri) {
         $uris[$uri] = $item;
       }
     }
     if ($uris) {
-      /** @var \Drupal\file\FileInterface[] */
+      /** @var \Drupal\file\FileInterface[] $files */
       $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => array_keys($uris)]);
       $uuids = [];
       foreach ($files as $file) {

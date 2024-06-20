@@ -2,10 +2,10 @@
 
 namespace Drupal\Tests\feeds\Kernel\Feeds\Target;
 
+use Drupal\node\Entity\Node;
 use Drupal\entity_test\Entity\EntityTestBundle;
 use Drupal\feeds\Event\FeedsEvents;
 use Drupal\feeds\Event\ParseEvent;
-use Drupal\node\Entity\Node;
 use Drupal\Tests\feeds\Kernel\FeedsKernelTestBase;
 use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
 

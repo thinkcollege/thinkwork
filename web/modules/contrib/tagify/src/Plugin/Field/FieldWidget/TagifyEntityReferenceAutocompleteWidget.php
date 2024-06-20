@@ -2,7 +2,6 @@
 
 namespace Drupal\tagify\Plugin\Field\FieldWidget;
 
-use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -10,9 +9,7 @@ use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Site\Settings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -29,13 +26,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
-
-  /**
-   * The key value factory.
-   *
-   * @var \Drupal\Core\KeyValueStore\KeyValueFactoryInterface
-   */
-  protected $keyValueFactory;
 
   /**
    * The current user.
@@ -78,8 +68,6 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
    *   The widget settings.
    * @param array $third_party_settings
    *   Any third party settings.
-   * @param \Drupal\Core\KeyValueStore\KeyValueFactoryInterface $key_value_factory
-   *   The key value factory.
    * @param \Drupal\Core\Session\AccountInterface $current_user
    *   The current user.
    * @param \Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface $selection_manager
@@ -95,14 +83,12 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
     FieldDefinitionInterface $field_definition,
     array $settings,
     array $third_party_settings,
-    KeyValueFactoryInterface $key_value_factory,
     AccountInterface $current_user,
     SelectionPluginManagerInterface $selection_manager,
     EntityTypeManagerInterface $entity_type_manager,
     ModuleHandlerInterface $module_handler,
   ) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
-    $this->keyValueFactory = $key_value_factory;
     $this->currentUser = $current_user;
     $this->selectionManager = $selection_manager;
     $this->entityTypeManager = $entity_type_manager;
@@ -119,7 +105,6 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
       $configuration['field_definition'],
       $configuration['settings'],
       $configuration['third_party_settings'],
-      $container->get('keyvalue'),
       $container->get('current_user'),
       $container->get('plugin.manager.entity_reference_selection'),
       $container->get('entity_type.manager'),
@@ -227,6 +212,7 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
         ],
       ];
     }
+
     return $element;
   }
 
@@ -262,24 +248,20 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     // Append the match operation to the selection settings.
     $selection_settings = $this->getFieldSetting('handler_settings') + [
+      'handler' => $this->getFieldSetting('handler'),
       'match_operator' => $this->getSetting('match_operator'),
       'match_limit' => $this->getSetting('match_limit'),
       'suggestions_dropdown' => $this->getSetting('suggestions_dropdown'),
       'placeholder' => $this->getSetting('placeholder'),
+      'cardinality' => $this->fieldDefinition
+        ->getFieldStorageDefinition()
+        ->getCardinality(),
       'show_entity_id' => (bool) $this->getSetting('show_entity_id'),
     ];
     if ($this->getSetting('show_info_label')) {
       $selection_settings['info_label'] = $this->getSetting('info_label');
     }
     $target_type = $this->getFieldSetting('target_type');
-    $selection_handler = $this->getFieldSetting('handler');
-    $data = serialize($selection_settings) . $target_type . $selection_handler;
-    $selection_settings_key = Crypt::hmacBase64($data, Settings::getHashSalt());
-
-    $key_value_storage = $this->keyValueFactory->get('entity_autocomplete');
-    if (!$key_value_storage->has($selection_settings_key)) {
-      $key_value_storage->set($selection_settings_key, $selection_settings);
-    }
 
     // User field definition doesn't have fieldStorage defined.
     $cardinality = $target_type !== 'user'
@@ -289,25 +271,28 @@ class TagifyEntityReferenceAutocompleteWidget extends WidgetBase {
     $limited = !$cardinality ? 'tagify--limited' : '';
     $autocreate = $this->getSelectionHandlerSetting('auto_create') ? 'tagify--autocreate' : '';
     $tags_identifier = $items->getName();
+    // Concat element position to the Tagify identifier.
+    if (!empty($element['#field_parents'][1])) {
+      $tags_identifier .= '_' . $element['#field_parents'][1];
+    }
 
     $element += [
       '#type' => 'entity_autocomplete_tagify',
+      '#target_type' => $target_type,
       '#default_value' => $items->referencedEntities() ?? NULL,
       '#autocreate' => $this->getSelectionHandlerSetting('auto_create'),
-      '#target_type' => $target_type,
-      '#selection_handler' => $selection_handler,
-      '#selection_settings_key' => $selection_settings_key,
+      '#selection_settings' => $selection_settings,
       '#max_items' => $this->getSetting('match_limit'),
+      '#placeholder' => $this->getSetting('placeholder'),
       '#suggestions_dropdown' => $this->getSetting('suggestions_dropdown'),
+      '#show_entity_id' => $this->getSetting('show_entity_id'),
       '#attributes' => [
         'class' => [$limited, $autocreate, $tags_identifier],
       ],
-      '#placeholder' => $this->getSetting('placeholder'),
-      '#match_operator' => $this->getSetting('match_operator'),
-      '#show_entity_id' => $this->getSetting('show_entity_id'),
       '#cardinality' => $items->getFieldDefinition()
         ->getFieldStorageDefinition()
         ->getCardinality(),
+      '#identifier' => $tags_identifier,
     ];
 
     if ($this->getSetting('show_info_label')) {

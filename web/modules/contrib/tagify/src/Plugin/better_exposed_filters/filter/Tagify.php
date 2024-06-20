@@ -3,11 +3,9 @@
 namespace Drupal\tagify\Plugin\better_exposed_filters\filter;
 
 use Drupal\better_exposed_filters\Plugin\better_exposed_filters\filter\FilterWidgetBase;
-use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Site\Settings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -60,20 +58,11 @@ class Tagify extends FilterWidgetBase implements ContainerFactoryPluginInterface
       return;
     }
 
-    $selection_settings = $form[$field_id]['#selection_settings'] ?? [];
-    $selection_settings_hash = serialize($selection_settings) . $form[$field_id]['#target_type'] . 'default';
-    $selection_settings_key = Crypt::hmacBase64($selection_settings_hash, Settings::getHashSalt());
-
-    if (!$this->keyValue->has($selection_settings_key)) {
-      $this->keyValue->set($selection_settings_key, $selection_settings);
-    }
-
     $form[$field_id] = [
       '#type' => 'entity_autocomplete_tagify',
       '#target_type' => $form[$field_id]['#target_type'],
       '#tags' => $form[$field_id]['#tags'],
-      '#selection_settings_key' => $selection_settings_key,
-      '#selection_settings' => $selection_settings,
+      '#selection_settings' => $form[$field_id]['#selection_settings'] ?? [],
       '#match_operator' => $this->configuration['advanced']['match_operator'],
       '#max_items' => (int) $this->configuration['advanced']['max_items'],
       '#placeholder' => $this->configuration['advanced']['placeholder'],

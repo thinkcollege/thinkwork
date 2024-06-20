@@ -158,10 +158,7 @@ class TargetDefinition implements TargetDefinitionInterface {
    * @return $this
    */
   public function addProperty($property, $label = '', $description = '') {
-    $this->properties[$property] = [
-      'label' => $label,
-      'description' => $description,
-    ];
+    $this->properties[$property] = ['label' => $label, 'description' => $description];
     return $this;
   }
 

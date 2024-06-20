@@ -4,12 +4,20 @@
 }
 
 .tagify.form-element--api-entity-autocomplete-tagify-user-list:focus,
-.tagify.form-element--api-entity-autocomplete-tagify-user-list:focus-within {
+.tagify.form-element--type-select-multiple:focus,
+.tagify.form-element--type-select:focus,
+.tagify.form-element--api-entity-autocomplete-tagify-user-list:focus-within,
+.tagify.form-element--type-select-multiple:focus-within,
+.tagify.form-element--type-select:focus-within {
   box-shadow: 0 0 0 1px var(--gin-color-focus-border), 0 0 0 4px var(--gin-color-focus) !important;
 }
 
 .tagify.form-element--api-entity-autocomplete-tagify:focus,
-.tagify.form-element--api-entity-autocomplete-tagify:focus-within {
+.tagify.form-element--type-select-multiple:focus,
+.tagify.form-element--type-select:focus,
+.tagify.form-element--api-entity-autocomplete-tagify:focus-within,
+.tagify.form-element--type-select-multiple:focus-within,
+.tagify.form-element--type-select:focus-within {
   box-shadow: 0 0 0 1px var(--gin-color-focus-border), 0 0 0 4px var(--gin-color-focus) !important;
 }
 
@@ -38,6 +46,16 @@
 
 .tagify--loading-text {
   color: var(--gin-color-primary);
+}
+
+.tagify.form-select.form-element--type-select .tagify__tag--editable .tagify__tag__info-label-wrap,
+.tagify__tag--editable .tagify__tag-entity-id {
+  color: var(--gin-color-text);
+  background: var(--gin-color-primary-light-hover) !important;
+}
+
+.tagify.form-select.form-element--type-select .tagify__tag--editable>div::before {
+  box-shadow: 0 0 0 2px var(--gin-color-primary-light-hover) inset !important;
 }
 
 /* Gin dark mode */
@@ -85,4 +103,13 @@
 .gin--dark-mode .tagify__tag:hover > #tagify__tag-items .tagify__tag__info-label-wrap {
   color: #55565b;
   background-color: var(--gin-color-text);
+}
+
+.gin--dark-mode .tagify.form-select.form-element--type-select .tagify__tag--editable #tagify__tag-remove-button {
+  background: none !important;
+}
+
+.gin--dark-mode .tagify.form-select.form-element--type-select.tagify__tag--editable.tagify__tag:hover > #tagify__tag-items .tagify__tag-entity-id,
+.gin--dark-mode .tagify.form-select.form-element--type-select .tagify__tag--editable.tagify__tag:hover > #tagify__tag-items .tagify__tag__info-label-wrap {
+  color: var(--gin-color-text);
 }

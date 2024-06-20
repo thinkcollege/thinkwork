@@ -296,6 +296,10 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                     $metabox.appendTo($metaBoxContainer);
                     Drupal.behaviors.editor.attach(metabox, drupalSettings);
                   });
+
+                  if (drupalSettings.gutenberg['theme-support'].extraRootContainerClassNames) {
+                    $('.is-root-container').addClass(drupalSettings.gutenberg['theme-support'].extraRootContainerClassNames);
+                  }
                 }, 0);
 
                 metaboxesContainer = $(document.createElement('div'));

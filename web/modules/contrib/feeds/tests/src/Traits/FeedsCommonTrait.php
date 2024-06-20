@@ -242,23 +242,13 @@ trait FeedsCommonTrait {
   }
 
   /**
-   * Returns the base url of the Drupal installation.
-   *
-   * @return string
-   *   The Drupal base url.
-   */
-  protected function getBaseUrl(): string {
-    return \Drupal::request()->getSchemeAndHttpHost() . \Drupal::request()->getBaseUrl();
-  }
-
-  /**
    * Returns the url to the Feeds resources directory.
    *
    * @return string
    *   The url to the Feeds resources directory.
    */
-  protected function resourcesUrl(): string {
-    return $this->getBaseUrl() . '/' . $this->getModulePath('feeds') . '/tests/resources';
+  protected function resourcesUrl() {
+    return \Drupal::request()->getSchemeAndHttpHost() . '/' . $this->getModulePath('feeds') . '/tests/resources';
   }
 
   /**

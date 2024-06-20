@@ -52,9 +52,7 @@ class ImceProfileForm extends EntityForm {
    * {@inheritdoc}
    */
   public function form(array $form, FormStateInterface $form_state) {
-    /**
-     * @var \Drupal\imce\Entity\ImceProfile
-     */
+    /** @var \Drupal\imce\Entity\ImceProfile $imce_profile */
     $imce_profile = $this->getEntity();
     // Check duplication.
     if ($this->getOperation() === 'duplicate') {
@@ -101,16 +99,23 @@ class ImceProfileForm extends EntityForm {
       '#weight' => -10,
     ];
     // Extensions.
+    $desc = $this->t('Separate extensions with a space, and do not include the leading dot.');
+    $desc .= ' ' . $this->t('Set to * to allow all extensions.');
     $conf['extensions'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Allowed file extensions'),
       '#default_value' => $imce_profile->getConf('extensions'),
       '#maxlength' => 255,
-      '#description' => $this->t('Separate extensions with a space, and do not include the leading dot.') . ' ' . $this->t('Set to * to allow all extensions.'),
+      '#description' => $desc,
       '#weight' => -9,
     ];
     // File size.
     $maxsize = Environment::getUploadMaxSize();
+    $desc = $this->t('Maximum allowed file size per upload.');
+    $desc .= ' ' . $this->t(
+      'Your PHP settings limit the upload size to %size.',
+      ['%size' => Imce::formatSize($maxsize)]
+    );
     $conf['maxsize'] = [
       '#type' => 'number',
       '#min' => 0,
@@ -119,7 +124,7 @@ class ImceProfileForm extends EntityForm {
       '#size' => 8,
       '#title' => $this->t('Maximum file size'),
       '#default_value' => $imce_profile->getConf('maxsize'),
-      '#description' => $this->t('Maximum allowed file size per upload.') . ' ' . $this->t('Your PHP settings limit the upload size to %size.', ['%size' => format_size($maxsize)]),
+      '#description' => $desc,
       '#field_suffix' => $this->t('MB'),
       '#weight' => -8,
     ];
@@ -196,33 +201,48 @@ class ImceProfileForm extends EntityForm {
         '#title' => $this->t('Thumbnail style'),
         '#options' => image_style_options(),
         '#default_value' => $imce_profile->getConf('thumbnail_style'),
-        '#description' => $this->t('Select a thumbnail style from the list to make the file browser display inline image previews. Note that this could reduce the performance of the file browser drastically.'),
+        '#description' => $this->t(
+          'Select a thumbnail style from the list to make the file browser display inline image previews. Note that this could reduce the performance of the file browser drastically.'
+        ),
       ];
       $conf['advanced']['thumbnail_grid_style'] = [
         '#type' => 'checkbox',
         '#title' => $this->t('Thumbnail grid style'),
         '#default_value' => $imce_profile->getConf('thumbnail_grid_style'),
-        '#description' => $this->t('Check it if you want to display the thumbnail in a grid. If not checked it will display the thumbnail in a list.'),
+        '#description' => $this->t(
+          'Check it if you want to display the thumbnail in a grid. If not checked it will display the thumbnail in a list.'
+        ),
       ];
     }
     $conf['advanced']['ignore_usage'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Ignore file usage.'),
       '#default_value' => $imce_profile->getConf('ignore_usage'),
-      '#description' => $this->t('IMCE avoids deletion or overwriting of files that are in use by other Drupal modules. Enabling this option skips the file usage check. Not recommended!'),
+      '#description' => $this->t(
+        'IMCE avoids deletion or overwriting of files that are in use by other Drupal modules. Enabling this option skips the file usage check. Not recommended!'
+      ),
     ];
     $conf['advanced']['url_alter'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Enable URL altering'),
       '#default_value' => $imce_profile->getConf('url_alter'),
-      '#description' => $this->t('IMCE builds file URLs on js side by combining the root URL and file paths. This might result in incorrect URLs for some file systems like s3. This option should fix the URLs at the cost of some performance degredation.'),
+      '#description' => $this->t(
+        'IMCE builds file URLs on js side by combining the root URL and file paths. This might result in incorrect URLs for some file systems like s3. This option should fix the URLs at the cost of some performance degredation.'
+      ),
     ];
 
     // Folders.
+    $desc = $this->t(
+      'You can use user tokens in folder paths, e.g. @tokens.',
+      ['@tokens' => '[user:uid], [user:name]']
+    );
+    $desc .= ' ' . $this->t('Subfolders inherit parent permissions when subfolder browsing is enabled.');
     $conf['folders'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Folders'),
-      'description' => ['#markup' => '<div class="description">' . $this->t('You can use user tokens in folder paths, e.g. @tokens.', ['@tokens' => '[user:uid], [user:name]']) . ' ' . $this->t('Subfolders inherit parent permissions when subfolder browsing is enabled.') . '</div>'],
+      'description' => [
+        '#markup' => '<div class="description">' . $desc . '</div>',
+      ],
       '#weight' => 10,
     ];
 
@@ -237,9 +257,11 @@ class ImceProfileForm extends EntityForm {
     $folders = $imce_profile->getConf('folders', []);
     $index = 0;
     foreach ($folders as $folder) {
-      $conf['folders'][] = $this->folderForm($index++, $folder);
+      $conf['folders'][] = $this->folderForm($index, $folder);
+      $index++;
     }
-    $conf['folders'][] = $this->folderForm($index++);
+    $conf['folders'][] = $this->folderForm($index);
+    $index++;
     $conf['folders'][] = $this->folderForm($index);
     $form['conf'] = $conf;
     // Add library.
@@ -275,13 +297,13 @@ class ImceProfileForm extends EntityForm {
     $form['permissions']['all'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('All permissions'),
-      '#default_value' => isset($folder['permissions']['all']) ? $folder['permissions']['all'] : 0,
+      '#default_value' => $folder['permissions']['all'] ?? 0,
     ];
     foreach ($perms as $perm => $title) {
       $form['permissions'][$perm] = [
         '#type' => 'checkbox',
         '#title' => $title,
-        '#default_value' => isset($folder['permissions'][$perm]) ? $folder['permissions'][$perm] : 0,
+        '#default_value' => $folder['permissions'][$perm] ?? 0,
         '#states' => [
           'disabled' => ['input[name="conf[folders][' . $index . '][permissions][all]"]' => ['checked' => TRUE]],
         ],
@@ -325,9 +347,7 @@ class ImceProfileForm extends EntityForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
-    /**
-     * @var \Drupal\imce\Entity\ImceProfile
-     */
+    /** @var \Drupal\imce\Entity\ImceProfile $imce_profile */
     $imce_profile = $this->getEntity();
     $status = $imce_profile->save();
     if ($status == SAVED_NEW) {

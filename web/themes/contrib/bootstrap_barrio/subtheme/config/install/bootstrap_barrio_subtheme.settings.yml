@@ -12,6 +12,7 @@ bootstrap_barrio_sidebar_second_offset: 0
 
 # Container.
 # ----------------------------
+bootstrap_barrio_container: 'container'
 bootstrap_barrio_fluid_container: 0
 
 # Buttons.
@@ -35,13 +36,6 @@ bootstrap_barrio_navbar_background: ''
 # ----------------------------
 bootstrap_barrio_messages_widget: 'alerts'
 
-# Form.
-# ----------------------------
-bootstrap_barrio_radio: 'custom'
-bootstrap_barrio_checkbox: 'switch'
-bootstrap_barrio_select: 'custom'
-bootstrap_barrio_file: 'custom'
-
 # Colors.
 # ----------------------------
 bootstrap_barrio_system_messages: 'messages_white'
@@ -50,3 +44,15 @@ bootstrap_barrio_system_messages: 'messages_white'
 # ----------------------------
 bootstrap_barrio_table_hover: 1
 bootstrap_barrio_table_style: 'table-striped'
+
+# Colors
+# ----------------------------
+bootstrap_barrio_enable_color: false
+bootstrap_barrio_color_scheme: 'default'
+bootstrap_barrio_base_primary_color: '#2F3C7E'
+bootstrap_barrio_base_secondary_color: '#FBEAEB'
+bootstrap_barrio_body_color: 'gray-800'
+bootstrap_barrio_body_bg_color: 'white'
+bootstrap_barrio_h1_color: 'base'
+bootstrap_barrio_h2_color: 'base'
+bootstrap_barrio_h3_color: 'base'

@@ -18,19 +18,24 @@ the preferred channel for [bug reports](#bug-reports), [features requests](#feat
 and [submitting pull requests](#pull-requests), but please respect the following
 restrictions:
 
-* Please **do not** use the issue tracker for personal support requests. Stack
-  Overflow ([`bootstrap-4`](https://stackoverflow.com/questions/tagged/bootstrap-4) tag),
-  [Slack](https://bootstrap-slack.herokuapp.com/) or [IRC](/README.md#community) are better places to get help.
+- Please **do not** use the issue tracker for personal support requests. Stack Overflow ([`bootstrap-5`](https://stackoverflow.com/questions/tagged/bootstrap-5) tag), [our GitHub Discussions](https://github.com/twbs/bootstrap/discussions) or [IRC](/README.md#community) are better places to get help.
 
-* Please **do not** derail or troll issues. Keep the discussion on topic and
+- Please **do not** derail or troll issues. Keep the discussion on topic and
   respect the opinions of others.
 
-* Please **do not** post comments consisting solely of "+1" or ":thumbsup:".
+- Please **do not** post comments consisting solely of "+1" or ":thumbsup:".
   Use [GitHub's "reactions" feature](https://blog.github.com/2016-03-10-add-reactions-to-pull-requests-issues-and-comments/)
   instead. We reserve the right to delete comments which violate this rule.
 
-* Please **do not** open issues regarding the official themes offered on <https://themes.getbootstrap.com/>.
+- Please **do not** open issues regarding the official themes offered on <https://themes.getbootstrap.com/>.
   Instead, please email any questions or feedback regarding those themes to `themes AT getbootstrap DOT com`.
+
+
+## Issues assignment
+
+The core team will be looking at the open issues, analyze them, and provide guidance on how to proceed. **Issues won't be assigned to anyone outside the core team.** However, contributors are welcome to participate in the discussion and provide their input on how to best solve the issue, and even submit a PR if they want to. Please wait that the issue is ready to be worked on before submitting a PR, we don't want to waste your time.
+
+Please keep in mind that the core team is small, has limited resources and that we are not always able to respond immediately. We will try to provide feedback as soon as possible, but please be patient. If you don't get a response immediately, it doesn't mean that we are ignoring you or that we don't care about your issue or PR. We will get back to you as soon as we can.
 
 
 ## Issues and labels
@@ -58,18 +63,18 @@ Good bug reports are extremely helpful, so thanks!
 
 Guidelines for bug reports:
 
-0. **[validate your HTML](https://html5.validator.nu/)** to ensure your
+0. **[Validate your HTML](https://html5.validator.nu/)** to ensure your
    problem isn't caused by a simple error in your own code.
 
 1. **Use the GitHub issue search** &mdash; check if the issue has already been
    reported.
 
 2. **Check if the issue has been fixed** &mdash; try to reproduce it using the
-   latest `master` or `v4-dev` branch in the repository.
+   latest `main` (or `v4-dev` branch if the issue is about v4) in the repository.
 
 3. **Isolate the problem** &mdash; ideally create a [reduced test
    case](https://css-tricks.com/reduced-test-cases/) and a live example.
-   [This JS Bin](https://jsbin.com/lolome/edit?html,output) is a helpful template.
+   These [v4 CodePen](https://codepen.io/team/bootstrap/pen/yLabNQL) and [v5 CodePen](https://codepen.io/team/bootstrap/pen/qBamdLj) are helpful templates.
 
 
 A good bug report shouldn't leave others needing to chase you up for more
@@ -100,20 +105,19 @@ Example:
 ### Reporting upstream browser bugs
 
 Sometimes bugs reported to us are actually caused by bugs in the browser(s) themselves, not bugs in Bootstrap per se.
-When feasible, we aim to report such upstream bugs to the relevant browser vendor(s), and then list them on our [Wall of Browser Bugs](https://getbootstrap.com/browser-bugs/) and [document them in MDN](https://developer.mozilla.org/en-US/docs/Web).
 
 | Vendor(s)     | Browser(s)                   | Rendering engine | Bug reporting website(s)                               | Notes                                                    |
 | ------------- | ---------------------------- | ---------------- | ------------------------------------------------------ | -------------------------------------------------------- |
-| Mozilla       | Firefox                      | Gecko            | https://bugzilla.mozilla.org/enter_bug.cgi             | "Core" is normally the right product option to choose.   |
-| Apple         | Safari                       | WebKit           | https://bugs.webkit.org/enter_bug.cgi?product=WebKit   | In Apple's bug reporter, choose "Safari" as the product. |
-| Google, Opera | Chrome, Chromium, Opera v15+ | Blink            | https://bugs.chromium.org/p/chromium/issues/list       | Click the "New issue" button.                            |
-| Microsoft     | Edge                         | Blink            | https://developer.microsoft.com/en-us/microsoft-edge/  | Go to "Help > Send Feedback" from the browser            |
+| Mozilla       | Firefox                      | Gecko            | <https://bugzilla.mozilla.org/enter_bug.cgi>             | "Core" is normally the right product option to choose.   |
+| Apple         | Safari                       | WebKit           | <https://bugs.webkit.org/enter_bug.cgi?product=WebKit>   | In Apple's bug reporter, choose "Safari" as the product. |
+| Google, Opera | Chrome, Chromium, Opera v15+ | Blink            | <https://bugs.chromium.org/p/chromium/issues/list>       | Click the "New issue" button.                            |
+| Microsoft     | Edge                         | Blink            | <https://developer.microsoft.com/en-us/microsoft-edge/>  | Go to "Help > Send Feedback" from the browser            |
 
 
 ## Feature requests
 
 Feature requests are welcome. But take a moment to find out whether your idea
-fits with the scope and aims of the project. It's up to *you* to make a strong
+fits with the scope and aims of the project. It's up to _you_ to make a strong
 case to convince the project's developers of the merits of this feature. Please
 provide as much detail and context as possible.
 
@@ -137,12 +141,12 @@ project (indentation, accurate comments, etc.) and any other requirements
 
 **Do not edit `bootstrap.css` or `bootstrap.js`, and do not commit
 any dist files (`dist/` or `js/dist`).** Those files are automatically generated by our build tools. You should
-edit the source files in [`/bootstrap/scss/`](https://github.com/twbs/bootstrap/tree/v4-dev/scss)
-and/or [`/bootstrap/js/src/`](https://github.com/twbs/bootstrap/tree/v4-dev/js/src) instead.
+edit the source files in [`/bootstrap/scss/`](https://github.com/twbs/bootstrap/tree/main/scss)
+and/or [`/bootstrap/js/src/`](https://github.com/twbs/bootstrap/tree/main/js/src) instead.
 
 Similarly, when contributing to Bootstrap's documentation, you should edit the
 documentation source files in
-[the `/bootstrap/site/content/docs/` directory of the `v4-dev` branch](https://github.com/twbs/bootstrap/tree/v4-dev/site/content/docs).
+[the `/bootstrap/site/content/docs/` directory of the `main` branch](https://github.com/twbs/bootstrap/tree/main/site/content/docs).
 **Do not edit the `gh-pages` branch.** That branch is generated from the
 documentation source files and is managed separately by the Bootstrap Core Team.
 
@@ -164,8 +168,8 @@ included in the project:
 2. If you cloned a while ago, get the latest changes from upstream:
 
    ```bash
-   git checkout v4-dev
-   git pull upstream v4-dev
+   git checkout main
+   git pull upstream main
    ```
 
 3. Create a new topic branch (off the main project development branch) to
@@ -184,7 +188,7 @@ included in the project:
 5. Locally merge (or rebase) the upstream development branch into your topic branch:
 
    ```bash
-   git pull [--rebase] upstream v4-dev
+   git pull [--rebase] upstream main
    ```
 
 6. Push your topic branch up to your fork:
@@ -194,7 +198,7 @@ included in the project:
    ```
 
 7. [Open a Pull Request](https://help.github.com/articles/about-pull-requests/)
-    with a clear title and description against the `v4-dev` branch.
+    with a clear title and description against the `main` branch.
 
 **IMPORTANT**: By submitting a patch, you agree to allow the project owners to
 license your work under the terms of the [MIT License](../LICENSE) (if it
@@ -226,7 +230,6 @@ includes code changes) and under the terms of the
 - 2 spaces (no tabs)
 - strict mode
 - "Attractive"
-- Don't use [jQuery event alias convenience methods](https://github.com/jquery/jquery/blob/master/src/event/alias.js) (such as `$().focus()`). Instead, use [`$().trigger(eventType, ...)`](https://api.jquery.com/trigger/) or [`$().on(eventType, ...)`](https://api.jquery.com/on/), depending on whether you're firing an event or listening for an event. (For example, `$().trigger('focus')` or `$().on('focus', function (event) { /* handle focus event */ })`) We do this to be compatible with custom builds of jQuery where the event aliases module has been excluded.
 
 ### Checking coding style
 

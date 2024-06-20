@@ -11,7 +11,7 @@ abstract class BaseItem implements ItemInterface {
    * {@inheritdoc}
    */
   public function get($field) {
-    return $this->$field ?? NULL;
+    return isset($this->$field) ? $this->$field : NULL;
   }
 
   /**

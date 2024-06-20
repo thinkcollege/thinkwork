@@ -2,11 +2,11 @@ name: Tagify User List
 type: module
 description: Provides a user list component from <a href="https://yaireo.github.io/tagify/#users-list">Tagify user lists</a>
 package: User interface
-core_version_requirement: ^8.8 || ^9 || ^10
+core_version_requirement: ^8.8 || ^9 || ^10 || ^11
 dependencies:
   - tagify:tagify
 
-# Information added by Drupal.org packaging script on 2024-04-29
-version: '1.2.12'
+# Information added by Drupal.org packaging script on 2024-06-14
+version: '1.2.18'
 project: 'tagify'
-datestamp: 1714383521
+datestamp: 1718380541

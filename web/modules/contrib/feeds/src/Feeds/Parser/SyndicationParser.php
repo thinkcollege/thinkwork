@@ -86,10 +86,7 @@ class SyndicationParser extends ParserBase implements ParserInterface, Container
       $channel = Reader::importString($raw);
     }
     catch (ExceptionInterface $e) {
-      $args = [
-        '%site' => $feed->label() ?? '',
-        '%error' => trim($e->getMessage()),
-      ];
+      $args = ['%site' => $feed->label(), '%error' => trim($e->getMessage())];
       throw new \RuntimeException($this->t('The feed from %site seems to be broken because of error "%error".', $args));
     }
 

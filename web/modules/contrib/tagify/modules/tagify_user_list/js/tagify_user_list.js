@@ -11,7 +11,7 @@
       elements.each(function () {
         const input = this;
         const { identifier } = input.dataset;
-        const cardinality = parseInt(input.attributes.cardinality.value, 10);
+        const { cardinality } = input.dataset;
 
         /**
          * Counts the number of selected tags.
@@ -150,22 +150,6 @@
             class="tagify__dropdown__count">
               <span>${suggestions.length} members</span>
             </div>`
-            : '';
-        }
-
-        /**
-         * Generates the HTML template for a suggestion footer in the Tagify dropdown based on the provided tagData.
-         * @return {string} - The HTML template for the suggestion footer.
-         */
-        function suggestionFooterTemplate() {
-          // Returns empty dropdown footer when field cardinality is unlimited or
-          // field cardinality is bigger than the number of selected tags.
-          return isTagLimitReached()
-            ? `<footer
-          data-selector='tagify-suggestions-footer'
-          class="${this.settings.classNames.dropdownFooter}">
-            <p>You can only add <strong>${cardinality} item(s)</strong></p>
-         </footer>`
             : '';
         }
 
@@ -345,28 +329,35 @@
   Drupal.behaviors.nodeDetailsSummaries = {
     attach: function attach(context) {
       const $context = $(context);
+
       // eslint-disable-next-line no-shadow,func-names
       $context.find('.node-form-author').drupalSetSummary(function (context) {
         const $authorContext = $(context);
-        const name = $authorContext
-          .find('.field--name-uid input')
-          .val()
-          .split('[{"value":"')
-          .pop()
-          .split('",')[0]; // returns 'two'
-        const date = $authorContext.find('.field--name-created input').val();
+        const $authorInput = $authorContext.find('.field--name-uid input');
+        const $createdInput = $authorContext.find('.field--name-created input');
 
-        if (date) {
+        let name = null;
+        if ($authorInput.length) {
+          // eslint-disable-next-line prefer-destructuring
+          name = $authorInput.val().split('[{"value":"').pop().split('",')[0];
+        }
+
+        let date = null;
+        if ($createdInput.length) {
+          date = $createdInput.val();
+        }
+
+        if (name && date) {
           return Drupal.t('By @name on @date', {
             '@name': name,
             '@date': date,
           });
         }
-
         if (name) {
-          return Drupal.t('By @name', {
-            '@name': name,
-          });
+          return Drupal.t('By @name', { '@name': name });
+        }
+        if (date) {
+          return Drupal.t('Authored on @date', { '@date': date });
         }
       });
     },

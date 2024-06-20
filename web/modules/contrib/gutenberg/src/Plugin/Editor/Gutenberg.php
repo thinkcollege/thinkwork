@@ -209,6 +209,7 @@ class Gutenberg extends EditorBase implements ContainerFactoryPluginInterface {
     $settings = [
       'contentType' => $node_type,
       'allowedBlocks' => $this->configFactory->get('gutenberg.settings')->get($node_type . '_allowed_blocks'),
+      'allowedDrupalBlocks' => $this->configFactory->get('gutenberg.settings')->get($node_type . '_allowed_drupal_blocks'),
       'blackList' => $blocks_settings['blacklist'],
     ];
 

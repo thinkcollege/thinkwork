@@ -43,7 +43,7 @@ class BasicFieldSource extends SourceBase {
    *   source/feed id combo.
    */
   public function getSourceElement(FeedInterface $feed, ItemInterface $item) {
-    [, $field_name] = explode(':', $this->configuration['source']);
+    list(, $field_name) = explode(':', $this->configuration['source']);
     $return = [];
 
     if ($field_list = $feed->get($field_name)) {
