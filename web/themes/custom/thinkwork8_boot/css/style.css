@@ -139,8 +139,6 @@ color:	#fff}
     background-color: #0077AF;
 }
 
-#navbar-top {background-color:#DCDCDC}
-
 .navbar-nav .nav-link {padding:.5rem 1rem}
 /* links on top of search bar in header */
 .header-links {
@@ -153,6 +151,7 @@ color:	#fff}
 	padding-top:35px;
 	padding-bottom:0;
 	font-size:1.2rem;
+  background-color: #fff;
 }
 
 .site-footer .content {
@@ -826,13 +825,21 @@ background-color: #f7fbfe
 div#card-29 .card-footer, div#card-30 .card-footer , div#card-31 .card-footer
 {background-color:transparent;border: none}
 
-.paragraph--bp-accordion-container {
+
+
+/* Accordian on StateData home page */
+.paragraph.accordion-wrapper.paragraph--id--12{
   background-color: #ecf7fd;
   margin-top:20px;
 }
-.paragraph--bp-accordion-container  .card-header {
+.paragraph--id--12 button.accordion-button {
   background-color: #ecf7fd;
 }
+
+.paragraph--id--12 h2 .field--name-bp-header  {
+  padding:10px 0;
+}
+
 
 nav#navbar-top {
     background-color: #5F9832!important;
@@ -840,4 +847,15 @@ nav#navbar-top {
 
 nav#navbar-top a {
     color: #fff;
+}
+
+a.nav-link {
+    color: #0077AF;
+}
+
+/* article spacing for State Data - Data Notes view */
+.view-data-note-archive  .views-row {
+    border-bottom: 1px solid #d3d7d9;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
 }
