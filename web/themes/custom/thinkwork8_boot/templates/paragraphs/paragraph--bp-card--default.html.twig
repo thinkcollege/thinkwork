@@ -83,8 +83,8 @@ content.bp_padding[0]['#markup'] ? content.bp_padding[0]['#markup'],
         <h2 class="card-title">
            {# Pulls out the Card Link if it exists and renders the URL in this link. #}
     {% if content.bp_card_link[0]['#url'] is not empty %}
-        <a href="{{ content.bp_card_link[0]['#url'] }}" class="card-link{% if content.bp_link_entire_card[0]['#markup'] == 'On' %} stretched-link{% endif %}{% if content.bp_card_button_style is not empty %} {{ content.bp_card_button_style[0]['#markup'] }}{% endif %}">
-          {% if content.bp_card_link[0]['#url'] %}{{ content.bp_card_link[0]['#title'] }}{% endif %}
+        <a href="{{ content.bp_card_link[0]['#url'] }}" class="card-link">
+         {% endif %}
           {{ content.bp_card_title }}
           
             </a>
