@@ -1,0 +1,111 @@
+{#
+/**
+ * @file
+ * Bootstrap Paragraphs template for displaying an Accordion (Collapse).
+ *
+ * Available variables:
+ * - paragraph: Full paragraph entity.
+ *   - id: The paragraph ID.
+ *   - bundle: The type of the paragraph, for example, "image" or "text".
+ *   - authorid: The user ID of the paragraph author.
+ *   - createdtime: Formatted creation date. Preprocess functions can
+ *     reformat it by calling format_date() with the desired parameters on
+ *     $variables['paragraph']->getCreatedTime().
+ * - content: All paragraph items. Use {{ content }} to print them all,
+ *   or print a subset such as {{ content.field_example }}. Use
+ *   {{ content|without('field_example') }} to temporarily suppress the printing
+ *   of a given child element.
+ * - attributes: HTML attributes for the containing element.
+ *   The attributes.class element may contain one or more of the following
+ *   classes:
+ *   - paragraphs: The current template type (also known as a "theming hook").
+ *   - paragraphs--type-[type]: The current paragraphs type. For example, if the paragraph is an
+ *     "Image" it would result in "paragraphs--type--image". Note that the machine
+ *     name will often be in a short form of the human readable label.
+ *   - paragraphs--view-mode--[view_mode]: The View Mode of the paragraph; for example, a
+ *     preview would result in: "paragraphs--view-mode--preview", and
+ *     default: "paragraphs--view-mode--default".
+ * - view_mode: View mode; for example, "preview" or "full".
+ * - logged_in: Flag for authenticated user status. Will be true when the
+ *   current user is a logged-in member.
+ * - is_admin: Flag for admin user status. Will be true when the current user
+ *   is an administrator.
+ *
+ * @see template_preprocess_paragraph()
+ *
+ * @ingroup themeable
+ */
+#}
+
+{{ attach_library('bootstrap_paragraphs/bp-accordion') }}
+
+{# The template default set classes. #}
+{# Sets Paragraph ID as class. #}
+{%
+set classes = [
+'paragraph',
+'accordion-wrapper',
+'paragraph--type--' ~ paragraph.bundle|clean_class,
+view_mode ? 'paragraph--view-mode--' ~ view_mode|clean_class,
+'paragraph--id--' ~ paragraph.id.value,
+accordion_active ? 'paragraph--accordion_active--',
+content.bp_width['#items'].getString() ? content.bp_width['#items'].getString(),
+bs.background_color ? bs.background_color,
+content.bp_margin[0]['#markup'] ? content.bp_margin[0]['#markup'],
+content.bp_padding[0]['#markup'] ? content.bp_padding[0]['#markup'],
+]
+%}
+
+{# Sets Unique ID for Accordion from Paragraph ID. #}
+{% set paragraph_id = 'accordion-' ~ paragraph.id.value %}
+
+{# Prints Accordion template. #}
+	<div{{attributes.addClass(classes)}}>
+		<div class="paragraph__column"> {% if content.bp_header|render %}
+			<h2>{{ content.bp_header }}
+			</h2>
+		{% endif %}
+		{% if content.bp_accordion_expand['#items'].getString() %}
+			<button type="button" class="btn btn-primary bp-accordion-button" title="{{ 'Click to expand all accordions in this section.'|trans }}">
+				{{ 'Expand All'|trans }}
+			</button>
+		{% endif %}
+		<div
+			class="accordion" id="{{ paragraph_id }}" role="tablist" aria-multiselectable="true">
+			{# Loop through all of the accordion sections. #}
+			{% for key, item in content.bp_accordion_section|filter((value, key) => key|first != '#') %}
+				<div class="accordion-item" role="tab" id="heading-{{ paragraph_id }}-{{ key + 1 }}">
+					<h2 class="panel-title accordion-header">
+						<button
+							class="accordion-button {% if not loop.first %}collapsed {% endif %}{% if loop.first %}active{% endif %}{% if item['#paragraph'].bp_show_button.value == 1 and not loop.first %}active{% endif %}" data-bs-toggle="collapse" data-bs-target="#collapse-{{ paragraph_id }}-{{ key + 1 }}" href="#collapse-{{ paragraph_id }}-{{ key + 1 }}" {% if loop.first %} aria-expanded="true" {% endif %} {% if item['#paragraph'].bp_show_button.value == 1 and not loop.first %} aria-expanded="true" {% endif %} aria-controls="collapse-{{ paragraph_id }}-{{ key + 1 }}">
+							{# Print the accordion section title. #}
+							{{ item['#paragraph'].bp_accordion_section_title.value }}
+						</button>
+					</h2>
+					<div
+						id="collapse-{{ paragraph_id }}-{{ key + 1 }}" class="card-block panel-collapse collapse{% if item['#paragraph'].bp_show_button.value == 1 and not loop.first %} show{% endif %}{% if loop.first %} show{% endif %}" role="tabpanel" aria-labelledby="heading-{{ paragraph_id }}-{{ key + 1 }}" {% if content.field_alwy['#items'].value == '0' %} data-bs-parent="#{{ paragraph_id }}" {% endif %}>
+						{# Loop through all of the accordion section bodies. #}
+						{% for body_key, body_item in item['#paragraph'].bp_accordion_section_body %}
+							{# Use the same render array as item and set the '#paragraph'. #}
+							{% set section_body = item %}
+							{% set lang = section_body['#paragraph'].langcode[0].value %}
+							{# Check if a translation exists #}
+							{% if section_body['#paragraph'].bp_accordion_section_body[body_key].entity.hasTranslation(lang) %}
+								{# Load the entity for the current translation #}
+								{% set section_translation= section_body['#paragraph'].bp_accordion_section_body[body_key].entity.getTranslation(lang) %}
+							{% else %}
+								{# Load the source entity #}
+								{% set section_translation= section_body['#paragraph'].bp_accordion_section_body[body_key].entity %}
+							{% endif %}
+							{% set section_body = section_body|merge({'#paragraph': section_translation}) %}
+							{# Remove the cache keys so it doesn't repeat the first value. #}
+							{% set section_body = section_body|merge({'#cache': {}}) %}
+							{# Print the compiled section body. #}
+							{{ section_body }}
+						{% endfor %}
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
