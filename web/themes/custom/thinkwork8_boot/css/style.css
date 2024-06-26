@@ -110,11 +110,11 @@ blockquote.f_quote {
 .mainmenu .container {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+  /*  align-items: flex-start;*/
 }
-div#CollapsingNavbar {width:100%}
+/* div#CollapsingNavbar {width:100%} */
 .navbar .navbar-dark {background-color: #0077AF;}
-nav#block-thinkwork8-boot-mainmenu-2 {background-color: #0077AF;width:100%}
+nav#block-thinkwork8-boot-mainmenu-2 {background-color: #0077AF;}
 
  .dropdown-item.active, .dropdown-item:active {background-color:#5F9832;}
 
