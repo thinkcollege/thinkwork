@@ -845,14 +845,20 @@ nav#navbar-top {
     background-color: #5F9832!important;
 }
 
+/*
 nav#navbar-top a {
     color: #fff;
 }
+*/
 
 a.nav-link {
     color: #0077AF;
 }
 
+
+section.full-width.region-wrapper-primary-menu {
+  background-color:  #0077AF;
+}
 /* article spacing for State Data - Data Notes view */
 .view-data-note-archive  .views-row {
     border-bottom: 1px solid #d3d7d9;
