@@ -1,5 +1,7 @@
 {#
 /**
+*This is a frankenstein template from an old paragraphs bp accordion template and a new one
+*
  * @file
  * Bootstrap Paragraphs template for displaying an Accordion (Collapse).
  *
@@ -108,7 +110,7 @@ accordion_active ? 'paragraph--accordion_active--',
             {% set show_accordion = '' %}
             {% set aria = 'false' %}
           {% endif %}
-          <div class="card-header panel-heading" id="heading-{{ paragraph_id }}-{{ key + 1 }}">
+          <div class="panel-heading" id="heading-{{ paragraph_id }}-{{ key + 1 }}">
             <div class="panel-title">
               <button class="{{ (indicator_class) }}" data-bs-toggle="collapse" data-bs-parent="#{{ paragraph_id }}" data-bs-target="#collapse-{{ paragraph_id }}-{{ key + 1 }}" href="#collapse-{{ paragraph_id }}-{{ key + 1 }}" aria-expanded="{{ aria }}" aria-controls="collapse-{{ paragraph_id }}-{{ key + 1 }}">
                 {# Print the accordion section title. #}

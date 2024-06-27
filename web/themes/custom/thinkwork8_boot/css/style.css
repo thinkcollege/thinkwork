@@ -598,7 +598,14 @@ div#card-29 .card-footer, div#card-30 .card-footer , div#card-31 .card-footer
 
 
 /* Accordian on StateData home page */
-.paragraph.accordion-wrapper.paragraph--id--12{
+
+
+#accordion-12 button.display {
+      border: none;
+    background-color: #ecf7fd;
+    text-align: left;
+}
+#accordion-12{
   background-color: #ecf7fd;
   margin-top:20px;
 }
