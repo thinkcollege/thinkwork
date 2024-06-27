@@ -1,7 +1,5 @@
 {#
 /**
-*This is a frankenstein template from an old paragraphs bp accordion template and a new one
-*
  * @file
  * Bootstrap Paragraphs template for displaying an Accordion (Collapse).
  *
@@ -57,90 +55,56 @@ content.bp_padding[0]['#markup'] ? content.bp_padding[0]['#markup'],
 ]
 %}
 
-{# The template default set classes. #}
-{# Sets Paragraph ID as class. #}
-{%
-set classes = [
-'paragraph',
-'paragraph--type--' ~ paragraph.bundle|clean_class,
-view_mode ? 'paragraph--view-mode--' ~ view_mode|clean_class,
-'paragraph--id--' ~ paragraph.id.value,
-accordion_active ? 'paragraph--accordion_active--',
-]
-%}
-
-{# Merges Width field with classes. #}
-{% if paragraph.bp_width is not empty %}
-  {% set classes = classes|merge(layout_width_classes) %}
-{% endif %}
-
-{# Merges Background field with classes. #}
-{% if paragraph.bp_background is not empty %}
-  {% set classes = classes|merge(layout_background_classes) %}
-{% endif %}
-
 {# Sets Unique ID for Accordion from Paragraph ID. #}
 {% set paragraph_id = 'accordion-' ~ paragraph.id.value %}
 
 {# Prints Accordion template. #}
-<div class="paragraph--bp-accordion-container">
-  {% if content.bp_accordion_expand['#items'].getString() %}
-    <button type="button" class="btn btn-primary bp-accordion-button" title="{{ 'Click to expand all accordions in this section.'|trans }}">
-      {{ 'Expand All'|trans }}
-    </button>
-  {% endif %}
-  <div{{ attributes.addClass(classes) }}>
-    <div class="paragraph__column" id="{{ paragraph_id }}">
-      {% if paragraph.bp_header is not empty %}
-        <h2>{{ content.bp_header }}</h2>
-      {% endif %}
-      <div class="card panel panel-default">
-        {% if content.bp_show_indicators['#items'].getString() %}
-          {% set indicator_class = 'display' %}
-        {% else %}
-          {% set indicator_class = 'normal' %}
-        {%  endif %}
-        {# Loop through all of the accordion sections. #}
-        {% for key, item in content.bp_accordion_section|filter((value, key) => key|first != '#') %}
-          {# Set variables if accordion should be shown. #}
-          {% if item['#paragraph'].bp_show_button.value %}
-            {% set show_accordion = ' in' %}
-            {% set aria = 'true' %}
-          {% else %}
-            {% set show_accordion = '' %}
-            {% set aria = 'false' %}
-          {% endif %}
-          <div class="panel-heading" id="heading-{{ paragraph_id }}-{{ key + 1 }}">
-            <div class="panel-title">
-              <button class="{{ (indicator_class) }}" data-bs-toggle="collapse" data-bs-parent="#{{ paragraph_id }}" data-bs-target="#collapse-{{ paragraph_id }}-{{ key + 1 }}" href="#collapse-{{ paragraph_id }}-{{ key + 1 }}" aria-expanded="{{ aria }}" aria-controls="collapse-{{ paragraph_id }}-{{ key + 1 }}">
-                {# Print the accordion section title. #}
-                {{ item['#paragraph'].bp_accordion_section_title.value }}
-              </button>
-            </div>
-          </div>
-          <div id="collapse-{{ paragraph_id }}-{{ key + 1 }}" class="card-block panel-collapse collapse{{ show_accordion }}" aria-labelledby="heading-{{ paragraph_id }}-{{ key + 1 }}">
-            {# Loop through all of the accordion section bodies. #}
-            {% for body_key, body_item in item['#paragraph'].bp_accordion_section_body %}
-              {# Use the same render array as item and set the '#paragraph'. #}
-              {% set section_body = item %}
-              {% set lang = section_body['#paragraph'].langcode[0].value %}
-              {# Check if a translation exists #}
-              {% if section_body['#paragraph'].bp_accordion_section_body[body_key].entity.hasTranslation(lang) %}
-                {# Load the entity for the current translation #}
-              	{% set section_translation= section_body['#paragraph'].bp_accordion_section_body[body_key].entity.getTranslation(lang) %}
-              {% else %}
-                {# Load the source entity #}
-              	{% set section_translation= section_body['#paragraph'].bp_accordion_section_body[body_key].entity %}
-              {% endif %}
-              {% set section_body = section_body|merge({'#paragraph': section_translation}) %}
-              {# Remove the cache keys so it doesn't repeat the first value. #}
-              {% set section_body = section_body|merge({'#cache': {}}) %}
-              {# Print the compiled section body. #}
-              {{ section_body }}
-            {% endfor %}
-          </div>
-        {% endfor %}
-      </div>
-    </div>
-  </div>
+	<div{{attributes.addClass(classes)}}>
+		<div class="paragraph__column"> {% if content.bp_header is not empty %}
+			<h2>{{ content.bp_header }}
+			</h2>
+		{% endif %}
+		{% if content.bp_accordion_expand['#items'].getString() %}
+			<button type="button" class="btn btn-primary bp-accordion-button" title="{{ 'Click to expand all accordions in this section.'|trans }}">
+				{{ 'Expand All'|trans }}
+			</button>
+		{% endif %}
+		<div
+			class="accordion" id="{{ paragraph_id }}" role="tablist" aria-multiselectable="true">
+			{# Loop through all of the accordion sections. #}
+			{% for key, item in content.bp_accordion_section|filter((value, key) => key|first != '#') %}
+				<div class="accordion-item" role="tab" id="heading-{{ paragraph_id }}-{{ key + 1 }}">
+					<h2 class="panel-title accordion-header">
+						<button
+							class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse-{{ paragraph_id }}-{{ key + 1 }}" href="#collapse-{{ paragraph_id }}-{{ key + 1 }}" aria-expanded="true" aria-controls="collapse-{{ paragraph_id }}-{{ key + 1 }}">
+							{# Print the accordion section title. #}
+							{{ item['#paragraph'].bp_accordion_section_title.value }}
+						</button>
+					</h2>
+					<div
+						id="collapse-{{ paragraph_id }}-{{ key + 1 }}" class="card-block panel-collapse collapse" role="tabpanel" aria-labelledby="heading-{{ paragraph_id }}-{{ key + 1 }}" data-bs-parent="#{{ paragraph_id }}">
+						{# Loop through all of the accordion section bodies. #}
+						{% for body_key, body_item in item['#paragraph'].bp_accordion_section_body %}
+							{# Use the same render array as item and set the '#paragraph'. #}
+							{% set section_body = item %}
+							{% set lang = section_body['#paragraph'].langcode[0].value %}
+							{# Check if a translation exists #}
+							{% if section_body['#paragraph'].bp_accordion_section_body[body_key].entity.hasTranslation(lang) %}
+								{# Load the entity for the current translation #}
+								{% set section_translation= section_body['#paragraph'].bp_accordion_section_body[body_key].entity.getTranslation(lang) %}
+							{% else %}
+								{# Load the source entity #}
+								{% set section_translation= section_body['#paragraph'].bp_accordion_section_body[body_key].entity %}
+							{% endif %}
+							{% set section_body = section_body|merge({'#paragraph': section_translation}) %}
+							{# Remove the cache keys so it doesn't repeat the first value. #}
+							{% set section_body = section_body|merge({'#cache': {}}) %}
+							{# Print the compiled section body. #}
+							{{ section_body }}
+						{% endfor %}
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
 </div>
