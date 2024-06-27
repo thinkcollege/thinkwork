@@ -2,9 +2,7 @@
  * @file
  * Subtheme specific CSS. Test JenkinsVI
 
- */
-/*body {background-color: #A7D48E;}*/
-/*
+ 
  #main.container {background-color: white; margin-top: 0px; padding: 0 1.5em 1.5em 1.5em;}
  @media (min-width: 1200px) {
 
@@ -108,13 +106,13 @@ blockquote.f_quote {
 /*Nav Menu */
 
 .mainmenu .container {
-    display: flex;
+ /*   display: flex;*/
     flex-direction: column;
-  /*  align-items: flex-start;*/
+  /* align-items: flex-start;*/
 }
 /* div#CollapsingNavbar {width:100%} */
 .navbar .navbar-dark {background-color: #0077AF;}
-nav#block-thinkwork8-boot-mainmenu-2 {background-color: #0077AF;}
+nav#block-thinkwork8-boot-mainmenu-2 {background-color: #0077AF;width:100%}
 
  .dropdown-item.active, .dropdown-item:active {background-color:#5F9832;}
 
@@ -129,7 +127,7 @@ color:	#fff}
 	padding-bottom: 0;
 }
 
-
+ 
 .navbar-toggler {
     display: flex;
     position: absolute;
@@ -141,6 +139,7 @@ color:	#fff}
 }
 
 .navbar-nav .nav-link {padding:.5rem 1rem}
+ 
 /* links on top of search bar in header */
 .header-links {
     padding: 5px 0 0 10px;
@@ -355,8 +354,6 @@ img[data-align="right"] {padding:0 0 5px 5px }
 	#midwest{fill:#FFCC33;stroke:#FFFFFF;stroke-width:0.75;}
 	#northwest{fill:#CC3333;stroke:#FFFFFF;stroke-width:0.75;}
 #southwest{fill:#336699;stroke:#FFFFFF;stroke-width:0.75;}
-
-
 	#new_england:hover {fill: #ff9500;cursor: pointer;}
 	#mid_atlantic:hover {fill:#ff9500;cursor: pointer;}
 	#south:hover {fill: #ff9500;cursor: pointer;}
@@ -384,9 +381,12 @@ img[data-align="right"] {padding:0 0 5px 5px }
  }
 
 
+ /* Various read more links*/
+
+ 
 .node-readmore.nav-link {
     display: inline-block;
-    font-weight: 400;
+    font-weight: 700;
     text-align: center;
     white-space: nowrap;
     vertical-align: middle;
@@ -394,7 +394,6 @@ img[data-align="right"] {padding:0 0 5px 5px }
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-
     padding: .375rem .75rem;
     font-size: 1rem;
     line-height: 1.5;
@@ -408,6 +407,39 @@ img[data-align="right"] {padding:0 0 5px 5px }
 .node-readmore.nav-link a {
 	color: #fff
     }
+ 
+
+/*  "See more Publications" links on some project landing pages */
+
+.view-aie-taxonomy-term .more-link {
+    font-weight: 700;
+    border-radius: 4px;
+    border: solid 2px #0077B0;
+    padding: 5px;
+    float: right;
+}
+
+/*
+
+.view-elc-taxonomy-term .more-link {
+    font-weight: 700;
+    border-radius: 4px;
+    border: solid 2px #0077B0;
+    padding: 5px;
+    float: right;
+}
+
+
+.view-rrtc-taxonomy-term .more-link {
+    font-weight: 700;
+    border-radius: 4px;
+    border: solid 2px #0077B0;
+    padding: 5px;
+    float: right;
+}
+
+
+*/
 
 .page-node-322 .navbar {
 			display:none}
@@ -428,35 +460,6 @@ img.align-left {margin:10px;}
 img.align-right {margin:10px;}
 
 
-
-/*  "See more Publications" links on some project landing pages */
-
-.view-aie-taxonomy-term .more-link {
-    font-weight: 700;
-    border-radius: 4px;
-    border: solid 2px #0077B0;
-    padding: 5px;
-    float: right;
-}
-
-
-
-.view-elc-taxonomy-term .more-link {
-    font-weight: 700;
-    border-radius: 4px;
-    border: solid 2px #0077B0;
-    padding: 5px;
-    float: right;
-}
-
-
-.view-rrtc-taxonomy-term .more-link {
-    font-weight: 700;
-    border-radius: 4px;
-    border: solid 2px #0077B0;
-    padding: 5px;
-    float: right;
-}
 
 .block-bootstrap-collapse {
   margin-bottom: 10px;
