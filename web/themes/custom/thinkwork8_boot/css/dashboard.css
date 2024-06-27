@@ -158,7 +158,7 @@ nav li a:hover {
 #sidebar {
 	bottom: 0;
 	left: 0;
-	z-index: 1000;
+	/* z-index: 1000; */
 	padding: 10px;
 	/*overflow-x:hidden;
 	overflow-y:auto; */
@@ -1116,7 +1116,7 @@ nav li a:hover {
 #sidebar .nav-link {
 	border-radius: 0;
 }
-.navbar-nav div.dropdown-menu.show {z-index: 10000; }
+/* .navbar-nav div.dropdown-menu.show {z-index: 10000; } */
 @media print { nav#sidebar, .container-fluid .downloadButton, #footer .footer-partners, #footer .col-md-4.col-sm-12.col-align.col-align--center {display: none !important; }
 }
  .stateSection.natRemove, .chartsection .altSelect {display: none;} 
