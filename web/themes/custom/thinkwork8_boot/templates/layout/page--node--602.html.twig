@@ -1,0 +1,1201 @@
+{% extends "@bootstrap_barrio/layout/page.html.twig" %}
+
+{#
+/**
+ * @file
+ * Bootstrap Barrio's theme implementation to display a single page.
+ *
+ * The doctype, html, head and body tags are not in this template. Instead they
+ * can be found in the html.html.twig template normally located in the
+ * core/modules/system directory.
+ *
+ * Available variables:
+ *
+ * General utility variables:
+ * - base_path: The base URL path of the Drupal installation. Will usually be
+ *   "/" unless you have installed Drupal in a sub-directory.
+ * - is_front: A flag indicating if the current page is the front page.
+ * - logged_in: A flag indicating if the user is registered and signed in.
+ * - is_admin: A flag indicating if the user has permission to access
+ *   administration pages.
+ *
+ * Site identity:
+ * - front_page: The URL of the front page. Use this instead of base_path when
+ *   linking to the front page. This includes the language domain or prefix.
+ * - logo: The url of the logo image, as defined in theme settings.
+ * - site_name: The name of the site. This is empty when displaying the site
+ *   name has been disabled in the theme settings.
+ * - site_slogan: The slogan of the site. This is empty when displaying the site
+ *   slogan has been disabled in theme settings.
+
+ * Page content (in order of occurrence in the default page.html.twig):
+ * - node: Fully loaded node, if there is an automatically-loaded node
+ *   associated with the page and the node ID is the second argument in the
+ *   page's path (e.g. node/12345 and node/12345/revisions, but not
+ *   comment/reply/12345).
+ *
+ * Regions:
+ * - page.top_header: Items for the top header region.
+ * - page.top_header_form: Items for the top header form region.
+ * - page.header: Items for the header region.
+ * - page.header_form: Items for the header form region.
+ * - page.highlighted: Items for the highlighted region.
+ * - page.primary_menu: Items for the primary menu region.
+ * - page.secondary_menu: Items for the secondary menu region.
+ * - page.featured_top: Items for the featured top region.
+ * - page.content: The main content of the current page.
+ * - page.sidebar_first: Items for the first sidebar.
+ * - page.sidebar_second: Items for the second sidebar.
+ * - page.featured_bottom_first: Items for the first featured bottom region.
+ * - page.featured_bottom_second: Items for the second featured bottom region.
+ * - page.featured_bottom_third: Items for the third featured bottom region.
+ * - page.footer_first: Items for the first footer column.
+ * - page.footer_second: Items for the second footer column.
+ * - page.footer_third: Items for the third footer column.
+ * - page.footer_fourth: Items for the fourth footer column.
+ * - page.footer_fifth: Items for the fifth footer column.
+ * - page.breadcrumb: Items for the breadcrumb region.
+ *
+ * Theme variables:
+ * - navbar_top_attributes: Items for the header region.
+ * - navbar_attributes: Items for the header region.
+ * - content_attributes: Items for the header region.
+ * - sidebar_first_attributes: Items for the highlighted region.
+ * - sidebar_second_attributes: Items for the primary menu region.
+ *
+ * @see template_preprocess_page()
+ * @see bootstrap_barrio_preprocess_page()
+ * @see html.html.twig
+ */
+#}
+
+{% block head %}
+        {% if page.secondary_menu or page.page.top_header or page.top_header_form %}
+          <nav{{ navbar_top_attributes }}>
+
+          <div class="container">
+          
+              {{ page.secondary_menu }}
+              {{ page.top_header }}
+              {% if page.top_header_form %}
+                <div class="form-inline navbar-form float-right">
+                  {{ page.top_header_form }}
+                </div>
+              {% endif %}
+
+          </div>
+
+          </nav>
+        {% endif %}
+        <nav{{ navbar_attributes }}>
+
+          <div class="container">
+
+            <div class="navbar-brand">
+              {{ page.header }}
+            </div>
+            {% if page.primary_menu or page.header_form %}
+              <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#CollapsingNavbar" aria-controls="CollapsingNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+              <div class="collapse navbar-collapse" id="CollapsingNavbar">
+                {{ page.primary_menu }}
+                {% if page.header_form %}
+                  <div class="form-inline navbar-form float-right">
+                    {{ page.header_form }}
+                  </div>
+                {% endif %}
+	          </div>
+            {% endif %}
+            {% if sidebar_collapse %}
+              <button class="navbar-toggler navbar-toggler-left" type="button" data-toggle="collapse" data-target="#CollapsingLeft" aria-controls="CollapsingLeft" aria-expanded="false" aria-label="Toggle navigation"></button>
+            {% endif %}
+
+          </div>
+
+        </nav>
+{% endblock %}
+
+{% block content %}
+        <div id="main" class="{{ container }}">
+          {% if page.breadcrumb %}
+            <div class="row">
+              {{ page.breadcrumb }}
+            </div>
+          {% endif %}
+          <div class="row row-offcanvas row-offcanvas-left clearfix">
+            <main{{ content_attributes }}>
+              <section class="section">
+                      <a id="main-content" tabindex="-1"></a>
+                    {{ page.content }}
+                <div class="container-fluid">
+                  <form id="sdChartForm" method="post" name="sdChartForm" action="">
+                      <!--  <form id="sdChartForm" method="post" name="sdChartForm" action="/chartbuilder/sd_chartcall.php?reportType=single&type=table"> -->
+                  
+                    
+                      <div class="row">
+
+
+
+
+
+
+                        <nav class="col-lg-3 col-md-4 col-sm-12 py-2" id="sidebar">
+                        
+                            <div class="row">
+                                <div class="col-12 py-2">
+                                
+                                </div>
+                            </div>
+                            <button aria-label="Generate chart, tables, and text download for the selected values" class="btn btn-primary michRedraw" id="michRedraw1" type="button">GENERATE<br />Charts &amp; Tables</button><br>
+
+                            <div id="accordion">
+                              <fieldset aria-labelledby="categoryRadios" role="radiogroup">
+                                  <div class="chartsection">
+                                    <h2 class="p-2" id="categoryRadios">1. Select Data Set</h2>
+
+                                    <div id="cardOne" class="card">
+                                      <div class="card-header" id="headingOne">
+                                        <h3 class="mb-0"><button type="button" aria-controls="collapseOne" aria-expanded="false"
+                                            class="btn btn-link collapsed" data-target="#collapseOne"
+                                            data-toggle="collapse"><i aria-hidden="true" class="fa"></i>Population data from the American Community Survey</button></h3>
+                                      </div>
+                                      <div aria-labelledby="headingOne" data-parent="#accordion" class="collapse"
+                                        id="collapseOne">
+                                        <div class="card-body">
+                                          <h4>Select a category</h4>
+                                          <div id="acscat">
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" alt-text="Population data from the American Community Survey: Any disability" title="Population data from the American Community Survey: Any disability"
+                                                for="choose_acs_anydis"><input id="choose_acs_anydis" class="tableSelect" name="acscat" tabindex="0"
+                                                  type="radio" value="sta_d3_acs_post08_AnyDis">Any disability</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" alt-text="Population data from the American Community Survey: Cognitive disability" title="Population data from the American Community Survey: Cognitive disability"
+                                                for="choose_acs_cogdis"><input id="choose_acs_cogdis" class="tableSelect" name="acscat" tabindex="0"
+                                                  type="radio" value="sta_d3_acs_post08_Cognitive">Cognitive disability</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" alt-text="Population data from the American Community Survey: No disability" title="Population data from the American Community Survey: No disability"
+                                                for="choose_acs_nodis"><input id="choose_acs_nodis" class="tableSelect" name="acscat" tabindex="0"
+                                                  type="radio" value="sta_d3_acs_post08_nodis">No disability</label>
+                                            </div>
+                                          </div>
+                                          <div id="acsvars">
+                                            <div class="altSelect singleSelect">
+                                              <h4>Select a variable</h4>
+                                              <div>
+                                                <label class="js-simple-tooltip" for="choose_24" data-toggle="tooltip" title="Mean annual earnings from work (in dollars)"><input id="choose_24" name="reportChoose" 
+                                                      tabindex="0" type="radio" class="acsVars" value="Annual_Work_Earnings">Mean annual earnings from work (in dollars)</label>
+
+                                              </div>
+                                              <div>
+                                                <label class="js-simple-tooltip"
+                                                  data-toggle="tooltip" title="Number of people age 16-64" data-toggle="tooltip"
+                                                  for="choose_1"><input id="choose_1" name="reportChoose" tabindex="0"
+                                                    type="radio" class="acsVars" value="NUMPOP">Number of people</label>
+                                              </div>
+                                              <div>
+                                                <label class="js-simple-tooltip"
+                                                  data-toggle="tooltip" title="Number of people employed age 16-64"
+                                                  for="choose_2"><input id="choose_2" name="reportChoose" tabindex="0"
+                                                    type="radio" class="acsVars" value="NUMEMP">Number of people employed</label>
+                                              </div>
+                                              <div>
+                                                <label class="js-simple-tooltip"
+                                                  data-toggle="tooltip" title="The ratio of the number of people working to the number of people who are working, looking for work, and not looking for work"
+"
+                                                  for="choose_3"><input id="choose_3" name="reportChoose" tabindex="0"
+                                                    type="radio" class="acsVars" value="Perwork">Percent of Working-Age People Who Are Employed</label>
+                                              </div>
+                                              <div>
+                                                <label class="js-simple-tooltip"
+                                                  data-toggle="tooltip" title="Percentage living below the poverty line"
+                                                  for="choose_4"><input id="choose_4" name="reportChoose" tabindex="0"
+                                                    type="radio" class="acsVars" value="Below_Poverty">Percentage below poverty</label>
+                                              </div>
+                                              <div>
+                                                <label class="js-simple-tooltip"
+                                                  data-toggle="tooltip" title="Average weekly hours worked"
+                                                  for="choose_5"><input id="choose_5" name="reportChoose" tabindex="0"
+                                                    type="radio" class="acsVars" value="WEEHO">Weekly hours worked</label>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div id="cardTwo" class="card">
+                                      <div class="card-header" id="headingTwo">
+                                        <h3 class="mb-0"><button type="button" aria-controls="collapseTwo" aria-expanded="false"
+                                            class="btn btn-link collapsed tableSelect" data-target="#collapseTwo"
+                                            data-toggle="collapse" value="sta_d3_agency_ssa"  data-toggle="tooltip" title="Social Security Administration"><i aria-hidden="true" class="fa"></i>Social Security Administration</button></h3>
+                                      </div>
+                                      <div aria-labelledby="headingTwo" data-parent="#accordion" class="collapse"
+                                        id="collapseTwo">
+
+
+                                        <div class="card-body">
+                                          <div id="sta_d3_agency_ssa" class="altSelect singleSelect">
+                                            <div>
+                                              <label for="choose_25" data-toggle="tooltip" title="Number of Social Security Income recipients with disabilities using a Plan for Achieving Self Support (PASS)"><input id="choose_25" name="reportChoose"
+                                                    tabindex="0" type="radio" value="PASS">PASS users</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of Social Security Income recipients with disabilities using Impairment Related Work Expenses (IRWE)"
+                                                for="choose_44"><input id="choose_44" name="reportChoose" tabindex="0"
+                                                  type="radio" value="IRWE">IRWE users</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of Social Security Income recipients with disabilities using Blind Work Expense (BWE)" for="choose_55"><input id="choose_55" name="reportChoose" tabindex="0"
+                                                  type="radio" value="BWE">BWE users</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Total number of Social Security Income recipients with disabilities"
+                                                for="choose_66"><input id="choose_66" name="reportChoose" tabindex="0"
+                                                  type="radio" value="Total SSI Disabled">SSI recipients with disabilities</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of Social Security Income recipients with disabilities who work"
+                                                for="choose_77"><input id="choose_77" name="reportChoose" tabindex="0"
+                                                  type="radio" value="Number Working">Working SSI recipients with disabilities</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Percentage of Social Security Income recipients with disabilities who work relative to the total recipients with disabilities"
+                                                for="choose_78"><input id="choose_78" name="reportChoose" tabindex="0"
+                                                  type="radio" value="Percent Working">Percent of SSI recipients who work</label>
+                                            </div>
+                                          </div>
+                                        </div>
+
+
+                                      </div>
+                                    </div>
+                                    <div id="cardThree" class="card">
+                                      <div class="card-header" id="headingThree">
+                                        <h3 class="mb-0"><button type="button" aria-controls="collapseThree" aria-expanded="false"
+                                            class="btn btn-link collapsed tableSelect" data-target="#collapseThree"
+                                            data-toggle="collapse" value="sta_d3_agency_labor"  data-toggle="tooltip" title="State Demographics"><i aria-hidden="true" class="fa"></i>State Demographics</button></h3>
+                                      </div>
+                                      <div aria-labelledby="headingThree" data-parent="#accordion" class="collapse"
+                                        id="collapseThree">
+                                        <div class="card-body">
+                                          <div id="sta_d3_agency_labor" class="altSelect singleSelect">
+                                            <div>
+                                              <label for="choose_26" class="js-simple-tooltip" title="Number unemployed as a percent of the labor force, specifically people 16 years and up who had no employment during the reference week, were available (except for temp. illness), and tried to find a job in the last month."><input id="choose_26" name="reportChoose"
+                                                      tabindex="0" type="radio" value="unemployment rate">Unemployment rate</label>
+                                            </div>
+
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Total state population."
+                                                for="choose_88"><input id="choose_88" name="reportChoose" tabindex="0"
+                                                  type="radio" value="population in 1000s">State population</label>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div id="cardFour" class="card">
+                                      <div class="card-header" id="headingFour">
+                                        <h3 class="mb-0"><button type="button" aria-controls="collapseFour" aria-expanded="false"
+                                            class="btn btn-link collapsed tableSelect" data-target="#collapseFour"
+                                            data-toggle="collapse" value="sta_d3_agency_mrdd"  data-toggle="tooltip" title="State IDD Agencies"><i aria-hidden="true" class="fa"></i>State IDD Agencies</button></h3>
+                                      </div>
+                                      <div aria-labelledby="headingFour" data-parent="#accordion" class="collapse"
+                                        id="collapseFour">
+                                        <div class="card-body">
+                                          <div id="sta_d3_agency_mrdd" class="altSelect singleSelect">
+                                            <div>
+                                              <label class="js-simple-tooltip" data-toggle="tooltip" title="Total unduplicated number of people served in day and employment services." for="choose_27"><input id="choose_27" name="reportChoose"
+                                                    tabindex="0" type="radio" value="Total served">Total served (estimate)</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of people served in integrated employment, including competitive employment, individual supported employment, and group supported employment (e.g., enclaves, mobile work crews)."
+                                                for="choose_13"><input id="choose_13" name="reportChoose" tabindex="0"
+                                                  type="radio" value="Integrated employment">Integrated employment, number served (estimate)</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Percentage of people served in integrated employment relative to total served in day and employment services."
+                                                for="choose_14"><input id="choose_14" name="reportChoose" tabindex="0"
+                                                  type="radio" value="Integrated employment percentage rate">Integrated employment percentage (estimate)</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of people served in facility-based work, including sheltered employment."
+                                                for="choose_222"><input id="choose_222" name="reportChoose" tabindex="0"
+                                                  type="radio" value="Facility-based work">Facility-based work, number served (reported total)</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Percentage of people served in facility-based work relative to total served in day and employment services."
+                                                for="choose_233"><input id="choose_233" name="reportChoose" tabindex="0"
+                                                  type="radio" value="Facility-based work percentage rate">Facility-based work percentage rate</label>
+                                            </div>
+
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number served in community-based non-work, or programs where individuals engage in recreational, skill training or volunteer activities in settings where most people do not have disabilities. Usually includes community integration or participation services."
+                                                for="choose_15"><input id="choose_15" name="reportChoose" tabindex="0"
+                                                  type="radio" value="Community based nonwork">Community-based non-work, number served (reported total)</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Percentage of people served in community-based non-work services relative to total served in day and employment services."
+                                                for="choose_16"><input id="choose_16" name="reportChoose" tabindex="0"
+                                                  type="radio" value="Community based nonwork percentage rate">Community based nonwork percentage</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number served in facility-based non-work programs including day habilitation or day activity services."
+                                                for="choose_177"><input id="choose_177" name="reportChoose" tabindex="0"
+                                                  type="radio" value="Facility-based nonwork">Facility-based non-work, number served (reported number)</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Percentage of people served in facility-based nonwork relative to total served in day and employment services."
+                                                for="choose_178"><input id="choose_178" name="reportChoose" tabindex="0"
+                                                  type="radio" value="Facility-based nonwork percentage rate">Facility-based nonwork percentage</label>
+                                            </div>
+
+
+
+
+
+
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Total unduplicated number of people who receive facility-based and/or community-based services. "
+                                                for="choose_1787"><input id="choose_1787" name="reportChoose" tabindex="0"
+                                                  type="radio" value="combined_nonwork_number">All non-work (facility-based and community-based) number served</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="All non-work (facility-based and community-based) percentage"
+                                                for="choose_17877"><input id="choose_17877" name="reportChoose" tabindex="0"
+                                                  type="radio" value="combined_nonwork_percentage">All non-work (facility-based and community-based) percentage</label>
+                                            </div>
+                                           
+
+
+
+
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of people served in integrated employment per 100,000 individuals in the general state population."
+                                                for="choose_1700"><input id="choose_1700" name="reportChoose" tabindex="0"
+                                                  type="radio" value="Integrated employment rate">Integrated employment rate</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="he total number of dollars spent on day and employment services."
+                                                for="choose_1701"><input id="choose_1701" name="reportChoose" tabindex="0"
+                                                  type="radio" value="Total funding">Total funding</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of dollars spent on integrated employment services."
+                                                for="choose_1702"><input id="choose_1702" name="reportChoose" tabindex="0"
+                                                  type="radio" value="employment money">Integrated employment funding</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of individuals on waiting list"
+                                                for="choose_1703"><input id="choose_1703" name="reportChoose" tabindex="0"
+                                                  type="radio" value="MRDDWaiting">Agency Waiting List</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of dollars spent on for facility-based work services."
+                                                for="choose_1706"><input id="choose_1706" name="reportChoose" tabindex="0"
+                                                  type="radio" value="FBWFund">Facility-based work funding</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of dollars spent on community-based non-work services."
+                                                for="choose_1704"><input id="choose_1704" name="reportChoose" tabindex="0"
+                                                  type="radio" value="CBNWFund">Community-based non-work funding</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of dollars spent on facility-based non-work services."
+                                                for="choose_1705"><input id="choose_1705" name="reportChoose" tabindex="0"
+                                                  type="radio" value="FBNWFund">Facility-based non-work funding</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="All non-work (facility-based and community-based) funding: Number of dollars spent on facility-based and community-based services (combined)."
+                                                for="choose_17066"><input id="choose_17066" name="reportChoose" tabindex="0"
+                                                  type="radio" value="combined_nonwork_funding">All non-work (facility-based and community-based) funding</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Percentage of total funding to integrated employment"
+                                                for="choose_1707"><input id="choose_1707" name="reportChoose" tabindex="0"
+                                                  type="radio" value="IntEmp_Fund_percent">Percentage of total funding to integrated employment</label>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div id="cardSix" class="card">
+                                      <div class="card-header" id="headingSix">
+                                        <h3 class="mb-0"><button type="button" aria-controls="collapseSix" aria-expanded="false"
+                                            class="btn btn-link collapsed" data-target="#collapseSix"
+                                            data-toggle="collapse"><i aria-hidden="true"
+                                              class="fa"></i>State Vocational Rehabilitation (VR) Agency Data</button></h3>
+                                      </div>
+                                      <div aria-labelledby="headingSix" data-parent="#accordion" class="collapse"
+                                        id="collapseSix">
+                                        <div class="card-body">
+                                          <h4>Select a category</h4>
+                                          <div id="vrcat">
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" alt-text="State Vocational Rehabilitation (VR) Agency Data: VR Closures: Intellectual Disabilities" title="State Vocational Rehabilitation (VR) Agency Data: VR Closures: Intellectual Disabilities"
+                                                for="choose_vr_cat_ID"><input id="choose_vr_cat_id" class="tableSelect" name="vrcat" tabindex="0"
+                                                  type="radio" value="sta_d3_vr_rsa_ID">VR Closures: Intellectual Disabilities</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" alt-text="State Vocational Rehabilitation (VR) Agency Data: VR Closures: All disabilities" title="State Vocational Rehabilitation (VR) Agency Data: VR Closures: All disabilities"
+                                                for="choose_vr_cat_All"><input id="choose_vr_cat_All" class="tableSelect" name="vrcat" tabindex="0"
+                                                  type="radio" value="sta_d3_vr_rsa_all">VR Closures: All disabilities</label>
+                                            </div>
+                                          </div>
+
+                                          <div id="vrvars">
+                                          <div class="altSelect singleSelect">
+                                              <h4>Select a variable</h4>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of people who exited VR with or without employment"
+                                                for="choose_20"><input id="choose_20" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="CLOSURES">Total closed</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of people who exited VR with employment"
+                                                for="choose_210"><input id="choose_210" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="REHABED">Rehabilitated, Status 26</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of people who did not exit VR with employment"
+                                                for="choose_211"><input id="choose_211" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="NOTRE28">Not rehabilitated, Status 28</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Percentage of people who exited VR with employment out of the number of people who received services"
+                                                for="choose_212"><input id="choose_212" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="REHABRAT">Rehabilitation rate</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of people who did not exit VR with employment after an Individualized Written Rehabilitation Program/Individual Employment Plan "
+                                                for="choose_214"><input id="choose_214" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="NOTRE30">Not Rehabilitated, Status 30</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of people who exited VR into integrated employment "
+                                                for="choose_215"><input id="choose_215" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="INTEGRAT">Integrated employment closures</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of people who exited VR with employment out of 100,000 people in the general population of a state, or the US"
+                                                for="choose_216"><input id="choose_216" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="INCIDENCE">Closures per 100k state population</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Number of people with a goal of supported employment in their IPE during their rehabilitation and received supported employment services"
+                                                for="choose_217"><input id="choose_217" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="SETOT">Supported employment closures</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Average weekly wages at VR exit "
+                                                for="choose_218"><input id="choose_218" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="EARNINGS">Weekly earnings</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Average hours worked per week at VR exit"
+                                                for="choose_219"><input id="choose_219" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="HOURS">Hours per week</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Average cost for services with successful outcomes"
+                                                for="choose_2101"><input id="choose_2101" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="COST26">Average cost, status 26</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Average cost for services that did not have successful outcomes"
+                                                for="choose_2102"><input id="choose_2102" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="COST28">Average cost, status 28</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Average amount of days receiving services for individuals with successful outcomes"
+                                                for="choose_2103"><input id="choose_2103" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="TIME26">Average days, status 26</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Average amount of days receiving services for individuals without successful outcomes"
+                                                for="choose_2104"><input id="choose_2104" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="TIME28">Average days, status 28</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Average amount of days individuals spent between their VR application and becoming eligible for service"
+                                                for="choose_2105"><input id="choose_2105" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="App_to_Elig">Average days from application to eligibility</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Average amount of days individuals spent between becoming eligible for services, and having their VR case closed "
+                                                for="choose_2107"><input id="choose_2107" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="Elig_to_Closure">Avg. days from eligibility to close</label>
+                                            </div>
+                                            <div>
+                                              <label class="js-simple-tooltip"
+                                                data-toggle="tooltip" title="Percent of VR cases closed that resulted in employment"
+                                                for="choose_2108"><input id="choose_2108" name="reportChoose" tabindex="0"
+                                                  type="radio" class="vrVars" value="Percent_Emp_closure">Percent closures into employment</label>
+                                            </div>
+                                          </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                  </div>
+                              </fieldset>
+
+                              <input type="hidden" id="tableId" name="tableId" value="" />
+                              <input type="hidden" id="tableDescrip" name="tableDescrip" value="" />
+                            </div>
+
+
+
+                            <div class="chartsection stateSection">
+
+                                <h2 class="p-2 activityStates">2. Select State(s)</h2>
+
+
+                                <div class="card groupState">
+                                  <div class="card-header" id="headingSeven">
+                                    <h3 class="mb-0 clearfix"><button type="button" aria-controls="collapseSeven" aria-expanded="false"
+                                        class="btn btn-link collapsed" data-target="#collapseSeven"
+                                        data-toggle="collapse"><i aria-hidden="true" class="fa"></i> Select
+                                        State(s)</button>
+                                      <div id="stateCountText" class="clearable"></div>
+                                    </h3>
+                                  </div>
+                                  <div aria-labelledby="headingSeven" class="collapse"
+                                    id="collapseSeven">
+                                       <div class="checkbox">
+                                        <label class="form-check-label" for="Checkall"><input class="stateCheck checkAll"
+                                            type="checkbox" value="Checkall"> Select/Clear all</label>
+                                       </div>
+
+                                    <div class="card-body row altSelect multiSelect">
+                                      <div class="col">
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="US"> U.S. Total</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="AK"> Alaska</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="AL"> Alabama</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="AR"> Arkansas</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="AZ"> Arizona</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="CA"> California</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="CO"> Colorado</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="CT"> Connecticut</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="DC"> District Of Columbia</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="DE"> Delaware</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="FL"> Florida</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="GA"> Georgia</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="HI"> Hawaii</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="IA"> Iowa</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="ID"> Idaho</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="IL"> Illinois</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="IN"> Indiana</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="KS"> Kansas</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="KY"> Kentucky</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="LA"> Louisiana</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="MA"> Massachusetts</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="MD"> Maryland</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="ME"> Maine</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="MI"> Michigan</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="MN"> Minnesota</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="MO"> Missouri</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="MS"> Mississippi</label>
+                                        </div>
+                                      </div>
+                                      <div class="col">
+
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="MT"> Montana</label>
+                                        </div>
+
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="NC"> North Carolina</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="ND"> North Dakota</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="NE"> Nebraska</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="NH"> New Hampshire</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="NJ"> New Jersey</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="NM"> New Mexico</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="NV"> Nevada</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="NY"> New York</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="OH"> Ohio</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="OK"> Oklahoma</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="OR"> Oregon</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="PA"> Pennsylvania</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="RI"> Rhode Island</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="SC"> South Carolina</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="SD"> South Dakota</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="TN"> Tennessee</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="TX"> Texas</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="UT"> Utah</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="VA"> Virginia</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="VT"> Vermont</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="WA"> Washington</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="WI"> Wisconsin</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="WV"> West Virginia</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="WY"> Wyoming</label>
+                                        </div>
+
+                                      </div>
+                                    </div>
+                                    <div class="card-body row altSelect singleSelect">
+                                      <div class="col">
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="US"> U.S. Total</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="AK"> Alaska</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="AL"> Alabama</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="AR"> Arkansas</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="AZ"> Arizona</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="CA"> California</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="CO"> Colorado</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="CT"> Connecticut</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="DC"> District Of Columbia</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="DE"> Delaware</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="FL"> Florida</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="GA"> Georgia</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="HI"> Hawaii</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="IA"> Iowa</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="ID"> Idaho</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="IL"> Illinois</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="IN"> Indiana</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="KS"> Kansas</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="KY"> Kentucky</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="LA"> Louisiana</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="MA"> Massachusetts</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="MD"> Maryland</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="ME"> Maine</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="MI"> Michigan</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="MN"> Minnesota</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="MO"> Missouri</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="MS"> Mississippi</label>
+                                        </div>
+                                      </div>
+                                      <div class="col">
+
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="MT"> Montana</label>
+                                        </div>
+
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="NC"> North Carolina</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="ND"> North Dakota</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="NE"> Nebraska</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="NH"> New Hampshire</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="NJ"> New Jersey</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="NM"> New Mexico</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="NV"> Nevada</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="NY"> New York</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="OH"> Ohio</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="OK"> Oklahoma</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="OR"> Oregon</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="PA"> Pennsylvania</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="RI"> Rhode Island</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="SC"> South Carolina</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="SD"> South Dakota</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="TN"> Tennessee</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="TX"> Texas</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="UT"> Utah</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="VA"> Virginia</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="VT"> Vermont</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="WA"> Washington</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="WI"> Wisconsin</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="WV"> West Virginia</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStatesInd" type="radio"
+                                              value="WY"> Wyoming</label>
+                                        </div>
+
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+
+                            <div class="chartsection">
+
+                                <h2 class="p-2 activityYears">3. Select Year(s)</h2>
+
+
+                                <div class="card groupYear">
+                                  <div class="card-header" id="headingEight">
+                                    <h3 class="mb-0">
+                                      <button type="button" aria-controls="collapseOne" aria-expanded="false"
+                                        class="btn btn-link collapsed" data-target="#collapseEight"
+                                        data-toggle="collapse"><i aria-hidden="true" class="fa"></i>Select
+                                        Year(s)</button>
+                                      <div id="yearCountText" class="clearable"></div>
+                                    </h3>
+                                  </div>
+
+                                  <div aria-labelledby="headingEight" class="collapse"
+                                    id="collapseEight">
+                                    <div class="checkbox">
+                                      <label class="form-check-label" for="Checkall"><input class="yearCheck checkAll"
+                                          type="checkbox" value="Checkall"> Select/Clear all</label>
+                                    </div>
+                                    <div id="yearSingle" class="card-body row altSelect singleSelect">
+                                    
+
+                                    </div>
+                                    <div id="yearMultiple" class="card-body row altSelect multiSelect">
+
+                                     
+                                    </div>
+
+                                  </div>
+                                </div>
+                            </div>
+                            <!-- <input type="submit" /> -->
+
+                              <button aria-label="Generate chart, tables, and text download for the selected values"
+                                class="michRedraw btn btn-primary" id="chartRedraw" type="button">GENERATE<br />Charts &amp;
+                                Tables</button><br>
+
+
+
+                              <button aria-label="Clear form choices" class="btn btn-sm btn-outline-primary float-right mr-3 mb-5"
+                            id="clearForm" type="button">CLEAR FORM</button>
+
+                            
+                        
+                        </nav>
+
+
+                    <main class="col-lg-8 col-md-8 col-sm-12 py-2 content"><div id="tabRow"><a id="singleTab" class="tabSelect">Single state report</a><a id="comparisonTab" class="tabSelect">State comparison</a><a id="nationalTab" class="tabSelect">National overview</a></div>
+                      <div id="bodyDiv">
+                        <div id="singleDiv" class="formSub">
+                          <h3>Single State Report</h3>
+                          <p class="introText">Choose a data set, one state and one or more years at left to get a report of multiple variables. Results will be grouped by 1) numbers of people 2) percentages and 3) hours and dollars.</p>
+                        </div>
+                        <div id="comparisonDiv" class="formSub">
+                        <h3>State Comparison</h3><p class="introText">Choose a variable, one or more states, and one or more years to generate a state comparison report</p>
+                        </div>
+                        <div id="nationalDiv" class="formSub">
+                          <h3>National Report</h3>
+                          <p class="introText">Choose a variable and a year at left to get a report on all U.S. states.</p>
+                          <div id="singleActivity">
+                          </div>
+                          </div>
+
+
+
+
+
+
+
+                    <div id="titleInputs" class="clearable"></div>
+
+                        <div id="nationalTitle" class="clearable"></div>
+                        <div class="clearable" id="chart_div_0"></div>
+                        
+                        <div id="downButton"><button aria-label="Generate chart, tables, and text download for the selected values" class="btn btn-primary downCSV" id="downCSV" type="submit">Download data as spreadsheet</button><br></div>
+
+
+
+                        <div id="summ_accordion">
+                          <div class="clearable" id="sdchart_table_div_0_title"></div>
+                          <div id="tableWarnings" class="clearable"></div><p class="privWarn"><em>Blank spaces in the table indicate no data reported.</em></p>
+                          <div class="tablePad clearable num singletable" id="sdchart_table_div_0"></div>
+
+                          <div class="clearable" id="chart_div_1"></div>
+                          
+                          <div class="clearable" id="sdchart_table_div_1_title"></div>
+                          <div id="tableWarnings" class="clearable"></div><p class="privWarn conditional"><em>Blank spaces in the table indicate no data reported.</em></p>
+                          <div class="tablePad clearable perc singletable" id="sdchart_table_div_1"></div>
+
+                          <div class="clearable" id="chart_div_2"></div>
+                          
+                          <div class="clearable" id="sdchart_table_div_2_title"></div>
+                          <div id="tableWarnings" class="clearable"></div><p class="privWarn conditional"><em>Blank spaces in the table indicate no data reported.</em></p>
+                          <div class="tablePad clearable singletable dol" id="sdchart_table_div_2"></div>
+
+
+                        </div>
+
+
+                          <button aria-label="Print this page." class="btn btn-large btn-secondary"  id="printButton" value="Print this page">Print this page &nbsp;&nbsp;<i class="fas fa-print"></i></button>
+
+                        </div>
+                      </div>
+                      </div>
+                    </main>
+
+                    </div>
+                  </form>
+                </div>
+              </section>
+            </main>
+            {% if page.sidebar_first %}
+              <div{{ sidebar_first_attributes }}>
+                <aside class="section" role="complementary">
+                  {{ page.sidebar_first }}
+                </aside>
+              </div>
+            {% endif %}
+            {% if page.sidebar_second %}
+              <div{{ sidebar_second_attributes }}>
+                <aside class="section" role="complementary">
+                  {{ page.sidebar_second }}
+                </aside>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+{% endblock %}
+
+{% block footer %}
+        <div class="container-fluid">
+          {% if page.footer_first or page.footer_second or page.footer_third or page.footer_fourth %}
+            <div class="site-footer__top row clearfix">
+              {{ page.footer_first }}
+              {{ page.footer_second }}
+              {{ page.footer_third }}
+              {{ page.footer_fourth }}
+            </div>
+          {% endif %}
+          {% if page.footer_fifth %}
+            <div class="site-footer__bottom row">
+              {{ page.footer_fifth }}
+            </div>
+          {% endif %}
+        </div>
+{% endblock %}
