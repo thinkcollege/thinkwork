@@ -95,7 +95,7 @@
               {{ page.header }}
             </div>
             {% if page.primary_menu or page.header_form %}
-              <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#CollapsingNavbar" aria-controls="CollapsingNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+              <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#CollapsingNavbar" aria-controls="CollapsingNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
               <div class="collapse navbar-collapse" id="CollapsingNavbar">
                 {{ page.primary_menu }}
                 {% if page.header_form %}
@@ -106,7 +106,7 @@
 	          </div>
             {% endif %}
             {% if sidebar_collapse %}
-              <button class="navbar-toggler navbar-toggler-left" type="button" data-toggle="collapse" data-target="#CollapsingLeft" aria-controls="CollapsingLeft" aria-expanded="false" aria-label="Toggle navigation"></button>
+              <button class="navbar-toggler navbar-toggler-left" type="button" data-bs-toggle="collapse" data-bs-target="#CollapsingLeft" aria-controls="CollapsingLeft" aria-expanded="false" aria-label="Toggle navigation"></button>
             {% endif %}
 
           </div>
@@ -155,8 +155,8 @@
                                     <div id="cardOne" class="card">
                                       <div class="card-header" id="headingOne">
                                         <h3 class="mb-0"><button type="button" aria-controls="collapseOne" aria-expanded="false"
-                                            class="btn btn-link collapsed" data-target="#collapseOne"
-                                            data-toggle="collapse"><i aria-hidden="true" class="fa"></i>Population data from the American Community Survey</button></h3>
+                                            class="btn btn-link collapsed" data-bs-target="#collapseOne"
+                                            data-bs-toggle="collapse"><i aria-hidden="true" class="fa"></i>Population data from the American Community Survey</button></h3>
                                       </div>
                                       <div aria-labelledby="headingOne" data-parent="#accordion" class="collapse"
                                         id="collapseOne">
@@ -165,19 +165,19 @@
                                           <div id="acscat">
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" alt-text="Population data from the American Community Survey: Any disability" title="Population data from the American Community Survey: Any disability"
+                                                data-bs-toggle="tooltip" alt-text="Population data from the American Community Survey: Any disability" title="Population data from the American Community Survey: Any disability"
                                                 for="choose_acs_anydis"><input id="choose_acs_anydis" class="tableSelect" name="acscat" tabindex="0"
                                                   type="radio" value="sta_d3_acs_post08_AnyDis">Any disability</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" alt-text="Population data from the American Community Survey: Cognitive disability" title="Population data from the American Community Survey: Cognitive disability"
+                                                data-bs-toggle="tooltip" alt-text="Population data from the American Community Survey: Cognitive disability" title="Population data from the American Community Survey: Cognitive disability"
                                                 for="choose_acs_cogdis"><input id="choose_acs_cogdis" class="tableSelect" name="acscat" tabindex="0"
                                                   type="radio" value="sta_d3_acs_post08_Cognitive">Cognitive disability</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" alt-text="Population data from the American Community Survey: No disability" title="Population data from the American Community Survey: No disability"
+                                                data-bs-toggle="tooltip" alt-text="Population data from the American Community Survey: No disability" title="Population data from the American Community Survey: No disability"
                                                 for="choose_acs_nodis"><input id="choose_acs_nodis" class="tableSelect" name="acscat" tabindex="0"
                                                   type="radio" value="sta_d3_acs_post08_nodis">No disability</label>
                                             </div>
@@ -186,38 +186,38 @@
                                             <div class="altSelect singleSelect">
                                               <h4>Select a variable</h4>
                                               <div>
-                                                <label class="js-simple-tooltip" for="choose_24" data-toggle="tooltip" title="Mean annual earnings from work (in dollars)"><input id="choose_24" name="reportChoose" 
+                                                <label class="js-simple-tooltip" for="choose_24" data-bs-toggle="tooltip" title="Mean annual earnings from work (in dollars)"><input id="choose_24" name="reportChoose" 
                                                       tabindex="0" type="radio" class="acsVars" value="Annual_Work_Earnings">Mean annual earnings from work (in dollars)</label>
 
                                               </div>
                                               <div>
                                                 <label class="js-simple-tooltip"
-                                                  data-toggle="tooltip" title="Number of people age 16-64" data-toggle="tooltip"
+                                                  data-bs-toggle="tooltip" title="Number of people age 16-64" data-bs-toggle="tooltip"
                                                   for="choose_1"><input id="choose_1" name="reportChoose" tabindex="0"
                                                     type="radio" class="acsVars" value="NUMPOP">Number of people</label>
                                               </div>
                                               <div>
                                                 <label class="js-simple-tooltip"
-                                                  data-toggle="tooltip" title="Number of people employed age 16-64"
+                                                  data-bs-toggle="tooltip" title="Number of people employed age 16-64"
                                                   for="choose_2"><input id="choose_2" name="reportChoose" tabindex="0"
                                                     type="radio" class="acsVars" value="NUMEMP">Number of people employed</label>
                                               </div>
                                               <div>
                                                 <label class="js-simple-tooltip"
-                                                  data-toggle="tooltip" title="The ratio of the number of people working to the number of people who are working, looking for work, and not looking for work"
+                                                  data-bs-toggle="tooltip" title="The ratio of the number of people working to the number of people who are working, looking for work, and not looking for work"
 "
                                                   for="choose_3"><input id="choose_3" name="reportChoose" tabindex="0"
                                                     type="radio" class="acsVars" value="Perwork">Percent of Working-Age People Who Are Employed</label>
                                               </div>
                                               <div>
                                                 <label class="js-simple-tooltip"
-                                                  data-toggle="tooltip" title="Percentage living below the poverty line"
+                                                  data-bs-toggle="tooltip" title="Percentage living below the poverty line"
                                                   for="choose_4"><input id="choose_4" name="reportChoose" tabindex="0"
                                                     type="radio" class="acsVars" value="Below_Poverty">Percentage below poverty</label>
                                               </div>
                                               <div>
                                                 <label class="js-simple-tooltip"
-                                                  data-toggle="tooltip" title="Average weekly hours worked"
+                                                  data-bs-toggle="tooltip" title="Average weekly hours worked"
                                                   for="choose_5"><input id="choose_5" name="reportChoose" tabindex="0"
                                                     type="radio" class="acsVars" value="WEEHO">Weekly hours worked</label>
                                               </div>
@@ -229,8 +229,8 @@
                                     <div id="cardTwo" class="card">
                                       <div class="card-header" id="headingTwo">
                                         <h3 class="mb-0"><button type="button" aria-controls="collapseTwo" aria-expanded="false"
-                                            class="btn btn-link collapsed tableSelect" data-target="#collapseTwo"
-                                            data-toggle="collapse" value="sta_d3_agency_ssa"  data-toggle="tooltip" title="Social Security Administration"><i aria-hidden="true" class="fa"></i>Social Security Administration</button></h3>
+                                            class="btn btn-link collapsed tableSelect" data-bs-target="#collapseTwo"
+                                            data-bs-toggle="collapse" value="sta_d3_agency_ssa"  data-bs-toggle="tooltip" title="Social Security Administration"><i aria-hidden="true" class="fa"></i>Social Security Administration</button></h3>
                                       </div>
                                       <div aria-labelledby="headingTwo" data-parent="#accordion" class="collapse"
                                         id="collapseTwo">
@@ -239,35 +239,35 @@
                                         <div class="card-body">
                                           <div id="sta_d3_agency_ssa" class="altSelect singleSelect">
                                             <div>
-                                              <label for="choose_25" data-toggle="tooltip" title="Number of Social Security Income recipients with disabilities using a Plan for Achieving Self Support (PASS)"><input id="choose_25" name="reportChoose"
+                                              <label for="choose_25" data-bs-toggle="tooltip" title="Number of Social Security Income recipients with disabilities using a Plan for Achieving Self Support (PASS)"><input id="choose_25" name="reportChoose"
                                                     tabindex="0" type="radio" value="PASS">PASS users</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of Social Security Income recipients with disabilities using Impairment Related Work Expenses (IRWE)"
+                                                data-bs-toggle="tooltip" title="Number of Social Security Income recipients with disabilities using Impairment Related Work Expenses (IRWE)"
                                                 for="choose_44"><input id="choose_44" name="reportChoose" tabindex="0"
                                                   type="radio" value="IRWE">IRWE users</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of Social Security Income recipients with disabilities using Blind Work Expense (BWE)" for="choose_55"><input id="choose_55" name="reportChoose" tabindex="0"
+                                                data-bs-toggle="tooltip" title="Number of Social Security Income recipients with disabilities using Blind Work Expense (BWE)" for="choose_55"><input id="choose_55" name="reportChoose" tabindex="0"
                                                   type="radio" value="BWE">BWE users</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Total number of Social Security Income recipients with disabilities"
+                                                data-bs-toggle="tooltip" title="Total number of Social Security Income recipients with disabilities"
                                                 for="choose_66"><input id="choose_66" name="reportChoose" tabindex="0"
                                                   type="radio" value="Total SSI Disabled">SSI recipients with disabilities</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of Social Security Income recipients with disabilities who work"
+                                                data-bs-toggle="tooltip" title="Number of Social Security Income recipients with disabilities who work"
                                                 for="choose_77"><input id="choose_77" name="reportChoose" tabindex="0"
                                                   type="radio" value="Number Working">Working SSI recipients with disabilities</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Percentage of Social Security Income recipients with disabilities who work relative to the total recipients with disabilities"
+                                                data-bs-toggle="tooltip" title="Percentage of Social Security Income recipients with disabilities who work relative to the total recipients with disabilities"
                                                 for="choose_78"><input id="choose_78" name="reportChoose" tabindex="0"
                                                   type="radio" value="Percent Working">Percent of SSI recipients who work</label>
                                             </div>
@@ -280,8 +280,8 @@
                                     <div id="cardThree" class="card">
                                       <div class="card-header" id="headingThree">
                                         <h3 class="mb-0"><button type="button" aria-controls="collapseThree" aria-expanded="false"
-                                            class="btn btn-link collapsed tableSelect" data-target="#collapseThree"
-                                            data-toggle="collapse" value="sta_d3_agency_labor"  data-toggle="tooltip" title="State Demographics"><i aria-hidden="true" class="fa"></i>State Demographics</button></h3>
+                                            class="btn btn-link collapsed tableSelect" data-bs-target="#collapseThree"
+                                            data-bs-toggle="collapse" value="sta_d3_agency_labor"  data-bs-toggle="tooltip" title="State Demographics"><i aria-hidden="true" class="fa"></i>State Demographics</button></h3>
                                       </div>
                                       <div aria-labelledby="headingThree" data-parent="#accordion" class="collapse"
                                         id="collapseThree">
@@ -294,7 +294,7 @@
 
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Total state population."
+                                                data-bs-toggle="tooltip" title="Total state population."
                                                 for="choose_88"><input id="choose_88" name="reportChoose" tabindex="0"
                                                   type="radio" value="population in 1000s">State population</label>
                                             </div>
@@ -305,63 +305,63 @@
                                     <div id="cardFour" class="card">
                                       <div class="card-header" id="headingFour">
                                         <h3 class="mb-0"><button type="button" aria-controls="collapseFour" aria-expanded="false"
-                                            class="btn btn-link collapsed tableSelect" data-target="#collapseFour"
-                                            data-toggle="collapse" value="sta_d3_agency_mrdd"  data-toggle="tooltip" title="State IDD Agencies"><i aria-hidden="true" class="fa"></i>State IDD Agencies</button></h3>
+                                            class="btn btn-link collapsed tableSelect" data-bs-target="#collapseFour"
+                                            data-bs-toggle="collapse" value="sta_d3_agency_mrdd"  data-bs-toggle="tooltip" title="State IDD Agencies"><i aria-hidden="true" class="fa"></i>State IDD Agencies</button></h3>
                                       </div>
                                       <div aria-labelledby="headingFour" data-parent="#accordion" class="collapse"
                                         id="collapseFour">
                                         <div class="card-body">
                                           <div id="sta_d3_agency_mrdd" class="altSelect singleSelect">
                                             <div>
-                                              <label class="js-simple-tooltip" data-toggle="tooltip" title="Total unduplicated number of people served in day and employment services." for="choose_27"><input id="choose_27" name="reportChoose"
+                                              <label class="js-simple-tooltip" data-bs-toggle="tooltip" title="Total unduplicated number of people served in day and employment services." for="choose_27"><input id="choose_27" name="reportChoose"
                                                     tabindex="0" type="radio" value="Total served">Total served (estimate)</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of people served in integrated employment, including competitive employment, individual supported employment, and group supported employment (e.g., enclaves, mobile work crews)."
+                                                data-bs-toggle="tooltip" title="Number of people served in integrated employment, including competitive employment, individual supported employment, and group supported employment (e.g., enclaves, mobile work crews)."
                                                 for="choose_13"><input id="choose_13" name="reportChoose" tabindex="0"
                                                   type="radio" value="Integrated employment">Integrated employment, number served (estimate)</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Percentage of people served in integrated employment relative to total served in day and employment services."
+                                                data-bs-toggle="tooltip" title="Percentage of people served in integrated employment relative to total served in day and employment services."
                                                 for="choose_14"><input id="choose_14" name="reportChoose" tabindex="0"
                                                   type="radio" value="Integrated employment percentage rate">Integrated employment percentage (estimate)</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of people served in facility-based work, including sheltered employment."
+                                                data-bs-toggle="tooltip" title="Number of people served in facility-based work, including sheltered employment."
                                                 for="choose_222"><input id="choose_222" name="reportChoose" tabindex="0"
                                                   type="radio" value="Facility-based work">Facility-based work, number served (reported total)</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Percentage of people served in facility-based work relative to total served in day and employment services."
+                                                data-bs-toggle="tooltip" title="Percentage of people served in facility-based work relative to total served in day and employment services."
                                                 for="choose_233"><input id="choose_233" name="reportChoose" tabindex="0"
                                                   type="radio" value="Facility-based work percentage rate">Facility-based work percentage rate</label>
                                             </div>
 
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number served in community-based non-work, or programs where individuals engage in recreational, skill training or volunteer activities in settings where most people do not have disabilities. Usually includes community integration or participation services."
+                                                data-bs-toggle="tooltip" title="Number served in community-based non-work, or programs where individuals engage in recreational, skill training or volunteer activities in settings where most people do not have disabilities. Usually includes community integration or participation services."
                                                 for="choose_15"><input id="choose_15" name="reportChoose" tabindex="0"
                                                   type="radio" value="Community based nonwork">Community-based non-work, number served (reported total)</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Percentage of people served in community-based non-work services relative to total served in day and employment services."
+                                                data-bs-toggle="tooltip" title="Percentage of people served in community-based non-work services relative to total served in day and employment services."
                                                 for="choose_16"><input id="choose_16" name="reportChoose" tabindex="0"
                                                   type="radio" value="Community based nonwork percentage rate">Community based nonwork percentage</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number served in facility-based non-work programs including day habilitation or day activity services."
+                                                data-bs-toggle="tooltip" title="Number served in facility-based non-work programs including day habilitation or day activity services."
                                                 for="choose_177"><input id="choose_177" name="reportChoose" tabindex="0"
                                                   type="radio" value="Facility-based nonwork">Facility-based non-work, number served (reported number)</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Percentage of people served in facility-based nonwork relative to total served in day and employment services."
+                                                data-bs-toggle="tooltip" title="Percentage of people served in facility-based nonwork relative to total served in day and employment services."
                                                 for="choose_178"><input id="choose_178" name="reportChoose" tabindex="0"
                                                   type="radio" value="Facility-based nonwork percentage rate">Facility-based nonwork percentage</label>
                                             </div>
@@ -373,13 +373,13 @@
 
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Total unduplicated number of people who receive facility-based and/or community-based services. "
+                                                data-bs-toggle="tooltip" title="Total unduplicated number of people who receive facility-based and/or community-based services. "
                                                 for="choose_1787"><input id="choose_1787" name="reportChoose" tabindex="0"
                                                   type="radio" value="combined_nonwork_number">All non-work (facility-based and community-based) number served</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="All non-work (facility-based and community-based) percentage"
+                                                data-bs-toggle="tooltip" title="All non-work (facility-based and community-based) percentage"
                                                 for="choose_17877"><input id="choose_17877" name="reportChoose" tabindex="0"
                                                   type="radio" value="combined_nonwork_percentage">All non-work (facility-based and community-based) percentage</label>
                                             </div>
@@ -390,55 +390,55 @@
 
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of people served in integrated employment per 100,000 individuals in the general state population."
+                                                data-bs-toggle="tooltip" title="Number of people served in integrated employment per 100,000 individuals in the general state population."
                                                 for="choose_1700"><input id="choose_1700" name="reportChoose" tabindex="0"
                                                   type="radio" value="Integrated employment rate">Integrated employment rate</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="he total number of dollars spent on day and employment services."
+                                                data-bs-toggle="tooltip" title="he total number of dollars spent on day and employment services."
                                                 for="choose_1701"><input id="choose_1701" name="reportChoose" tabindex="0"
                                                   type="radio" value="Total funding">Total funding</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of dollars spent on integrated employment services."
+                                                data-bs-toggle="tooltip" title="Number of dollars spent on integrated employment services."
                                                 for="choose_1702"><input id="choose_1702" name="reportChoose" tabindex="0"
                                                   type="radio" value="employment money">Integrated employment funding</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of individuals on waiting list"
+                                                data-bs-toggle="tooltip" title="Number of individuals on waiting list"
                                                 for="choose_1703"><input id="choose_1703" name="reportChoose" tabindex="0"
                                                   type="radio" value="MRDDWaiting">Agency Waiting List</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of dollars spent on for facility-based work services."
+                                                data-bs-toggle="tooltip" title="Number of dollars spent on for facility-based work services."
                                                 for="choose_1706"><input id="choose_1706" name="reportChoose" tabindex="0"
                                                   type="radio" value="FBWFund">Facility-based work funding</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of dollars spent on community-based non-work services."
+                                                data-bs-toggle="tooltip" title="Number of dollars spent on community-based non-work services."
                                                 for="choose_1704"><input id="choose_1704" name="reportChoose" tabindex="0"
                                                   type="radio" value="CBNWFund">Community-based non-work funding</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of dollars spent on facility-based non-work services."
+                                                data-bs-toggle="tooltip" title="Number of dollars spent on facility-based non-work services."
                                                 for="choose_1705"><input id="choose_1705" name="reportChoose" tabindex="0"
                                                   type="radio" value="FBNWFund">Facility-based non-work funding</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="All non-work (facility-based and community-based) funding: Number of dollars spent on facility-based and community-based services (combined)."
+                                                data-bs-toggle="tooltip" title="All non-work (facility-based and community-based) funding: Number of dollars spent on facility-based and community-based services (combined)."
                                                 for="choose_17066"><input id="choose_17066" name="reportChoose" tabindex="0"
                                                   type="radio" value="combined_nonwork_funding">All non-work (facility-based and community-based) funding</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Percentage of total funding to integrated employment"
+                                                data-bs-toggle="tooltip" title="Percentage of total funding to integrated employment"
                                                 for="choose_1707"><input id="choose_1707" name="reportChoose" tabindex="0"
                                                   type="radio" value="IntEmp_Fund_percent">Percentage of total funding to integrated employment</label>
                                             </div>
@@ -449,8 +449,8 @@
                                     <div id="cardSix" class="card">
                                       <div class="card-header" id="headingSix">
                                         <h3 class="mb-0"><button type="button" aria-controls="collapseSix" aria-expanded="false"
-                                            class="btn btn-link collapsed" data-target="#collapseSix"
-                                            data-toggle="collapse"><i aria-hidden="true"
+                                            class="btn btn-link collapsed" data-bs-target="#collapseSix"
+                                            data-bs-toggle="collapse"><i aria-hidden="true"
                                               class="fa"></i>State Vocational Rehabilitation (VR) Agency Data</button></h3>
                                       </div>
                                       <div aria-labelledby="headingSix" data-parent="#accordion" class="collapse"
@@ -460,13 +460,13 @@
                                           <div id="vrcat">
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" alt-text="State Vocational Rehabilitation (VR) Agency Data: VR Closures: Intellectual Disabilities" title="State Vocational Rehabilitation (VR) Agency Data: VR Closures: Intellectual Disabilities"
+                                                data-bs-toggle="tooltip" alt-text="State Vocational Rehabilitation (VR) Agency Data: VR Closures: Intellectual Disabilities" title="State Vocational Rehabilitation (VR) Agency Data: VR Closures: Intellectual Disabilities"
                                                 for="choose_vr_cat_ID"><input id="choose_vr_cat_id" class="tableSelect" name="vrcat" tabindex="0"
                                                   type="radio" value="sta_d3_vr_rsa_ID">VR Closures: Intellectual Disabilities</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" alt-text="State Vocational Rehabilitation (VR) Agency Data: VR Closures: All disabilities" title="State Vocational Rehabilitation (VR) Agency Data: VR Closures: All disabilities"
+                                                data-bs-toggle="tooltip" alt-text="State Vocational Rehabilitation (VR) Agency Data: VR Closures: All disabilities" title="State Vocational Rehabilitation (VR) Agency Data: VR Closures: All disabilities"
                                                 for="choose_vr_cat_All"><input id="choose_vr_cat_All" class="tableSelect" name="vrcat" tabindex="0"
                                                   type="radio" value="sta_d3_vr_rsa_all">VR Closures: All disabilities</label>
                                             </div>
@@ -477,103 +477,103 @@
                                               <h4>Select a variable</h4>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of people who exited VR with or without employment"
+                                                data-bs-toggle="tooltip" title="Number of people who exited VR with or without employment"
                                                 for="choose_20"><input id="choose_20" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="CLOSURES">Total closed</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of people who exited VR with employment"
+                                                data-bs-toggle="tooltip" title="Number of people who exited VR with employment"
                                                 for="choose_210"><input id="choose_210" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="REHABED">Rehabilitated, Status 26</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of people who did not exit VR with employment"
+                                                data-bs-toggle="tooltip" title="Number of people who did not exit VR with employment"
                                                 for="choose_211"><input id="choose_211" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="NOTRE28">Not rehabilitated, Status 28</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Percentage of people who exited VR with employment out of the number of people who received services"
+                                                data-bs-toggle="tooltip" title="Percentage of people who exited VR with employment out of the number of people who received services"
                                                 for="choose_212"><input id="choose_212" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="REHABRAT">Rehabilitation rate</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of people who did not exit VR with employment after an Individualized Written Rehabilitation Program/Individual Employment Plan "
+                                                data-bs-toggle="tooltip" title="Number of people who did not exit VR with employment after an Individualized Written Rehabilitation Program/Individual Employment Plan "
                                                 for="choose_214"><input id="choose_214" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="NOTRE30">Not Rehabilitated, Status 30</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of people who exited VR into integrated employment "
+                                                data-bs-toggle="tooltip" title="Number of people who exited VR into integrated employment "
                                                 for="choose_215"><input id="choose_215" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="INTEGRAT">Integrated employment closures</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of people who exited VR with employment out of 100,000 people in the general population of a state, or the US"
+                                                data-bs-toggle="tooltip" title="Number of people who exited VR with employment out of 100,000 people in the general population of a state, or the US"
                                                 for="choose_216"><input id="choose_216" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="INCIDENCE">Closures per 100k state population</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Number of people with a goal of supported employment in their IPE during their rehabilitation and received supported employment services"
+                                                data-bs-toggle="tooltip" title="Number of people with a goal of supported employment in their IPE during their rehabilitation and received supported employment services"
                                                 for="choose_217"><input id="choose_217" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="SETOT">Supported employment closures</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Average weekly wages at VR exit "
+                                                data-bs-toggle="tooltip" title="Average weekly wages at VR exit "
                                                 for="choose_218"><input id="choose_218" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="EARNINGS">Weekly earnings</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Average hours worked per week at VR exit"
+                                                data-bs-toggle="tooltip" title="Average hours worked per week at VR exit"
                                                 for="choose_219"><input id="choose_219" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="HOURS">Hours per week</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Average cost for services with successful outcomes"
+                                                data-bs-toggle="tooltip" title="Average cost for services with successful outcomes"
                                                 for="choose_2101"><input id="choose_2101" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="COST26">Average cost, status 26</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Average cost for services that did not have successful outcomes"
+                                                data-bs-toggle="tooltip" title="Average cost for services that did not have successful outcomes"
                                                 for="choose_2102"><input id="choose_2102" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="COST28">Average cost, status 28</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Average amount of days receiving services for individuals with successful outcomes"
+                                                data-bs-toggle="tooltip" title="Average amount of days receiving services for individuals with successful outcomes"
                                                 for="choose_2103"><input id="choose_2103" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="TIME26">Average days, status 26</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Average amount of days receiving services for individuals without successful outcomes"
+                                                data-bs-toggle="tooltip" title="Average amount of days receiving services for individuals without successful outcomes"
                                                 for="choose_2104"><input id="choose_2104" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="TIME28">Average days, status 28</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Average amount of days individuals spent between their VR application and becoming eligible for service"
+                                                data-bs-toggle="tooltip" title="Average amount of days individuals spent between their VR application and becoming eligible for service"
                                                 for="choose_2105"><input id="choose_2105" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="App_to_Elig">Average days from application to eligibility</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Average amount of days individuals spent between becoming eligible for services, and having their VR case closed "
+                                                data-bs-toggle="tooltip" title="Average amount of days individuals spent between becoming eligible for services, and having their VR case closed "
                                                 for="choose_2107"><input id="choose_2107" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="Elig_to_Closure">Avg. days from eligibility to close</label>
                                             </div>
                                             <div>
                                               <label class="js-simple-tooltip"
-                                                data-toggle="tooltip" title="Percent of VR cases closed that resulted in employment"
+                                                data-bs-toggle="tooltip" title="Percent of VR cases closed that resulted in employment"
                                                 for="choose_2108"><input id="choose_2108" name="reportChoose" tabindex="0"
                                                   type="radio" class="vrVars" value="Percent_Emp_closure">Percent closures into employment</label>
                                             </div>
@@ -599,8 +599,8 @@
                                 <div class="card groupState">
                                   <div class="card-header" id="headingSeven">
                                     <h3 class="mb-0 clearfix"><button type="button" aria-controls="collapseSeven" aria-expanded="false"
-                                        class="btn btn-link collapsed" data-target="#collapseSeven"
-                                        data-toggle="collapse"><i aria-hidden="true" class="fa"></i> Select
+                                        class="btn btn-link collapsed" data-bs-target="#collapseSeven"
+                                        data-bs-toggle="collapse"><i aria-hidden="true" class="fa"></i> Select
                                         State(s)</button>
                                       <div id="stateCountText" class="clearable"></div>
                                     </h3>
@@ -805,6 +805,10 @@
                                         <div class="checkbox">
                                           <label><input class="stateCheck" name="regionStates[]" type="checkbox"
                                               value="VA"> Virginia</label>
+                                        </div>
+                                        <div class="checkbox">
+                                          <label><input class="stateCheck" name="regionStates[]" type="checkbox"
+                                              value="VI"> Virgin Islands</label>
                                         </div>
                                         <div class="checkbox">
                                           <label><input class="stateCheck" name="regionStates[]" type="checkbox"
@@ -1059,8 +1063,8 @@
                                   <div class="card-header" id="headingEight">
                                     <h3 class="mb-0">
                                       <button type="button" aria-controls="collapseOne" aria-expanded="false"
-                                        class="btn btn-link collapsed" data-target="#collapseEight"
-                                        data-toggle="collapse"><i aria-hidden="true" class="fa"></i>Select
+                                        class="btn btn-link collapsed" data-bs-target="#collapseEight"
+                                        data-bs-toggle="collapse"><i aria-hidden="true" class="fa"></i>Select
                                         Year(s)</button>
                                       <div id="yearCountText" class="clearable"></div>
                                     </h3>
