@@ -392,14 +392,14 @@
                 
                 if ($('#downCSV').hasClass('visible')) $('#downCSV').removeClass('visible');
                 if($('p.privWarn').hasClass('visible')) $('p.privWarn').removeClass('visible');
-                $('a#singleTab').attr('href','/statedata/chart-builder-test?report=single');
-                $('a#comparisonTab').attr('href','/statedata/chart-builder-test?report=comparison');
-                $('a#nationalTab').attr('href','/statedata/chart-builder-test?report=national');
+                $('a#singleTab').attr('href','/statedata/build-a-chart?report=single');
+                $('a#comparisonTab').attr('href','/statedata/build-a-chart?report=comparison');
+                $('a#nationalTab').attr('href','/statedata/build-a-chart?report=national');
                 if($('#buttonRow a').hasClass('active')) $('#buttonRow a').removeClass('active');
                 $('#buttonRow a.btn-' + reportURL.get('grp')).addClass('active');
-                $('#buttonRow a.btn-indst').attr('href','/statedata/chart-builder-test?report=' + reportURL.get('report') + '&grp=indst' );
-                $('#buttonRow a.btn-stcomp').attr('href','/statedata/chart-builder-test?report=' + reportURL.get('report') + '&grp=stcomp' );
-                $('#buttonRow a.btn-natrep').attr('href','.//statedata/chart-builder-test?report=' + reportURL.get('report') + '&grp=natrep' );
+                $('#buttonRow a.btn-indst').attr('href','/statedata/build-a-chart?report=' + reportURL.get('report') + '&grp=indst' );
+                $('#buttonRow a.btn-stcomp').attr('href','/statedata/build-a-chart?report=' + reportURL.get('report') + '&grp=stcomp' );
+                $('#buttonRow a.btn-natrep').attr('href','.//statedata/build-a-chart?report=' + reportURL.get('report') + '&grp=natrep' );
                 $('#downCSV').on('click',function() {
                     downloadCSV();
             
