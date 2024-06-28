@@ -588,28 +588,30 @@ align-content:stretch;}
 }
 
 
-div#card-29, div#card-30, div#card-31 {
+
+/* styling cards on statedata home */
+div#card-14, div#card-15, div#card-16 {
     height: 100%;
 background-color: #f7fbfe
 }
-div#card-29 .card-footer, div#card-30 .card-footer , div#card-31 .card-footer
+div#card-14 .card-footer, div#card-15 .card-footer , div#card-16 .card-footer
 {background-color:transparent;border: none}
 
 
 
+
 /* Accordian on StateData home page */
-.paragraph.accordion-wrapper.paragraph--id--12{
+.paragraph.accordion-wrapper.paragraph--id--13{
   background-color: #ecf7fd;
   margin-top:20px;
 }
-.paragraph--id--12 button.accordion-button {
+.paragraph--id--13 button.accordion-button {
   background-color: #ecf7fd;
 }
 
-.paragraph--id--12 h2 .field--name-bp-header  {
+.paragraph--id--13 h2 .field--name-bp-header  {
   padding:10px 0;
 }
-
 
 nav#navbar-top {
     background-color: #5F9832!important;
