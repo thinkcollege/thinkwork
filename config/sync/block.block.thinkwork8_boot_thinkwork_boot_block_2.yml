@@ -12,7 +12,7 @@ dependencies:
 id: thinkwork8_boot_thinkwork_boot_block_2
 theme: thinkwork8_boot
 region: top_header_form
-weight: -22
+weight: -25
 provider: null
 plugin: 'block_content:96ce6279-351a-4d42-a72b-0657ff4ab008'
 settings:

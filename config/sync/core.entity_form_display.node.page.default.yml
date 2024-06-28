@@ -54,6 +54,8 @@ content:
       placeholder: ''
       suggestions_dropdown: 1
       show_entity_id: 0
+      show_info_label: 0
+      info_label: ''
     third_party_settings: {  }
   field_link_to_resource:
     type: link_default
@@ -70,16 +72,22 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_paragraphs:
-    type: entity_reference_paragraphs
+    type: paragraphs
     weight: 3
     region: content
     settings:
       title: Paragraph
       title_plural: Paragraphs
       edit_mode: open
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
       add_mode: dropdown
       form_display_mode: default
       default_paragraph_type: ''
+      features:
+        collapse_edit_all: collapse_edit_all
+        duplicate: duplicate
     third_party_settings: {  }
   field_product_type:
     type: options_select
@@ -103,6 +111,8 @@ content:
       placeholder: ''
       suggestions_dropdown: 1
       show_entity_id: 0
+      show_info_label: 0
+      info_label: ''
     third_party_settings: {  }
   field_tags:
     type: tagify_entity_reference_autocomplete_widget
@@ -114,6 +124,8 @@ content:
       placeholder: ''
       suggestions_dropdown: 1
       show_entity_id: 0
+      show_info_label: 0
+      info_label: ''
     third_party_settings: {  }
   field_topics:
     type: options_select

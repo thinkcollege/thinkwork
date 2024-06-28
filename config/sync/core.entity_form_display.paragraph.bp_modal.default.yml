@@ -10,9 +10,11 @@ dependencies:
     - field.field.paragraph.bp_modal.bp_modal_footer
     - field.field.paragraph.bp_modal.bp_modal_title
     - field.field.paragraph.bp_modal.bp_width
+    - field.field.paragraph.bp_modal.field_grid
     - paragraphs.paragraphs_type.bp_modal
   module:
     - paragraphs
+    - paragraphs_grid
 _core:
   default_config_hash: SraL8fGETGo7xi0UBg9nW1reoceCdCZdFp7-2TxenwU
 id: paragraph.bp_modal.default
@@ -22,31 +24,11 @@ mode: default
 content:
   bp_background:
     type: options_select
-    weight: 0
+    weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
   bp_header:
-    type: string_textfield
-    weight: 2
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  bp_modal_body:
-    type: entity_reference_paragraphs
-    weight: 5
-    region: content
-    settings:
-      title: Paragraph
-      title_plural: Paragraphs
-      edit_mode: closed
-      add_mode: dropdown
-      form_display_mode: default
-      default_paragraph_type: ''
-    third_party_settings: {  }
-  bp_modal_button_text:
     type: string_textfield
     weight: 3
     region: content
@@ -54,7 +36,7 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  bp_modal_footer:
+  bp_modal_body:
     type: entity_reference_paragraphs
     weight: 6
     region: content
@@ -66,7 +48,7 @@ content:
       form_display_mode: default
       default_paragraph_type: ''
     third_party_settings: {  }
-  bp_modal_title:
+  bp_modal_button_text:
     type: string_textfield
     weight: 4
     region: content
@@ -74,11 +56,39 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  bp_modal_footer:
+    type: entity_reference_paragraphs
+    weight: 7
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: closed
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+    third_party_settings: {  }
+  bp_modal_title:
+    type: string_textfield
+    weight: 5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
   bp_width:
     type: options_select
-    weight: 1
+    weight: 2
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_grid:
+    type: grid_widget
+    weight: 0
+    region: content
+    settings:
+      excluded_view_modes:
+        - preview
     third_party_settings: {  }
 hidden:
   created: true

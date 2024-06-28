@@ -1,6 +1,6 @@
-uuid: 08491873-e218-4f4b-8da8-f6386ddc186a
+uuid: 48df70f9-a048-4155-8a7c-13fab08d3a32
 langcode: en
-status: true
+status: false
 dependencies:
   content:
     - 'block_content:basic:78bc95b5-d8ce-4c68-86a0-f044593807f9'
@@ -10,14 +10,14 @@ dependencies:
     - thinkwork8_boot
 id: thinkwork8_boot_social
 theme: thinkwork8_boot
-region: secondary_menu
-weight: 0
+region: top_header
+weight: -24
 provider: null
 plugin: 'block_content:78bc95b5-d8ce-4c68-86a0-f044593807f9'
 settings:
   id: 'block_content:78bc95b5-d8ce-4c68-86a0-f044593807f9'
   label: social
-  label_display: '0'
+  label_display: visible
   provider: block_content
   status: true
   info: ''

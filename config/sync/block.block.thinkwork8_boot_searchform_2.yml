@@ -3,13 +3,17 @@ langcode: en
 status: true
 dependencies:
   module:
+    - block_class
     - search
   theme:
     - thinkwork8_boot
+third_party_settings:
+  block_class:
+    classes: float-end
 id: thinkwork8_boot_searchform_2
 theme: thinkwork8_boot
 region: top_header_form
-weight: -23
+weight: -26
 provider: null
 plugin: search_form_block
 settings:

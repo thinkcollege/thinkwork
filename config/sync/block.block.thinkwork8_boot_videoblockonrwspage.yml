@@ -12,7 +12,7 @@ dependencies:
 id: thinkwork8_boot_videoblockonrwspage
 theme: thinkwork8_boot
 region: sidebar_first
-weight: -20
+weight: -23
 provider: null
 plugin: 'block_content:aed36ae2-e37b-41ae-acaf-d5d6fbc3b397'
 settings:

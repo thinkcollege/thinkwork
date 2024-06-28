@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.paragraph.bp_webform.bp_background
     - field.field.paragraph.bp_webform.bp_width
+    - field.field.paragraph.bp_webform.field_grid
     - paragraphs.paragraphs_type.bp_webform
   module:
     - options
@@ -31,5 +32,6 @@ content:
     region: content
 hidden:
   created: true
+  field_grid: true
   search_api_excerpt: true
   uid: true

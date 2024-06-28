@@ -8,6 +8,7 @@ dependencies:
     - field.field.paragraph.bp_columns_three_uneven.bp_column_style_3
     - field.field.paragraph.bp_columns_three_uneven.bp_header
     - field.field.paragraph.bp_columns_three_uneven.bp_width
+    - field.field.paragraph.bp_columns_three_uneven.field_grid
     - paragraphs.paragraphs_type.bp_columns_three_uneven
   module:
     - entity_reference_revisions
@@ -52,5 +53,6 @@ content:
 hidden:
   bp_header: true
   created: true
+  field_grid: true
   search_api_excerpt: true
   uid: true

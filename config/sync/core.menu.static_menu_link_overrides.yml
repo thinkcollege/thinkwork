@@ -8,7 +8,7 @@ definitions:
     expanded: false
     enabled: true
   standard__front_page:
-    weight: -44
+    weight: -42
     menu_name: main
     parent: ''
     expanded: false

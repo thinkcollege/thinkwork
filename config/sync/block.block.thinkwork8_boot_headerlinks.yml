@@ -5,13 +5,17 @@ dependencies:
   content:
     - 'block_content:basic:d7296ca9-c81f-439e-85d1-b05665d34331'
   module:
+    - block_class
     - block_content
   theme:
     - thinkwork8_boot
+third_party_settings:
+  block_class:
+    classes: 'top-nav-link ms-3'
 id: thinkwork8_boot_headerlinks
 theme: thinkwork8_boot
-region: top_header_form
-weight: -24
+region: top_header
+weight: -26
 provider: null
 plugin: 'block_content:d7296ca9-c81f-439e-85d1-b05665d34331'
 settings:

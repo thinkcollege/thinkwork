@@ -17,6 +17,7 @@ dependencies:
     - paragraphs.paragraphs_type.bp_simple
     - paragraphs.paragraphs_type.bp_tabs
     - paragraphs.paragraphs_type.bp_view
+    - paragraphs.paragraphs_type.image_title_body
   module:
     - entity_reference_revisions
 _core:
@@ -47,6 +48,8 @@ settings:
       bp_modal: bp_modal
       bp_tabs: bp_tabs
       bp_view: bp_view
+      image_title_body: image_title_body
+    negate: 0
     target_bundles_drag_drop:
       bp_accordion:
         weight: -33
@@ -60,6 +63,12 @@ settings:
       bp_block:
         weight: -26
         enabled: true
+      bp_callout:
+        weight: 24
+        enabled: false
+      bp_card:
+        weight: 25
+        enabled: false
       bp_carousel:
         weight: -30
         enabled: true
@@ -92,5 +101,11 @@ settings:
         enabled: true
       bp_view:
         weight: -22
+        enabled: true
+      bp_webform:
+        weight: 37
+        enabled: false
+      image_title_body:
+        weight: 38
         enabled: true
 field_type: entity_reference_revisions

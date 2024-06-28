@@ -9,6 +9,7 @@ dependencies:
     - field.field.paragraph.bp_accordion.bp_header
     - field.field.paragraph.bp_accordion.bp_show_indicators
     - field.field.paragraph.bp_accordion.bp_width
+    - field.field.paragraph.bp_accordion.field_grid
     - paragraphs.paragraphs_type.bp_accordion
   module:
     - entity_reference_revisions
@@ -23,9 +24,12 @@ content:
   bp_accordion_expand:
     type: boolean
     label: hidden
-    settings: {  }
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
     third_party_settings: {  }
-    weight: 3
+    weight: 4
     region: content
   bp_accordion_section:
     type: entity_reference_revisions_entity_view
@@ -34,7 +38,7 @@ content:
       view_mode: default
       link: ''
     third_party_settings: {  }
-    weight: 2
+    weight: 3
     region: content
   bp_background:
     type: list_key
@@ -43,12 +47,23 @@ content:
     third_party_settings: {  }
     weight: 0
     region: content
+  bp_header:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 2
+    region: content
   bp_show_indicators:
     type: boolean
     label: hidden
-    settings: {  }
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
     third_party_settings: {  }
-    weight: 4
+    weight: 5
     region: content
   bp_width:
     type: list_key
@@ -58,7 +73,7 @@ content:
     weight: 1
     region: content
 hidden:
-  bp_header: true
   created: true
+  field_grid: true
   search_api_excerpt: true
   uid: true

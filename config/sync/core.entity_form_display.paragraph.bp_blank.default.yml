@@ -5,10 +5,17 @@ dependencies:
   config:
     - field.field.paragraph.bp_blank.bp_background
     - field.field.paragraph.bp_blank.bp_header
+    - field.field.paragraph.bp_blank.bp_image_field
+    - field.field.paragraph.bp_blank.bp_link
     - field.field.paragraph.bp_blank.bp_unrestricted
     - field.field.paragraph.bp_blank.bp_width
+    - field.field.paragraph.bp_blank.field_grid
+    - image.style.thumbnail
     - paragraphs.paragraphs_type.bp_blank
   module:
+    - image
+    - link
+    - paragraphs_grid
     - text
 _core:
   default_config_hash: MWaSjU5ELVXZsdzT5T1fL57ZZFHGuFf-Zt7SBmR1W8k
@@ -19,21 +26,37 @@ mode: default
 content:
   bp_background:
     type: options_select
-    weight: 0
+    weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
   bp_header:
     type: string_textfield
-    weight: 2
+    weight: 4
     region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  bp_image_field:
+    type: image_image
+    weight: 3
+    region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings: {  }
+  bp_link:
+    type: link_default
+    weight: 6
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
   bp_unrestricted:
     type: text_textarea
-    weight: 3
+    weight: 5
     region: content
     settings:
       rows: 5
@@ -41,9 +64,17 @@ content:
     third_party_settings: {  }
   bp_width:
     type: options_select
-    weight: 1
+    weight: 2
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_grid:
+    type: grid_widget
+    weight: 0
+    region: content
+    settings:
+      excluded_view_modes:
+        - preview
     third_party_settings: {  }
 hidden:
   created: true

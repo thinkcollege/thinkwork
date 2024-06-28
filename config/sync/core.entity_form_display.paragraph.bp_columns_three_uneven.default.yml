@@ -8,9 +8,11 @@ dependencies:
     - field.field.paragraph.bp_columns_three_uneven.bp_column_style_3
     - field.field.paragraph.bp_columns_three_uneven.bp_header
     - field.field.paragraph.bp_columns_three_uneven.bp_width
+    - field.field.paragraph.bp_columns_three_uneven.field_grid
     - paragraphs.paragraphs_type.bp_columns_three_uneven
   module:
     - paragraphs
+    - paragraphs_grid
 _core:
   default_config_hash: FhwuozScv-Q1EloGIz7kz1hrG5A53Bv7L8vfLkcnJkw
 id: paragraph.bp_columns_three_uneven.default
@@ -20,13 +22,13 @@ mode: default
 content:
   bp_background:
     type: options_select
-    weight: 0
+    weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
   bp_column_content_3:
     type: entity_reference_paragraphs
-    weight: 4
+    weight: 5
     region: content
     settings:
       title: Paragraph
@@ -38,13 +40,13 @@ content:
     third_party_settings: {  }
   bp_column_style_3:
     type: options_select
-    weight: 2
+    weight: 3
     region: content
     settings: {  }
     third_party_settings: {  }
   bp_header:
     type: string_textfield
-    weight: 3
+    weight: 4
     region: content
     settings:
       size: 60
@@ -52,9 +54,17 @@ content:
     third_party_settings: {  }
   bp_width:
     type: options_select
-    weight: 1
+    weight: 2
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_grid:
+    type: grid_widget
+    weight: 0
+    region: content
+    settings:
+      excluded_view_modes:
+        - preview
     third_party_settings: {  }
 hidden:
   created: true

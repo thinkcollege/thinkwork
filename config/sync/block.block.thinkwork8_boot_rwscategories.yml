@@ -12,7 +12,7 @@ dependencies:
 id: thinkwork8_boot_rwscategories
 theme: thinkwork8_boot
 region: sidebar_first
-weight: -22
+weight: -25
 provider: null
 plugin: 'block_content:e98d4ea7-212a-48b2-b73c-72d51a2ff6de'
 settings:

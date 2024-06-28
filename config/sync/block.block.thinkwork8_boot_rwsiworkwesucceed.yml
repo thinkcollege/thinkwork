@@ -12,7 +12,7 @@ dependencies:
 id: thinkwork8_boot_rwsiworkwesucceed
 theme: thinkwork8_boot
 region: sidebar_first
-weight: -21
+weight: -24
 provider: null
 plugin: 'block_content:b09baaea-20cd-48db-8f7e-dae2b910c43d'
 settings:

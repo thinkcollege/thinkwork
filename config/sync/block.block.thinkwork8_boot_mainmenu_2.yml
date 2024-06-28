@@ -1,17 +1,18 @@
 uuid: afee7b48-feb6-405b-9215-d4be9351c2fa
 langcode: en
-status: false
+status: true
 dependencies:
   config:
     - system.menu.main
   module:
+    - block_class
     - system
   theme:
     - thinkwork8_boot
 id: thinkwork8_boot_mainmenu_2
 theme: thinkwork8_boot
 region: primary_menu
-weight: -16
+weight: -24
 provider: null
 plugin: 'system_menu_block:main'
 settings:
@@ -20,6 +21,6 @@ settings:
   label_display: '0'
   provider: system
   level: 1
-  depth: 3
+  depth: 4
   expand_all_items: true
 visibility: {  }

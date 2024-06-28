@@ -11,7 +11,7 @@ dependencies:
 id: thinkwork8_boot_navigation
 theme: thinkwork8_boot
 region: header
-weight: -16
+weight: -24
 provider: null
 plugin: 'system_menu_block:tools'
 settings:

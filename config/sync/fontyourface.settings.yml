@@ -12,3 +12,5 @@ enabled_fonts:
   - 'https://www.google.com/webfonts/family?family=Open Sans&subset=latin#regular'
   - 'https://www.google.com/webfonts/family?family=Open Sans&subset=latin#700'
   - 'https://www.google.com/webfonts/family?family=Montserrat&subset=latin#600'
+  - 'https://www.google.com/webfonts/family?family=Montserrat&subset=latin#900'
+  - 'https://www.google.com/webfonts/family?family=Montserrat&subset=latin#800'

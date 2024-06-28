@@ -8,11 +8,13 @@ dependencies:
     - field.field.paragraph.bp_image.bp_image_field
     - field.field.paragraph.bp_image.bp_link
     - field.field.paragraph.bp_image.bp_width
+    - field.field.paragraph.bp_image.field_grid
     - image.style.thumbnail
     - paragraphs.paragraphs_type.bp_image
   module:
     - image
     - link
+    - paragraphs_grid
 _core:
   default_config_hash: HdN79DCCkrP_BBFmnXk4bHUxNg16EtuZC7olW5xr2wE
 id: paragraph.bp_image.default
@@ -22,13 +24,13 @@ mode: default
 content:
   bp_background:
     type: options_select
-    weight: 0
+    weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
   bp_header:
     type: string_textfield
-    weight: 2
+    weight: 3
     region: content
     settings:
       size: 60
@@ -36,7 +38,7 @@ content:
     third_party_settings: {  }
   bp_image_field:
     type: image_image
-    weight: 3
+    weight: 4
     region: content
     settings:
       progress_indicator: throbber
@@ -44,7 +46,7 @@ content:
     third_party_settings: {  }
   bp_link:
     type: link_default
-    weight: 4
+    weight: 5
     region: content
     settings:
       placeholder_url: ''
@@ -52,9 +54,17 @@ content:
     third_party_settings: {  }
   bp_width:
     type: options_select
-    weight: 1
+    weight: 2
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_grid:
+    type: grid_widget
+    weight: 0
+    region: content
+    settings:
+      excluded_view_modes:
+        - preview
     third_party_settings: {  }
 hidden:
   created: true

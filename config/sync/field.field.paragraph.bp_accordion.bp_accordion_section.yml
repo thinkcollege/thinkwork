@@ -25,6 +25,7 @@ settings:
   handler_settings:
     target_bundles:
       bp_accordion_section: bp_accordion_section
+    negate: 0
     target_bundles_drag_drop:
       bp_accordion:
         weight: 11
@@ -35,19 +36,52 @@ settings:
       bp_blank:
         weight: 12
         enabled: false
+      bp_block:
+        weight: 23
+        enabled: false
+      bp_callout:
+        weight: 24
+        enabled: false
+      bp_card:
+        weight: 25
+        enabled: false
       bp_carousel:
         weight: 13
+        enabled: false
+      bp_column_wrapper:
+        weight: 30
         enabled: false
       bp_columns:
         weight: 14
         enabled: false
+      bp_columns_three_uneven:
+        weight: 28
+        enabled: false
+      bp_columns_two_uneven:
+        weight: 29
+        enabled: false
       bp_image:
         weight: 15
+        enabled: false
+      bp_modal:
+        weight: 32
         enabled: false
       bp_simple:
         weight: 16
         enabled: false
+      bp_tab_section:
+        weight: 35
+        enabled: false
+      bp_tabs:
+        weight: 34
+        enabled: false
       bp_view:
         weight: 17
+        enabled: false
+      bp_webform:
+        weight: 37
+        enabled: false
+      image_title_body:
+        weight: 38
         enabled: false
 field_type: entity_reference_revisions

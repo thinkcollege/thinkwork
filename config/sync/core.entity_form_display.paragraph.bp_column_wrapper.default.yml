@@ -4,9 +4,11 @@ status: true
 dependencies:
   config:
     - field.field.paragraph.bp_column_wrapper.bp_column_content_w
+    - field.field.paragraph.bp_column_wrapper.field_grid
     - paragraphs.paragraphs_type.bp_column_wrapper
   module:
     - paragraphs
+    - paragraphs_grid
 _core:
   default_config_hash: wK-BPkwFH8QxQfRE09q4U3USipjad-jYZ3npZF69F5w
 id: paragraph.bp_column_wrapper.default
@@ -16,7 +18,7 @@ mode: default
 content:
   bp_column_content_w:
     type: entity_reference_paragraphs
-    weight: 0
+    weight: 1
     region: content
     settings:
       title: Paragraph
@@ -24,6 +26,15 @@ content:
       edit_mode: closed
       add_mode: dropdown
       form_display_mode: default
+      default_paragraph_type: ''
+    third_party_settings: {  }
+  field_grid:
+    type: grid_widget
+    weight: 0
+    region: content
+    settings:
+      excluded_view_modes:
+        - preview
     third_party_settings: {  }
 hidden:
   created: true

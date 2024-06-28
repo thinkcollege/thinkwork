@@ -5,9 +5,11 @@ dependencies:
   config:
     - field.field.paragraph.bp_tab_section.bp_tab_section_body
     - field.field.paragraph.bp_tab_section.bp_tab_section_title
+    - field.field.paragraph.bp_tab_section.field_grid
     - paragraphs.paragraphs_type.bp_tab_section
   module:
     - paragraphs
+    - paragraphs_grid
 _core:
   default_config_hash: yvnAACcaIIRPeeS7YVtS-Z8Pbuatcftmox25-8I5Llw
 id: paragraph.bp_tab_section.default
@@ -17,7 +19,7 @@ mode: default
 content:
   bp_tab_section_body:
     type: entity_reference_paragraphs
-    weight: 1
+    weight: 2
     region: content
     settings:
       title: Paragraph
@@ -25,14 +27,23 @@ content:
       edit_mode: closed
       add_mode: dropdown
       form_display_mode: default
+      default_paragraph_type: ''
     third_party_settings: {  }
   bp_tab_section_title:
     type: string_textfield
-    weight: 0
+    weight: 1
     region: content
     settings:
       size: 60
       placeholder: ''
+    third_party_settings: {  }
+  field_grid:
+    type: grid_widget
+    weight: 0
+    region: content
+    settings:
+      excluded_view_modes:
+        - preview
     third_party_settings: {  }
 hidden:
   created: true

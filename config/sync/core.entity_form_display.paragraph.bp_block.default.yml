@@ -7,7 +7,10 @@ dependencies:
     - field.field.paragraph.bp_block.bp_block
     - field.field.paragraph.bp_block.bp_header
     - field.field.paragraph.bp_block.bp_width
+    - field.field.paragraph.bp_block.field_grid
     - paragraphs.paragraphs_type.bp_block
+  module:
+    - paragraphs_grid
 _core:
   default_config_hash: C9JQkqmEcygxPLZrxrGGGwb_sBeGjZs1gz1hD5KW5dA
 id: paragraph.bp_block.default
@@ -17,13 +20,13 @@ mode: default
 content:
   bp_background:
     type: options_select
-    weight: 0
+    weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
   bp_block:
     type: entity_reference_autocomplete
-    weight: 3
+    weight: 4
     region: content
     settings:
       match_operator: CONTAINS
@@ -33,7 +36,7 @@ content:
     third_party_settings: {  }
   bp_header:
     type: string_textfield
-    weight: 2
+    weight: 3
     region: content
     settings:
       size: 60
@@ -41,9 +44,17 @@ content:
     third_party_settings: {  }
   bp_width:
     type: options_select
-    weight: 1
+    weight: 2
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_grid:
+    type: grid_widget
+    weight: 0
+    region: content
+    settings:
+      excluded_view_modes:
+        - preview
     third_party_settings: {  }
 hidden:
   created: true

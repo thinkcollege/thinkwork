@@ -15,7 +15,9 @@ label: 'Show Indicators'
 description: 'Check to display open/close indicators for accordions in this section.'
 required: false
 translatable: true
-default_value: {  }
+default_value:
+  -
+    value: 1
 default_value_callback: ''
 settings:
   on_label: 'Yes'

@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.paragraph.bp_tab_section.bp_tab_section_body
     - field.field.paragraph.bp_tab_section.bp_tab_section_title
+    - field.field.paragraph.bp_tab_section.field_grid
     - paragraphs.paragraphs_type.bp_tab_section
   module:
     - entity_reference_revisions
@@ -34,5 +35,6 @@ content:
     region: content
 hidden:
   created: true
+  field_grid: true
   search_api_excerpt: true
   uid: true

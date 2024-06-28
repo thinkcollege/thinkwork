@@ -5,7 +5,10 @@ dependencies:
   config:
     - field.field.paragraph.bp_webform.bp_background
     - field.field.paragraph.bp_webform.bp_width
+    - field.field.paragraph.bp_webform.field_grid
     - paragraphs.paragraphs_type.bp_webform
+  module:
+    - paragraphs_grid
 _core:
   default_config_hash: 0lW8D0u1K7nD1jtHF9ZjYUweSzi7k1imRtQvoJDeH14
 id: paragraph.bp_webform.default
@@ -15,15 +18,23 @@ mode: default
 content:
   bp_background:
     type: options_select
-    weight: 0
+    weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
   bp_width:
     type: options_select
-    weight: 1
+    weight: 2
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_grid:
+    type: grid_widget
+    weight: 0
+    region: content
+    settings:
+      excluded_view_modes:
+        - preview
     third_party_settings: {  }
 hidden:
   created: true

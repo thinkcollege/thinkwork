@@ -16,8 +16,8 @@ dependencies:
     - field.field.node.page.field_topics
     - node.type.page
   module:
-    - entity_reference_revisions
     - link
+    - paragraphs_grid
     - text
     - user
 _core:
@@ -55,11 +55,12 @@ content:
     weight: 2
     region: content
   field_paragraphs:
-    type: entity_reference_revisions_entity_view
-    label: above
+    type: paragraphs_grid_formatter
+    label: visually_hidden
     settings:
       view_mode: default
-      link: ''
+      container: container-fluid
+      link: false
     third_party_settings: {  }
     weight: 9
     region: content

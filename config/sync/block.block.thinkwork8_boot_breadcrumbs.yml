@@ -3,9 +3,13 @@ langcode: en
 status: true
 dependencies:
   module:
+    - block_class
     - system
   theme:
     - thinkwork8_boot
+third_party_settings:
+  block_class:
+    classes: bg-light
 _core:
   default_config_hash: oXUb3JZR2WW5VOdw4HrhRicCsq51mCgLfRyvheG68ck
 id: thinkwork8_boot_breadcrumbs

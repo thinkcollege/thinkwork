@@ -6,8 +6,11 @@ dependencies:
     - field.storage.node.field_paragraphs
     - node.type.page
     - paragraphs.paragraphs_type.bp_accordion
+    - paragraphs.paragraphs_type.bp_accordion_section
     - paragraphs.paragraphs_type.bp_blank
     - paragraphs.paragraphs_type.bp_block
+    - paragraphs.paragraphs_type.bp_callout
+    - paragraphs.paragraphs_type.bp_card
     - paragraphs.paragraphs_type.bp_carousel
     - paragraphs.paragraphs_type.bp_column_wrapper
     - paragraphs.paragraphs_type.bp_columns
@@ -16,9 +19,11 @@ dependencies:
     - paragraphs.paragraphs_type.bp_image
     - paragraphs.paragraphs_type.bp_modal
     - paragraphs.paragraphs_type.bp_simple
+    - paragraphs.paragraphs_type.bp_tab_section
     - paragraphs.paragraphs_type.bp_tabs
     - paragraphs.paragraphs_type.bp_view
     - paragraphs.paragraphs_type.bp_webform
+    - paragraphs.paragraphs_type.image_title_body
   module:
     - entity_reference_revisions
 id: node.page.field_paragraphs
@@ -36,19 +41,24 @@ settings:
   handler_settings:
     target_bundles:
       bp_accordion: bp_accordion
+      bp_accordion_section: bp_accordion_section
       bp_blank: bp_blank
       bp_block: bp_block
       bp_carousel: bp_carousel
+      bp_card: bp_card
       bp_columns: bp_columns
       bp_columns_three_uneven: bp_columns_three_uneven
+      bp_callout: bp_callout
       bp_columns_two_uneven: bp_columns_two_uneven
       bp_column_wrapper: bp_column_wrapper
       bp_image: bp_image
       bp_modal: bp_modal
       bp_simple: bp_simple
       bp_tabs: bp_tabs
+      bp_tab_section: bp_tab_section
       bp_view: bp_view
       bp_webform: bp_webform
+      image_title_body: image_title_body
     negate: 0
     target_bundles_drag_drop:
       bp_accordion:
@@ -56,12 +66,18 @@ settings:
         enabled: true
       bp_accordion_section:
         weight: 18
-        enabled: false
+        enabled: true
       bp_blank:
         weight: 19
         enabled: true
       bp_block:
         weight: 20
+        enabled: true
+      bp_callout:
+        weight: 24
+        enabled: true
+      bp_card:
+        weight: 22
         enabled: true
       bp_carousel:
         weight: 21
@@ -89,7 +105,7 @@ settings:
         enabled: true
       bp_tab_section:
         weight: 30
-        enabled: false
+        enabled: true
       bp_tabs:
         weight: 29
         enabled: true
@@ -98,5 +114,8 @@ settings:
         enabled: true
       bp_webform:
         weight: 32
+        enabled: true
+      image_title_body:
+        weight: 38
         enabled: true
 field_type: entity_reference_revisions
