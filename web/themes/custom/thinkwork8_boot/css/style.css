@@ -135,7 +135,7 @@ color:	#fff}
     right: 0;
     padding: 5px 5px;
     margin: 5px;
-    background-color: #0077AF;
+    background-color: #ccc;
 }
 
 .navbar-nav .nav-link {padding:.5rem 1rem}
@@ -642,3 +642,15 @@ section.full-width.region-wrapper-primary-menu {
     margin-bottom: 10px;
     margin-top: 10px;
   }
+
+  /* Pager */
+
+  .active>.page-link, .page-link.active {background-color:#0077AF;
+    border-color:  #0077AF}
+    
+  .page-link {   color: #0077AF;}
+
+  .page-link:hover {
+    color: #0077AF;
+  }
+ 
