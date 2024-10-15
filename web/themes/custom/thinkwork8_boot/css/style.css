@@ -576,10 +576,17 @@ align-content:stretch;}
 .page-node-64 .card-header {background-color:#f5f5f5}
 
 
-/*State Data Sidebar */
+/*Second Sidebar Menus */
 .sidebar_second {
     background-color: #f8f9fa;
 }
+
+
+/* overside of background color for front page */
+.path-frontpage .sidebar_second {
+    background-color: #fff;
+}
+
 
     /* spaces between blue card columns on StateData home */
     
