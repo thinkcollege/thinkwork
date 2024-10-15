@@ -585,6 +585,7 @@ align-content:stretch;}
 /* overside of background color for front page */
 .path-frontpage .sidebar_second {
     background-color: #fff;
+    padding: 0;
 }
 
 
