@@ -1131,7 +1131,7 @@ h3 #chosenText { font-size: 70%; padding-left:15px;margin-top: 12px;}
 .google-visualization-table tr.chartSelected { background-color: #000; color: #fff;}
 rect[stroke="#ffffff"] {stroke: #000 !important; stroke-width: 5px !important; stroke-dasharray: .8em; }
 img#chosenCheck { width: 50px; float: left; height: 50px; /*position: absolute; left: 100%; margin-top: -18px; z-index: 1000; margin-left: 8px;*/}
-div#checkAffirm { width: 300px; height: 80px; color: green; border: 2px solid green; background-color: #dcdcdc; position: absolute; left: 105%; margin-top: -60px; font-size: 14px; font-weight:normal; padding: 5px;}
+div#checkAffirm { width: 300px; height: 80px; color: green; border: 2px solid green; background-color: #dcdcdc; position: absolute; left: 105%; margin-top: -60px; font-size: 14px; font-weight:normal; padding: 5px; z-index: 10000;}
 div#checkAffirm p {float: left; width: 200px; padding-left: 10px; }
 .google-visualization-table > div { overflow:visible !important;}
 #collapseSeven .card-body {font-size: .9rem !important; padding: .9rem;}
@@ -1158,3 +1158,4 @@ div#checkAffirm p {float: left; width: 200px; padding-left: 10px; }
   #bodyDiv h3 { font-size: 1.3rem !important; color: #282e37;}
   h3 #stateCountText, h3 #yearCountText, h3 #chosenText { color: #282e37; font-size: 1rem;}
   #yearMultiple, #yearSingle {column-count: 3;} 
+  #chart_div_0, #chart_div_0 div { z-index: 200;}
