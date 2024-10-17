@@ -21,6 +21,7 @@ return array(
     'DateRangeError' => $vendorDir . '/symfony/polyfill-php83/Resources/stubs/DateRangeError.php',
     'Drupal' => $baseDir . '/web/core/lib/Drupal.php',
     'DrupalProject\\composer\\ScriptHandler' => $baseDir . '/scripts/composer/ScriptHandler.php',
+    'Drupal\\Component\\Datetime\\Time' => $baseDir . '/web/core/lib/Drupal/Component/Datetime/Time.php',
     'Drupal\\Component\\DependencyInjection\\Container' => $baseDir . '/web/core/lib/Drupal/Component/DependencyInjection/Container.php',
     'Drupal\\Component\\DependencyInjection\\PhpArrayContainer' => $baseDir . '/web/core/lib/Drupal/Component/DependencyInjection/PhpArrayContainer.php',
     'Drupal\\Component\\FileCache\\FileCacheFactory' => $baseDir . '/web/core/lib/Drupal/Component/FileCache/FileCacheFactory.php',

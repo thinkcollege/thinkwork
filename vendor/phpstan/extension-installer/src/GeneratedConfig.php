@@ -12,7 +12,7 @@ final class GeneratedConfig
 	public const EXTENSIONS = array (
   'composer/composer' => 
   array (
-    'install_path' => '/var/www/html/vendor/composer/composer',
+    'install_path' => '/var/www/thinkwork/vendor/composer/composer',
     'relative_install_path' => '../../../composer/composer',
     'extra' => 
     array (
@@ -26,7 +26,7 @@ final class GeneratedConfig
   ),
   'mglaman/phpstan-drupal' => 
   array (
-    'install_path' => '/var/www/html/vendor/mglaman/phpstan-drupal',
+    'install_path' => '/var/www/thinkwork/vendor/mglaman/phpstan-drupal',
     'relative_install_path' => '../../../mglaman/phpstan-drupal',
     'extra' => 
     array (
@@ -41,7 +41,7 @@ final class GeneratedConfig
   ),
   'phpstan/phpstan-deprecation-rules' => 
   array (
-    'install_path' => '/var/www/html/vendor/phpstan/phpstan-deprecation-rules',
+    'install_path' => '/var/www/thinkwork/vendor/phpstan/phpstan-deprecation-rules',
     'relative_install_path' => '../../phpstan-deprecation-rules',
     'extra' => 
     array (
@@ -55,7 +55,7 @@ final class GeneratedConfig
   ),
   'phpstan/phpstan-phpunit' => 
   array (
-    'install_path' => '/var/www/html/vendor/phpstan/phpstan-phpunit',
+    'install_path' => '/var/www/thinkwork/vendor/phpstan/phpstan-phpunit',
     'relative_install_path' => '../../phpstan-phpunit',
     'extra' => 
     array (
