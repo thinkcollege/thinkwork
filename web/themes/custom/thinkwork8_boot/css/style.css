@@ -101,7 +101,10 @@ blockquote.f_quote {
 }
 .sidebar .block {border-style:none;}
 
-
+.sidebar h2
+{   margin: 0;  
+   padding-bottom: 0;
+   text-shadow: none; }
 
 /*Nav Menu */
 
@@ -406,8 +409,15 @@ img[data-align="right"] {padding:0 0 5px 5px }
 
 
 .node-readmore.nav-link a {
-	color: #fff
+	color: #fff;
+  	text-decoration:none;
     }
+
+.node-readmore.nav-link a:hover
+{text-decoration:underline;
+ font-weight:bold;
+ }
+
  
 
     .heroText p {
