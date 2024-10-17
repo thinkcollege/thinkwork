@@ -26,7 +26,7 @@
         "drupal/bootstrap_library": "^2.0",
         "drupal/bootstrap_paragraphs": "^5.0",
         "drupal/content_access": "^2.0",
-        "drupal/core": "^10.2.6",
+        "drupal/core": "^10.3.6",
         "drupal/core-composer-scaffold": "^10.1",
         "drupal/csv_serialization": "^4.0",
         "drupal/ctools": "^3.7",
@@ -117,7 +117,8 @@
             "cweagans/composer-patches": true,
             "drupal/core-composer-scaffold": true,
             "zaporylie/composer-drupal-optimizations": true,
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "tbachert/spi": true
         }
     },
     "autoload": {

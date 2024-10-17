@@ -2,9 +2,9 @@
 
 namespace Drupal\Tests\tagify_facets\FunctionalJavascript\FieldWidget;
 
+use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\entity_test\Entity\EntityTestMulRevPub;
 use Drupal\facets\Entity\Facet;
-use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 
 /**
  * Tests tagify facets widget.

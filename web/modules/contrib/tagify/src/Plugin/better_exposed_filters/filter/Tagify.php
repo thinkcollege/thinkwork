@@ -2,10 +2,10 @@
 
 namespace Drupal\tagify\Plugin\better_exposed_filters\filter;
 
-use Drupal\better_exposed_filters\Plugin\better_exposed_filters\filter\FilterWidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\better_exposed_filters\Plugin\better_exposed_filters\filter\FilterWidgetBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -38,7 +38,7 @@ class Tagify extends FilterWidgetBase implements ContainerFactoryPluginInterface
   /**
    * {@inheritdoc}
    */
-  public function defaultConfiguration() {
+  public function defaultConfiguration(): array {
     $config = parent::defaultConfiguration();
     $config['advanced']['match_operator'] = 'CONTAINS';
     $config['advanced']['max_items'] = 10;
@@ -62,6 +62,7 @@ class Tagify extends FilterWidgetBase implements ContainerFactoryPluginInterface
       '#type' => 'entity_autocomplete_tagify',
       '#target_type' => $form[$field_id]['#target_type'],
       '#tags' => $form[$field_id]['#tags'],
+      '#selection_handler' => $form[$field_id]['#selection_handler'] ?? 'default',
       '#selection_settings' => $form[$field_id]['#selection_settings'] ?? [],
       '#match_operator' => $this->configuration['advanced']['match_operator'],
       '#max_items' => (int) $this->configuration['advanced']['max_items'],
@@ -76,7 +77,7 @@ class Tagify extends FilterWidgetBase implements ContainerFactoryPluginInterface
   /**
    * {@inheritdoc}
    */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state): array {
 
     $form = parent::buildConfigurationForm($form, $form_state);
 

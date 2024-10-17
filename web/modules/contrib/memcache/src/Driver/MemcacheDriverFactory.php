@@ -4,8 +4,8 @@ namespace Drupal\memcache\Driver;
 
 use Drupal\memcache\Connection\MemcacheConnection;
 use Drupal\memcache\Connection\MemcachedConnection;
-use Drupal\memcache\MemcacheSettings;
 use Drupal\memcache\MemcacheException;
+use Drupal\memcache\MemcacheSettings;
 
 /**
  * Factory class for creation of Memcache objects.
@@ -168,6 +168,13 @@ class MemcacheDriverFactory {
     elseif (class_exists('Memcache')) {
       $extension = \Memcache::class;
     }
+    // If both the "servers" and "bins" settings for a specified extension are
+    // an empty array, make it possible to have this module enabled and have
+    // neither Memcache nor Memcached installed on this environment.
+    elseif ($this->settings->get('servers', NULL) === []
+      && $this->settings->get('bins', NULL) === []) {
+      $extension = 'disabled';
+    }
     else {
       throw new MemcacheException('No Memcache extension found');
     }
@@ -181,8 +188,9 @@ class MemcacheDriverFactory {
       $this->driverClass = MemcacheDriver::class;
     }
 
-    // Values from settings.php.
-    $this->servers = $this->settings->get('servers', ['127.0.0.1:11211' => 'default']);
+    // Values from settings.php or env variable.
+    $host = getenv('MEMCACHED_HOST') ?: '127.0.0.1:11211';
+    $this->servers = $this->settings->get('servers', [$host => 'default']);
     $this->bins = $this->settings->get('bins', ['default' => 'default']);
 
     // Indicate whether to connect to memcache using a persistent connection.

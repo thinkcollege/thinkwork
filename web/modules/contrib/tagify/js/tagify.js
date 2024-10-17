@@ -557,7 +557,7 @@
           dropdown: {
             enabled: 0,
             fuzzySearch: !!parseInt(matchOperator, 10),
-            maxItems: matchLimit ?? Infinity,
+            maxItems: matchLimit === '0' ? Infinity : matchLimit,
             highlightFirst: true,
             searchKeys: ['text'],
             mapValueTo: 'text',

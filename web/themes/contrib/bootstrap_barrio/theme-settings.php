@@ -170,7 +170,7 @@ function bootstrap_barrio_form_system_theme_settings_alter(&$form, FormStateInte
   ];
   $form['colors']['scheme']['bootstrap_barrio_enable_color'] = [
     '#type' => 'checkbox',
-    '#title' => t('Enable color Sheme'),
+    '#title' => t('Enable color Scheme'),
     '#default_value' => theme_get_setting('bootstrap_barrio_enable_color'),
     '#ajax' => [
       'callback' => 'colorCallback',
@@ -188,7 +188,7 @@ function bootstrap_barrio_form_system_theme_settings_alter(&$form, FormStateInte
       'id' => 'color_container'
     ],
   ];
-  
+
   if ($form_state->getValue('bootstrap_barrio_enable_color', theme_get_setting('bootstrap_barrio_enable_color'))) {
     $form['colors']['scheme']['color_container']['bootstrap_barrio_color_scheme'] = [
       '#type' => 'select',
@@ -736,7 +736,7 @@ function bootstrap_barrio_form_system_theme_settings_alter(&$form, FormStateInte
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   ];
-  
+
   $form['components']['navbar_behaviour']['bootstrap_barrio_navbar_offcanvas'] = [
     '#type' => 'select',
     '#title' => t('Default/Bootstrap Offcanvas Collapse'),
@@ -795,6 +795,17 @@ function bootstrap_barrio_form_system_theme_settings_alter(&$form, FormStateInte
       'default' => t('Alerts classic'),
       'alerts' => t('Alerts bottom'),
       'toasts' => t('Toasts'),
+    ],
+  ];
+  $form['components']['alerts']['bootstrap_barrio_messages_widget_toast_delay'] = [
+    '#type' => 'number',
+    '#title' => t('Toast delay'),
+    '#default_value' => theme_get_setting('bootstrap_barrio_messages_widget_toast_delay') ?? 10000,
+    '#description' => t('How long to keep the toast open in milliseconds.'),
+    '#states' => [
+      'visible' => [
+        ':input[name="bootstrap_barrio_messages_widget"]' => ['value' => 'toasts'],
+      ],
     ],
   ];
 

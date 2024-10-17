@@ -17,7 +17,7 @@ use Drupal\views\Views;
  * @FieldType(
  *   id = "viewfield",
  *   label = @Translation("Viewfield"),
- *   description = @Translation("'Defines a entity reference field type to display a view.'"),
+ *   description = @Translation("Defines a entity reference field type to display a view."),
  *   category = @Translation("Reference"),
  *   default_widget = "viewfield_select",
  *   default_formatter = "viewfield_default",

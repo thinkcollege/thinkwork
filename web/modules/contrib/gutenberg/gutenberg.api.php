@@ -163,3 +163,31 @@ function hook_gutenberg_node_type_route(RouteMatchInterface $route_match) {
 /**
  * @} End of "addtogroup hooks".
  */
+
+
+/**
+ * Alter array of Gutenberg blocks pulled in from
+ * "gutenberg/gutenberg.blocks.yml".
+ *
+ * @param array $settings
+ *   Array of Gutenberg settings.
+ */
+function hook_allowed_gutenberg_blocks_default_list_alter(array &$settings) {
+  $settings['categories'][] = [
+    'name' => 'new_name',
+    'reference' => 'new/category',
+    'description' => "",
+    'blocks' => [
+      [
+        'id' => 'slug/block_id',
+        'name' => "Block Name",
+        'default' => FALSE,
+      ],
+      [
+        'id' => 'slug/block_id2',
+        'name' => "Block Name2",
+        'default' => FALSE,
+      ],
+    ],
+  ];
+}

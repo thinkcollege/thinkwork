@@ -53,12 +53,14 @@ services:
     arguments: []
   gutenberg.oembed_resolver:
     class: Drupal\gutenberg\OEmbedResolver
-    arguments: ['@service_container', '@http_client', '@renderer', '@module_handler']
+    arguments: ['@service_container', '@http_client', '@renderer', '@module_handler', '@logger.channel.gutenberg']
   gutenberg.media_entity.renderer:
     class: Drupal\gutenberg\MediaEntityRenderer
     arguments: ['@renderer', '@entity_type.manager']
   gutenberg.media_library.opener:
     class: Drupal\gutenberg\MediaLibraryGutenbergOpener
+    tags:
+      - { name: media_library.opener }
   gutenberg.media_type.guesser:
     class: Drupal\gutenberg\MediaTypeGuesser
     arguments: ['@entity_type.manager', '@gutenberg.file_extension_guesser']

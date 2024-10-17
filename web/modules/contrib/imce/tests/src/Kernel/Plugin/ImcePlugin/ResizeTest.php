@@ -123,9 +123,9 @@ class ResizeTest extends KernelTestBasePlugin {
   }
 
   /**
-   * Get plugins definations to new folder.
+   * Get plugins definition to new folder.
    */
-  public function getPluginDefinations() {
+  public function getPluginDefinitions() {
     return [
       'weight' => 0,
       'operations' => [
@@ -141,7 +141,7 @@ class ResizeTest extends KernelTestBasePlugin {
   /**
    * Test Resize::permissionInfo()
    */
-  public function testPermissiomInfo() {
+  public function testPermissionInfo() {
     $permissionInfo = $this->resize->permissionInfo();
     $this->assertIsArray($permissionInfo);
     $this->assertTrue(in_array($this->t('Resize images'), $permissionInfo));
@@ -170,7 +170,7 @@ class ResizeTest extends KernelTestBasePlugin {
   }
 
   /**
-   * Teste messages on context ImcePlugin\Resize.
+   * Test messages on context ImcePlugin\Resize.
    */
   public function testMessages() {
     $messages = $this->imceFM->getMessages();

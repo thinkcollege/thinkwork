@@ -44,7 +44,7 @@ block.settings.superfish:*:
       label: 'sf-Touchscreen'
     touchbh:
       type: integer
-      label: 'sf-Touchscreen behaviour'
+      label: 'sf-Touchscreen behavior'
     touchbp:
       type: integer
       label: 'sf-Touchscreen Breakpoint'

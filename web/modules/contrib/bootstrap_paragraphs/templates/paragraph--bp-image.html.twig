@@ -56,14 +56,14 @@ content.bp_padding[0]['#markup'] ? content.bp_padding[0]['#markup'],
 
 {# Prints div with classes, and content without Width and Background. #}
 	<div{{attributes.addClass(classes)}}>
-		<div class="paragraph__column"> {% if content.bp_header is not empty %}
+		<div class="paragraph__column"> {% if paragraph.bp_header is not empty %}
 			<h2>{{ content.bp_header }}</h2>
 		{% endif %}
-		{% if content.bp_link is not empty %}
+		{% if paragraph.bp_link is not empty %}
 			<a href="{{ content.bp_link.0['#url'] }}">
 			{% endif %}
 			{{ content|without('bp_background', 'bp_header', 'bp_link', 'bp_width', 'bp_margin', 'bp_padding') }}
-			{% if content.bp_link is not empty %}
+			{% if paragraph.bp_link is not empty %}
 			</a>
 		{% endif %}
 	</div>

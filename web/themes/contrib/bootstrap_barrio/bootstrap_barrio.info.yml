@@ -1,7 +1,7 @@
 name: Bootstrap Barrio
 type: theme
 description: 'A flexible Booststrap based theme, with many regions and a responsive, mobile-first layout.'
-core_version_requirement: ^9.4 || ^10
+core_version_requirement: ^10.3 || ^11.0
 base theme: false
 
 libraries:
@@ -14,6 +14,8 @@ libraries-extend:
     - bootstrap_barrio/file
   node/drupal.node.preview:
     - bootstrap_barrio/drupal.node.preview
+  core/drupal.message:
+    - bootstrap_barrio/messages
 
 ckeditor_stylesheets:
   - css/components/table.css
@@ -43,3 +45,8 @@ regions:
   footer_fourth: 'Footer fourth'
   footer_fifth: 'Footer fifth'
   none: None
+
+# Information added by Drupal.org packaging script on 2023-12-03
+version: '5.5.16'
+project: 'bootstrap_barrio'
+datestamp: 1701646129

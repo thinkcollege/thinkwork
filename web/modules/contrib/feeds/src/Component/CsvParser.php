@@ -187,25 +187,15 @@ class CsvParser implements \Iterator {
 
   /**
    * Implements \Iterator::current().
-   *
-   * @todo return type should be "mixed", but that keyword is only available
-   * since PHP 8.0. Add that as soon as Drupal 9 is no longer supported. And
-   * then remove the "#[\ReturnTypeWillChange]" line.
    */
-  #[\ReturnTypeWillChange]
-  public function current() {
+  public function current(): mixed {
     return $this->currentLine;
   }
 
   /**
    * Implements \Iterator::key().
-   *
-   * @todo return type should be "mixed", but that keyword is only available
-   * since PHP 8.0. Add that as soon as Drupal 9 is no longer supported. And
-   * then remove the "#[\ReturnTypeWillChange]" line.
    */
-  #[\ReturnTypeWillChange]
-  public function key() {
+  public function key(): mixed {
     return $this->linesRead - 1;
   }
 
@@ -226,7 +216,7 @@ class CsvParser implements \Iterator {
         return;
       }
 
-    // Skip empty lines that aren't wrapped in an enclosure.
+      // Skip empty lines that aren't wrapped in an enclosure.
     } while (!strlen(rtrim($line, "\r\n")));
 
     $this->currentLine = $this->parseLine($line);
@@ -291,7 +281,7 @@ class CsvParser implements \Iterator {
     // Traverse the line byte-by-byte.
     for ($index = 0; $index < $line_length; ++$index) {
       $byte = $line[$index];
-      $next_byte = isset($line[$index + 1]) ? $line[$index + 1] : '';
+      $next_byte = $line[$index + 1] ?? '';
 
       // Beginning a quoted field.
       if ($byte === '"' && $field === '' && !$in_quotes) {

@@ -115,7 +115,7 @@
       }
       drupalSettings.gutenbergLoaded = true;
 
-      const { contentType, allowedBlocks, blackList } = format.editorSettings;
+      const { contentType, allowedBlocks, blackList, nodeId } = format.editorSettings;
       const { data, blocks, hooks } = wp;
       const { dispatch } = data;
       const { addFilter } = hooks;
@@ -125,7 +125,7 @@
         registerDrupalBlocks,
         registerDrupalMedia,
       } = DrupalGutenberg;
- 
+
       // Register plugins.
       // Not needed now. Leaving it here for reference.
       // const { AdditionalFieldsPluginSidebar } = DrupalGutenberg.Plugins;
@@ -163,7 +163,7 @@
 
       await registerDrupalStore(data);
 
-      await registerDrupalBlocks(contentType);
+      await registerDrupalBlocks(contentType, nodeId);
       await registerDrupalMedia();
 
       await this._initGutenberg(element);
@@ -276,6 +276,9 @@
         drupalSettings.gutenberg.metaboxes.forEach(id => {
           const $metabox = $(`#${id}`);
           const metabox = $metabox.get(0);
+          if (!metabox) {
+            return;
+          }
 
           // Re-initialize the original editors used within the metabox elements
           // which can break after they've been moved.
@@ -325,7 +328,7 @@
       $('.gutenberg-header-settings .form-submit').on('mousedown', e => {
         const { openGeneralSidebar } = data.dispatch('core/edit-post');
 
-        // is checkValidity supported? If not, validate the form. 
+        // is checkValidity supported? If not, validate the form.
         if (typeof element.form.checkValidity === 'function') {
           isFormValid = element.form.checkValidity();
         } else {
@@ -708,8 +711,8 @@
 
   /**
    * Update drupal block.
-   * 
-   * @param {integer|string} id 
+   *
+   * @param {integer|string} id
    */
   async function updateDrupalBlockBasedOnMediaEntity(id) {
     const { dispatch } = wp.data;

@@ -1,4 +1,4 @@
-# Bootstrap Paragraphs Xard
+# Bootstrap Paragraphs Card
 
 CONTENTS OF THIS FILE
 ---------------------

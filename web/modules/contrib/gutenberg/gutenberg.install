@@ -8,6 +8,7 @@
 use Drupal\Core\Database\Database;
 use Drupal\Core\Database\SchemaObjectExistsException;
 use Drupal\Core\Utility\UpdateException;
+use Drupal\user\Entity\Role;
 
 /**
  * Implements hook_schema().
@@ -148,7 +149,7 @@ function gutenberg_update_8202(&$sandbox) {
  */
 function gutenberg_update_8203(&$sandbox) {
   // Load roles with the legacy gutenberg administer role.
-  $roles = user_roles(FALSE, 'gutenberg administer');
+  $roles = Role::loadMultiple();
   foreach ($roles as $role) {
     $role->revokePermission('gutenberg administer');
     $role->grantPermission('use gutenberg');

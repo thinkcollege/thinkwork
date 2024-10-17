@@ -23,6 +23,7 @@ gutenberg.media.upload:
     _entity_access: 'editor.use'
     _permission: 'use gutenberg'
     _format: json
+    _csrf_request_header_token: 'TRUE'
 gutenberg.media.load:
   path: '/editor/media/load/{file}'
   defaults:
@@ -45,6 +46,7 @@ gutenberg.media.edit:
   requirements:
     _permission: 'use gutenberg'
     _format: json
+    _csrf_request_header_token: 'TRUE'
 gutenberg.media.load_media:
   path: '/editor/media/load-media/{media}'
   defaults:
@@ -70,7 +72,7 @@ gutenberg.media.render:
     _permission: 'use gutenberg'
     _format: json
 gutenberg.blocks.load:
-  path: '/editor/blocks/load_by_type/{content_type}'
+  path: '/editor/blocks/load_by_type/{content_type}/{node_id}'
   defaults:
     _controller: '\Drupal\gutenberg\Controller\BlocksController::loadByType'
     content_type: 'none'
@@ -110,6 +112,7 @@ gutenberg.reusable_blocks.create:
   requirements:
     _permission: 'use gutenberg'
     _format: json
+    _csrf_request_header_token: 'TRUE'
 gutenberg.reusable_blocks.update:
   path: '/editor/reusable-blocks/{block_id}'
   defaults:
@@ -118,6 +121,7 @@ gutenberg.reusable_blocks.update:
   requirements:
     _custom_access: '\Drupal\gutenberg\Controller\ReusableBlocksController::access'
     _format: json
+    _csrf_request_header_token: 'TRUE'
 gutenberg.reusable_blocks.delete:
   path: '/editor/reusable-blocks/{block_id}'
   defaults:
@@ -126,6 +130,7 @@ gutenberg.reusable_blocks.delete:
   requirements:
     _custom_access: '\Drupal\gutenberg\Controller\ReusableBlocksController::access'
     _format: json
+    _csrf_request_header_token: 'TRUE'
 gutenberg.reusable_blocks.load:
   path: '/editor/reusable-blocks'
   defaults:
@@ -134,6 +139,7 @@ gutenberg.reusable_blocks.load:
   requirements:
     _permission: 'use gutenberg'
     _format: json
+    _csrf_request_header_token: 'TRUE'
 gutenberg.reusable_blocks.load_single:
   path: '/editor/reusable-blocks/{block_id}'
   defaults:
@@ -175,6 +181,7 @@ gutenberg.media.update_data:
   requirements:
     _permission: 'use gutenberg'
     _format: json
+    _csrf_request_header_token: 'TRUE'
 gutenberg.media.autocomplete:
   path: '/editor/media/autocomplete'
   defaults:

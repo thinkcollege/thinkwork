@@ -93,6 +93,6 @@ lando php core/scripts/run-tests.sh --php /usr/local/bin/php
 
 
 ## Maintainers
-
+[//]: # cspell:disable
 - ufku - [ufku](https://www.drupal.org/u/ufku)
 - Thalles Ferreira - [thalles](https://www.drupal.org/u/thalles)

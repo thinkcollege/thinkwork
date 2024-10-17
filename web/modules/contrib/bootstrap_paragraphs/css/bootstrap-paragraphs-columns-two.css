@@ -8,8 +8,8 @@
 .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--75-25 .paragraph--type--bp-columns-two-uneven__2col-column1 {
   position: relative;
   min-height: 1px;
-  padding-left: 0.75rem;
   padding-right: 0.75rem;
+  padding-left: 0.75rem;
 }
 @media (min-width: 768px) {
   .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--75-25 .paragraph--type--bp-columns-two-uneven__2col-column1 {
@@ -20,8 +20,8 @@
 .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--75-25 .paragraph--type--bp-columns-two-uneven__2col-column2 {
   position: relative;
   min-height: 1px;
-  padding-left: 0.75rem;
   padding-right: 0.75rem;
+  padding-left: 0.75rem;
 }
 @media (min-width: 768px) {
   .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--75-25 .paragraph--type--bp-columns-two-uneven__2col-column2 {
@@ -32,32 +32,32 @@
 .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--66-33 .paragraph--type--bp-columns-two-uneven__2col-column1 {
   position: relative;
   min-height: 1px;
-  padding-left: 0.75rem;
   padding-right: 0.75rem;
+  padding-left: 0.75rem;
 }
 @media (min-width: 768px) {
   .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--66-33 .paragraph--type--bp-columns-two-uneven__2col-column1 {
     float: left;
-    width: 66.66666667%;
+    width: 66.66667%;
   }
 }
 .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--66-33 .paragraph--type--bp-columns-two-uneven__2col-column2 {
   position: relative;
   min-height: 1px;
-  padding-left: 0.75rem;
   padding-right: 0.75rem;
+  padding-left: 0.75rem;
 }
 @media (min-width: 768px) {
   .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--66-33 .paragraph--type--bp-columns-two-uneven__2col-column2 {
     float: left;
-    width: 33.33333333%;
+    width: 33.33333%;
   }
 }
 .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--25-75 .paragraph--type--bp-columns-two-uneven__2col-column1 {
   position: relative;
   min-height: 1px;
-  padding-left: 0.75rem;
   padding-right: 0.75rem;
+  padding-left: 0.75rem;
 }
 @media (min-width: 768px) {
   .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--25-75 .paragraph--type--bp-columns-two-uneven__2col-column1 {
@@ -68,8 +68,8 @@
 .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--25-75 .paragraph--type--bp-columns-two-uneven__2col-column2 {
   position: relative;
   min-height: 1px;
-  padding-left: 0.75rem;
   padding-right: 0.75rem;
+  padding-left: 0.75rem;
 }
 @media (min-width: 768px) {
   .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--25-75 .paragraph--type--bp-columns-two-uneven__2col-column2 {
@@ -80,25 +80,25 @@
 .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--33-66 .paragraph--type--bp-columns-two-uneven__2col-column1 {
   position: relative;
   min-height: 1px;
-  padding-left: 0.75rem;
   padding-right: 0.75rem;
+  padding-left: 0.75rem;
 }
 @media (min-width: 768px) {
   .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--33-66 .paragraph--type--bp-columns-two-uneven__2col-column1 {
     float: left;
-    width: 33.33333333%;
+    width: 33.33333%;
   }
 }
 .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--33-66 .paragraph--type--bp-columns-two-uneven__2col-column2 {
   position: relative;
   min-height: 1px;
-  padding-left: 0.75rem;
   padding-right: 0.75rem;
+  padding-left: 0.75rem;
 }
 @media (min-width: 768px) {
   .paragraph.paragraph--type--bp-columns-two-uneven.paragraph--style--33-66 .paragraph--type--bp-columns-two-uneven__2col-column2 {
     float: left;
-    width: 66.66666667%;
+    width: 66.66667%;
   }
 }
 /* These fix the padding and column title misalignment. */

@@ -34,7 +34,7 @@ class SyndicationParser extends ParserBase implements ParserInterface, Container
   protected $feedBridgeReader;
 
   /**
-   * Constructs a syndicationparser object.
+   * Constructs a SyndicationParser object.
    *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
@@ -86,7 +86,10 @@ class SyndicationParser extends ParserBase implements ParserInterface, Container
       $channel = Reader::importString($raw);
     }
     catch (ExceptionInterface $e) {
-      $args = ['%site' => $feed->label(), '%error' => trim($e->getMessage())];
+      $args = [
+        '%site' => $feed->label() ?? '',
+        '%error' => trim($e->getMessage()),
+      ];
       throw new \RuntimeException($this->t('The feed from %site seems to be broken because of error "%error".', $args));
     }
 

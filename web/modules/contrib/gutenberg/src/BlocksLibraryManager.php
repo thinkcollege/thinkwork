@@ -81,7 +81,7 @@ class BlocksLibraryManager extends DefaultPluginManager {
     $this->themeInitialization = $theme_initialization;
     $this->logger = $logger;
     $this->alterInfo('gutenberg_blocks_library_info');
-    $this->setCacheBackend($cache_backend, 'gutenberg-blocks', ['gutenberg']);
+    $this->setCacheBackend($cache_backend, 'gutenberg-blocks');
   }
 
   /**

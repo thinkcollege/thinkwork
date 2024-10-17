@@ -88,7 +88,7 @@ class DrupalBlockProcessor implements GutenbergBlockProcessorInterface {
       ];
 
       // Add extra CSS classes if available.
-      if ($block_attributes['className']) {
+      if (isset($block_attributes['className']) && !empty($block_attributes['className'])) {
         $extra_classes = preg_split('/\s+/', $block_attributes['className']);
         foreach ($extra_classes as $class) {
           if (!empty($class)) {

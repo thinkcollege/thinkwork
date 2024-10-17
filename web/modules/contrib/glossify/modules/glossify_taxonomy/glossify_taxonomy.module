@@ -6,12 +6,11 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Core\Render;
 
 /**
  * Implements hook_help().
  */
-function glossify_taxonomies_help($route_name, RouteMatchInterface $route_match) {
+function glossify_taxonomy_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
     case 'help.page.glossify_taxonomies':
 

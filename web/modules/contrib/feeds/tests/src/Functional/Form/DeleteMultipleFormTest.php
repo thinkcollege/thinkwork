@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\feeds\Functional\Form;
 
-use Drupal\feeds\Entity\Feed;
 use Drupal\Tests\feeds\Functional\FeedsBrowserTestBase;
+use Drupal\feeds\Entity\Feed;
 
 /**
  * Tests the delete multiple confirmation form.
@@ -63,7 +63,7 @@ class DeleteMultipleFormTest extends FeedsBrowserTestBase {
     // Add the selection to the tempstore just like DeleteFeedAction would.
     $selection[$this->feed1->id()] = $this->feed1->id();
     $selection[$this->feed2->id()] = $this->feed2->id();
-    $tempstore = $this->container->get('tempstore.private')->get('feeds_feed_multiple_delete_confirm');
+    $tempstore = $this->container->get('tempstore.private')->get('feeds_feed_delete_action');
     $tempstore->set($this->adminUser->id() . ':feeds_feed', $selection);
 
     $this->drupalGet('/admin/content/feed/delete');
@@ -106,7 +106,7 @@ class DeleteMultipleFormTest extends FeedsBrowserTestBase {
     // Add the selection to the tempstore just like DeleteFeedAction would.
     $selection[$this->feed1->id()] = $this->feed1->id();
     $selection[$this->feed2->id()] = $this->feed2->id();
-    $tempstore = $this->container->get('tempstore.private')->get('feeds_feed_multiple_delete_confirm');
+    $tempstore = $this->container->get('tempstore.private')->get('feeds_feed_delete_action');
     $tempstore->set($account->id() . ':feeds_feed', $selection);
 
     $this->drupalGet('/admin/content/feed/delete');

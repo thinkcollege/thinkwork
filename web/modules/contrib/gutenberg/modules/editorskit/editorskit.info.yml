@@ -2,11 +2,11 @@ name: EditorsKit
 type: module
 description: "Gutenberg Page Building Toolkit – EditorsKit<br/><em>This module is experimental, that means it is subject to non-backward compatible changes or removal in any future version.</em>"
 package: "Gutenberg (Experimental)"
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^9 || ^10 || ^11
 dependencies:
   - gutenberg
 
-# Information added by Drupal.org packaging script on 2024-06-01
-version: '8.x-2.9'
+# Information added by Drupal.org packaging script on 2024-10-09
+version: '8.x-2.14'
 project: 'gutenberg'
-datestamp: 1717234797
+datestamp: 1728495278

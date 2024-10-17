@@ -27,7 +27,7 @@ class TwigDeprecationAnalyzer {
    * This is based on Twig\Util\DeprecationCollector which is a final class
    * and thus cannot be extended. While it did find non-twig runtime deprecated
    * errors, it did not gave us the file/line information, so we needed to copy
-   * and modify that behaviour. We folded in our twig file/line parsing inline
+   * and modify that behavior. We folded in our twig file/line parsing inline
    * then to make it simpler.
    * 
    * @param \Drupal\Core\Extension\Extension $extension

@@ -61,7 +61,7 @@ content.bp_padding[0]['#markup'] ? content.bp_padding[0]['#markup'],
 
 {# Prints Accordion template. #}
 	<div{{attributes.addClass(classes)}}>
-		<div class="paragraph__column"> {% if content.bp_header is not empty %}
+		<div class="paragraph__column"> {% if paragraph.bp_header is not empty %}
 			<h2>{{ content.bp_header }}
 			</h2>
 		{% endif %}
@@ -77,7 +77,7 @@ content.bp_padding[0]['#markup'] ? content.bp_padding[0]['#markup'],
 				<div class="accordion-item" role="tab" id="heading-{{ paragraph_id }}-{{ key + 1 }}">
 					<h2 class="panel-title accordion-header">
 						<button
-							class="accordion-button collapsed {% if loop.first %}active{% endif %}{% if item['#paragraph'].bp_show_button.value == 1 and not loop.first %}active{% endif %}" data-bs-toggle="collapse" data-bs-target="#collapse-{{ paragraph_id }}-{{ key + 1 }}" href="#collapse-{{ paragraph_id }}-{{ key + 1 }}" {% if loop.first %} aria-expanded="true" {% endif %} {% if item['#paragraph'].bp_show_button.value == 1 and not loop.first %} aria-expanded="true" {% endif %} aria-controls="collapse-{{ paragraph_id }}-{{ key + 1 }}">
+							class="accordion-button {% if not loop.first %}collapsed {% endif %}{% if loop.first %}active{% endif %}{% if item['#paragraph'].bp_show_button.value == 1 and not loop.first %}active{% endif %}" data-bs-toggle="collapse" data-bs-target="#collapse-{{ paragraph_id }}-{{ key + 1 }}" href="#collapse-{{ paragraph_id }}-{{ key + 1 }}" {% if loop.first %} aria-expanded="true" {% endif %} {% if item['#paragraph'].bp_show_button.value == 1 and not loop.first %} aria-expanded="true" {% endif %} aria-controls="collapse-{{ paragraph_id }}-{{ key + 1 }}">
 							{# Print the accordion section title. #}
 							{{ item['#paragraph'].bp_accordion_section_title.value }}
 						</button>

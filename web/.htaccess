@@ -127,9 +127,6 @@ AddEncoding gzip svgz
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_URI} !=/favicon.ico
-  RewriteCond %{REQUEST_URI} !/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall\.php$
-  RewriteCond %{REQUEST_URI} !/themes/custom/thinkwork8_boot/chartbuilder/stateFunctions\.php$
-
   RewriteRule ^ index.php [L]
 
   # For security reasons, deny access to other PHP files on public sites.
@@ -139,10 +136,7 @@ AddEncoding gzip svgz
   # Allow access to PHP files in /core (like authorize.php or install.php):
   RewriteCond %{REQUEST_URI} !/core/[^/]*\.php$
   # Allow access to test-specific PHP files:
-  RewriteCond %{REQUEST_URI} !/core/modules/system/tests/https?\.php  
-  RewriteCond %{REQUEST_URI} !/themes/custom/thinkwork8_boot/chartbuilder/sd_chartcall\.php$
-  RewriteCond %{REQUEST_URI} !/themes/custom/thinkwork8_boot/chartbuilder/stateFunctions\.php$
-
+  RewriteCond %{REQUEST_URI} !/core/modules/system/tests/https?\.php
   # Allow access to Statistics module's custom front controller.
   # Copy and adapt this rule to directly execute PHP files in contributed or
   # custom modules or to run another PHP application in the same directory.

@@ -34,18 +34,15 @@
 .upgrade-status-next-step th.project-label {
   width: 20%;
 }
-.upgrade-status-next-step th.plan-info {
-  width: 24%;
-}
 
 /* Based on --gin-border-m and --gin-border-color-table-header */
 .upgrade-status-of-environment .gin-layer-wrapper thead tr,
 .upgrade-status-next-step .gin-layer-wrapper thead tr {
-  border-left: .5rem solid rgba(0, 0, 0, .2);
+  border-left: 0.5rem solid rgba(0, 0, 0, 0.2);
 }
 html.gin--dark-mode .upgrade-status-of-environment .gin-layer-wrapper thead tr,
 html.gin--dark-mode .upgrade-status-next-step .gin-layer-wrapper thead tr {
-  border-left: .5rem solid rgba(255, 255, 255, .12);
+  border-left: 0.5rem solid rgba(255, 255, 255, 0.12);
 }
 
 /* Project specific results layout */
@@ -93,7 +90,9 @@ html.gin--dark-mode .upgrade-status-next-step .gin-layer-wrapper thead tr {
   background-image: url(../icons/warning.svg);
 }
 
-.upgrade-status-project-result-group tr.color-warning.known-later > td.status-info,
+.upgrade-status-project-result-group
+  tr.color-warning.known-later
+  > td.status-info,
 .upgrade-status-next-step td.status-info-na {
   background-image: url(../icons/ex.svg);
 }
@@ -104,7 +103,9 @@ html.gin--dark-mode .upgrade-status-next-step .gin-layer-wrapper thead tr {
   background-image: url(../icons/check.svg);
 }
 
-.upgrade-status-project-result-group tr.color-warning.rector-covered > td.status-info {
+.upgrade-status-project-result-group
+  tr.color-warning.rector-covered
+  > td.status-info {
   background-image: url(../icons/wrench.svg);
 }
 

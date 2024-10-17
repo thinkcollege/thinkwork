@@ -2,7 +2,7 @@
 
 namespace Drupal\gutenberg;
 
-use \Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Render\RendererInterface;
@@ -13,7 +13,7 @@ use Drupal\media\OEmbed\ResourceException;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
+use Psr\Log\LoggerInterface;
 /**
  * Class for resolving oEmbed URLs.
  */
@@ -39,6 +39,13 @@ class OEmbedResolver implements OEmbedResolverInterface {
    * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
   protected $moduleHandler;
+
+  /**
+   * The Gutenberg logger.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
 
   /**
    * The media module's oEmbed Url resolver.
@@ -70,11 +77,13 @@ class OEmbedResolver implements OEmbedResolverInterface {
     ContainerInterface $container,
     ClientInterface $client,
     RendererInterface $renderer,
-    ModuleHandlerInterface $module_handler
+    ModuleHandlerInterface $module_handler,
+    LoggerInterface $logger
   ) {
     $this->httpClient = $client;
     $this->renderer = $renderer;
     $this->moduleHandler = $module_handler;
+    $this->logger = $logger;
 
     if ($module_handler->moduleExists('media')) {
       $this->mediaOembedResolver = $container->get('media.oembed.url_resolver', ContainerInterface::NULL_ON_INVALID_REFERENCE);
@@ -191,7 +200,7 @@ class OEmbedResolver implements OEmbedResolverInterface {
       }
     }
     catch (RequestException $e) {
-      watchdog_exception('gutenberg_oembed', $e);
+      $this->logger->error($e->getMessage());
     }
 
     return $output;

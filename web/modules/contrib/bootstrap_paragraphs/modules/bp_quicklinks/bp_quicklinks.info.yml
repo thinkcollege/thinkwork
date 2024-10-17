@@ -1,14 +1,14 @@
 name: Bootstrap Paragraphs Quicklinks
 type: module
 description: A reusable Quicklinks Paragraph bundle.
-core_version_requirement: ^8 || ^9 || ^10
+core_version_requirement: ^10 || ^11
 package: Paragraphs
 dependencies:
   - paragraphs:paragraphs
   - bootstrap_paragraphs:bootstrap_paragraphs
   - link_attributes:link_attributes
 
-# Information added by Drupal.org packaging script on 2024-04-11
-version: '5.0.1'
+# Information added by Drupal.org packaging script on 2024-09-16
+version: '5.0.2'
 project: 'bootstrap_paragraphs'
-datestamp: 1712836387
+datestamp: 1726498915

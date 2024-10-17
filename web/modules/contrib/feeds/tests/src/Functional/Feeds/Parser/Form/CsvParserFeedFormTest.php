@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\feeds\Functional\Feeds\Parser\Form;
 
-use Drupal\feeds\Entity\Feed;
 use Drupal\Tests\feeds\Functional\FeedsBrowserTestBase;
+use Drupal\feeds\Entity\Feed;
 
 /**
  * @coversDefaultClass \Drupal\feeds\Feeds\Parser\Form\CsvParserFeedForm
@@ -56,7 +56,7 @@ class CsvParserFeedFormTest extends FeedsBrowserTestBase {
       'files[plugin_fetcher_source]' => \Drupal::service('file_system')->realpath($this->resourcesPath() . '/csv/nodes_comma.csv'),
     ];
     $this->drupalGet('feed/add/' . $this->feedType->id());
-    $this->submitForm($edit, t('Save and import'));
+    $this->submitForm($edit, 'Save and import');
 
     // Load feed.
     $feed = Feed::load(1);
@@ -84,7 +84,7 @@ class CsvParserFeedFormTest extends FeedsBrowserTestBase {
       'plugin[parser][delimiter]' => $delimiter,
     ];
     $this->drupalGet('feed/add/' . $this->feedType->id());
-    $this->submitForm($edit, t('Save and import'));
+    $this->submitForm($edit, 'Save and import');
 
     // Load feed.
     $feed = Feed::load(1);
@@ -97,7 +97,7 @@ class CsvParserFeedFormTest extends FeedsBrowserTestBase {
   /**
    * Data provider for ::testDelimiterSetting().
    */
-  public function delimiterDataProvider() {
+  public static function delimiterDataProvider() {
     return [
       'comma' => [',', 'nodes_comma.csv'],
       'semicolon' => [';', 'nodes_semicolon.csv'],

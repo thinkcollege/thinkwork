@@ -37,13 +37,15 @@ class HttpFetcherFeedForm extends ExternalPluginFormBase implements ContainerInj
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static($container->get('http_client'));
+    return new static(
+      $container->get('http_client'),
+    );
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state, FeedInterface $feed = NULL) {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state, ?FeedInterface $feed = NULL) {
     $form['source'] = [
       '#title' => $this->t('Feed URL'),
       '#type' => 'url',
@@ -58,7 +60,7 @@ class HttpFetcherFeedForm extends ExternalPluginFormBase implements ContainerInj
   /**
    * {@inheritdoc}
    */
-  public function validateConfigurationForm(array &$form, FormStateInterface $form_state, FeedInterface $feed = NULL) {
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state, ?FeedInterface $feed = NULL) {
     try {
       $url = Feed::translateSchemes($form_state->getValue('source'));
     }
@@ -97,7 +99,7 @@ class HttpFetcherFeedForm extends ExternalPluginFormBase implements ContainerInj
   /**
    * {@inheritdoc}
    */
-  public function submitConfigurationForm(array &$form, FormStateInterface $form_state, FeedInterface $feed = NULL) {
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state, ?FeedInterface $feed = NULL) {
     $feed->setSource($form_state->getValue('source'));
   }
 

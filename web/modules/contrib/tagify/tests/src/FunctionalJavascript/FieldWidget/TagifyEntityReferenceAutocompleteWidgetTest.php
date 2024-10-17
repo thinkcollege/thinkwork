@@ -2,9 +2,9 @@
 
 namespace Drupal\Tests\tagify\FunctionalJavascript\FieldWidget;
 
-use Drupal\entity_test\Entity\EntityTestMulRevPub;
-use Drupal\Tests\tagify\FunctionalJavascript\TagifyJavascriptTestBase;
 use Drupal\Tests\TestFileCreationTrait;
+use Drupal\Tests\tagify\FunctionalJavascript\TagifyJavascriptTestBase;
+use Drupal\entity_test\Entity\EntityTestMulRevPub;
 
 /**
  * Tests tagify entity reference widget.
@@ -81,7 +81,7 @@ class TagifyEntityReferenceAutocompleteWidgetTest extends TagifyJavascriptTestBa
    * @return array
    *   The data.
    */
-  public function providerTestSingleValueWidget() {
+  public static function providerTestSingleValueWidget() {
     return [
       ['CONTAINS', TRUE],
       ['STARTS_WITH', TRUE],
@@ -169,7 +169,7 @@ class TagifyEntityReferenceAutocompleteWidgetTest extends TagifyJavascriptTestBa
    * @return array
    *   The data.
    */
-  public function providerTestMultipleValueWidget() {
+  public static function providerTestMultipleValueWidget() {
     return [
       ['CONTAINS', TRUE, -1],
       ['CONTAINS', FALSE, -1],
@@ -230,7 +230,7 @@ class TagifyEntityReferenceAutocompleteWidgetTest extends TagifyJavascriptTestBa
    * @return array
    *   The data.
    */
-  public function providerTestLimitedCardinality() {
+  public static function providerTestLimitedCardinality() {
     return [
       ['CONTAINS', TRUE, 1],
       ['CONTAINS', FALSE, 1],
@@ -284,7 +284,7 @@ class TagifyEntityReferenceAutocompleteWidgetTest extends TagifyJavascriptTestBa
    * @return array
    *   The data.
    */
-  public function providerTestNonMatchingTag() {
+  public static function providerTestNonMatchingTag() {
     return [
       ['CONTAINS', FALSE],
     ];

@@ -1,4 +1,4 @@
-# Bootstrap Paragraphs Xard
+# Bootstrap Paragraphs Media
 
 CONTENTS OF THIS FILE
 ---------------------

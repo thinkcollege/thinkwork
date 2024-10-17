@@ -6,6 +6,7 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\feeds\Exception\EmptyFeedException;
+use Drupal\feeds\Exception\FetchException;
 use Drupal\feeds\FeedInterface;
 use Drupal\feeds\File\FeedsFileSystemInterface;
 use Drupal\feeds\Plugin\Type\ClearableInterface;
@@ -59,7 +60,7 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
   /**
    * Drupal file system helper for Feeds.
    *
-   * @var \Drupal\Core\File\FeedsFileSystemInterface
+   * @var \Drupal\feeds\File\FeedsFileSystemInterface
    */
   protected $feedsFileSystem;
 
@@ -78,7 +79,7 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
    *   The cache backend.
    * @param \Drupal\Core\File\FileSystemInterface $file_system
    *   The Drupal file system helper.
-   * @param \Drupal\Core\File\FeedsFileSystemInterface $feeds_file_system
+   * @param \Drupal\feeds\File\FeedsFileSystemInterface $feeds_file_system
    *   The Drupal file system helper for Feeds.
    */
   public function __construct(array $configuration, $plugin_id, array $plugin_definition, ClientInterface $client, CacheBackendInterface $cache, FileSystemInterface $file_system, FeedsFileSystemInterface $feeds_file_system) {
@@ -100,7 +101,7 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
       $container->get('http_client'),
       $container->get('cache.feeds_download'),
       $container->get('file_system'),
-      $container->get('feeds.file_system.in_progress')
+      $container->get('feeds.file_system.in_progress'),
     );
   }
 
@@ -121,8 +122,27 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
 
     // 304, nothing to see here.
     if ($response->getStatusCode() == Response::HTTP_NOT_MODIFIED) {
+      // Since the fetch is getting aborted, delete the downloaded file.
+      $this->fileSystem->unlink($sink);
+
       $state->setMessage($this->t('The feed has not been updated.'));
       throw new EmptyFeedException();
+    }
+    else {
+      // Check if the fetched data has any content by checking the
+      // "Content-Length" header.
+      $lengths = $response->getHeader('Content-Length');
+      if (count($lengths) > 0) {
+        $length = reset($lengths);
+        if ($length < 1) {
+          // The fetched data is empty. Delete the temporary file and abort the
+          // fetch process.
+          $this->fileSystem->unlink($sink);
+
+          $state->setMessage($this->t('The feed is empty.'));
+          throw new EmptyFeedException();
+        }
+      }
     }
 
     return new HttpFetcherResult($sink, $response->getHeaders(), $this->fileSystem);
@@ -145,7 +165,7 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
    * @return \Guzzle\Http\Message\Response
    *   A Guzzle response.
    *
-   * @throws \RuntimeException
+   * @throws \Drupal\feeds\Exception\FetchException
    *   Thrown if the GET request failed.
    *
    * @see \GuzzleHttp\RequestOptions
@@ -160,12 +180,6 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
     ];
 
     $headers = [];
-
-    // Adding User-Agent header from the default guzzle client config for feeds
-    // that require that.
-    if (isset($this->client->getConfig('headers')['User-Agent'])) {
-      $headers['User-Agent'] = $this->client->getConfig('headers')['User-Agent'];
-    }
 
     // Add cached headers if requested.
     if ($cache_key && ($cache = $this->cache->get($cache_key))) {
@@ -185,7 +199,11 @@ class HttpFetcher extends PluginBase implements ClearableInterface, FetcherInter
     }
     catch (RequestException $e) {
       $args = ['%site' => $url, '%error' => $e->getMessage()];
-      throw new \RuntimeException($this->t('The feed from %site seems to be broken because of error "%error".', $args));
+
+      // Since the fetch is getting aborted, delete the downloaded file.
+      $this->fileSystem->unlink($sink);
+
+      throw new FetchException(strtr('The feed from %site seems to be broken because of error "%error".', $args));
     }
 
     if ($cache_key) {

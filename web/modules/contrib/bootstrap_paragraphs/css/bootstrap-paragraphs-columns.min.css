@@ -4,4 +4,4 @@
  *
  * Compiled from bootstrap-paragraphs-columns.less.
  */
-.paragraph.paragraph--type--bp-columns-three-uneven>.paragraph__column,.paragraph.paragraph--type--bp-columns-two-uneven>.paragraph__column,.paragraph.paragraph--type--bp-columns>.paragraph__column{padding-left:0;padding-right:0}
+/* stylelint-disable */.paragraph.paragraph--type--bp-columns-three-uneven>.paragraph__column,.paragraph.paragraph--type--bp-columns-two-uneven>.paragraph__column,.paragraph.paragraph--type--bp-columns>.paragraph__column{padding-right:0;padding-left:0}/* stylelint-enable */

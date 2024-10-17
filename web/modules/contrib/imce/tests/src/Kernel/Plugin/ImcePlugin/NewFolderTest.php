@@ -85,9 +85,9 @@ class NewFolderTest extends KernelTestBasePlugin {
   }
 
   /**
-   * Get plugins definations to new folder.
+   * Get plugins definition to new folder.
    */
-  public function getPluginDefinations() {
+  public function getPluginDefinitions() {
     return [
       'weight' => '-15',
       'operations' => [
@@ -103,7 +103,7 @@ class NewFolderTest extends KernelTestBasePlugin {
   /**
    * Test to NewFolder::permissionInfo().
    */
-  public function testPermissiomInfo() {
+  public function testPermissionInfo() {
     $permissionInfo = $this->newFolder->permissionInfo();
     $this->assertIsArray($permissionInfo);
     $this->assertTrue(in_array('Create subfolders', $permissionInfo));
@@ -123,7 +123,7 @@ class NewFolderTest extends KernelTestBasePlugin {
   }
 
   /**
-   * Teste messages on context ImcePlugin\NewFolder.
+   * Test messages on context ImcePlugin\NewFolder.
    */
   public function testMessages() {
     $messages = $this->imceFM->getMessages();

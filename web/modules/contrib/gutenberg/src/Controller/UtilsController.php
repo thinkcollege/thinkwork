@@ -49,6 +49,7 @@ class UtilsController extends ControllerBase {
         $settings = Yaml::parse($file_contents);
       }
     }
+    \Drupal::moduleHandler()->alter('allowed_gutenberg_blocks_default_list', $settings);
 
     return $settings;
   }
@@ -66,10 +67,21 @@ class UtilsController extends ControllerBase {
       $theme_definitions = $gutenberg_library_manager->getThemeDefinitions();
       $module_definitions = $gutenberg_library_manager->getModuleDefinitions();
       $definitions = array_merge($theme_definitions, $module_definitions);
-      foreach ($definitions as $theme_definition) {
-        if (!empty( $theme_definition['custom-blocks'])) {
-          foreach ($theme_definition['custom-blocks']['categories'] as $category) {
-            $settings['categories'][$category['reference']] = $category;
+      foreach ($definitions as $definition) {
+        if (!empty($definition['custom-blocks'])) {
+          foreach ($definition['custom-blocks']['categories'] as $category) {
+            if (isset($settings['categories'][$category['reference']])) {
+              // Merge blocks of both categories together.
+              if (isset($category['blocks']) && isset($settings['categories'][$category['reference']]['blocks'])) {
+                $settings['categories'][$category['reference']]['blocks'] =
+                  array_merge($settings['categories'][$category['reference']]['blocks'],
+                    $category['blocks']);
+              }
+            }
+            else {
+              // If the category does not exist, add it to settings.
+              $settings['categories'][$category['reference']] = $category;
+            }
           }
         }
       }

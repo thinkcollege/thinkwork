@@ -1,9 +1,14 @@
 # Upgrade Status
 
-This module scans the code of installed contributed and custom projects on the
-site, and reports any deprecated code that must be replaced before the next
-major version. Available project updates are also suggested to keep your site
-up to date as projects will resolve deprecation errors over time.
+Review Drupal major upgrade readiness of the environment and components of the site.
+
+The module provides the following key features:
+
+- Checks if you are using a version of Drupal that supports an upgrade.
+- Checks if your system meets the next major version's system requirements.
+- Integrates with the Update Status core module to inform you to update your contributed projects. Projects can be compatible with multiple major Drupal versions, so most projects can be updated on your existing site before doing the core major update.
+- Runs phpstan checks and a whole set of other checks to find any compatibility issues with the next Drupal major version that may remain.
+- Integrates with drush for command line usage and to plug into CI systems.
 
 For a full description of the module, visit the
 [project page](https://www.drupal.org/project/upgrade_status).
@@ -37,8 +42,3 @@ status to use the module.
 ## Maintainers
 
 - Gábor Hojtsy - [Gábor Hojtsy](https://www.drupal.org/u/g%C3%A1bor-hojtsy)
-- Daniel Kudwien - [sun](https://www.drupal.org/u/sun)
-- Angie Byron - [webchick](https://www.drupal.org/u/webchick)
-- Jess - [xjm](https://www.drupal.org/u/xjm)
-- Colan Schwartz - [colan](https://www.drupal.org/u/colan)
-- Zoltán Herczog - [herczogzoltan](https://www.drupal.org/u/herczogzoltan)

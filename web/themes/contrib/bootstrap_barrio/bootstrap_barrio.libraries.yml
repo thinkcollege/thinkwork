@@ -17,7 +17,7 @@ global-styling:
       css/components/image-button.css: {}
       css/components/item-list.css: {}
       css/components/list-group.css: {}
-      css/components/media.css: {}      
+      css/components/media.css: {}
       css/components/page.css: {}
       css/components/search-form.css: {}
       css/components/shortcut.css: {}
@@ -150,6 +150,10 @@ maintenance_page:
   dependencies:
     - system/maintenance
     - bootstrap_barrio/global-styling
+
+messages:
+  js:
+    js/messages.js: {}
 
 navigation:
   version: VERSION

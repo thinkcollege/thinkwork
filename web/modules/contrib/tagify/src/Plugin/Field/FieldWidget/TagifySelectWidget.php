@@ -172,7 +172,7 @@ class TagifySelectWidget extends OptionsWidgetBase {
       '#cardinality' => $items->getFieldDefinition()
         ->getFieldStorageDefinition()
         ->getCardinality(),
-      '#match_operator' => $this->multiple && count($this->options) > 1,
+      '#match_operator' => $this->getSetting('match_operator'),
       '#match_limit' => $this->getSetting('match_limit'),
       '#placeholder' => $this->getSetting('placeholder'),
       '#identifier' => $tags_identifier,

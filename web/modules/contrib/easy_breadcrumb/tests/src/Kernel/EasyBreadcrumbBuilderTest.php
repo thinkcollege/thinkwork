@@ -65,7 +65,7 @@ class EasyBreadcrumbBuilderTest extends KernelTestBase {
   /**
    * Provides data for the get title string test.
    */
-  public function providerTestGetTitleString() {
+  public static function providerTestGetTitleString() {
     return [
       ['easy_breadcrumb_test.title_string'],
       ['easy_breadcrumb_test.title_formattable_markup'],

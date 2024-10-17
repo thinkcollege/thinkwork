@@ -60,6 +60,13 @@ class FeedsItemImportedFormatterTest extends FeedsItemFormatterTestBase {
     $article = $this->createNodeWithFeedsItem($feed);
     $article->get('feeds_item')->getItemByFeed($feed)->imported = $input;
 
+    // Set default medium date.
+    $this->container->get('entity_type.manager')
+      ->getStorage('date_format')
+      ->load('medium')
+      ->setPattern('D, m/d/Y - H:i')
+      ->save();
+
     // Set custom date format for last test to m-d-Y.
     if ($input == '1543370515') {
       $this->switchToCustomDateFormat();
@@ -77,13 +84,16 @@ class FeedsItemImportedFormatterTest extends FeedsItemFormatterTestBase {
   /**
    * Data provider for ::testFeedsItemImportedFormatter().
    */
-  public function providerImported() {
+  public static function providerImported() {
     return [
       'timestamp default date format' => [
         '1543374515',
         '<div>Wed, 11/28/2018 - 14:08</div>',
       ],
-      'timestamp custom date format' => ['1543370515', '<div>11-28-2018</div>'],
+      'timestamp custom date format' => [
+        '1543370515',
+        '<div>11-28-2018</div>',
+      ],
     ];
   }
 

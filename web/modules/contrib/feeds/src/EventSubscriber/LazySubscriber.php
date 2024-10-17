@@ -2,6 +2,8 @@
 
 namespace Drupal\feeds\EventSubscriber;
 
+use Drupal\Core\Utility\Error;
+use Drupal\feeds\Event\CleanEvent;
 use Drupal\feeds\Event\ClearEvent;
 use Drupal\feeds\Event\ExpireEvent;
 use Drupal\feeds\Event\FeedsEvents;
@@ -9,12 +11,11 @@ use Drupal\feeds\Event\FetchEvent;
 use Drupal\feeds\Event\InitEvent;
 use Drupal\feeds\Event\ParseEvent;
 use Drupal\feeds\Event\ProcessEvent;
-use Drupal\feeds\Event\CleanEvent;
 use Drupal\feeds\FeedTypeInterface;
 use Drupal\feeds\Plugin\Type\CleanableInterface;
 use Drupal\feeds\Plugin\Type\ClearableInterface;
 use Drupal\feeds\StateInterface;
-use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -45,9 +46,26 @@ class LazySubscriber implements EventSubscriberInterface {
   protected $expireInited = FALSE;
 
   /**
+   * A logger instance.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
+
+  /**
+   * Constructs a new LazySubscriber object.
+   *
+   * @param \Psr\Log\LoggerInterface $logger
+   *   A logger instance.
+   */
+  public function __construct(LoggerInterface $logger) {
+    $this->logger = $logger;
+  }
+
+  /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     $events = [];
     $events[FeedsEvents::INIT_IMPORT][] = 'onInitImport';
     $events[FeedsEvents::INIT_CLEAR][] = 'onInitClear';
@@ -122,8 +140,8 @@ class LazySubscriber implements EventSubscriberInterface {
               $feed = $event->getFeed();
               $plugin->clean($feed, $event->getEntity(), $feed->getState(StateInterface::CLEAN));
             }
-            catch (Exception $e) {
-              watchdog_exception('feeds', $e);
+            catch (\Exception $e) {
+              Error::logException($this->logger, $e);
             }
           });
         }

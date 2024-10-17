@@ -2,6 +2,7 @@
 
 namespace Drupal\feeds_test_events\EventSubscriber;
 
+use Drupal\Core\State\StateInterface;
 use Drupal\feeds\Event\CleanEvent;
 use Drupal\feeds\Event\ClearEvent;
 use Drupal\feeds\Event\DeleteFeedsEvent;
@@ -23,9 +24,26 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class FeedsSubscriber implements EventSubscriberInterface {
 
   /**
+   * The state handler service.
+   *
+   * @var \Drupal\Core\State\StateInterface
+   */
+  protected $state;
+
+  /**
+   * Constructs a FeedsSubscriber object.
+   *
+   * @param \Drupal\Core\State\StateInterface $state
+   *   The state handler service.
+   */
+  public function __construct(StateInterface $state) {
+    $this->state = $state;
+  }
+
+  /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [
       FeedsEvents::FEEDS_DELETE => ['onDelete'],
       FeedsEvents::INIT_IMPORT => ['onInitImport'],
@@ -209,9 +227,9 @@ class FeedsSubscriber implements EventSubscriberInterface {
 
     // And save to a state variable, useful when testing with multiple cron
     // runs.
-    $feed_test_events = \Drupal::state()->get('feeds_test_events', []);
+    $feed_test_events = $this->state->get('feeds_test_events', []);
     $feed_test_events[] = $method;
-    \Drupal::state()->set('feeds_test_events', $feed_test_events);
+    $this->state->set('feeds_test_events', $feed_test_events);
   }
 
 }

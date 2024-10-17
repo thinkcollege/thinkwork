@@ -83,7 +83,7 @@ class ImcePluginManager extends DefaultPluginManager {
    * Returns all available plugin instances.
    *
    * @return array
-   *   A an array plugin intances.
+   *   A an array plugin instances.
    */
   public function getInstances() {
     if (!isset($this->instances)) {

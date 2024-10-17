@@ -4,22 +4,23 @@ namespace Drupal\Tests\feeds\Unit\Plugin\QueueWorker;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\StatementInterface;
+use Drupal\Core\DependencyInjection\ClassResolverInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
-use Drupal\feeds\FeedsExecutableInterface;
-use Drupal\feeds\FeedsQueueExecutable;
+use Drupal\Tests\feeds\Unit\FeedsUnitTestCase;
 use Drupal\feeds\Event\FeedsEvents;
 use Drupal\feeds\Exception\LockException;
 use Drupal\feeds\Feeds\Item\DynamicItem;
-use Drupal\feeds\Feeds\State\CleanState;
+use Drupal\feeds\FeedsExecutableInterface;
+use Drupal\feeds\FeedsQueueExecutable;
 use Drupal\feeds\Plugin\QueueWorker\FeedRefresh;
 use Drupal\feeds\Result\FetcherResult;
 use Drupal\feeds\Result\ParserResult;
 use Drupal\feeds\StateInterface;
-use Drupal\Tests\feeds\Unit\FeedsUnitTestCase;
 use Prophecy\Argument;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -55,20 +56,22 @@ class FeedRefreshTest extends FeedsUnitTestCase {
   public function setUp(): void {
     parent::setUp();
     $this->dispatcher = new EventDispatcher();
-    $queue_factory = $this->createMock(QueueFactory::class, [], [], '', FALSE);
+    $queue_factory = $this->createMock(QueueFactory::class);
     $queue_factory->expects($this->any())
       ->method('get')
       ->with('feeds_feed_refresh:')
-      ->will($this->returnValue($this->createMock(QueueInterface::class)));
+      ->willReturn($this->createMock(QueueInterface::class));
 
     $entity_type_manager = $this->createMock(EntityTypeManagerInterface::class);
     $messenger = $this->createMock(MessengerInterface::class);
+    $logger = $this->createMock(LoggerInterface::class);
+    $class_resolver = $this->createMock(ClassResolverInterface::class);
 
-    $executable = new FeedsQueueExecutable($entity_type_manager, $this->dispatcher, $this->getMockedAccountSwitcher(), $messenger, $queue_factory);
+    $executable = new FeedsQueueExecutable($entity_type_manager, $this->dispatcher, $this->getMockedAccountSwitcher(), $messenger, $queue_factory, $logger);
     $executable->setStringTranslation($this->getStringTranslationStub());
 
     $this->plugin = $this->getMockBuilder(FeedRefresh::class)
-      ->setMethods(['feedExists', 'feedLoad', 'getExecutable'])
+      ->onlyMethods(['feedExists', 'feedLoad', 'getExecutable'])
       ->setConstructorArgs([
         [],
         'feeds_feed_refresh',
@@ -77,6 +80,7 @@ class FeedRefreshTest extends FeedsUnitTestCase {
         $this->dispatcher,
         $this->getMockedAccountSwitcher(),
         $entity_type_manager,
+        $class_resolver,
       ])
       ->getMock();
 
@@ -88,18 +92,18 @@ class FeedRefreshTest extends FeedsUnitTestCase {
     // For all tests, the feed ID is 1.
     $this->feed->expects($this->any())
       ->method('id')
-      ->will($this->returnValue(1));
+      ->willReturn(1);
 
     // Make sure a CleanState object is returned when asking for state object in
     // the clean phase.
     $this->feed->expects($this->any())
       ->method('getState')
       ->with(StateInterface::CLEAN)
-      ->will($this->returnValue(new CleanState(1, $connection->reveal())));
+      ->willReturn($this->createFeedsCleanState(1));
 
     $this->plugin->expects($this->any())
       ->method('getExecutable')
-      ->will($this->returnValue($executable));
+      ->willReturn($executable);
   }
 
   /**
@@ -108,7 +112,7 @@ class FeedRefreshTest extends FeedsUnitTestCase {
   protected function setExpectedFeed($expected) {
     $this->plugin->expects($this->any())
       ->method('feedLoad')
-      ->will($this->returnValue($expected));
+      ->willReturn($expected);
   }
 
   /**
@@ -157,7 +161,7 @@ class FeedRefreshTest extends FeedsUnitTestCase {
   public function testBeginStageWithFullFeedObject() {
     $this->plugin->expects($this->atLeastOnce())
       ->method('feedExists')
-      ->will($this->returnValue(TRUE));
+      ->willReturn(TRUE);
 
     $this->plugin->processItem([
       $this->feed,
@@ -172,7 +176,7 @@ class FeedRefreshTest extends FeedsUnitTestCase {
   public function testBeginStageWithNonExistingFullFeedObject() {
     $this->plugin->expects($this->atLeastOnce())
       ->method('feedExists')
-      ->will($this->returnValue(FALSE));
+      ->willReturn(FALSE);
 
     // Process should be aborted early on.
     $this->plugin->expects($this->never())
@@ -206,10 +210,10 @@ class FeedRefreshTest extends FeedsUnitTestCase {
   public function testExceptionOnFetchEvent() {
     $this->setExpectedFeed($this->feed);
     $this->dispatcher->addListener(FeedsEvents::FETCH, function ($parse_event) {
-      throw new \RuntimeException();
+      throw new \LogicException();
     });
 
-    $this->expectException(\RuntimeException::class);
+    $this->expectException(\LogicException::class);
     $this->plugin->processItem([
       $this->feed->id(),
       FeedsExecutableInterface::FETCH,
@@ -247,10 +251,10 @@ class FeedRefreshTest extends FeedsUnitTestCase {
   public function testExceptionOnParseEvent() {
     $this->setExpectedFeed($this->feed);
     $this->dispatcher->addListener(FeedsEvents::PARSE, function ($parse_event) {
-      throw new \RuntimeException();
+      throw new \LogicException();
     });
 
-    $this->expectException(\RuntimeException::class);
+    $this->expectException(\LogicException::class);
     $this->plugin->processItem([
       $this->feed->id(),
       FeedsExecutableInterface::PARSE, [
@@ -281,10 +285,10 @@ class FeedRefreshTest extends FeedsUnitTestCase {
   public function testExceptionOnProcessEvent() {
     $this->setExpectedFeed($this->feed);
     $this->dispatcher->addListener(FeedsEvents::PROCESS, function ($parse_event) {
-      throw new \RuntimeException();
+      throw new \LogicException();
     });
 
-    $this->expectException(\RuntimeException::class);
+    $this->expectException(\LogicException::class);
     $this->plugin->processItem([
       $this->feed->id(),
       FeedsExecutableInterface::PROCESS, [
@@ -307,7 +311,7 @@ class FeedRefreshTest extends FeedsUnitTestCase {
 
     $this->feed->expects($this->exactly(2))
       ->method('progressParsing')
-      ->will($this->returnValue(StateInterface::BATCH_COMPLETE));
+      ->willReturn(StateInterface::BATCH_COMPLETE);
 
     $this->plugin->processItem([
       $this->feed->id(),
@@ -317,7 +321,7 @@ class FeedRefreshTest extends FeedsUnitTestCase {
     ]);
     $this->feed->expects($this->once())
       ->method('progressFetching')
-      ->will($this->returnValue(StateInterface::BATCH_COMPLETE));
+      ->willReturn(StateInterface::BATCH_COMPLETE);
     $this->plugin->processItem([
       $this->feed->id(),
       FeedsExecutableInterface::FINISH, [

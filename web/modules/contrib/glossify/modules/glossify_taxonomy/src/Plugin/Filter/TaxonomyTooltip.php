@@ -2,10 +2,16 @@
 
 namespace Drupal\glossify_taxonomy\Plugin\Filter;
 
-use Drupal\glossify\GlossifyBase;
+use Drupal\Core\Database\Connection;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Path\CurrentPathStack;
+use Drupal\Core\Render\Renderer;
 use Drupal\filter\FilterProcessResult;
+use Drupal\glossify\GlossifyBase;
 use Drupal\taxonomy\Entity\Vocabulary;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Filter to find and process found taxonomy terms in the fields value.
@@ -25,7 +31,85 @@ use Drupal\taxonomy\Entity\Vocabulary;
  *   weight = -10
  * )
  */
-class TaxonomyTooltip extends GlossifyBase {
+final class TaxonomyTooltip extends GlossifyBase {
+
+  /**
+   * The database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $database;
+
+  /**
+   * The module handler service.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
+   * Class constructor.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin ID for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
+   *   The logger factory.
+   * @param \Drupal\Core\Render\Renderer $renderer
+   *   The renderer service.
+   * @param \Drupal\Core\Path\CurrentPathStack $currentPath
+   *   The current path service.
+   * @param \Drupal\Core\Database\Connection $database
+   *   The database connection.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler service.
+   */
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    LoggerChannelFactoryInterface $logger_factory,
+    Renderer $renderer,
+    CurrentPathStack $currentPath,
+    Connection $database,
+    ModuleHandlerInterface $module_handler,
+  ) {
+    parent::__construct(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $logger_factory,
+      $renderer,
+      $currentPath
+    );
+
+    $this->database = $database;
+    $this->moduleHandler = $module_handler;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(
+    ContainerInterface $container,
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+  ) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('logger.factory'),
+      $container->get('renderer'),
+      $container->get('path.current'),
+      $container->get('database'),
+      $container->get('module_handler')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -134,16 +218,16 @@ class TaxonomyTooltip extends GlossifyBase {
     $vocabs = explode(';', $this->settings['glossify_taxonomy_vocabs']);
 
     // Let other modules override $vocabs.
-    \Drupal::moduleHandler()->alter('glossify_taxonomy_vocabs', $vocabs);
+    $this->moduleHandler->alter('glossify_taxonomy_vocabs', $vocabs);
 
     if (count($vocabs)) {
       $terms = [];
 
       // Get taxonomy term data.
-      $query = \Drupal::database()->select('taxonomy_term_field_data', 'tfd');
-      $query->addfield('tfd', 'tid', 'id');
-      $query->addfield('tfd', 'name');
-      $query->addfield('tfd', 'name', 'name_norm');
+      $query = $this->database->select('taxonomy_term_field_data', 'tfd');
+      $query->addField('tfd', 'tid', 'id');
+      $query->addField('tfd', 'name');
+      $query->addField('tfd', 'name', 'name_norm');
       $query->addField('tfd', 'description__value', 'tip');
       $query->condition('tfd.vid', $vocabs, 'IN');
       $query->condition('tfd.status', 1);

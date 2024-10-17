@@ -16,12 +16,10 @@ use Drupal\Core\Session\AccountInterface;
  */
 class DeleteFeedAction extends FeedActionBase {
 
-  const ACTION = 'feeds_feed_multiple_delete_confirm';
-
   /**
    * {@inheritdoc}
    */
-  public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
+  public function access($object, ?AccountInterface $account = NULL, $return_as_object = FALSE) {
     return $object->access('delete', $account, $return_as_object);
   }
 

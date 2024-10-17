@@ -2,15 +2,79 @@
 
 namespace Drupal\glossify;
 
-use Drupal\filter\Plugin\FilterBase;
 use Drupal\Component\Utility\Html;
-use Drupal\Core\Url;
 use Drupal\Component\Utility\Unicode;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Path\CurrentPathStack;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Render\Renderer;
+use Drupal\Core\Url;
+use Drupal\filter\Plugin\FilterBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Base implementation of tooltip filter type plugin.
  */
-abstract class GlossifyBase extends FilterBase {
+abstract class GlossifyBase extends FilterBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * The logger service.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
+
+  /**
+   * The renderer service.
+   *
+   * @var \Drupal\Core\Render\Renderer
+   */
+  protected $renderer;
+
+  /**
+   * The current path.
+   *
+   * @var \Drupal\Core\Path\CurrentPathStack
+   */
+  protected $currentPath;
+
+  /**
+   * {@inheritdoc}
+   */
+  // phpcs:ignore
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    LoggerChannelFactoryInterface $logger_factory,
+    Renderer $renderer,
+    CurrentPathStack $currentPath,
+  ) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+
+    $this->logger = $logger_factory->get('glossify');
+    $this->renderer = $renderer;
+    $this->currentPath = $currentPath;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(
+    ContainerInterface $container,
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+  ) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('logger.factory'),
+      $container->get('renderer'),
+      $container->get('path.current')
+    );
+  }
 
   /**
    * Convert terms in text to links.
@@ -43,7 +107,7 @@ abstract class GlossifyBase extends FilterBase {
    */
   protected function parseTooltipMatch($text, array $terms, $case_sensitivity, $first_only, $displaytype, $tooltip_truncate, $urlpattern, $langcode) {
     if (!Unicode::validateUtf8($text)) {
-      \Drupal::logger('glossify')
+      $this->logger
         ->debug($this->t('The text is apparently is not a valid utf8 charset: @text', [
           '@text' => $text,
         ]));
@@ -61,7 +125,7 @@ abstract class GlossifyBase extends FilterBase {
       $options .= 'i';
     }
     foreach ($terms as $term) {
-      $pattern_parts[$term->name] = '/\b(' . preg_quote($term->name, '/') . ')\b/' . $options;
+      $pattern_parts[htmlspecialchars($term->name)] = '/\b(' . preg_quote($term->name, '/') . ')\b/' . $options;
     }
     ksort($pattern_parts);
 
@@ -125,7 +189,12 @@ abstract class GlossifyBase extends FilterBase {
         foreach ($matches as $char_offset => $match) {
           $loop_count += 1;
           $term_txt = $match['term'];
-          $terms_key = $case_sensitivity ? $term_txt : mb_strtolower($term_txt);
+          $terms_key = htmlspecialchars($case_sensitivity ? $term_txt : mb_strtolower($term_txt));
+
+          if (!isset($terms[$terms_key])) {
+            // Ensure the term exists, otherwise skip:
+            continue;
+          }
 
           // Works around an issue where terms can't be found when comparing a
           // match to the original term name.
@@ -148,12 +217,15 @@ abstract class GlossifyBase extends FilterBase {
           }
           else {
             $tip = '';
+            $tip_raw = '';
             if ($displaytype == 'links' || $displaytype == 'tooltips_links') {
 
               // Insert the matched term instance as link.
               if ($displaytype == 'tooltips_links') {
                 $tip = $this->sanitizeTip((string) $term->tip, $tooltip_truncate);
+                $tip_raw = $this->sanitizeRawTip((string) $term->tip, $tooltip_truncate);
               }
+              // @phpstan-ignore-next-line
               if (\Drupal::hasContainer()) {
                 $tipurl = Url::fromUri('internal:' . str_replace('[id]', $term->id, $urlpattern));
               }
@@ -164,6 +236,7 @@ abstract class GlossifyBase extends FilterBase {
                 '#theme' => 'glossify_link',
                 '#word' => $term_txt,
                 '#tip' => $tip,
+                '#tip_raw' => $tip_raw,
                 '#tipurl' => $tipurl,
               ];
               $word = $this->renderLink($word_link);
@@ -172,11 +245,13 @@ abstract class GlossifyBase extends FilterBase {
               // Has to be 'tooltips'.
               // Insert the matched term instance as tooltip.
               $tip = $this->sanitizeTip($term->tip, $tooltip_truncate);
+              $tip_raw = $this->sanitizeRawTip($term->tip, $tooltip_truncate);
 
               $word_tip = [
                 '#theme' => 'glossify_tooltip',
                 '#word' => $term_txt,
                 '#tip' => $tip,
+                '#tip_raw' => $tip_raw,
                 '#langcode' => $langcode,
               ];
               $word = $this->renderTip($word_tip);
@@ -203,21 +278,21 @@ abstract class GlossifyBase extends FilterBase {
    * Render tip for found match.
    */
   protected function renderTip($word_tip) {
-    return trim(\Drupal::service('renderer')->render($word_tip));
+    return trim($this->renderer->render($word_tip));
   }
 
   /**
    * Render link for found match.
    */
   protected function renderLink($word_link) {
-    return trim(\Drupal::service('renderer')->render($word_link));
+    return trim($this->renderer->render($word_link));
   }
 
   /**
    * Get current path.
    */
   protected function currentPath() {
-    return \Drupal::service('path.current')->getPath();
+    return $this->currentPath->getPath();
   }
 
   /**
@@ -238,8 +313,30 @@ abstract class GlossifyBase extends FilterBase {
     // Get rid of HTML.
     $tip = strip_tags($tip);
 
-    // Maximise tooltip text length.
+    // Maximize tooltip text length.
     if ($truncate) {
+      $tip = Unicode::truncate($tip, 300, TRUE, TRUE);
+    }
+    return $tip;
+  }
+
+  /**
+   * Cleanup and truncate raw tip text.
+   *
+   * @param string $tip
+   *   The tooltip string.
+   * @param bool $truncate
+   *   Whether to truncate the tooltip string.
+   *
+   * @return string
+   *   The prepared tooltip string.
+   */
+  private function sanitizeRawTip($tip, $truncate = TRUE) {
+    // Maximize tooltip text length.
+    if ($truncate) {
+      // phpcs:ignore
+      // @todo: How to properly truncate the tip if it contains HTML?
+      // @see https://www.drupal.org/project/drupal/issues/2279655
       $tip = Unicode::truncate($tip, 300, TRUE, TRUE);
     }
     return $tip;

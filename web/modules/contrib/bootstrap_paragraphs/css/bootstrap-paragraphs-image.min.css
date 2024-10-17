@@ -4,4 +4,4 @@
  *
  * Compiled from bootstrap-paragraphs-image.less.
  */
-.paragraph.paragraph--type--bp-image.paragraph--width--full>.paragraph__column{padding-right:0;padding-left:0}
+/* stylelint-disable */.paragraph.paragraph--type--bp-image.paragraph--width--full>.paragraph__column{padding-right:0;padding-left:0}/* stylelint-enable */

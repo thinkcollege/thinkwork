@@ -1,6 +1,6 @@
 # Schema for the configuration files of the Taxonomy tooltip module.
-glossify_taxonomy.filters:
-  type: filter
+filter_settings.glossify_taxonomy:
+  type: mapping
   label: 'Taxonomy tooltip filter'
   mapping:
     glossify_taxonomy_case_sensitivity:

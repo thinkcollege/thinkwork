@@ -10,7 +10,7 @@ dependencies:
     - field.field.paragraph.bp_accordion.bp_width
     - field.field.paragraph.bp_accordion.bp_margin
     - field.field.paragraph.bp_accordion.bp_padding
-    - field.field.paragraph.bp_always_show
+    - field.field.paragraph.bp_accordion.bp_always_show
     - paragraphs.paragraphs_type.bp_accordion
   module:
     - field_group

@@ -118,7 +118,7 @@ trait FeedsCommonTrait {
    * @return string
    *   The location to where the file was saved.
    */
-  protected function copyResourceFileToDir(string $file, string $dir = NULL): string {
+  protected function copyResourceFileToDir(string $file, ?string $dir = NULL): string {
     $file_system = $this->container->get('file_system');
 
     if (is_null($dir)) {
@@ -140,8 +140,24 @@ trait FeedsCommonTrait {
    * @return \Drupal\Core\Entity\EntityInterface
    *   The reloaded entity.
    */
-  protected function reloadEntity(EntityInterface $entity) {
-    /** @var \Drupal\Core\Entity\ $storageEntityStorageInterface */
+  protected function reloadEntity(EntityInterface $entity): EntityInterface {
+    /** @var \Drupal\Core\Entity\EntityStorageInterface $storage */
+    $storage = $this->container->get('entity_type.manager')->getStorage($entity->getEntityTypeId());
+    $storage->resetCache([$entity->id()]);
+    return $storage->load($entity->id());
+  }
+
+  /**
+   * Reloads an entity where null is an allowed return value.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity to reload.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface|null
+   *   The reloaded entity or null, if the entity could not be found.
+   */
+  protected function reloadEntityAllowNull(EntityInterface $entity): ?EntityInterface {
+    /** @var \Drupal\Core\Entity\EntityStorageInterface $storage */
     $storage = $this->container->get('entity_type.manager')->getStorage($entity->getEntityTypeId());
     $storage->resetCache([$entity->id()]);
     return $storage->load($entity->id());
@@ -242,13 +258,23 @@ trait FeedsCommonTrait {
   }
 
   /**
+   * Returns the base url of the Drupal installation.
+   *
+   * @return string
+   *   The Drupal base url.
+   */
+  protected function getBaseUrl(): string {
+    return \Drupal::request()->getSchemeAndHttpHost() . \Drupal::request()->getBaseUrl();
+  }
+
+  /**
    * Returns the url to the Feeds resources directory.
    *
    * @return string
    *   The url to the Feeds resources directory.
    */
-  protected function resourcesUrl() {
-    return \Drupal::request()->getSchemeAndHttpHost() . '/' . $this->getModulePath('feeds') . '/tests/resources';
+  protected function resourcesUrl(): string {
+    return $this->getBaseUrl() . '/' . $this->getModulePath('feeds') . '/tests/resources';
   }
 
   /**

@@ -2,10 +2,15 @@
 
 namespace Drupal\glossify_node\Plugin\Filter;
 
-use Drupal\glossify\GlossifyBase;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Path\CurrentPathStack;
+use Drupal\Core\Render\Renderer;
 use Drupal\filter\FilterProcessResult;
+use Drupal\glossify\GlossifyBase;
 use Drupal\node\Entity\NodeType;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Filter to find and process found taxonomy terms in the fields value.
@@ -25,7 +30,73 @@ use Drupal\node\Entity\NodeType;
  *   weight = -10
  * )
  */
-class NodeTooltip extends GlossifyBase {
+final class NodeTooltip extends GlossifyBase {
+
+  /**
+   * The database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $database;
+
+  /**
+   * Class constructor.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin ID for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
+   *   The logger factory.
+   * @param \Drupal\Core\Render\Renderer $renderer
+   *   The renderer service.
+   * @param \Drupal\Core\Path\CurrentPathStack $currentPath
+   *   The current path service.
+   * @param \Drupal\Core\Database\Connection $database
+   *   The database connection.
+   */
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    LoggerChannelFactoryInterface $logger_factory,
+    Renderer $renderer,
+    CurrentPathStack $currentPath,
+    Connection $database,
+  ) {
+    parent::__construct(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $logger_factory,
+      $renderer,
+      $currentPath
+    );
+
+    $this->database = $database;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(
+    ContainerInterface $container,
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+  ) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('logger.factory'),
+      $container->get('renderer'),
+      $container->get('path.current'),
+      $container->get('database')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -138,10 +209,10 @@ class NodeTooltip extends GlossifyBase {
       $terms = [];
 
       // Get node data.
-      $query = \Drupal::database()->select('node_field_data', 'nfd');
-      $query->addfield('nfd', 'nid', 'id');
-      $query->addfield('nfd', 'title', 'name');
-      $query->addfield('nfd', 'title', 'name_norm');
+      $query = $this->database->select('node_field_data', 'nfd');
+      $query->addField('nfd', 'nid', 'id');
+      $query->addField('nfd', 'title', 'name');
+      $query->addField('nfd', 'title', 'name_norm');
       $query->addField('nb', 'body_value', 'tip');
       $query->leftJoin('node__body', 'nb', 'nb.entity_id = nfd.nid');
       $query->condition('nfd.type', $node_types, 'IN');

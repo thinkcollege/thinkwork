@@ -59,7 +59,7 @@ content.bp_padding[0]['#markup'] ? content.bp_padding[0]['#markup'],
 
 {# Prints div with classes, and button to trigger the modal. #}
 	<div{{attributes.addClass(classes)}}>
-		<div class="paragraph__column"> {% if content.bp_header is not empty %}
+		<div class="paragraph__column"> {% if paragraph.bp_header is not empty %}
 			<h2>{{ content.bp_header }}</h2>
 		{% endif %}
 		{# Button trigger modal #}
@@ -74,21 +74,21 @@ content.bp_padding[0]['#markup'] ? content.bp_padding[0]['#markup'],
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				{% if content.bp_modal_title is not empty %}
+				{% if paragraph.bp_modal_title is not empty %}
 					<h5 class="modal-title" id="{{ paragraph_id }}-label">
 						{{ content.bp_modal_title }}
 					</h5>
 				{% endif %}
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			{% if content.bp_modal_body is not empty %}
+			{% if paragraph.bp_modal_body is not empty %}
 				<div class="modal-body">
 					{% for key, item in content.bp_modal_body|filter((value, key) => key|first != '#') %}
 						{{ item }}
 					{% endfor %}
 				</div>
 			{% endif %}
-			{% if content.bp_modal_footer is not empty %}
+			{% if paragraph.bp_modal_footer is not empty %}
 				<div class="modal-footer">
 					{% for key, item in content.bp_modal_footer%}
 						{% if key|first != '#' %}

@@ -42,7 +42,7 @@
 
 {# Renders Slide Interval field. #}
 {# Converts database values to classes supplied by template. #}
-	{% if content.bp_slide_interval is not empty %}
+	{% if paragraph.bp_slide_interval is not empty %}
 	{% set slide_interval = content.bp_slide_interval['#items'].getString() %}
 {% set slide_interval_classes = [
     'false' == slide_interval ? 'false',

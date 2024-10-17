@@ -1,6 +1,13 @@
 /* eslint func-names: ["error", "never"] */
 (function(wp, Drupal, drupalSettings, $) {
   /**
+   * Retrieves the Gutenberg CSRF token.
+   */
+  function getCsrfToken() {
+    return drupalSettings.gutenberg.csrfToken;
+  }
+
+    /**
    * Parse query strings into an object.
    * @see https://stackoverflow.com/a/2880929
    *
@@ -190,11 +197,15 @@
       method: 'POST',
       regex: /\/wp\/v2\/media\/((\d+)\/edit(.*))/,
       process(matches, data) {
+        const csrfToken = getCsrfToken();
         return new Promise((resolve, reject) => {
           Drupal.toggleGutenbergLoader('show');
           $.ajax({
             method: 'POST',
             url: Drupal.url(`editor/media/edit/${matches[2]}`),
+            headers: {
+              'X-CSRF-Token': csrfToken,
+            },
             data
           })
             .done(resolve)
@@ -231,6 +242,7 @@
       method: 'POST',
       regex: /\/wp\/v2\/media/g,
       process(matches, data, body) {
+        const csrfToken = getCsrfToken();
         return new Promise((resolve, reject) => {
           let file;
           const entries = body.entries();
@@ -256,6 +268,9 @@
             method: 'POST',
             // TODO match the current editor instance dynamically.
             url: Drupal.url('editor/media/upload/gutenberg'),
+            headers: {
+              'X-CSRF-Token': csrfToken,
+            },
             data: formData,
             dataType: 'json',
             cache: false,
@@ -462,10 +477,14 @@
       method: 'PUT',
       regex: /\/wp\/v2\/blocks\/(\d+)/g,
       process(matches, data) {
+        const csrfToken = getCsrfToken();
         return new Promise((resolve, reject) => {
           $.ajax({
             method: 'PUT',
             url: Drupal.url(`editor/reusable-blocks/${data.id}`),
+            headers: {
+              'X-CSRF-Token': csrfToken,
+            },
             data,
           })
             .done(resolve)
@@ -480,10 +499,14 @@
       method: 'DELETE',
       regex: /\/wp\/v2\/blocks\/(\d+)/g,
       process(matches) {
+        const csrfToken = getCsrfToken();
         return new Promise((resolve, reject) => {
           $.ajax({
             method: 'DELETE',
             url: Drupal.url(`editor/reusable-blocks/${matches[1]}`),
+            headers: {
+              'X-CSRF-Token': csrfToken,
+            },
           })
             .done(resolve)
             .fail(error => {
@@ -497,6 +520,7 @@
       method: 'POST',
       regex: /\/wp\/v2\/blocks/g,
       process(matches, data) {
+        const csrfToken = getCsrfToken();
         return new Promise((resolve, reject) => {
           const formData = new FormData();
           formData.append('title', data.title);
@@ -505,6 +529,9 @@
           $.ajax({
             method: 'POST',
             url: Drupal.url('editor/reusable-blocks'),
+            headers: {
+              'X-CSRF-Token': csrfToken,
+            },
             data: formData,
             dataType: 'json',
             cache: false,
@@ -638,7 +665,12 @@
           ((options.method && options.method === requestPath.method) ||
             requestPath.method === 'GET')
         ) {
-          return requestPath.process(matches, options.data, options.body);
+          try {
+            return requestPath.process(matches, options.data, options.body);
+          } catch (error) {
+            // Handle unexpected exceptions.
+            return Promise.reject(error);
+          }
         }
       }
     }

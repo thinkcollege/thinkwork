@@ -140,13 +140,6 @@ class ScanResultFormatter {
         '#weight' => -10,
       ],
     ];
-    if (!empty($result['plans'])) {
-      $build['plans'] = [
-        '#type' => 'markup',
-        '#markup' => '<div class="list-description">' . $result['plans'] . '</div>',
-        '#weight' => 50,
-      ];
-    }
 
     // If this project had no known issues found, report that.
     if ($project_error_count === 0) {
@@ -418,14 +411,6 @@ class ScanResultFormatter {
         '#weight' => -10,
       ],
     ];
-
-    if (!empty($result['plans'])) {
-      $build['plans'] = [
-        '#type' => 'markup',
-        '#markup' => wordwrap(strip_tags($result['plans']), 80, "\n", true),
-        '#weight' => 50,
-      ];
-    }
 
     // If this project had no known issues found, report that.
     if ($project_error_count === 0) {

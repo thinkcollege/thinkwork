@@ -4,13 +4,19 @@
  */
 
 document.addEventListener('DOMContentLoaded', function () {
-  // Get all accordion wrappers on the page and call the expand/collapse all function.
+  // Get all accordion wrappers on the page.
   const accordionWrappers = document.querySelectorAll('.accordion-wrapper');
+
   accordionWrappers.forEach(function (currentWrapper) {
     expandCollapseAllAccordion(currentWrapper);
+
+    // There is always one accordion opened on load so set every button to "Collapse All".
+    allButtonsClosed(currentWrapper);
   });
 
+  // This function expands/collapse all accordion panels within the current accordion wrapper.
   function expandCollapseAllAccordion(currentAccordion) {
+
     // Accordion variables to target for expand/collapse all.
     const accordionWrapper = currentAccordion;
     const buttonSelector = accordionWrapper.querySelector(
@@ -21,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const accordionPanels =
       accordionWrapper.querySelectorAll('.panel-collapse');
 
-    // This function expands/collapse all accordion panels within the current accordion wrapper.
     if (buttonSelector) {
       buttonSelector.addEventListener('click', function () {
         if (buttonSelector.textContent.trim() === 'Expand All') {
@@ -52,6 +57,45 @@ document.addEventListener('DOMContentLoaded', function () {
           });
         }
       });
+
+      // Check if all buttons are open or closed after each change of a single accordion.
+      accordionButtons.forEach((accordion) => {
+        accordion.addEventListener('click', function () {
+          checkAllOpenOrClosed(accordionButtons, buttonSelector);
+        });
+      });
     }
   }
+
+  // This function sets button to "Collapse All" because there is always 1 accordion item open on load.
+  function allButtonsClosed(currentAccordion) {
+
+    // Accordion variables to target for expand/collapse all.
+    const accordionWrapper = currentAccordion;
+    const buttonSelector = accordionWrapper.querySelector(
+      '.bp-accordion-button',
+    );
+
+    if (buttonSelector) {
+      buttonSelector.textContent = 'Collapse All';
+    }
+  }
+
+  // This function checks if all buttons are closed/open and updates Expand/Collapse All button text.
+  function checkAllOpenOrClosed(accordionButtons, buttonSelector) {
+    const allClosed = Array.from(accordionButtons).every((item) =>
+      item.classList.contains('collapsed'),
+    );
+
+    if (allClosed) {
+      buttonSelector.textContent = 'Expand All';
+    } else {
+      buttonSelector.textContent = 'Collapse All';
+    }
+  }
+
+  // Call the expand/collapse all function for all accordions on the page.
+  accordionWrappers.forEach(function (currentWrapper) {
+    expandCollapseAllAccordion(currentWrapper);
+  });
 });

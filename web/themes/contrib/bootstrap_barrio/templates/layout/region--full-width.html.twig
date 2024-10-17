@@ -12,13 +12,7 @@
  * @see template_preprocess_region()
  */
 #}
-{% set wrapper_attribute = create_attribute() %}
-{%
-  set wrapper_classes = [
-    'full-width',
-    'region-wrapper-' ~ region|clean_class,
-  ]
-%}
+{% set region_attributes = attributes %}
 {%
   set classes = [
     'region',
@@ -26,15 +20,21 @@
   ]
 %}
 {% if content %}
-  <section{{ wrapper_attribute.addClass(wrapper_classes) }}>
-    {% if not clean %}
-    <div class={{ container }}>
-      <div{{ attributes.addClass(classes) }}>
-    {% endif %}
-        {{ content }}
-    {% if not clean %}
-      </div>
-    </div>
-    {% endif %}
-  </section>
+  {% embed 'bootstrap_barrio:container' with {
+    attributes: create_attribute({'class': ['region-wrapper-' ~ region|clean_class]}),
+    full_width: true,
+    container: true
+  } %}
+
+    {% block content %}
+      {% if not clean %}
+        <div{{ region_attributes.addClass(classes) }}>
+      {% endif %}
+          {{ content }}
+      {% if not clean %}
+        </div>
+      {% endif %}
+    {% endblock %}
+
+  {% endembed %}
 {% endif %}

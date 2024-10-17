@@ -2,9 +2,9 @@
 
 namespace Drupal\Tests\glossify\Unit;
 
-use Drupal\Tests\UnitTestCase;
-use Drupal\glossify\GlossifyBase;
 use Drupal\Component\Utility\Unicode;
+use Drupal\glossify\GlossifyBase;
+use Drupal\Tests\UnitTestCase;
 
 /**
  * @coversDefaultClass \Drupal\glossify\GlossifyBase
@@ -35,11 +35,13 @@ class GlossifyBaseTest extends UnitTestCase {
    * Test data provider.
    */
   public function parseTooltipMatchData() {
+    // Disable cspell here due to several unknown words in the test data:
+    // cSpell:disable.
     $term = new \stdClass();
     $term->id = '1';
     $term->name = 'RT';
     $term->name_norm = 'RT';
-    $term->tip = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+    $term->tip = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularized in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
 
     $term2 = new \stdClass();
     $term2->id = '2';
@@ -238,6 +240,7 @@ class GlossifyBaseTest extends UnitTestCase {
         'output' => 'Simple plain <span title="' . $term7->tip . '">𒀆𒀇𒀈𒀈𒀊𒀋</span> text <span title="' . $term7->tip . '">𒀆𒀇𒀈𒀈𒀊𒀋</span> with <span title="' . $term7->tip . '">𒀆𒀇𒀈𒀈𒀊𒀋</span> as replacement term',
       ],
     ];
+    // cSpell:enable.
     return $data;
   }
 
@@ -272,11 +275,11 @@ class DummyTooltip extends GlossifyBase {
   private $firstOnly;
 
   /**
-   * Displaytype.
+   * The display type.
    *
    * @var string
    */
-  private $displaytype;
+  private $displayType;
 
   /**
    * Truncate tooltip.
@@ -301,18 +304,18 @@ class DummyTooltip extends GlossifyBase {
    *   Case sensitive replace.
    * @param bool $first_only
    *   Replace only first match.
-   * @param string $displaytype
+   * @param string $displayType
    *   Type of tooltip/link.
    * @param bool $tooltip_truncate
    *   Whether to truncate tooltip.
    * @param string $urlpattern
    *   URL pattern to create links.
    */
-  public function __construct(array $terms, $case_sensitivity, $first_only, $displaytype, $tooltip_truncate, $urlpattern) {
+  public function __construct(array $terms, $case_sensitivity, $first_only, $displayType, $tooltip_truncate, $urlpattern) {
     $this->terms = $terms;
     $this->caseSensitivity = $case_sensitivity;
     $this->firstOnly = $first_only;
-    $this->displaytype = $displaytype;
+    $this->displayType = $displayType;
     $this->tooltipTruncate = $tooltip_truncate;
     $this->urlpattern = $urlpattern;
   }
@@ -347,7 +350,7 @@ class DummyTooltip extends GlossifyBase {
       $this->terms,
       $this->caseSensitivity,
       $this->firstOnly,
-      $this->displaytype,
+      $this->displayType,
       $this->tooltipTruncate,
       $this->urlpattern,
       $langcode

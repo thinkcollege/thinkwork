@@ -5,6 +5,9 @@
  * Provides integration with Tagify libraries.
  */
 
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\WidgetInterface;
+
 /**
  * Implements hook_library_info_alter().
  */
@@ -16,7 +19,7 @@ function tagify_library_info_alter(&$libraries, $module) {
     $library_file_finder = Drupal::service('library.libraries_directory_file_finder');
     $current_libraries = [
       'tagify' => [
-        'js' => 'tagify/dist/tagify.min.js',
+        'js' => 'tagify/dist/tagify.js',
         'css' => 'tagify/dist/tagify.css',
       ],
       'tagify_polyfils' => [
@@ -42,6 +45,28 @@ function tagify_library_info_alter(&$libraries, $module) {
         }
       }
     }
+  }
+}
+
+/**
+ * Strip dashes prefixed to taxonomy labels.
+ *
+ * Implements hook_options_list_alter().
+ */
+function tagify_options_list_alter(array &$options, array $context): void {
+  if (!$context['fieldDefinition'] instanceof FieldDefinitionInterface) {
+    return;
+  }
+  $targetType = $context['fieldDefinition']->getFieldStorageDefinition()->getSetting('target_type');
+  if (empty($context['widget']) || !$context['widget'] instanceof WidgetInterface) {
+    return;
+  }
+  $provider = $context['widget']->getPluginDefinition()['provider'];
+
+  if ($provider === 'tagify' && $targetType === 'taxonomy_term') {
+    $options = array_map(function (string $label) {
+      return ltrim($label, '-');
+    }, $options);
   }
 }
 

@@ -178,6 +178,8 @@ class ConfigEntityReference extends FieldTargetBase implements ConfigurableTarge
           case 'text':
           case 'uuid':
           case 'email':
+          case 'machine_name':
+          case 'required_label':
             $options[$key] = $mapper['label'];
             break;
         }

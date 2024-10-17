@@ -7,7 +7,7 @@ use Drupal\imce\Imce;
 use Symfony\Component\Validator\Constraint;
 
 /**
- * Validates imce file name constaint.
+ * Validates imce file name constraint.
  */
 class ImceFileNameConstraintValidator extends BaseFileConstraintValidator {
 

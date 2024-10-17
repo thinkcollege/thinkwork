@@ -19,7 +19,7 @@ class ImceController extends ControllerBase {
     $output = [];
     // Build the settings form first.(may redirect)
     $output['settings_form'] = $this->formBuilder()->getForm('Drupal\imce\Form\ImceSettingsForm') + ['#weight' => 10];
-    // Buld profile list.
+    // Build profile list.
     $output['profile_list'] = [
       '#type' => 'container',
       '#attributes' => ['class' => ['imce-profile-list']],

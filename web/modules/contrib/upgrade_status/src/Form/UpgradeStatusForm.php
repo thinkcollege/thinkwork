@@ -336,7 +336,6 @@ class UpgradeStatusForm extends FormBase {
       'updatev'  => ['data' => $this->t('Drupal.org version'), 'class' => 'updatev-info'],
       'update9'  => ['data' => $this->t('Drupal.org ' . $this->nextMajor . '-ready'), 'class' => 'update9-info'],
       'issues'   => ['data' => $this->t('Drupal.org issues'), 'class' => 'issue-info'],
-      'plan'     => ['data' => $this->t('Plan'), 'class' => 'plan-info'],
     ];
     $build['list'] = [
       '#type' => 'tableselect',
@@ -525,7 +524,7 @@ class UpgradeStatusForm extends FormBase {
         ]
       ];
       if ($extension->info['upgrade_status_type'] == ProjectCollector::TYPE_CUSTOM) {
-        $option['issues'] = $option['plan'] = [
+        $option['issues'] = [
           'data' => [
             'label' => [
               '#type' => 'markup',
@@ -542,15 +541,6 @@ class UpgradeStatusForm extends FormBase {
               // Use the project name from the info array instead of $key.
               // $key is the local name, not necessarily the project name.
               '#markup' => '<a href="https://drupal.org/project/issues/' . $extension->info['project'] . '?text=Drupal+' . $this->nextMajor . '&status=All">' . $this->t('Issues', [], ['context' => 'Drupal.org issues']) . '</a>',
-            ],
-          ]
-        ];
-        $plan = (string) $this->projectCollector->getPlan($name);
-        $option['plan'] = [
-          'data' => [
-            'label' => [
-              '#type' => 'markup',
-              '#markup' => !empty($plan) ? $plan : $this->t('N/A'),
             ],
           ]
         ];
@@ -998,7 +988,7 @@ MARKUP
       '#rows' => [],
     ];
 
-    $build['description'] = $this->t('Drupal 11 requirements are mostly already known and checked, however these checks will be updated as more details are defined.');
+    $build['description'] = $this->t('Below are Drupal 11\'s system requirements. If you are working with multiple (dev, stage, live) environments, make sure to check the same requirements there.');
 
     // Check Drupal version. Link to update if available.
     $core_version_info = [
@@ -1026,6 +1016,9 @@ MARKUP
       }
     }
     if (version_compare(\Drupal::VERSION, '10.3.0') >= 0) {
+      if (version_compare(\Drupal::VERSION, '10.4.0') >= 0) {
+        $this->messenger()->addWarning('Drupal 11.0 is not a supported upgrade from Drupal 10.4. Make sure to upgrade to 11.1!');
+      }
       if (!$has_core_update) {
         $class = 'color-success';
       }
@@ -1042,7 +1035,7 @@ MARKUP
       'data' => [
         'requirement' => [
           'class' => 'requirement-label',
-          'data' => $this->t('Drupal core will need be at least 10.3.x to upgrade (not yet available)'),
+          'data' => $this->t('Drupal core should be at least 10.3.0'),
         ],
         'status' => [
           'data' => $core_version_info,
@@ -1086,9 +1079,21 @@ MARKUP
         if (version_compare($version, '10.6') >= 0) {
           $class = 'color-success';
         }
+        elseif (version_compare($version, '10.3.7') >= 0) {
+          if ($this->moduleHandler->moduleExists('mysql57')) {
+            $class = 'color-warning';
+            $requirement .= ' ' . $this->t('Keep using <a href=":driver">the MariaDB 10.3 driver</a> for now, which is already installed.', [':driver' => 'https://www.drupal.org/project/mysql57']);
+          }
+          else {
+            $class = 'color-error';
+            $requirement .= ' ' . $this->t('Alternatively, <a href=":driver">install the MariaDB 10.3 driver</a> for now.', [':driver' => 'https://www.drupal.org/project/mysql57']);
+          }
+        }
         else {
+          // Should not happen because Drupal 10 already required 10.3.7, but just to be sure.
           $status = FALSE;
           $class = 'color-error';
+          $requirement .= ' ' . $this->t('Once updated to at least 10.3.7, you can also <a href=":driver">install the MariaDB 10.3 driver</a> for now.', [':driver' => 'https://www.drupal.org/project/mysql57']);
         }
       }
       else {
@@ -1097,9 +1102,21 @@ MARKUP
         if (version_compare($version, '8.0') >= 0) {
           $class = 'color-success';
         }
+        elseif (version_compare($version, '5.7.8') >= 0) {
+          if ($this->moduleHandler->moduleExists('mysql57')) {
+            $class = 'color-warning';
+            $requirement .= ' ' . $this->t('Keep using <a href=":driver">the MySQL 5.7 driver</a> for now, which is already installed.', [':driver' => 'https://www.drupal.org/project/mysql57']);
+          }
+          else {
+            $class = 'color-error';
+            $requirement .= ' ' . $this->t('Alternatively, <a href=":driver">install the MySQL 5.7 driver</a> for now.', [':driver' => 'https://www.drupal.org/project/mysql57']);
+          }
+        }
         else {
+          // Should not happen because Drupal 10 already required 5.7.8, but just to be sure.
           $status = FALSE;
           $class = 'color-error';
+          $requirement .= ' ' . $this->t('Once updated to at least 5.7.8, you can also <a href=":driver">install the MySQL 5.7 driver</a> for now.', [':driver' => 'https://www.drupal.org/project/mysql57']);
         }
       }
     }
@@ -1121,8 +1138,9 @@ MARKUP
     }
     elseif ($database_type == 'sqlite') {
       $database_type_full_name = 'SQLite';
-      $requirement = $this->t('When using SQLite, minimum version is 3.26');
-      if (version_compare($version, '3.45') >= 0) {
+      $minimum_sqlite = '3.45';
+      $requirement = $this->t('When using SQLite, minimum version is @minimum_sqlite', ['@minimum_sqlite' => $minimum_sqlite]);
+      if (version_compare($version, $minimum_sqlite) >= 0) {
         $class = 'color-success';
       }
       else {
@@ -1198,7 +1216,7 @@ MARKUP
     // Check Drush. We only detect site-local drush for now.
     if (class_exists('\\Drush\\Drush')) {
       $version = call_user_func('\\Drush\\Drush::getMajorVersion');
-      if (version_compare($version, '12') >= 0) {
+      if (version_compare($version, '13') >= 0) {
         $class = 'color-success';
       }
       else {
@@ -1216,7 +1234,7 @@ MARKUP
       'data' => [
         'requirement' => [
           'class' => 'requirement-label',
-          'data' => $this->t('When using Drush, minimum version is 12'),
+          'data' => $this->t('When using Drush, minimum version is 13'),
         ],
         'status' => [
           'data' => $label,
@@ -1511,7 +1529,7 @@ MARKUP
    * Checks config directory settings for use of deprecated values.
    *
    * The $config_directories variable is deprecated in Drupal 8. However,
-   * the Settings object obscures the fact in Settings:initialise(), where
+   * the Settings object obscures the fact in Settings:initialize(), where
    * it throws an error but levels the values in the deprecated location
    * and $settings. So after that, it is not possible to tell if either
    * were set in settings.php or not.
@@ -1536,7 +1554,7 @@ MARKUP
 
     if (!empty($config_directories)) {
       if (!empty($settings['config_sync_directory'])) {
-        // Both are set. The $settings copy will prevail in Settings::initialise().
+        // Both are set. The $settings copy will prevail in Settings::initialize().
         return NULL;
       }
       // Only the deprecated variable is set.

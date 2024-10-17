@@ -2,10 +2,10 @@
 
 namespace Drupal\Tests\feeds\Kernel;
 
-use Drupal\feeds\FeedInterface;
-use Drupal\feeds\StateInterface;
-use Drupal\feeds\Plugin\Type\Processor\ProcessorInterface;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
+use Drupal\feeds\FeedInterface;
+use Drupal\feeds\Plugin\Type\Processor\ProcessorInterface;
+use Drupal\feeds\StateInterface;
 
 /**
  * Tests the feature of updating items that are no longer available in the feed.
@@ -22,6 +22,21 @@ class UpdateNonExistentTest extends FeedsKernelTestBase {
    * @var \Drupal\feeds\Entity\FeedType
    */
   protected $feedType;
+
+  /**
+   * Modules to enable.
+   *
+   * @var array
+   */
+  protected static $modules = [
+    'field',
+    'node',
+    'feeds',
+    'text',
+    'filter',
+    'options',
+    'entity_test',
+  ];
 
   /**
    * {@inheritdoc}
@@ -46,7 +61,7 @@ class UpdateNonExistentTest extends FeedsKernelTestBase {
   }
 
   /**
-   * Asserts that no items exist on the clean list for the given feed.
+   * Asserts number of items on the clean list for the given feed.
    *
    * @param int $expected_count
    *   The amount of expected items on the clean list.
@@ -142,7 +157,7 @@ class UpdateNonExistentTest extends FeedsKernelTestBase {
    * '_delete'.
    */
   public function testDeleteNonExistentItems() {
-    // Set 'update_non_existent' setting to 'unpublish'.
+    // Set 'update_non_existent' setting to 'delete'.
     $config = $this->feedType->getProcessor()->getConfiguration();
     $config['update_non_existent'] = ProcessorInterface::DELETE_NON_EXISTENT;
     $this->feedType->getProcessor()->setConfiguration($config);
@@ -197,6 +212,21 @@ class UpdateNonExistentTest extends FeedsKernelTestBase {
 
     // Assert that the clean list is now empty for this feed.
     $this->assertCleanListEmpty($feed);
+  }
+
+  /**
+   * Tests if entities in the clean list can have a ID that is a string.
+   */
+  public function testStringIdInCleanList() {
+    // Create a feed.
+    $feed = $this->createFeed($this->feedType->id(), [
+      'source' => $this->resourcesPath() . '/rss/googlenewstz.rss2',
+    ]);
+
+    // Test that clean list is creating entries.
+    $clean_state = $feed->getState(StateInterface::CLEAN);
+    $clean_state->setList(['MN', 'WI']);
+    $this->assertCleanListCount(2, $feed);
   }
 
   /**
@@ -263,6 +293,66 @@ class UpdateNonExistentTest extends FeedsKernelTestBase {
     $feed->import();
     $cleaned = \Drupal::state()->get('feeds_cleaned', []);
     $this->assertEquals(1, $cleaned[6]['feeds_test_plugin_clean_action'], 'Item should only be cleaned once.');
+  }
+
+  /**
+   * Tests cleaning entities when the entity ID is a string.
+   */
+  public function testCleanWithEntityStringId() {
+    $this->installEntitySchema('entity_test_string_id');
+
+    // Create and configure feed type.
+    $feed_type = $this->createFeedTypeForCsv([
+      'guid' => 'guid',
+      'name' => 'name',
+    ], [
+      'processor' => 'entity:entity_test_string_id',
+      'processor_configuration' => [
+        'authorize' => FALSE,
+        'update_existing' => ProcessorInterface::UPDATE_EXISTING,
+        'update_non_existent' => ProcessorInterface::DELETE_NON_EXISTENT,
+        'values' => [
+          'type' => 'entity_test_string_id',
+        ],
+      ],
+      'mappings' => [
+        [
+          'target' => 'id',
+          'map' => ['value' => 'guid'],
+          'unique' => ['value' => TRUE],
+        ],
+        [
+          'target' => 'name',
+          'map' => ['value' => 'name'],
+        ],
+      ],
+    ]);
+
+    // Create a feed and import the first file.
+    $feed = $this->createFeed($feed_type->id(), [
+      'source' => $this->resourcesPath() . '/csv/content_string_id.csv',
+    ]);
+
+    $feed->import();
+
+    // Assert that two entity_test_string_id entities have been imported.
+    $storage = $this->container->get('entity_type.manager')->getStorage('entity_test_string_id');
+    $storage->resetCache();
+    $entities = $storage->loadMultiple();
+    $this->assertCount(2, $entities);
+
+    // Import an "updated" version of the file from which one item is removed.
+    $feed->setSource($this->resourcesPath() . '/csv/content_string_id_missing.csv');
+    $feed->save();
+    $feed->import();
+
+    // Assert that one entity is removed.
+    $storage->resetCache();
+    $entities = $storage->loadMultiple();
+    $this->assertCount(1, $entities);
+
+    // Assert that the clean list is empty for the feed.
+    $this->assertCleanListEmpty($feed);
   }
 
 }

@@ -43,7 +43,7 @@
 
 {# Renders Column Style field. #}
 {# Sets class name from values in database. #}
-	{% if content.bp_column_style_3 is not empty %}
+	{% if paragraph.bp_column_style_3 is not empty %}
 	{% set column_style_3 = content.bp_column_style_3['#items'].getString() %}
 {% set column_style_3_classes = [
     'paragraph--style--25-50-25' == column_style_3 ? 'paragraph--style--25-50-25',
@@ -72,13 +72,13 @@ content.bp_padding[0]['#markup'] ? content.bp_padding[0]['#markup'],
 %}
 
 {# Merges Column Style field with classes. #}
-	{% if content.bp_column_style_3 is not empty %}
+	{% if paragraph.bp_column_style_3 is not empty %}
 {% set classes = classes|merge(column_style_3_classes) %}
 {% endif %}
 
 {# Prints div with classes, and content without Width and Background. #}
 	<div{{attributes.addClass(classes)}}>
-		<div class="paragraph__column"> {% if content.bp_header is not empty %}
+		<div class="paragraph__column"> {% if paragraph.bp_header is not empty %}
 			<h2>{{ content.bp_header }}</h2>
 		{% endif %}
 		{{ content|without('bp_background', 'bp_header', 'bp_column_style_3','bp_width', 'bp_margin', 'bp_padding') }}

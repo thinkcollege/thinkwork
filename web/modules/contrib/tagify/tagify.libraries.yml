@@ -1,5 +1,4 @@
 default:
-  version: 1.2.18
   js:
     js/tagify.js: {}
   css:
@@ -13,13 +12,11 @@ default:
     - core/sortable
 
 gin:
-  version: 1.2.18
   css:
     component:
       css/gin.css: {}
 
 claro:
-  version: 1.2.18
   css:
     component:
       css/claro.css: {}

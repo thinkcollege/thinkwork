@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\feeds\Kernel\Feeds\Processor;
 
-use Drupal\entity_test\Entity\EntityTestBundle;
 use Drupal\Tests\feeds\Kernel\FeedsKernelTestBase;
+use Drupal\entity_test\Entity\EntityTestBundle;
 
 /**
  * Tests import various entity types.
@@ -72,7 +72,7 @@ class GenericContentEntityProcessorTest extends FeedsKernelTestBase {
       $mappings[] = [
         'target' => $target,
         'map' => ['value' => $source],
-        'settings' => isset($settings[$source]) ? $settings[$source] : [],
+        'settings' => $settings[$source] ?? [],
       ];
     }
 
@@ -131,7 +131,7 @@ class GenericContentEntityProcessorTest extends FeedsKernelTestBase {
   /**
    * Data provider for testEntityImport().
    */
-  public function dataProviderEntityImport() {
+  public static function dataProviderEntityImport() {
     return [
       'entity_test' => [
         'entity_type' => 'entity_test',

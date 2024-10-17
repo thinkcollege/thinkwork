@@ -71,7 +71,7 @@ class Resize extends ImcePluginBase {
     foreach ($items as $item) {
       $uri = $item->getUri();
       $image = $factory->get($uri);
-      // Check vallidity.
+      // Check if image is valid.
       if (!$image->isValid()) {
         continue;
       }

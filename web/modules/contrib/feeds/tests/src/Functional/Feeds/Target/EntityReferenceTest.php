@@ -3,7 +3,13 @@
 namespace Drupal\Tests\feeds\Functional\Feeds\Target;
 
 use Drupal\Tests\feeds\Functional\FeedsBrowserTestBase;
-use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
+use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
+
+// Workaround to support tests against both Drupal 10.1 and Drupal 11.0.
+// @todo Remove once we depend on Drupal 10.2.
+if (!trait_exists(EntityReferenceFieldCreationTrait::class)) {
+  class_alias('\Drupal\Tests\field\Traits\EntityReferenceTestTrait', EntityReferenceFieldCreationTrait::class);
+}
 
 /**
  * @coversDefaultClass \Drupal\feeds\Feeds\Target\EntityReference
@@ -11,7 +17,7 @@ use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
  */
 class EntityReferenceTest extends FeedsBrowserTestBase {
 
-  use EntityReferenceTestTrait;
+  use EntityReferenceFieldCreationTrait;
 
   /**
    * Modules to enable.
@@ -27,7 +33,7 @@ class EntityReferenceTest extends FeedsBrowserTestBase {
   ];
 
   /**
-   * Tests that a bundle can get selected when autocreating terms.
+   * Tests that a bundle can get selected when auto-creating terms.
    */
   public function testAutocreateBundleSetting() {
     $vocabulary_storage = $this->container->get('entity_type.manager')
@@ -47,7 +53,7 @@ class EntityReferenceTest extends FeedsBrowserTestBase {
       'name' => 'Qux',
     ])->save();
 
-    // Create an entityreference field on article, select only 2 of the
+    // Create an entity reference field on article, select only 2 of the
     // available taxonomies.
     $this->createEntityReferenceField('node', 'article', 'field_term', 'Term', 'taxonomy_term', 'default', [
       'target_bundles' => ['foo', 'qux'],

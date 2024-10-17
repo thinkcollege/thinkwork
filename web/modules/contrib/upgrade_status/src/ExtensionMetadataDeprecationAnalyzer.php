@@ -69,7 +69,7 @@ final class ExtensionMetadataDeprecationAnalyzer {
             $deprecations[] = new DeprecationMessage("This extension is deprecated. Don't use it. See $link.", $error_path, $line, 'ExtensionMetadataDeprecationAnalyzer');
           }
           elseif ($info['lifecycle'] == 'obsolete') {
-            $deprecations[] = new DeprecationMessage("This extension is obsolete. Obsolete extensions are usually uninstalled automatically when not needed anymore. You only need to do something about this if the uninstallation was unsuccesful. See $link.", $error_path, $line, 'ExtensionMetadataDeprecationAnalyzer');
+            $deprecations[] = new DeprecationMessage("This extension is obsolete. Obsolete extensions are usually uninstalled automatically when not needed anymore. You only need to do something about this if the uninstallation was unsuccessful. See $link.", $error_path, $line, 'ExtensionMetadataDeprecationAnalyzer');
           }
         }
 
@@ -125,7 +125,7 @@ final class ExtensionMetadataDeprecationAnalyzer {
   }
 
   /**
-   * Finds the line that contiains the substring.
+   * Finds the line that contains the substring.
    * 
    * @param string $substring
    *   The string to find.

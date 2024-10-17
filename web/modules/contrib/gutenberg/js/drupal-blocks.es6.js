@@ -92,9 +92,9 @@
     });
   }
 
-  function registerDrupalBlocks(contentType) {
+  function registerDrupalBlocks(contentType, nodeId) {
     return new Promise(resolve => {
-      $.ajax(Drupal.url(`editor/blocks/load_by_type/${contentType}`)).done(
+      $.ajax(Drupal.url(`editor/blocks/load_by_type/${contentType}/${nodeId}`)).done(
         definitions => {
           const category = {
             slug: 'drupal',

@@ -5,6 +5,7 @@ namespace Drupal\search_api_solr\Plugin\search_api\backend;
 use Composer\InstalledVersions;
 use Composer\Semver\Comparator;
 use Drupal\Component\Datetime\TimeInterface;
+use Drupal\search_api\LoggerTrait;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Unicode;
@@ -91,6 +92,7 @@ use Solarium\Exception\ExceptionInterface;
 use Solarium\Exception\OutOfBoundsException;
 use Solarium\Exception\StreamException;
 use Solarium\Exception\UnexpectedValueException;
+use Solarium\QueryType\Extract\Query as ExtractQuery;
 use Solarium\QueryType\Select\Query\FilterQuery;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
@@ -123,6 +125,8 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
   use SolrSpellcheckBackendTrait;
 
   use StringTranslationTrait;
+
+  use LoggerTrait;
 
   /**
    * The module handler.
@@ -1183,7 +1187,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
                 $ret[] = $id;
               }
               catch (\Exception $e) {
-                \Drupal\Component\Utility\DeprecationHelper::backwardsCompatibleCall(\Drupal::VERSION, '10.1.0', fn() => \Drupal\Core\Utility\Error::logException(\Drupal::logger('search_api_solr'), $e, '%type while indexing item %id: @message in %function (line %line of %file).', ['%id' => $id]), fn() => watchdog_exception('search_api_solr', $e, '%type while indexing item %id: @message in %function (line %line of %file).', ['%id' => $id]));
+                $this->logException($e, '%type while indexing item %id: @message in %function (line %line of %file).', ['%id' => $id]);
                 // We must not throw an exception because we might have indexed
                 // some documents successfully now and need to return these ids.
               }
@@ -1194,12 +1198,12 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
           }
         }
         else {
-          \Drupal\Component\Utility\DeprecationHelper::backwardsCompatibleCall(\Drupal::VERSION, '10.1.0', fn() => \Drupal\Core\Utility\Error::logException(\Drupal::logger('search_api_solr'), $e, "%type while indexing: @message in %function (line %line of %file)."), fn() => watchdog_exception('search_api_solr', $e, "%type while indexing: @message in %function (line %line of %file)."));
+          $this->logException($e, "%type while indexing: @message in %function (line %line of %file).");
           throw $e;
         }
       }
       catch (\Exception $e) {
-        \Drupal\Component\Utility\DeprecationHelper::backwardsCompatibleCall(\Drupal::VERSION, '10.1.0', fn() => \Drupal\Core\Utility\Error::logException(\Drupal::logger('search_api_solr'), $e, "%type while indexing: @message in %function (line %line of %file)."), fn() => watchdog_exception('search_api_solr', $e, "%type while indexing: @message in %function (line %line of %file)."));
+        $this->logException($e, "%type while indexing: @message in %function (line %line of %file).");
         throw new SearchApiSolrException($e->getMessage(), $e->getCode(), $e);
       }
 
@@ -1463,6 +1467,11 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
    * @throws \Drupal\search_api\SearchApiException
    */
   public function deleteItems(IndexInterface $index, array $ids) {
+    /** @var \Drupal\search_api_solr\Entity\Index $index */
+    if ($index->isIndexingEmptyIndex()) {
+      return;
+    }
+
     try {
       $index_id = $this->getTargetedIndexId($index);
       $site_hash = $this->getTargetedSiteHash($index);
@@ -2968,7 +2977,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
 
       $language_id = '';
 
-      if ($fallback_language_field && !empty($languages)) {
+      if ($fallback_language_field && !empty($languages) && isset($doc_fields[$fallback_language_field])) {
         $fallback_languages = $doc_fields[$fallback_language_field];
         $language_id = array_intersect($languages, $fallback_languages);
       }
@@ -3893,7 +3902,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
         $this->filterDuplicateAutocompleteSuggestions($suggestions);
       }
       catch (SearchApiException $e) {
-        \Drupal\Component\Utility\DeprecationHelper::backwardsCompatibleCall(\Drupal::VERSION, '10.1.0', fn() => \Drupal\Core\Utility\Error::logException(\Drupal::logger('search_api_solr'), $e), fn() => watchdog_exception('search_api_solr', $e));
+        $this->logException($e);
       }
     }
 
@@ -4573,7 +4582,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
-  public function extractContentFromFile($filepath) {
+  public function extractContentFromFile(string $filepath, string $extract_format = ExtractQuery::EXTRACT_FORMAT_XML) {
     $connector = $this->getSolrConnector();
 
     $solr_version = $connector->getSolrVersion();
@@ -4585,6 +4594,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
 
     $query = $connector->getExtractQuery();
     $query->setExtractOnly(TRUE);
+    $query->setExtractFormat($extract_format);
     $query->setFile($filepath);
 
     // Execute the query.

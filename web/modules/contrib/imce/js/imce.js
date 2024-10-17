@@ -116,7 +116,7 @@
     if (Folder) {
       Folder.open();
     }
-    // Triger postinit
+    // Trigger postinit
     imce.trigger('postinit');
   };
 

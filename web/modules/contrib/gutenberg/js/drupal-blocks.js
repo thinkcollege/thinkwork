@@ -128,9 +128,9 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     });
   }
 
-  function registerDrupalBlocks(contentType) {
+  function registerDrupalBlocks(contentType, nodeId) {
     return new Promise(function (resolve) {
-      $.ajax(Drupal.url('editor/blocks/load_by_type/' + contentType)).done(function (definitions) {
+      $.ajax(Drupal.url('editor/blocks/load_by_type/' + contentType + '/' + nodeId)).done(function (definitions) {
         var category = {
           slug: 'drupal',
           title: Drupal.t('Drupal Blocks')

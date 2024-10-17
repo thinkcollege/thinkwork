@@ -165,7 +165,7 @@ function bootstrap_paragraphs_update_8202() {
     FieldConfig::create($bp_show_button_yml)->save();
   }
 
-  // Updates Accordian form display.
+  // Updates Accordion form display.
   bootstrap_paragraphs_update_entity_from_yml('core.entity_form_display.paragraph.bp_accordion.default', 'entity_form_display', 'paragraph.bp_accordion.default', [
     'bp_background' => 'content.bp_background',
     'bp_width' => 'content.bp_width',
@@ -174,7 +174,7 @@ function bootstrap_paragraphs_update_8202() {
     'bp_accordion_section' => 'content.bp_accordion_section',
   ]);
 
-  // Updates Accordian Section form display config.
+  // Updates Accordion Section form display config.
   bootstrap_paragraphs_update_entity_from_yml('core.entity_form_display.paragraph.bp_accordion_section.default', 'entity_form_display', 'paragraph.bp_accordion_section.default', [
     'bp_show_button' => 'content.bp_show_button',
     'bp_accordion_section_title' => 'content.bp_accordion_section_title',
@@ -191,7 +191,7 @@ function bootstrap_paragraphs_update_8202() {
  */
 function bootstrap_paragraphs_update_8203() {
 
-  // Updates Accordian View display config.
+  // Updates Accordion View display config.
   bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_accordion.default', 'entity_view_display', 'paragraph.bp_accordion.default', [
     'bp_background' => 'content.bp_background',
     'bp_width' => 'content.bp_width',
@@ -200,7 +200,7 @@ function bootstrap_paragraphs_update_8203() {
     'bp_accordion_section' => 'content.bp_accordion_section',
   ]);
 
-  // Updates Accordian Section View display config.
+  // Updates Accordion Section View display config.
   bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_accordion_section.default', 'entity_view_display', 'paragraph.bp_accordion_section.default', [
     'bp_show_button' => 'content.bp_show_button',
     'bp_accordion_section_title' => 'content.bp_accordion_section_title',
@@ -416,7 +416,7 @@ function bootstrap_paragraphs_update_8205() {
     $config_record = $config_storage->read($config_name);
     /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $storage */
     $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
-    $entity = $storage->createFromStorageRecord($config_record);
+    $entity = $storage->load($config_record['id']) ?? $storage->createFromStorageRecord($config_record);
     $entity->save();
   }
 
@@ -438,7 +438,7 @@ function bootstrap_paragraphs_update_8205() {
     'bp_padding' => 'content.bp_padding',
   ]);
 
-  // Updates Accordian View display config.
+  // Updates Accordion View display config.
   bootstrap_paragraphs_update_entity_from_yml('core.entity_view_display.paragraph.bp_accordion.default', 'entity_view_display', 'paragraph.bp_accordion.default', [
     'bp_margin' => 'content.bp_margin',
     'bp_padding' => 'content.bp_padding',

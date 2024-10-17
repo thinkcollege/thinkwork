@@ -50,7 +50,7 @@ include:
 ################
 variables:
   OPT_IN_TEST_PREVIOUS_MAJOR: '1'
-  OPT_IN_TEST_MAX_PHP: '1'
+  # OPT_IN_TEST_MAX_PHP: '1'
   OPT_IN_TEST_PREVIOUS_MINOR: '1'
 
 # Since we have a folder in the module called "vendor" it will not be symlinked

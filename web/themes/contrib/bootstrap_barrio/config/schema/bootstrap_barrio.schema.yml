@@ -265,6 +265,9 @@ bootstrap_barrio.settings:
     bootstrap_barrio_messages_widget:
       type: string
       label: 'Messages widget'
+    bootstrap_barrio_messages_widget_toast_delay:
+      type: integer
+      label: Toast delay
 
     # Form.
     # ----------------------------

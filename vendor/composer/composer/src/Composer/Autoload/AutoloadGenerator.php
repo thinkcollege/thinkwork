@@ -173,7 +173,7 @@ class AutoloadGenerator
      * @throws \Seld\JsonLint\ParsingException
      * @throws \RuntimeException
      */
-    public function dump(Config $config, InstalledRepositoryInterface $localRepo, RootPackageInterface $rootPackage, InstallationManager $installationManager, string $targetDir, bool $scanPsrPackages = false, ?string $suffix = null, ?Locker $locker = null)
+    public function dump(Config $config, InstalledRepositoryInterface $localRepo, RootPackageInterface $rootPackage, InstallationManager $installationManager, string $targetDir, bool $scanPsrPackages = false, ?string $suffix = null, ?Locker $locker = null, bool $strictAmbiguous = false)
     {
         if ($this->classMapAuthoritative) {
             // Force scanPsrPackages when classmap is authoritative
@@ -362,7 +362,12 @@ EOF;
         }
 
         $classMap = $classMapGenerator->getClassMap();
-        foreach ($classMap->getAmbiguousClasses() as $className => $ambiguousPaths) {
+        if ($strictAmbiguous) {
+            $ambiguousClasses = $classMap->getAmbiguousClasses(false);
+        } else {
+            $ambiguousClasses = $classMap->getAmbiguousClasses();
+        }
+        foreach ($ambiguousClasses as $className => $ambiguousPaths) {
             if (count($ambiguousPaths) > 1) {
                 $this->io->writeError(
                     '<warning>Warning: Ambiguous class resolution, "'.$className.'"'.
@@ -410,14 +415,14 @@ EOF;
 
             // carry over existing autoload.php's suffix if possible and none is configured
             if (null === $suffix && Filesystem::isReadable($vendorPath.'/autoload.php')) {
-                $content = file_get_contents($vendorPath.'/autoload.php');
+                $content = (string) file_get_contents($vendorPath.'/autoload.php');
                 if (Preg::isMatch('{ComposerAutoloaderInit([^:\s]+)::}', $content, $match)) {
                     $suffix = $match[1];
                 }
             }
 
             if (null === $suffix) {
-                $suffix = $locker !== null && $locker->isLocked() ? $locker->getLockData()['content-hash'] : md5(uniqid('', true));
+                $suffix = $locker !== null && $locker->isLocked() ? $locker->getLockData()['content-hash'] : bin2hex(random_bytes(16));
             }
         }
 
@@ -1052,7 +1057,7 @@ CLASSMAPAUTHORITATIVE;
         }
 
         if ($this->apcu) {
-            $apcuPrefix = var_export(($this->apcuPrefix !== null ? $this->apcuPrefix : substr(base64_encode(md5(uniqid('', true), true)), 0, -3)), true);
+            $apcuPrefix = var_export(($this->apcuPrefix !== null ? $this->apcuPrefix : bin2hex(random_bytes(10))), true);
             $file .= <<<APCU
         \$loader->setApcuPrefix($apcuPrefix);
 
@@ -1241,6 +1246,10 @@ INITIALIZER;
             }
 
             foreach ($autoload[$type] as $namespace => $paths) {
+                if (in_array($type, ['psr-4', 'psr-0'], true)) {
+                    // normalize namespaces to ensure "\" becomes "" and others do not have leading separators as they are not needed
+                    $namespace = ltrim($namespace, '\\');
+                }
                 foreach ((array) $paths as $path) {
                     if (($type === 'files' || $type === 'classmap' || $type === 'exclude-from-classmap') && $package->getTargetDir() && !Filesystem::isReadable($installPath.'/'.$path)) {
                         // remove target-dir from file paths of the root package
@@ -1265,10 +1274,8 @@ INITIALIZER;
                         $path = Preg::replaceCallback(
                             '{^((?:(?:\\\\\\.){1,2}+/)+)}',
                             static function ($matches) use (&$updir): string {
-                                if (isset($matches[1])) {
-                                    // undo preg_quote for the matched string
-                                    $updir = str_replace('\\.', '.', $matches[1]);
-                                }
+                                // undo preg_quote for the matched string
+                                $updir = str_replace('\\.', '.', $matches[1]);
 
                                 return '';
                             },
@@ -1310,7 +1317,8 @@ INITIALIZER;
      */
     protected function getFileIdentifier(PackageInterface $package, string $path)
     {
-        return md5($package->getName() . ':' . $path);
+        // TODO composer v3 change this to sha1 or xxh3? Possibly not worth the potential breakage though
+        return hash('md5', $package->getName() . ':' . $path);
     }
 
     /**

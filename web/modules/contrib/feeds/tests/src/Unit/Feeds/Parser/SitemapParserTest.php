@@ -2,11 +2,10 @@
 
 namespace Drupal\Tests\feeds\Unit\Feeds\Parser;
 
+use Drupal\Tests\feeds\Unit\FeedsUnitTestCase;
 use Drupal\feeds\Exception\EmptyFeedException;
 use Drupal\feeds\Feeds\Parser\SitemapParser;
 use Drupal\feeds\Result\RawFetcherResult;
-use Drupal\feeds\State;
-use Drupal\Tests\feeds\Unit\FeedsUnitTestCase;
 
 /**
  * @coversDefaultClass \Drupal\feeds\Feeds\Parser\SitemapParser
@@ -53,12 +52,12 @@ class SitemapParserTest extends FeedsUnitTestCase {
     $this->parser = new SitemapParser($configuration, 'sitemap', []);
     $this->parser->setStringTranslation($this->getStringTranslationStub());
 
-    $this->state = new State();
+    $this->state = $this->createFeedsState();
 
     $this->feed = $this->createMock('Drupal\feeds\FeedInterface');
     $this->feed->expects($this->any())
       ->method('getType')
-      ->will($this->returnValue($this->feedType));
+      ->willReturn($this->feedType);
   }
 
   /**

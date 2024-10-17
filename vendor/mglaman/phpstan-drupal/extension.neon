@@ -16,9 +16,11 @@ parameters:
 	scanFiles:
 		- stubs/Twig/functions.stub
 	drupal:
-		drupal_root: '%currentWorkingDirectory%'
+		drupal_root:
 		bleedingEdge:
 			checkDeprecatedHooksInApiFiles: false
+			checkCoreDeprecatedHooksInApiFiles: false
+			checkContribDeprecatedHooksInApiFiles: false
 		rules:
 			testClassSuffixNameRule: false
 			dependencySerializationTraitPropertyRule: false
@@ -239,9 +241,11 @@ parameters:
 
 parametersSchema:
 	drupal: structure([
-		drupal_root: string()
+		drupal_root: schema(string(), nullable())
 		bleedingEdge: structure([
 			checkDeprecatedHooksInApiFiles: boolean()
+			checkCoreDeprecatedHooksInApiFiles: boolean()
+			checkContribDeprecatedHooksInApiFiles: boolean()
 		])
 		rules: structure([
 			testClassSuffixNameRule: boolean()
@@ -319,6 +323,10 @@ services:
 			- phpstan.typeSpecifier.methodTypeSpecifyingExtension
 	-
 		class: mglaman\PHPStanDrupal\DeprecatedScope\GroupLegacyScope
+		tags:
+			- phpstan.deprecations.deprecatedScopeResolver
+	-
+		class: mglaman\PHPStanDrupal\DeprecatedScope\IgnoreDeprecationsScope
 		tags:
 			- phpstan.deprecations.deprecatedScopeResolver
 	-

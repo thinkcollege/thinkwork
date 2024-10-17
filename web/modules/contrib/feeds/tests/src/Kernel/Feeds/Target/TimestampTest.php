@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\feeds\Kernel\Feeds\Target;
 
-use Drupal\node\Entity\Node;
 use Drupal\Tests\feeds\Kernel\FeedsKernelTestBase;
+use Drupal\node\Entity\Node;
 
 /**
  * @coversDefaultClass \Drupal\feeds\Feeds\Target\Timestamp
@@ -114,7 +114,7 @@ class TimestampTest extends FeedsKernelTestBase {
   /**
    * Data provider for ::testWithConfig().
    */
-  public function withConfigProvider() {
+  public static function withConfigProvider() {
     $return = [];
 
     // When the source is already a timestamp, the timezone should not matter.

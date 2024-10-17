@@ -134,7 +134,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
       var _this2 = this;
 
       return _asyncToGenerator(regeneratorRuntime.mark(function _callee3() {
-        var $gutenbergLoader, _format$editorSetting, contentType, allowedBlocks, blackList, data, blocks, hooks, dispatch, addFilter, unregisterBlockType, unregisterBlockVariation, registerDrupalStore, registerDrupalBlocks, registerDrupalMedia, key, value, isWelcomeGuide, metaboxesContainer, metaboxForm, isFormValid, formSubmitted;
+        var $gutenbergLoader, _format$editorSetting, contentType, allowedBlocks, blackList, nodeId, data, blocks, hooks, dispatch, addFilter, unregisterBlockType, unregisterBlockVariation, registerDrupalStore, registerDrupalBlocks, registerDrupalMedia, key, value, isWelcomeGuide, metaboxesContainer, metaboxForm, isFormValid, formSubmitted;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -154,7 +154,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
               case 4:
                 drupalSettings.gutenbergLoaded = true;
 
-                _format$editorSetting = format.editorSettings, contentType = _format$editorSetting.contentType, allowedBlocks = _format$editorSetting.allowedBlocks, blackList = _format$editorSetting.blackList;
+                _format$editorSetting = format.editorSettings, contentType = _format$editorSetting.contentType, allowedBlocks = _format$editorSetting.allowedBlocks, blackList = _format$editorSetting.blackList, nodeId = _format$editorSetting.nodeId;
                 data = wp.data, blocks = wp.blocks, hooks = wp.hooks;
                 dispatch = data.dispatch;
                 addFilter = hooks.addFilter;
@@ -188,7 +188,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
               case 15:
                 _context3.next = 17;
-                return registerDrupalBlocks(contentType);
+                return registerDrupalBlocks(contentType, nodeId);
 
               case 17:
                 _context3.next = 19;
@@ -291,6 +291,9 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                   drupalSettings.gutenberg.metaboxes.forEach(function (id) {
                     var $metabox = $('#' + id);
                     var metabox = $metabox.get(0);
+                    if (!metabox) {
+                      return;
+                    }
 
                     Drupal.behaviors.editor.detach(metabox, drupalSettings);
                     $metabox.appendTo($metaBoxContainer);

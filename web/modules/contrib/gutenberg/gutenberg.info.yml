@@ -2,8 +2,7 @@ name: Gutenberg Editor
 type: module
 description: "Advanced, yet easy to use content editor. Activate it on the content type edit page."
 package: Gutenberg
-core_version_requirement: ^9 || ^10
-php: 7.4
+core_version_requirement: ^9 || ^10 || ^11
 dependencies:
   - drupal:editor
   - drupal:node
@@ -14,7 +13,7 @@ dependencies:
   - drupal:file
   - drupal:filter
 
-# Information added by Drupal.org packaging script on 2024-06-01
-version: '8.x-2.9'
+# Information added by Drupal.org packaging script on 2024-10-09
+version: '8.x-2.14'
 project: 'gutenberg'
-datestamp: 1717234797
+datestamp: 1728495278

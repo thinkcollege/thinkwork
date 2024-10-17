@@ -34,7 +34,7 @@
     "require": {
         "php": ">=7.4",
         "ext-json": "*",
-        "drupal/core": "^9 || ^10"
+        "drupal/core": "^9 || ^10 || ^11"
     },
     "require-dev": {
         "phpspec/prophecy-phpunit": "^2"

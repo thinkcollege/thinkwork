@@ -85,7 +85,7 @@ class Config
      *
      * @var string
      */
-    const VERSION = '3.10.1';
+    const VERSION = '3.10.3';
 
     /**
      * Package stability; either stable, beta or alpha.
@@ -1570,7 +1570,7 @@ class Config
         // standards paths are added to the autoloader.
         if ($key === 'installed_paths') {
             $installedStandards = Standards::getInstalledStandardDetails();
-            foreach ($installedStandards as $name => $details) {
+            foreach ($installedStandards as $details) {
                 Autoload::addSearchPath($details['path'], $details['namespace']);
             }
         }

@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Generates CSV source files.
  */
-class CsvController extends ControllerBase {
+final class CsvController extends ControllerBase {
 
   /**
    * Date format not defined in PHP 5.
@@ -45,7 +45,7 @@ class CsvController extends ControllerBase {
    * @param Drupal\Core\Extension\ModuleExtensionList $extensionList
    *   The module extension list service.
    */
-  public function __construct(StateInterface $state, ModuleExtensionList $extensionList = NULL) {
+  public function __construct(StateInterface $state, ModuleExtensionList $extensionList) {
     $this->state = $state;
     $this->extensionList = $extensionList;
   }
@@ -118,7 +118,7 @@ class CsvController extends ControllerBase {
    */
   public function nodes() {
     // Check if there needs to be a delay.
-    $delay = \Drupal::state()->get('feeds_timeout');
+    $delay = $this->state->get('feeds_timeout');
     if (is_numeric($delay) && $delay > 0) {
       sleep($delay);
     }
@@ -142,6 +142,7 @@ class CsvController extends ControllerBase {
 
     // Return 304 not modified if last modified.
     if ($last_modified == $if_modified_since) {
+      $response->setStatusCode(304);
       $response->headers->set('Status', '304 Not Modified');
       return $response;
     }
@@ -156,6 +157,20 @@ class CsvController extends ControllerBase {
 
     // And return the file contents.
     $response->setContent($csv);
+    return $response;
+  }
+
+  /**
+   * Returns a 304 response.
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   *   A HTTP response.
+   */
+  public function return304() {
+    $response = new Response();
+    $response->headers->set('Last-Modified', gmdate(static::DATE_RFC7231, strtotime('Sun, 19 Nov 1978 05:00:00 GMT')));
+    $response->setStatusCode(304);
+    $response->headers->set('Status', '304 Not Modified');
     return $response;
   }
 

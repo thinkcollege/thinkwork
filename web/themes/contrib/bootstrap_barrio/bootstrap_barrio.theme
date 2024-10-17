@@ -474,8 +474,7 @@ function bootstrap_barrio_preprocess_block(&$variables) {
     $variables['attributes']['class'][] = 'clearfix';
   }
   $block = $variables['elements'];
-  $blockType = $block['#configuration']['provider'];
-  if ($blockType == "block_content") {
+  if (!empty($block['#configuration']['provider']) && $block['#configuration']['provider'] == "block_content") {
     if (isset($block['content']['#block_content']) && ($block['content']['#block_content'] !== null)) {
       $bundle = $block['content']['#block_content']->bundle();
       $variables['attributes']['class'][] = 'block-content-' . $bundle;
@@ -516,7 +515,7 @@ function bootstrap_barrio_preprocess_form_element(&$variables) {
     $variables['input_attributes'] = new Attribute($variables['element']['#attributes']);
   }
 
-  if ($variables['element']['#type'] == 'radio' || $variables['element']['#type'] == 'checkbox') {
+  if (isset($variables['element']['#type']) && ($variables['element']['#type'] == 'radio' || $variables['element']['#type'] == 'checkbox')) {
     switch (theme_get_setting('bootstrap_barrio_checkbox')) {
       case 'switch':
         $variables['checkbox_style'] = 'form-switch';
@@ -650,8 +649,7 @@ function bootstrap_barrio_theme_suggestions_region_alter(array &$suggestions, ar
  */
 function bootstrap_barrio_theme_suggestions_block_alter(array &$suggestions, array $variables) {
   $block = $variables['elements'];
-  $blockType = $block['#configuration']['provider'];
-  if ($blockType == "block_content") {
+  if (!empty($block['#configuration']['provider']) && $block['#configuration']['provider'] == "block_content") {
     if (isset($block['content']['#block_content']) && ($block['content']['#block_content'] !== null)) {
       $bundle = $block['content']['#block_content']->bundle();
       array_splice($suggestions, 2, 0, 'block__block_' . $bundle);
@@ -740,6 +738,11 @@ function bootstrap_barrio_preprocess_status_messages(&$variables) {
       $variables['title_ids'][$message_type] = Html::getUniqueId("message-$message_type-title");
     }
   }
+
+  if (theme_get_setting('bootstrap_barrio_messages_widget') === 'toasts') {
+    $variables['attributes']['data-bs-delay'] = theme_get_setting('bootstrap_barrio_messages_widget_toast_delay') ?? 10000;
+  }
+
 }
 
 /**
@@ -787,7 +790,7 @@ function bootstrap_barrio_theme_suggestions_input_alter(array &$suggestions, arr
  * Implements hook_preprocess().
  */
 function bootstrap_barrio_preprocess(&$variables, $hook) {
-  if (isset($variables['attributes']['class'])) {
+  if (is_array($variables['attributes'] ?? NULL) && isset($variables['attributes']['class'])) {
     $class = 'is-invalid';
 
     if (is_object($variables['attributes']['class'])) {
@@ -823,7 +826,7 @@ function bootstrap_barrio_preprocess_input(&$variables) {
     ];
     $button_sizes = ['btn-sm', 'btn-lg'];
     $button_is_outline = theme_get_setting('bootstrap_barrio_button_outline');
-    $button_type = theme_get_setting('bootstrap_barrio_button_type');
+    $button_type = theme_get_setting('bootstrap_barrio_button_type') ?? 'primary';
     if (is_object($variables['attributes']['class'])) {
       \Drupal::logger('bootstrap_barrio')->notice(implode($variables['attributes']['class']->value()));
       if (!in_array('btn', $variables['attributes']['class']->value())) {

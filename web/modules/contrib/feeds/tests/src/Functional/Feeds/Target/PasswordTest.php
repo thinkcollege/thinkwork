@@ -2,9 +2,9 @@
 
 namespace Drupal\Tests\feeds\Functional\Feeds\Target;
 
+use Drupal\Tests\feeds\Functional\FeedsBrowserTestBase;
 use Drupal\feeds\Feeds\Target\Password;
 use Drupal\feeds\Plugin\Type\Processor\ProcessorInterface;
-use Drupal\Tests\feeds\Functional\FeedsBrowserTestBase;
 
 /**
  * @coversDefaultClass \Drupal\feeds\Feeds\Target\Password
@@ -128,7 +128,7 @@ class PasswordTest extends FeedsBrowserTestBase {
   /**
    * Data provider for ::test().
    */
-  public function providerPasswordTypes() {
+  public static function providerPasswordTypes() {
     return [
       'plain' => [
         'source' => 'password',

@@ -3,11 +3,11 @@ description: Filter to create tooltips based on node data.
 type: module
 package: "Input filters"
 configure: 'admin/config/content/formats'
-core_version_requirement: ^8.9 || ^9 || ^10
+core_version_requirement: ^8.9 || ^9 || ^10 || ^11
 dependencies:
   - glossify:glossify
 
-# Information added by Drupal.org packaging script on 2023-05-08
-version: '3.0.0'
+# Information added by Drupal.org packaging script on 2024-09-04
+version: '3.0.3'
 project: 'glossify'
-datestamp: 1683548122
+datestamp: 1725466327

@@ -7,8 +7,8 @@
 /* Center the button. */
 .paragraph--type--bp-modal .btn.btn-modal {
   display: block;
-  margin-left: auto;
   margin-right: auto;
+  margin-left: auto;
 }
 /* Adds some simple defaults for the modal. */
 .modal .modal-header {

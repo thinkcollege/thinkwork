@@ -61,7 +61,10 @@ class FeedForm extends ContentEntityForm {
       if ($this->pluginHasForm($plugin, 'feed')) {
         $feed_form = $this->formFactory->createInstance($plugin, 'feed');
 
-        $plugin_state = (new FormState())->setValues($form_state->getValue(['plugin', $type], []));
+        $plugin_state = (new FormState())->setValues($form_state->getValue([
+          'plugin',
+          $type,
+        ], []));
 
         $form['plugin'][$type] = $feed_form->buildConfigurationForm([], $plugin_state, $feed);
         $form['plugin'][$type]['#tree'] = TRUE;
@@ -154,7 +157,10 @@ class FeedForm extends ContentEntityForm {
 
       $feed_form = $this->formFactory->createInstance($plugin, 'feed');
 
-      $plugin_state = (new FormState())->setValues($form_state->getValue(['plugin', $type], []));
+      $plugin_state = (new FormState())->setValues($form_state->getValue([
+        'plugin',
+        $type,
+      ], []));
       $feed_form->validateConfigurationForm($form['plugin'][$type], $plugin_state, $feed);
 
       $form_state->setValue(['plugin', $type], $plugin_state->getValues());
@@ -173,7 +179,7 @@ class FeedForm extends ContentEntityForm {
       }
     }
 
-    parent::validateForm($form, $form_state);
+    return parent::validateForm($form, $form_state);
   }
 
   /**
@@ -188,7 +194,10 @@ class FeedForm extends ContentEntityForm {
       if ($this->pluginHasForm($plugin, 'feed')) {
         $feed_form = $this->formFactory->createInstance($plugin, 'feed');
 
-        $plugin_state = (new FormState())->setValues($form_state->getValue(['plugin', $type], []));
+        $plugin_state = (new FormState())->setValues($form_state->getValue([
+          'plugin',
+          $type,
+        ], []));
 
         $feed_form->submitConfigurationForm($form['plugin'][$type], $plugin_state, $feed);
 
@@ -203,7 +212,7 @@ class FeedForm extends ContentEntityForm {
   public function save(array $form, FormStateInterface $form_state) {
     $feed = $this->entity;
     $insert = $feed->isNew();
-    $feed->save();
+    $result = $feed->save();
 
     $context = ['@type' => $feed->bundle(), '%title' => $feed->label()];
     $t_args = [
@@ -234,6 +243,8 @@ class FeedForm extends ContentEntityForm {
     else {
       $form_state->setRedirect('<front>');
     }
+
+    return $result;
   }
 
   /**

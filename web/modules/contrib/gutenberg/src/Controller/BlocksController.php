@@ -5,6 +5,8 @@ namespace Drupal\gutenberg\Controller;
 use Drupal\Core\Block\BlockManagerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Plugin\Context\ContextRepositoryInterface;
 use Drupal\Core\Render\Renderer;
 use Drupal\gutenberg\BlocksRendererHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -31,6 +33,20 @@ class BlocksController extends ControllerBase {
   protected $configFactory;
 
   /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
+   * The context repository.
+   *
+   * @var \Drupal\Core\Plugin\Context\ContextRepositoryInterface
+   */
+  protected $contextRepository;
+
+  /**
    * Drupal\Core\Render\Renderer instance.
    *
    * @var \Drupal\Core\Render\Renderer
@@ -51,6 +67,10 @@ class BlocksController extends ControllerBase {
    *   Block manager service.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   Config factory service.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   Module handler service.
+   * @param \Drupal\Core\Plugin\Context\ContextRepositoryInterface $context_repository
+   *   Context repository service.
    * @param \Drupal\Core\Render\Renderer $renderer
    *   Render service.
    * @param \Drupal\gutenberg\BlocksRendererHelper $blocks_renderer
@@ -59,10 +79,15 @@ class BlocksController extends ControllerBase {
   public function __construct(
     BlockManagerInterface $block_manager,
     ConfigFactoryInterface $config_factory,
+    ModuleHandlerInterface $module_handler,
+    ContextRepositoryInterface $context_repository,
     Renderer $renderer,
-    BlocksRendererHelper $blocks_renderer) {
+    BlocksRendererHelper $blocks_renderer
+  ) {
     $this->blockManager = $block_manager;
     $this->configFactory = $config_factory;
+    $this->moduleHandler = $module_handler;
+    $this->contextRepository = $context_repository;
     $this->renderer = $renderer;
     $this->blocksRenderer = $blocks_renderer;
   }
@@ -74,8 +99,10 @@ class BlocksController extends ControllerBase {
     return new static(
       $container->get('plugin.manager.block'),
       $container->get('config.factory'),
+      $container->get('module_handler'),
+      $container->get('context.repository'),
       $container->get('renderer'),
-      $container->get('gutenberg.blocks_renderer')
+      $container->get('gutenberg.blocks_renderer'),
     );
   }
 
@@ -91,15 +118,14 @@ class BlocksController extends ControllerBase {
    *   The JSON response.
    */
   public function loadByType(Request $request, $content_type) {
-    $blockManager = \Drupal::service('plugin.manager.block');
-    $contextRepository = \Drupal::service('context.repository');
-    $config = \Drupal::service('config.factory')->getEditable('gutenberg.settings');
-    $config_values = $config->get($content_type . '_allowed_drupal_blocks');
+    $config = $this->configFactory->getEditable('gutenberg.settings');
+    $allowed_drupal_blocks = $config->get($content_type . '_allowed_drupal_blocks');
+    $this->moduleHandler()->alter('allowed_drupal_blocks', $allowed_drupal_blocks, $content_type);
 
     // Get blocks definition.
-    $definitions = $blockManager->getDefinitionsForContexts($contextRepository->getAvailableContexts());
-    $definitions = $blockManager->getSortedDefinitions($definitions);
-    $groups = $blockManager->getGroupedDefinitions($definitions);
+    $definitions = $this->blockManager->getDefinitionsForContexts($this->contextRepository->getAvailableContexts());
+    $definitions = $this->blockManager->getSortedDefinitions($definitions);
+    $groups = $this->blockManager->getGroupedDefinitions($definitions);
     foreach ($groups as $key => $blocks) {
       $group_reference = preg_replace('@[^a-z0-9-]+@', '_', strtolower($key));
       $groups['drupalblock/all_' . $group_reference] = $blocks;
@@ -107,13 +133,16 @@ class BlocksController extends ControllerBase {
     }
 
     $return = [];
-    foreach ($config_values as $key => $value) {
+    foreach ($allowed_drupal_blocks as $key => $value) {
       if ($value) {
         if (preg_match('/^drupalblock\/all/', $value)) {
           // Getting all blocks from group.
           foreach ($groups[$value] as $key_block => $definition) {
             $return[$key_block] = $definition;
           }
+        }
+        elseif (empty($definitions[$value])) {
+          $return[$value] = NULL;
         }
         else {
           $return[$key] = $definitions[$key];

@@ -13,9 +13,9 @@ imce.settings:
       type: sequence
       label: 'Role-profile assignments'
       sequence:
-        - type: sequence
-          sequence:
-            - type: string
+        type: sequence
+        sequence:
+          type: string
 
 # Imce Profile entity
 imce.profile.*:
@@ -35,7 +35,7 @@ imce.profile.*:
       type: sequence
       label: 'Configuration'
       sequence:
-        - type: imce.profile_conf.[%key]
+        type: imce.profile_conf.[%key]
 
 # Profile configuration options
 imce.profile_conf.extensions:
@@ -86,17 +86,17 @@ imce.profile_conf.folders:
   type: sequence
   label: 'Folders'
   sequence:
-    - type: mapping
-      label: 'Folder'
-      mapping:
-        path:
-          type: string
-          label: 'Path'
-        permissions:
-          type: sequence
-          label: 'Permissions'
-          sequence:
-            - type: boolean
+    type: mapping
+    label: 'Folder'
+    mapping:
+      path:
+        type: string
+        label: 'Path'
+      permissions:
+        type: sequence
+        label: 'Permissions'
+        sequence:
+          type: boolean
 
 # File field settings
 field.widget.third_party.imce:

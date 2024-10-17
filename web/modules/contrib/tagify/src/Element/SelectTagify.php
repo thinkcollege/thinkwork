@@ -158,7 +158,7 @@ class SelectTagify extends Select {
    */
   public static function preRenderSelect($element) {
     $element = parent::preRenderSelect($element);
-    static::setAttributes($element, ['tagify-select-widget', 'hidden']);
+    static::setAttributes($element, ['tagify-select-widget']);
     return $element;
   }
 

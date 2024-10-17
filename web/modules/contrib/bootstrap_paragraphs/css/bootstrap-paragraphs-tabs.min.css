@@ -4,4 +4,4 @@
  *
  * Compiled from bootstrap-paragraphs-tabs.less.
  */
-.paragraph.paragraph--type--bp-tabs .tab-content .paragraph>.paragraph__column{padding-top:15px}
+/* stylelint-disable */.paragraph.paragraph--type--bp-tabs .tab-content .paragraph>.paragraph__column{padding-top:15px}.paragraph.paragraph--type--bp-tabs .tab-content .tab-pane:focus{outline:solid;}/* stylelint-enable */

@@ -2,16 +2,23 @@
 
 namespace Drupal\Tests\feeds\Unit\Feeds\Target;
 
+use Drupal\Tests\feeds\Unit\FeedsUnitTestCase;
 use Drupal\feeds\Exception\EmptyFeedException;
 use Drupal\feeds\FeedTypeInterface;
 use Drupal\feeds\FieldTargetDefinition;
 use Drupal\feeds\Plugin\Type\Target\TargetInterface;
-use Drupal\Tests\feeds\Unit\FeedsUnitTestCase;
 
 /**
  * Base class for testing feeds field targets.
  */
 abstract class FieldTargetTestBase extends FeedsUnitTestCase {
+
+  /**
+   * The ID of the plugin.
+   *
+   * @var string
+   */
+  protected static $pluginId = '';
 
   /**
    * Returns the target class.
@@ -22,7 +29,7 @@ abstract class FieldTargetTestBase extends FeedsUnitTestCase {
   abstract protected function getTargetClass();
 
   /**
-   * @covers ::prepareTarget
+   * Tests the prepareTarget() method.
    */
   public function testPrepareTarget() {
     $method = $this->getMethod($this->getTargetClass(), 'prepareTarget')->getClosure();
@@ -69,7 +76,7 @@ abstract class FieldTargetTestBase extends FeedsUnitTestCase {
   }
 
   /**
-   * @covers ::prepareValue
+   * Tests prepareValue() without passing a null value.
    */
   public function testPrepareValueWithNullValue() {
     set_error_handler([$this, 'handleError'], E_DEPRECATED);

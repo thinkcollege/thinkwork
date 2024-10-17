@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\feeds\Unit\EventSubscriber;
 
+use Drupal\Tests\feeds\Unit\FeedsUnitTestCase;
 use Drupal\feeds\Event\FeedsEvents;
 use Drupal\feeds\Event\ParseEvent;
 use Drupal\feeds\EventSubscriber\AfterParseBase;
@@ -9,7 +10,6 @@ use Drupal\feeds\Exception\SkipItemException;
 use Drupal\feeds\Feeds\Item\DynamicItem;
 use Drupal\feeds\Feeds\Item\ItemInterface;
 use Drupal\feeds\Result\ParserResult;
-use Drupal\Tests\feeds\Unit\FeedsUnitTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -80,9 +80,9 @@ class AfterParseBaseTest extends FeedsUnitTestCase {
     // title.
     $this->subscriber->expects($this->exactly(2))
       ->method('alterItem')
-      ->will($this->returnCallback(function (ItemInterface $item, ParseEvent $event) {
+      ->willReturnCallback(function (ItemInterface $item, ParseEvent $event) {
         $item->set('title', $item->get('title') . '1');
-      }));
+      });
 
     // Run subscriber.
     $this->subscriber->afterParse($this->event);
@@ -108,13 +108,13 @@ class AfterParseBaseTest extends FeedsUnitTestCase {
     // and 5.
     $this->subscriber->expects($this->exactly(5))
       ->method('alterItem')
-      ->will($this->returnCallback(function (ItemInterface $item, ParseEvent $event) {
+      ->willReturnCallback(function (ItemInterface $item, ParseEvent $event) {
         switch ($item->get('id')) {
           case 3:
           case 5:
             throw new SkipItemException();
         }
-      }));
+      });
 
     // Run subscriber.
     $this->subscriber->afterParse($this->event);

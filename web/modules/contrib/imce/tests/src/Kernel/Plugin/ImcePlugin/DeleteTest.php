@@ -115,7 +115,7 @@ class DeleteTest extends KernelTestBasePlugin {
   /**
    * Test Delete::permissionInfo()
    */
-  public function testPermissiomInfo() {
+  public function testPermissionInfo() {
     $permissionInfo = $this->delete->permissionInfo();
     $this->assertIsArray($permissionInfo);
     $this->assertTrue(in_array('Delete files', $permissionInfo));
@@ -123,7 +123,7 @@ class DeleteTest extends KernelTestBasePlugin {
   }
 
   /**
-   * Teste messages on context ImcePlugin\Delete.
+   * Test messages on context ImcePlugin\Delete.
    */
   public function testMessages() {
     $messages = $this->imceFM->getMessages();

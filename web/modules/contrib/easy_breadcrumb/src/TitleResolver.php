@@ -70,14 +70,19 @@ class TitleResolver extends ControllerTitleResolver {
    */
   public function getTitle(Request $request, Route $route) {
     $url = Url::fromUri("internal:" . $request->getRequestUri());
-    $route_parts = explode(".", $url->getRouteName());
     $entity = NULL;
-    $params = $url->getRouteParameters();
-    if ($route_parts[0] === 'entity' && $route_parts[2] === 'canonical') {
-      $entity_type = $route_parts[1];
-      if (isset($params[$entity_type])) {
-        $entity = $this->entityTypeManager->getStorage($entity_type)->load($params[$entity_type]);
+    try {
+      $route_parts = explode(".", $url->getRouteName());
+      $params = $url->getRouteParameters();
+      if (!empty($route_parts[0]) && $route_parts[0] === 'entity' && count($route_parts) >= 3 && $route_parts[2] === 'canonical') {
+        $entity_type = $route_parts[1];
+        if (isset($params[$entity_type])) {
+          $entity = $this->entityTypeManager->getStorage($entity_type)->load($params[$entity_type]);
+        }
       }
+    }
+    catch (\UnexpectedValueException $e) {
+      // Do nothing for now.
     }
     if ($entity !== NULL) {
       $current_langcode = $this->languageManager->getCurrentLanguage()->getId();

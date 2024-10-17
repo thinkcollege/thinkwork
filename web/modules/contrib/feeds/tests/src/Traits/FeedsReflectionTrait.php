@@ -2,9 +2,6 @@
 
 namespace Drupal\Tests\feeds\Traits;
 
-use ReflectionClass;
-use ReflectionObject;
-
 /**
  * Trait for using reflection in tests.
  */
@@ -22,7 +19,7 @@ trait FeedsReflectionTrait {
    *   A ReflectionMethod.
    */
   protected function getMethod($class, $name) {
-    $class = new ReflectionClass($class);
+    $class = new \ReflectionClass($class);
     $method = $class->getMethod($name);
     $method->setAccessible(TRUE);
     return $method;
@@ -39,7 +36,7 @@ trait FeedsReflectionTrait {
    *   The value that the property should get.
    */
   protected function setProtectedProperty($object, $property_name, $value) {
-    $ref_object = new ReflectionObject($object);
+    $ref_object = new \ReflectionObject($object);
     $property = $ref_object->getProperty($property_name);
     $property->setAccessible(TRUE);
     $property->setValue($object, $value);
@@ -57,7 +54,7 @@ trait FeedsReflectionTrait {
    *   The value of the property.
    */
   protected function getProtectedProperty($object, $property_name) {
-    $ref_object = new ReflectionObject($object);
+    $ref_object = new \ReflectionObject($object);
     $property = $ref_object->getProperty($property_name);
     $property->setAccessible(TRUE);
     return $property->getValue($object);

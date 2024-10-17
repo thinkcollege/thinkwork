@@ -125,7 +125,7 @@ class CoreTest extends KernelTestBasePlugin {
   }
 
   /**
-   * Teste messages on context ImcePlugin\Core.
+   * Test messages on context ImcePlugin\Core.
    */
   public function testMessages() {
     $messages = $this->imceFM->getMessages();

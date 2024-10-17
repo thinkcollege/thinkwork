@@ -6,6 +6,8 @@ use Drush\TestTraits\DrushTestTrait;
 
 /**
  * @coversDefaultClass \Drupal\upgrade_status\Drush\Commands\UpgradeStatusCommands
+ *
+ * @group upgrade_status
  */
 class UpgradeStatusCommandsTest extends UpgradeStatusTestBase {
 
@@ -15,20 +17,20 @@ class UpgradeStatusCommandsTest extends UpgradeStatusTestBase {
    * Tests drush commands.
    */
   public function testCommands() {
-    // Test a Drupal 10 compatible module.
-    if ($this->getDrupalCoreMajorVersion() < 10) {
-      $this->drush('us-a', ['upgrade_status_test_10_compatible'], [], null, null, 0);
+    // Test a Drupal 10 and 11 compatible module.
+    if ($this->getDrupalCoreMajorVersion() < 11) {
+      $this->drush('us-a', ['upgrade_status_test_11_compatible'], [], null, null, 0);
       $output = $this->getOutput();
       $this->assertStringContainsString('No known issues found.', $output);
     }
     else {
-        $this->drush('upgrade_status:analyze', ['upgrade_status_test_10_compatible'], [], null, null, 3);
-        $output = $this->getOutput();
-        $this->assertStringContainsString('Value of core_version_requirement:', $output);
+      $this->drush('upgrade_status:analyze', ['upgrade_status_test_11_compatible'], [], null, null, 3);
+      $output = $this->getOutput();
+      $this->assertStringContainsString('Value of core_version_requirement:', $output);
     }
 
-    // Test a Drupal 11 compatible module.
-    $this->drush('upgrade_status:analyze', ['upgrade_status_test_11_compatible'], [], null, null, 0);
+    // Test a Drupal 12 compatible module.
+    $this->drush('upgrade_status:analyze', ['upgrade_status_test_12_compatible'], [], null, null, 0);
     $output = $this->getOutput();
     $this->assertStringContainsString('No known issues found.', $output);
 

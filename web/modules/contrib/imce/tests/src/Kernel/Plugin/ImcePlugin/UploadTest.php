@@ -46,7 +46,7 @@ class UploadTest extends KernelTestBasePlugin {
   protected function setUp(): void {
     parent::setUp();
     $this->imceFM = $this->getImceFM();
-    $this->upload = new Upload([], "upload", $this->getPluginDefinations());
+    $this->upload = new Upload([], "upload", $this->getPluginDefinitions());
   }
 
   /**
@@ -83,7 +83,7 @@ class UploadTest extends KernelTestBasePlugin {
   }
 
   /**
-   * Teste messages on context ImcePlugin\Upload.
+   * Test messages on context ImcePlugin\Upload.
    */
   public function testMessages() {
     $messages = $this->imceFM->getMessages();

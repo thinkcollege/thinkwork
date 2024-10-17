@@ -54,10 +54,9 @@ include:
 #
 # Docs at https://git.drupalcode.org/project/gitlab_templates/-/blob/main/includes/include.drupalci.variables.yml
 ################
-# variables:
-#   SKIP_ESLINT: '1'
-#   OPT_IN_TEST_NEXT_MAJOR: '1'
-#   _CURL_TEMPLATES_REF: 'main'
+variables:
+  _CSPELL_WORDS:
+    "albertski,alwy,authorid,Bluegrey,bluegrey,createdtime,grey,Grey,Kanopi,Multicolumn,pasteable,quicklink,Styleguides,thejimbirch,viewsreference,Xeno,Zoomdata"
 
 ###################################################################################
 #

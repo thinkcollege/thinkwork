@@ -2,15 +2,13 @@
 
 namespace Drupal\feeds\Feeds\State;
 
-use Countable;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\feeds\StateInterface;
-use IteratorAggregate;
 
 /**
  * Status of the clean phase of an import.
  */
-interface CleanStateInterface extends StateInterface, IteratorAggregate, Countable {
+interface CleanStateInterface extends StateInterface, \IteratorAggregate, \Countable {
 
   /**
    * Returns if the list is initiated.
@@ -53,7 +51,7 @@ interface CleanStateInterface extends StateInterface, IteratorAggregate, Countab
    * @return \Drupal\Core\Entity\EntityInterface|null
    *   Returns the next the entity in the list, if found.
    */
-  public function nextEntity(EntityStorageInterface $storage = NULL);
+  public function nextEntity(?EntityStorageInterface $storage = NULL);
 
   /**
    * Sets the entity type ID of the entity ID's on the list.

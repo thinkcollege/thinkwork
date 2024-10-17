@@ -4,7 +4,7 @@
 }
 
 .tagify__dropdown {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .tagify__dropdown__item--active {
@@ -17,10 +17,14 @@
   --tag-bg: rgba(0, 62, 204, 0.15) !important;
 }
 
-.tagify.form-select.form-element--type-select .tagify__tag--editable>div::before {
+.tagify.form-select.form-element--type-select
+  .tagify__tag--editable
+  > div::before {
   box-shadow: 0 0 0 2px rgba(0, 62, 204, 0.15) inset !important;
 }
 
-.tagify.form-select.form-element--type-select .tagify__tag--editable .tagify__tag-entity-id {
+.tagify.form-select.form-element--type-select
+  .tagify__tag--editable
+  .tagify__tag-entity-id {
   background: rgba(0, 62, 204, 0.15);
 }

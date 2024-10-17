@@ -42,7 +42,7 @@
 
 {# Renders Width field. #}
 {# Sets class name from values in database. #}
-{% if content.bp_width is not empty %}
+{% if paragraph.bp_width is not empty %}
   {% set layout_width = content.bp_width['#items'].getString() %}
   {% set layout_width_classes = [
     'paragraph--width--tiny' == layout_width ? 'paragraph--width--tiny',
@@ -56,7 +56,7 @@
 
 {# Renders Background field. #}
 {# Sets class name from values in database. #}
-{% if content.bp_background is not empty %}
+{% if paragraph.bp_background is not empty %}
   {% set layout_background = content.bp_background['#items'].getString() %}
   {% set layout_background_classes = [
     'paragraph--color paragraph--color--rgba-black-slight' == layout_background ? 'paragraph--color paragraph--color--rgba-black-slight',
@@ -131,12 +131,12 @@ view_mode ? 'paragraph--view-mode--' ~ view_mode|clean_class,
 %}
 
 {# Merges Width field with classes. #}
-{% if content.bp_width is not empty %}
+{% if paragraph.bp_width is not empty %}
   {% set classes = classes|merge(layout_width_classes) %}
 {% endif %}
 
 {# Merges Background field with classes. #}
-{% if content.bp_background is not empty %}
+{% if paragraph.bp_background is not empty %}
   {% set classes = classes|merge(layout_background_classes) %}
 {% endif %}
 
@@ -146,7 +146,7 @@ view_mode ? 'paragraph--view-mode--' ~ view_mode|clean_class,
 {# Prints Statistics template. #}
 <div{{ attributes.addClass(classes).setAttribute('id', paragraph_id) }}>
   <div class="paragraph__column">
-    {% if content.bp_header is not empty %}
+    {% if paragraph.bp_header is not empty %}
       <h2>{{ content.bp_header }}</h2>
     {% endif %}
     {{ content|without('bp_background', 'bp_header', 'bp_width') }}

@@ -259,7 +259,7 @@ class ImceFM {
    * Get folder.
    *
    * @param string $path
-   *   The patchs folder.
+   *   The patches folder.
    *
    * @return \Drupal\imce\ImceFolder
    *   Returns a folder from the tree.
@@ -272,7 +272,7 @@ class ImceFM {
    * Checks if the user provided folder path is accessible.
    *
    * @param string $path
-   *   The patchs folder.
+   *   The patches folder.
    *
    * @return \Drupal\imce\ImceFolder
    *   Returns the folder object with the path.

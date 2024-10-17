@@ -1,0 +1,9 @@
+.ddev/
+.editorconfig
+.gitattributes
+.prettierignore
+.prettierrc.json
+phpcs.xml.dist
+vendor/
+web/
+

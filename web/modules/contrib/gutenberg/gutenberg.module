@@ -6,6 +6,7 @@
  */
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Access\CsrfRequestHeaderAccessCheck;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Drupal\Core\Entity\EntityFormInterface;
@@ -374,10 +375,39 @@ function gutenberg_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         $form['gutenberg']['allowed_drupal_blocks_details'][$group_reference]['allowed_drupal_blocks_' . $group_reference] = [
           '#type' => 'checkboxes',
           '#options' => $options,
-          '#default_value' => array_merge($input_default_values, $config_values ? $config_values : []),
+          '#default_value' => array_merge($input_default_values, $config_values ?: []),
         ];
       }
     }
+
+		// Get drupal image styles
+		$gutenberg_image_styles['full'] = t('Original');
+		$gutenberg_image_styles_default_values = ['full'];
+		$gutenberg_image_styles_config_values = $config->get($form['type']['#default_value'] . '_allowed_image_styles');
+		$drupal_styles = ImageStyle::loadMultiple();
+		if (!empty($drupal_styles)) {
+			foreach ($drupal_styles as $style) {
+				$gutenberg_image_styles[$style->getName()] = $style->label();
+				$gutenberg_image_styles_default_values[] = $style->getName();
+			}
+		}
+
+		// Allowed image styles
+		$form['gutenberg']['allowed_image_styles_details'] = [
+			'#type' => 'details',
+			'#title' => t('Allowed Image Styles / Sizes'),
+			'#states' => [
+				'visible' => [
+					'input[name="enable_gutenberg_experience"]' => ['checked' => TRUE],
+				],
+      ],
+    ];
+
+		$form['gutenberg']['allowed_image_styles_details']['allowed_image_styles'] = [
+			'#type' => 'checkboxes',
+			'#options' => $gutenberg_image_styles,
+			'#default_value' => $gutenberg_image_styles_config_values ?: $gutenberg_image_styles_default_values,
+		];
 
     // If the media module is enabled, let's make it possible to turn on or off
     // that as well.
@@ -429,6 +459,7 @@ function _gutenberg_node_type_form_submit(array $form, FormStateInterface $form_
   if (!$gutenberg_enabled) {
     $config->clear($form_state->getValue('type') . '_allowed_blocks')->save();
     $config->clear($form_state->getValue('type') . '_allowed_drupal_blocks')->save();
+    $config->clear($form_state->getValue('type') . '_allowed_image_styles')->save();
     $config->clear($form_state->getValue('type') . '_gutenberg_template')->save();
     $config->clear($form_state->getValue('type') . '_gutenberg_template_lock')->save();
     return;
@@ -452,6 +483,9 @@ function _gutenberg_node_type_form_submit(array $form, FormStateInterface $form_
     $values = array_merge($values, $form_state->getValue('allowed_drupal_blocks_' . $category));
   }
   $config->set($form_state->getValue('type') . '_allowed_drupal_blocks', $values)->save();
+
+	// Save image styles
+	$config->set($form_state->getValue('type') . '_allowed_image_styles', $form_state->getValue('allowed_image_styles'))->save();
 }
 
 /**
@@ -477,6 +511,7 @@ function gutenberg_form_node_form_alter(&$form, FormStateInterface $form_state) 
   $form['#attached']['drupalSettings']['gutenberg']['nodeTypeLabel'] = $node_type_entity->label();
   $form['#attached']['drupalSettings']['gutenberg']['template'] = $gutenberg_template;
   $form['#attached']['drupalSettings']['gutenberg']['template-lock'] = $config->get($node_type . '_template_lock');
+  $form['#attached']['drupalSettings']['gutenberg']['csrfToken'] = \Drupal::csrfToken()->get(CsrfRequestHeaderAccessCheck::TOKEN_KEY);
 
   /** @var \Drupal\gutenberg\MappingFieldsHelper $mapping_fields */
   $mapping_fields = \Drupal::service('class_resolver')
@@ -529,18 +564,26 @@ function gutenberg_form_node_form_alter(&$form, FormStateInterface $form_state) 
   $form['#attached']['drupalSettings']['gutenberg']['theme-support'] = $theme_support;
 
   // Set available image sizes for editor.
-  $styles = ImageStyle::loadMultiple();
-  $sizes = [
-    [
-      'slug' => 'full',
-      'name' => t('Original'),
-    ],
-  ];
-  foreach ($styles as $style) {
-    $sizes[] = [
-      'slug' => $style->getName(),
-      'name' => $style->label(),
+  $allowed_styles = $config->get($node_type . '_allowed_image_styles');
+  $sizes = [];
+  if (!empty($allowed_styles['full'])) {
+    $sizes = [
+      [
+        'slug' => 'full',
+        'name' => t('Original'),
+      ],
     ];
+  }
+  $styles = ImageStyle::loadMultiple();
+  if (!empty($styles)) {
+    foreach ($styles as $style) {
+      if (!empty($allowed_styles[$style->getName()])) {
+        $sizes[] = [
+          'slug' => $style->getName(),
+          'name' => $style->label(),
+        ];
+      }
+    }
   }
   $form['#attached']['drupalSettings']['gutenberg']['image-sizes'] = $sizes;
 
@@ -548,6 +591,10 @@ function gutenberg_form_node_form_alter(&$form, FormStateInterface $form_state) 
     \Drupal::languageManager()->getCurrentLanguage()->getDirection() === LanguageInterface::DIRECTION_RTL;
 
   $text_fields = UtilsController::getEntityTextFields($node);
+
+  // Mark form as Gutenberg enabled.
+  $form['#gutenberg_enabled'] = TRUE;
+  $form['#attributes']['data-gutenberg-enabled'] = TRUE;
 
   $form['#attributes']['class'][] = 'metabox-base-form';
 

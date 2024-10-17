@@ -109,12 +109,12 @@ abstract class KernelTestBasePlugin extends KernelTestBase {
   }
 
   /**
-   * Get plugins definations.
+   * Get plugins definition.
    *
    * @return array
-   *   Return plugins definations.
+   *   Return plugins definition.
    */
-  public function getPluginDefinations() {
+  public function getPluginDefinitions() {
     return [
       "field_types" => [
         0 => "text_with_summary",

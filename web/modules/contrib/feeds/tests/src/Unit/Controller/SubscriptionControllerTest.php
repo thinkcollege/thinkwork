@@ -3,8 +3,8 @@
 namespace Drupal\Tests\feeds\Unit\Controller;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
-use Drupal\feeds\Controller\SubscriptionController;
 use Drupal\Tests\UnitTestCase;
+use Drupal\feeds\Controller\SubscriptionController;
 use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -61,6 +61,8 @@ class SubscriptionControllerTest extends UnitTestCase {
    * {@inheritdoc}
    */
   public function setUp(): void {
+    parent::setUp();
+
     $this->request = new Request();
     $this->request->query->set('hub_mode', 'subscribe');
     $this->request->query->set('hub_challenge', '1234');

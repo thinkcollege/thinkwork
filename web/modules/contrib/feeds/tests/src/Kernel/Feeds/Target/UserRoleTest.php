@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\feeds\Kernel\Feeds\Target;
 
-use Drupal\feeds\Plugin\Type\Processor\ProcessorInterface;
 use Drupal\Tests\feeds\Kernel\FeedsKernelTestBase;
+use Drupal\feeds\Plugin\Type\Processor\ProcessorInterface;
 use Drupal\user\UserInterface;
 
 /**
@@ -520,9 +520,7 @@ class UserRoleTest extends FeedsKernelTestBase {
   public function testImportWithExistingRole() {
     // Create a user with the editor role.
     $this->createRole([], 'editor');
-    $user = $this->createUser([
-      'name' => 'Morticia',
-    ]);
+    $user = $this->createUser([], 'Morticia');
     $user->addRole('editor');
     $user->save();
 

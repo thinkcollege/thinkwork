@@ -39,7 +39,7 @@
 {{ attach_library('bp_card/bp-card') }}
 {# Renders Card Style field. #}
 {# Sets class name from values in database. #}
-{% if content.bp_card_style is not empty %}
+{% if paragraph.bp_card_style is not empty %}
   {% set card_style = content.bp_card_style['#items'].getString() %}
   {% set card_style_classes = [
     'card--large-top' == card_style ? 'card--large-top',
@@ -60,7 +60,7 @@ content.bp_padding[0]['#markup'] ? content.bp_padding[0]['#markup'],
 ]
 %}
 {# Merges Card Style field with classes. #}
-{% if content.bp_card_style is not empty %}
+{% if paragraph.bp_card_style is not empty %}
   {% set classes = classes|merge(card_style_classes) %}
 {% endif %}
 {# Sets Unique ID for Card from Paragraph ID. #}
@@ -72,22 +72,22 @@ content.bp_padding[0]['#markup'] ? content.bp_padding[0]['#markup'],
 
   {# Prints Card template. #}
   <div{{ attributes.addClass(classes).setAttribute('id', paragraph_id) }}>
-    {% if content.bp_card_image is not empty %}
+    {% if paragraph.bp_card_image is not empty %}
       <div class="card-image card-img-top">
         {{ content.bp_card_image }}
       </div>
     {% endif %}
     <div class="card-body">
-      {% if content.bp_card_title is not empty %}
+      {% if paragraph.bp_card_title is not empty %}
         <h2 class="card-title">{{ content.bp_card_title }}</h2>
       {% endif %}
-      {% if content.bp_card_text is not empty %}
+      {% if paragraph.bp_card_text is not empty %}
         <div class="card-text">{{ content.bp_card_text }}</div>
       {% endif %}
       {{ content|without('bp_card_image', 'bp_card_link', 'bp_card_style', 'bp_card_text', 'bp_card_title', 'bp_link_entire_card', 'bp_card_button_style', 'bp_margin', 'bp_padding') }}
     </div>
     {# Pulls out the Card Link if it exists and renders the URL in this link. #}
-    {% if content.bp_card_link[0]['#url'] is not empty %}
+    {% if paragraph.bp_card_link is not empty %}
       <div class="card-footer">
         <a href="{{ content.bp_card_link[0]['#url'] }}" class="card-link{% if content.bp_link_entire_card[0]['#markup'] == 'On' %} stretched-link{% endif %}{% if content.bp_card_button_style is not empty %} {{ content.bp_card_button_style[0]['#markup'] }}{% endif %}">
           {% if content.bp_card_link[0]['#url'] %}{{ content.bp_card_link[0]['#title'] }}{% endif %}
@@ -102,7 +102,7 @@ content.bp_padding[0]['#markup'] ? content.bp_padding[0]['#markup'],
 
   <div{{ attributes.addClass(classes).setAttribute('id', paragraph_id) }}>
     <div class="row g-0">
-        {% if content.bp_card_image is not empty %}
+        {% if paragraph.bp_card_image is not empty %}
         <div class="col-md-4">
           <div class="card-image img-fluid">
             {{ content.bp_card_image }}
@@ -111,16 +111,16 @@ content.bp_padding[0]['#markup'] ? content.bp_padding[0]['#markup'],
       {% endif %}
       <div class="col-md-8">
         <div class="card-body">
-          {% if content.bp_card_title is not empty %}
+          {% if paragraph.bp_card_title is not empty %}
             <h2 class="card-title">{{ content.bp_card_title }}</h2>
           {% endif %}
-          {% if content.bp_card_text is not empty %}
+          {% if paragraph.bp_card_text is not empty %}
             <div class="card-text">{{ content.bp_card_text }}</div>
           {% endif %}
           {{ content|without('bp_card_image', 'bp_card_link', 'bp_card_style', 'bp_card_text', 'bp_card_title', 'bp_link_entire_card', 'bp_card_button_style', 'bp_margin', 'bp_padding') }}
         </div>
         {# Pulls out the Card Link if it exists and renders the URL in this link. #}
-        {% if content.bp_card_link[0]['#url'] is not empty %}
+        {% if paragraph.bp_card_link is not empty %}
           <div class="card-footer">
             <a href="{{ content.bp_card_link[0]['#url'] }}" class="card-link{% if content.bp_link_entire_card[0]['#markup'] == 'On' %} stretched-link{% endif %}{% if content.bp_card_button_style is not empty %} {{ content.bp_card_button_style[0]['#markup'] }}{% endif %}">
               {% if content.bp_card_link[0]['#url'] %}{{ content.bp_card_link[0]['#title'] }}{% endif %}

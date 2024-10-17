@@ -2,5 +2,6 @@ name: Feeds
 description: 'Aggregates RSS/Atom/RDF feeds, imports CSV files and more.'
 package: Feeds
 type: module
-core_version_requirement: ^9.3 || ^10
+core_version_requirement: ^10.1 || ^11
 configure: entity.feeds_feed_type.collection
+php: 8.0

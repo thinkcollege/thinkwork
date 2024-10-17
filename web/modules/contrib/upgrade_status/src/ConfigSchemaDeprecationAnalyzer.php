@@ -58,7 +58,7 @@ final class ConfigSchemaDeprecationAnalyzer {
   }
 
   /**
-   * Finds the line that contiains the substring.
+   * Finds the line that contains the substring.
    * 
    * @param string $substring
    *   The string to find.

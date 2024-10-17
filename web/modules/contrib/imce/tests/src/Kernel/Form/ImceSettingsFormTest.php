@@ -17,7 +17,7 @@ class ImceSettingsFormTest extends KernelTestBase {
   use StringTranslationTrait;
 
   /**
-   * The IMCE sttings form.
+   * The IMCE settings form.
    *
    * @var \Drupal\imce\Form\ImceSettingsForm
    */

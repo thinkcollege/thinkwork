@@ -2,8 +2,10 @@
 
 namespace Drupal\Tests\feeds\Unit\Component;
 
-use Drupal\feeds\Component\HttpHelpers;
 use Drupal\Tests\UnitTestCase;
+use Drupal\feeds\Component\HttpHelpers;
+
+// cspell:ignore de\'letztes
 
 /**
  * @coversDefaultClass \Drupal\feeds\Component\HttpHelpers
@@ -41,14 +43,14 @@ class HttpHelpersTest extends UnitTestCase {
             </channel></rss>';
     $this->assertSame('http://example.com/hub', HttpHelpers::findRelationFromXml($xml, 'hub'));
 
-    $this->assertSame(FALSE, HttpHelpers::findRelationFromXml('', 'hub'));
-    $this->assertSame(FALSE, HttpHelpers::findRelationFromXml(' ', 'hub'));
+    $this->assertFalse(HttpHelpers::findRelationFromXml('', 'hub'));
+    $this->assertFalse(HttpHelpers::findRelationFromXml(' ', 'hub'));
   }
 
   /**
    * Data provider for testFindLinkHeader().
    */
-  public function httpResponses() {
+  public static function httpResponses() {
     $headers1 = [
       'Link' => '<http://example.com/TheBook/chapter2>;
          rel="previous";

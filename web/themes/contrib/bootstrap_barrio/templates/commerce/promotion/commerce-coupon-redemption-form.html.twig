@@ -23,7 +23,7 @@
     <div class="coupon-redemption-form__coupons coupon-redemption-form__coupons--multiple">
       <h3> {{ 'Applied coupons'|t }} </h3>
       <table>
-        {% for key, coupon in form.coupons|filter(key => key|first != '#' ) %}
+        {% for key, coupon in form.coupons|filter((coupon, key) => key|first != '#') %}
           <tr>
             <td> {{ coupon.code }} </td>
             <td> {{ coupon.remove_button }} </td>

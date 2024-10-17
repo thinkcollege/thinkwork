@@ -138,12 +138,17 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
         });
       }
     }, {
+      key: 'getCsrfToken',
+      value: function getCsrfToken() {
+        return drupalSettings.gutenberg.csrfToken;
+      }
+    }, {
       key: 'selectMedia',
       value: function () {
         var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2() {
           var _this4 = this;
 
-          var _state, selected, data, onSelect, medias;
+          var _state, selected, data, onSelect, medias, csrfToken;
 
           return regeneratorRuntime.wrap(function _callee2$(_context2) {
             while (1) {
@@ -154,6 +159,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                   medias = data.filter(function (item) {
                     return selected[item.id];
                   });
+                  csrfToken = this.getCsrfToken();
 
 
                   medias.map(function () {
@@ -169,6 +175,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                               _context.next = 5;
                               return fetch(Drupal.url('editor/media/update_data/' + media.id), {
                                 method: 'post',
+                                headers: {
+                                  "X-CSRF-Token": csrfToken
+                                },
                                 body: JSON.stringify({
                                   title: title,
                                   caption: caption,
@@ -191,7 +200,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
                   onSelect(medias);
 
-                case 5:
+                case 6:
                 case 'end':
                   return _context2.stop();
               }

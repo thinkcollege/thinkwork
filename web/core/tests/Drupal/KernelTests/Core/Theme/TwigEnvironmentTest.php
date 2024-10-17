@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\KernelTests\Core\Theme;
 
 use Drupal\Component\Utility\Crypt;
@@ -10,7 +12,6 @@ use Drupal\Core\Template\TwigEnvironment;
 use Drupal\Core\Template\TwigPhpStorageCache;
 use Drupal\KernelTests\KernelTestBase;
 use Symfony\Component\DependencyInjection\Definition;
-use Twig\Environment;
 use Twig\Error\LoaderError;
 
 /**
@@ -22,16 +23,14 @@ use Twig\Error\LoaderError;
 class TwigEnvironmentTest extends KernelTestBase {
 
   /**
-   * Modules to enable.
-   *
-   * @var array
+   * {@inheritdoc}
    */
   protected static $modules = ['system'];
 
   /**
    * Tests inline templates.
    */
-  public function testInlineTemplate() {
+  public function testInlineTemplate(): void {
     /** @var \Drupal\Core\Render\RendererInterface $renderer */
     $renderer = $this->container->get('renderer');
     /** @var \Drupal\Core\Template\TwigEnvironment $environment */
@@ -101,7 +100,7 @@ class TwigEnvironmentTest extends KernelTestBase {
   /**
    * Tests that exceptions are thrown when a template is not found.
    */
-  public function testTemplateNotFoundException() {
+  public function testTemplateNotFoundException(): void {
     /** @var \Drupal\Core\Template\TwigEnvironment $environment */
     $environment = \Drupal::service('twig');
 
@@ -117,7 +116,7 @@ class TwigEnvironmentTest extends KernelTestBase {
   /**
    * Ensures that templates resolve to the same class name and cache file.
    */
-  public function testTemplateClassname() {
+  public function testTemplateClassname(): void {
     /** @var \Drupal\Core\Template\TwigEnvironment $environment */
     $environment = \Drupal::service('twig');
 
@@ -146,7 +145,7 @@ class TwigEnvironmentTest extends KernelTestBase {
   /**
    * Ensures that cacheFilename() varies by extensions + deployment identifier.
    */
-  public function testCacheFilename() {
+  public function testCacheFilename(): void {
     /** @var \Drupal\Core\Template\TwigEnvironment $environment */
     // Note: Later we refetch the twig service in order to bypass its internal
     // static cache.
@@ -196,7 +195,7 @@ class TwigEnvironmentTest extends KernelTestBase {
   /**
    * Tests template invalidation.
    */
-  public function testTemplateInvalidation() {
+  public function testTemplateInvalidation(): void {
     $template_before = <<<TWIG
 <div>Hello before</div>
 TWIG;
@@ -216,23 +215,12 @@ TWIG;
     file_put_contents($template_file, $template_after);
     $output = $environment->load(basename($template_file))->render();
     $this->assertEquals($template_before, $output);
-
-    $environment->invalidate();
-    // Manually change $templateClassPrefix to force a different template
-    // classname, as the other class is still loaded. This wouldn't be a problem
-    // on a real site where you reload the page.
-    $reflection = new \ReflectionClass(Environment::class);
-    $property_reflection = $reflection->getProperty('templateClassPrefix');
-    $property_reflection->setValue($environment, 'otherPrefix');
-
-    $output = $environment->load(basename($template_file))->render();
-    $this->assertEquals($template_after, $output);
   }
 
   /**
    * Test twig file prefix change.
    */
-  public function testTwigFilePrefixChange() {
+  public function testTwigFilePrefixChange(): void {
     /** @var \Drupal\Core\Template\TwigEnvironment $environment */
     $environment = \Drupal::service('twig');
     $cache_prefixes = [];

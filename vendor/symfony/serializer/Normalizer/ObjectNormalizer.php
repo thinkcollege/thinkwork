@@ -100,14 +100,19 @@ class ObjectNormalizer extends AbstractObjectNormalizer
             $name = $reflMethod->name;
             $attributeName = null;
 
-            if (str_starts_with($name, 'get') || str_starts_with($name, 'has') || str_starts_with($name, 'can')) {
+            if (3 < \strlen($name) && match ($name[0]) {
+                'g' => str_starts_with($name, 'get'),
+                'h' => str_starts_with($name, 'has'),
+                'c' => str_starts_with($name, 'can'),
+                default => false,
+            }) {
                 // getters, hassers and canners
                 $attributeName = substr($name, 3);
 
                 if (!$reflClass->hasProperty($attributeName)) {
                     $attributeName = lcfirst($attributeName);
                 }
-            } elseif (str_starts_with($name, 'is')) {
+            } elseif ('is' !== $name && str_starts_with($name, 'is')) {
                 // issers
                 $attributeName = substr($name, 2);
 
@@ -192,15 +197,19 @@ class ObjectNormalizer extends AbstractObjectNormalizer
 
         if ($context['_read_attributes'] ?? true) {
             if (!isset(self::$isReadableCache[$class.$attribute])) {
-                self::$isReadableCache[$class.$attribute] = $this->propertyInfoExtractor->isReadable($class, $attribute) || $this->hasAttributeAccessorMethod($class, $attribute);
+                self::$isReadableCache[$class.$attribute] = (\is_object($classOrObject) && $this->propertyAccessor->isReadable($classOrObject, $attribute)) || $this->propertyInfoExtractor->isReadable($class, $attribute) || $this->hasAttributeAccessorMethod($class, $attribute);
             }
 
             return self::$isReadableCache[$class.$attribute];
         }
 
         if (!isset(self::$isWritableCache[$class.$attribute])) {
-            self::$isWritableCache[$class.$attribute] = $this->propertyInfoExtractor->isWritable($class, $attribute)
-                || (($writeInfo = $this->writeInfoExtractor->getWriteInfo($class, $attribute)) && PropertyWriteInfo::TYPE_NONE !== $writeInfo->getType());
+            if (str_contains($attribute, '.')) {
+                self::$isWritableCache[$class.$attribute] = true;
+            } else {
+                self::$isWritableCache[$class.$attribute] = $this->propertyInfoExtractor->isWritable($class, $attribute)
+                    || (($writeInfo = $this->writeInfoExtractor->getWriteInfo($class, $attribute)) && PropertyWriteInfo::TYPE_NONE !== $writeInfo->getType());
+            }
         }
 
         return self::$isWritableCache[$class.$attribute];

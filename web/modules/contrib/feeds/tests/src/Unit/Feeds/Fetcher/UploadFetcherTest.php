@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\feeds\Unit\Feeds\Fetcher;
 
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Tests\feeds\Unit\FeedsUnitTestCase;
 use Drupal\feeds\FeedInterface;
 use Drupal\feeds\FeedTypeInterface;
@@ -49,7 +49,7 @@ class UploadFetcherTest extends FeedsUnitTestCase {
     $entity_manager->expects($this->once())
       ->method('getStorage')
       ->with('file')
-      ->will($this->returnValue($this->fileStorage));
+      ->willReturn($this->fileStorage);
 
     $this->fetcher = new UploadFetcher(
       ['feed_type' => $this->createMock(FeedTypeInterface::class)],
@@ -76,7 +76,7 @@ class UploadFetcherTest extends FeedsUnitTestCase {
     $feed = $this->createMock(FeedInterface::class);
     $feed->expects($this->any())
       ->method('getSource')
-      ->will($this->returnValue('vfs://feeds/test_file'));
+      ->willReturn('vfs://feeds/test_file');
     $this->fetcher->fetch($feed, $this->state);
   }
 
@@ -89,7 +89,7 @@ class UploadFetcherTest extends FeedsUnitTestCase {
     $feed = $this->createMock(FeedInterface::class);
     $feed->expects($this->any())
       ->method('getSource')
-      ->will($this->returnValue('vfs://feeds/test_file'));
+      ->willReturn('vfs://feeds/test_file');
 
     $this->expectException(\RuntimeException::class);
     $this->fetcher->fetch($feed, $this->state);
@@ -103,7 +103,7 @@ class UploadFetcherTest extends FeedsUnitTestCase {
     $feed->expects($this->exactly(2))
       ->method('getConfigurationFor')
       ->with($this->fetcher)
-      ->will($this->returnValue(['fid' => 10] + $this->fetcher->defaultFeedConfiguration()));
+      ->willReturn(['fid' => 10] + $this->fetcher->defaultFeedConfiguration());
 
     $feeds = [$feed, $feed];
     $this->fetcher->onFeedDeleteMultiple($feeds);

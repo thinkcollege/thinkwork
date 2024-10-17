@@ -136,7 +136,7 @@ function imce_help($route_name, RouteMatchInterface $route_match) {
 function imce_editor_js_settings_alter(&$settings) {
   if (!empty($settings['editor']['formats'])) {
     foreach ($settings['editor']['formats'] as &$conf) {
-      if ($conf['editor'] === 'ckeditor5') {
+      if (($conf['editor'] ?? '') === 'ckeditor5') {
         // Disable ImceSelector integration if the user has no Imce access.
         $index = array_search('imce.ImceSelector', $conf['editorSettings']['plugins']);
         if ($index !== FALSE && !Imce::access()) {

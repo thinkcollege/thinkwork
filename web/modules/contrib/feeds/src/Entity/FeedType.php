@@ -5,9 +5,10 @@ namespace Drupal\feeds\Entity;
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
+use Drupal\Core\Utility\Error;
 use Drupal\feeds\Exception\MissingTargetException;
-use Drupal\feeds\Feeds\FeedsSingleLazyPluginCollection;
 use Drupal\feeds\FeedTypeInterface;
+use Drupal\feeds\Feeds\FeedsSingleLazyPluginCollection;
 use Drupal\feeds\Plugin\DependentWithRemovalPluginInterface;
 use Drupal\feeds\Plugin\Type\LockableInterface;
 use Drupal\feeds\Plugin\Type\Target\ConfigurableTargetInterface;
@@ -207,7 +208,7 @@ class FeedType extends ConfigEntityBundleBase implements FeedTypeInterface, Enti
   /**
    * {@inheritdoc}
    */
-  public function __sleep() {
+  public function __sleep(): array {
     $vars = parent::__sleep();
 
     // Do not serialize pluginCollection as this can contain a
@@ -358,7 +359,7 @@ class FeedType extends ConfigEntityBundleBase implements FeedTypeInterface, Enti
     $sources = [];
 
     foreach ($this->getMappings() as $mapping) {
-      foreach ($mapping['map'] as $column => $source) {
+      foreach ($mapping['map'] as $source) {
         if ($source === '') {
           // Skip empty sources.
           continue;
@@ -582,7 +583,7 @@ class FeedType extends ConfigEntityBundleBase implements FeedTypeInterface, Enti
     return [
       'path' => 'admin/structure/feeds/manage/' . $this->id(),
       'options' => [
-        'entity_type' => $this->entityType,
+        'entity_type' => $this->entityTypeId,
         'entity' => $this,
       ],
     ];
@@ -591,8 +592,9 @@ class FeedType extends ConfigEntityBundleBase implements FeedTypeInterface, Enti
   /**
    * {@inheritdoc}
    */
-  public function preSave(EntityStorageInterface $storage_controller, $update = TRUE) {
-    foreach ($this->getPlugins() as $type => $plugin) {
+  public function preSave(EntityStorageInterface $storage_controller) {
+    foreach ($this->getPlugins() as $plugin) {
+      $update = !$this->isNew();
       $plugin->onFeedTypeSave($update);
     }
 
@@ -606,7 +608,7 @@ class FeedType extends ConfigEntityBundleBase implements FeedTypeInterface, Enti
     }
 
     $this->mappings = array_values($this->mappings);
-    parent::preSave($storage_controller, $update);
+    parent::preSave($storage_controller);
   }
 
   /**
@@ -691,7 +693,7 @@ class FeedType extends ConfigEntityBundleBase implements FeedTypeInterface, Enti
       }
       catch (MissingTargetException $e) {
         // Log an error when a target is not found.
-        watchdog_exception('feeds', $e);
+        Error::logException(\Drupal::logger('feeds'), $e);
       }
     }
 

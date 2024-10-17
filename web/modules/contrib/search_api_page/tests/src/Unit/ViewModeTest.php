@@ -18,7 +18,7 @@ class ViewModeTest extends TestCase {
    * @return array
    *   The test data.
    */
-  public function getViewModeTestDataProvider() {
+  public static function getViewModeTestDataProvider() {
     $testData = [];
 
     $testData['No configuration defaults to the global default'] = [
@@ -111,7 +111,7 @@ class ViewModeTest extends TestCase {
    * @return array
    *   The test data.
    */
-  public function getDefaultViewModeTestDataProvider() {
+  public static function getDefaultViewModeTestDataProvider() {
     $testData = [];
 
     $testData['No configuration defaults to the global default'] = [
@@ -170,7 +170,7 @@ class ViewModeTest extends TestCase {
    * @return array
    *   The test data.
    */
-  public function hasOverridesTestDataProvider() {
+  public static function hasOverridesTestDataProvider() {
     $testData = [];
 
     $testData['No configuration'] = [
@@ -247,7 +247,7 @@ class ViewModeTest extends TestCase {
    * @return array
    *   The test data.
    */
-  public function isOverriddenTestDataProvider() {
+  public static function isOverriddenTestDataProvider() {
     $testData = [];
 
     $testData['No configuration'] = [
