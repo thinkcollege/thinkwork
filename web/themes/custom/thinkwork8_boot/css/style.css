@@ -400,6 +400,7 @@ img[data-align="right"] {padding:0 0 5px 5px }
     border-radius: .25rem;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     background-color: #0077B0;
+    text-decoration: none;
 
 }
 
@@ -408,6 +409,15 @@ img[data-align="right"] {padding:0 0 5px 5px }
 	color: #fff
     }
  
+.node-readmore.nav-link a:hover {
+	color: #fff;
+    background-color: #015f8b;
+
+    }
+ 
+
+
+
 
 /*  "See more Publications" links on some project landing pages */
 
