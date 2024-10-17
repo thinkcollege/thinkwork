@@ -41,6 +41,10 @@ a {
   font-weight:600;
 }
 
+a:hover {
+    color: #20527c;
+}
+
 .lead {
       color:#212529;
       font-size:1.4rem;
@@ -280,10 +284,6 @@ padding: 5px 10px;
 /* Homepage 'New Products' */
 .node--view-mode-teaser h2 {
   padding-top:0;
-}
-
-.node--view-mode-teaser h2 a {
-	color:#0077B0;
 }
 
 .card-block h3.field-content {
