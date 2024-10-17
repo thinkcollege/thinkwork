@@ -409,13 +409,47 @@ img[data-align="right"] {padding:0 0 5px 5px }
 	color: #fff
     }
  
-.node-readmore.nav-link a:hover {
-	color: #fff;
-    background-color: #015f8b;
 
+    .heroText p {
+   animation-delay: 0s;
+  animation-direction: normal;
+  animation-duration: 2s;
+  animation-fill-mode: both;
+  animation-iteration-count: 1;
+  animation-name: fade-in;
+  animation-timing-function: ease-in;
+  color:#589f32;
+  background-color: #e9f2e4
+ }
+
+   @media (min-width: 768px) and (max-width:991.98px) {
+  .heroText p {
+  font-size:1.5em;
+   width: 90%
     }
- 
+            }
 
+            @media (max-width: 767px) and (min-width:577px) {
+                .heroText p {
+                    font-size:1.3em;
+                }
+            }
+
+            @media screen and (max-width: 575.98px) {
+                .heroText p {
+                    font-size:1em;
+                }
+            }
+
+            @keyframes fade-in {
+                0% {
+                    opacity: 0
+                }
+
+                to {
+                    opacity: 1
+                }
+            }
 
 
 
